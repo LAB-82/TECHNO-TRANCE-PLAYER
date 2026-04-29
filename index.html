@@ -3,198 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TECHNO MINI TERMINAL</title>
+    <title>TECHNO MINI PLAYER</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
         :root {
-            --neon-blue: #00f2ff; 
-            --neon-yellow: #fce300; 
-            --bg: #000;
-            --tile-bg: #050505;
-            --border-dim: #1a1a1a;
+            --neon-blue: #00f2ff;
+            --neon-yellow: #fce300;
+            --bg-color: #020202;
+            --tile-bg: rgba(10, 10, 10, 0.9);
+            --border-color: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg); color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden; 
+        
+        body {
+            background-color: var(--bg-color);
+            background-image: radial-gradient(circle at 50% 50%, #0a1114 0%, #020202 100%);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow: hidden;
         }
 
-        body { display: flex; flex-direction: column; padding: 2vh; }
+        /* NAGŁÓWEK */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
 
-        header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border-dim); margin-bottom: 2vh; flex-shrink: 0;
+        .header-text {
             color: var(--neon-blue);
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
         }
-        .header-info { font-size: 18px; font-weight: 700; text-transform: uppercase; }
-        .clock { font-size: 24px; font-weight: 700; }
 
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
+        /* GŁÓWNY UKŁAD */
+        .main-container {
+            display: flex;
+            flex: 1;
+            gap: 30px;
+            min-height: 0;
+        }
 
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 15px; 
+        /* KAFELKI - LEWA STRONA */
+        .grid-container {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 15px;
         }
 
         .tile {
-            background: var(--tile-bg); 
-            border: 2px solid var(--border-dim); 
-            border-radius: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.2s;
-            text-align: center; padding: 5px;
+            background: var(--tile-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 10px;
         }
 
-        .tile .t-name { font-size: 14px; font-weight: 700; color: var(--neon-blue); z-index: 2; pointer-events: none; }
+        .tile span {
+            color: var(--neon-blue);
+            font-weight: 700;
+            font-size: 13px;
+            text-transform: uppercase;
+            z-index: 2;
+        }
 
-        .tile.active { 
+        /* EFEKT AKTYWNEJ STACJI (ZE ZDJĘCIA) */
+        .tile.active {
             border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
         }
 
-        .aura {
-            position: absolute; width: 100%; height: 100%;
-            border-radius: 15px; pointer-events: none; opacity: 0;
-            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
+        .tile.active::before {
+            content: '';
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            background: radial-gradient(circle, rgba(0,242,255,0.2) 0%, transparent 70%);
+            animation: pulse 2s infinite;
+            z-index: 1;
         }
-        .tile.active .aura { opacity: 0.7; animation: pulse 2s infinite; }
 
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.7; }
-            50% { transform: scale(1.03); opacity: 0.4; }
-            100% { transform: scale(1); opacity: 0.7; }
+            0% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 0.8; }
         }
 
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 4vh;
-            border-left: 1px solid var(--border-dim); padding-left: 3vw;
+        /* PANEL BOCZNY - PRAWA STRONA */
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 0;
         }
 
-        .logo-display {
-            width: 100%; max-width: 300px; aspect-ratio: 1/1;
-            border: 5px solid var(--neon-yellow); border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 0 35px rgba(252, 227, 0, 0.25);
+        .display-box {
+            width: 100%;
+            aspect-ratio: 1/1;
+            border: 5px solid var(--neon-yellow);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(252, 227, 0, 0.2);
+            background: black;
+        }
+
+        .display-box h1 {
+            color: var(--neon-yellow);
+            font-size: 42px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--neon-yellow);
+            line-height: 1;
             text-align: center;
         }
-        .logo-display h2 { font-size: 40px; color: var(--neon-yellow); text-shadow: 0 0 15px var(--neon-yellow); }
-        .logo-display p { font-size: 14px; color: var(--neon-yellow); font-weight: 700; margin-top: 5px; letter-spacing: 2px; }
 
-        .controls { display: flex; align-items: center; gap: 2vw; }
-        .c-svg { width: 40px; height: 40px; fill: var(--neon-blue); cursor: pointer; }
-        .c-play { width: 80px; height: 80px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
-
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; max-width: 300px; }
-        input[type="range"] { flex: 1; appearance: none; background: #222; height: 6px; border-radius: 3px; }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 20px; background: var(--neon-blue); border-radius: 50%;
+        /* DOLNE PRZYCISKI NAWIGACJI */
+        .nav-controls {
+            display: flex;
+            gap: 40px;
+            margin-top: 20px;
         }
 
-        @media (max-width: 800px) {
-            .grid { grid-template-columns: repeat(3, 1fr); }
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .sidebar { border-left: none; border-top: 1px solid var(--border-dim); padding: 20px 0; }
+        .nav-btn {
+            fill: none;
+            stroke: var(--neon-blue);
+            stroke-width: 2;
+            width: 30px;
+            height: 30px;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+
+        .nav-btn:hover { opacity: 1; }
+
+        .play-btn {
+            width: 60px;
+            height: 60px;
+            fill: var(--neon-blue);
+            filter: drop-shadow(0 0 10px var(--neon-blue));
+        }
+
+        /* RESPONSYWNOŚĆ */
+        @media (max-width: 900px) {
+            .grid-container { grid-template-columns: repeat(3, 1fr); }
+            .main-container { flex-direction: column; overflow-y: auto; }
+            .display-box { aspect-ratio: 16/9; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="status">TECHNO MINI PL / WYBIERZ STACJĘ</div>
-    <div class="clock" id="timer">00:00</div>
+    <div class="header-text" id="status-bar">TECHNO MINI PL / WYBIERZ STACJĘ</div>
+    <div class="header-text" id="clock">00:00</div>
 </header>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
+<div class="main-container">
+    <div class="grid-container" id="grid">
+        </div>
 
     <aside class="sidebar">
-        <div class="logo-display">
-            <h2 id="disp-top">TECHNO</h2>
-            <p id="disp-bot">MINI</p>
+        <div class="display-box" id="display">
+            <h1 id="main-label">TECHNO</h1>
+            <h1 id="sub-label">MINI</h1>
         </div>
 
-        <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-        </div>
-
-        <div class="vol-box">
-            <input type="range" min="0" max="100" value="70" oninput="setV(this.value)">
+        <div class="nav-controls">
+            <svg class="nav-btn" viewBox="0 0 24 24" onclick="changeStation(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
+            <svg class="nav-btn play-btn" viewBox="0 0 24 24" onclick="togglePlay()"><path id="play-icon" d="M8 5v14l11-7z"/></svg>
+            <svg class="nav-btn" viewBox="0 0 24 24" onclick="changeStation(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
         </div>
     </aside>
 </div>
 
-<audio id="player"></audio>
+<audio id="audio-player"></audio>
 
 <script>
-    // Zaktualizowana lista z darmowymi, publicznymi strumieniami
-    const STATIONS = [
-        { n: 'Techno', g: 'TECHNO', u: 'http://listen.technobase.fm/tunein-mp3-pls' },
-        { n: 'Detroit Techno', g: 'DETROIT', u: 'http://ice1.somafm.com/missioncontrol-128-mp3' },
-        { n: 'Minimal Techno', g: 'MINIMAL', u: 'http://hirschmilch.de:7000/minimal.mp3' },
-        { n: 'Hard Techno', g: 'HARD', u: 'http://stream.laut.fm/hard-techno' },
-        { n: 'Dark Techno', g: 'DARK', u: 'http://stream.laut.fm/darktechno' },
-        { n: 'Techno House', g: 'T-HOUSE', u: 'http://hirschmilch.de:7000/techno.mp3' },
-        { n: 'Trance', g: 'TRANCE', u: 'http://hirschmilch.de:7000/trance.mp3' },
-        { n: 'Vocal Trance', g: 'VOCAL', u: 'http://p-vocaltrance.radioca.st/stream' },
-        { n: 'Uplifting', g: 'UPLIFT', u: 'http://stream.uplifting-trance.com/;stream.mp3' },
-        { n: 'Epic Trance', g: 'EPIC', u: 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=9920257' }, // Uwaga: wymaga wsparcia przeglądarki dla PLS lub zmiany na bezpośredni mp3
-        { n: 'Progressive', g: 'PROG', u: 'http://hirschmilch.de:7000/prog-house.mp3' },
-        { n: 'Psy Trance', g: 'PSY', u: 'http://hirschmilch.de:7000/psytrance.mp3' }
+    const stations = [
+        { name: "Techno", url: "https://hirschmilch.de:7000/techno.mp3", label: "TECHNO" },
+        { name: "Detroit Techno", url: "https://ice1.somafm.com/missioncontrol-128-mp3", label: "DETROIT" },
+        { name: "Minimal Techno", url: "https://hirschmilch.de:7000/minimal.mp3", label: "MINIMAL" },
+        { name: "Hard Techno", url: "http://stream.laut.fm/hard-techno", label: "HARD" },
+        { name: "Dark Techno", url: "http://stream.laut.fm/darktechno", label: "DARK" },
+        { name: "Techno House", url: "https://hirschmilch.de:7000/house.mp3", label: "T-HOUSE" },
+        { name: "Trance", url: "https://hirschmilch.de:7000/trance.mp3", label: "TRANCE" },
+        { name: "Vocal Trance", url: "http://p-vocaltrance.radioca.st/stream", label: "VOCAL" },
+        { name: "Uplifting Trance", url: "http://stream.uplifting-trance.com/;stream.mp3", label: "UPLIFT" },
+        { name: "Epic Trance", url: "http://tx.clast.pro/8240/stream", label: "EPIC" },
+        { name: "Progressive Trance", url: "https://hirschmilch.de:7000/prog-house.mp3", label: "PROG" },
+        { name: "Psy Trance", url: "https://hirschmilch.de:7000/psytrance.mp3", label: "PSY" }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
-    const dTop = document.getElementById('disp-top'), dBot = document.getElementById('disp-bot');
-    let current = -1;
+    const grid = document.getElementById('grid');
+    const player = document.getElementById('audio-player');
+    const playIcon = document.getElementById('play-icon');
+    const mainLabel = document.getElementById('main-label');
+    const statusBar = document.getElementById('status-bar');
+    
+    let currentIndex = -1;
 
-    STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `<div class="aura"></div><div class="t-name">${s.n.toUpperCase()}</div>`;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+    // Generowanie kafelków
+    stations.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.innerHTML = `<span>${s.name}</span>`;
+        div.onclick = () => playStation(i);
+        grid.appendChild(div);
     });
 
-    function play(i) {
-        current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        dTop.textContent = STATIONS[i].g;
-        dBot.textContent = "MINI";
-        document.getElementById('status').textContent = "GRA: " + STATIONS[i].n;
+    function playStation(index) {
+        if (currentIndex === index && !player.paused) {
+            player.pause();
+            updateUI();
+            return;
+        }
+
+        currentIndex = index;
+        const s = stations[index];
         
-        player.src = STATIONS[i].u;
-        player.play().catch(e => console.log("Błąd odtwarzania - spróbuj kliknąć Play"));
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        player.src = s.url;
+        player.play().catch(e => console.log("Autoplay blocked or link broken"));
+        
+        mainLabel.innerHTML = s.label + "<br>MINI";
+        statusBar.innerText = "GRA: " + s.name.toUpperCase();
+        
+        updateUI();
     }
 
-    function toggle() {
-        if(current === -1) { play(0); return; }
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+    function updateUI() {
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach((t, i) => {
+            t.classList.toggle('active', i === currentIndex);
+        });
+
+        if (player.paused) {
+            playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Ikona Play
+        } else {
+            playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona Pause
+        }
     }
 
-    function skip(d) {
-        let n = current + d;
-        if(n < 0) n = STATIONS.length - 1;
-        if(n >= STATIONS.length) n = 0;
-        play(n);
+    function togglePlay() {
+        if (currentIndex === -1) playStation(0);
+        else if (player.paused) player.play();
+        else player.pause();
+        updateUI();
     }
 
-    function setV(v) { player.volume = v / 100; }
-
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    function changeStation(dir) {
+        let newIndex = currentIndex + dir;
+        if (newIndex < 0) newIndex = stations.length - 1;
+        if (newIndex >= stations.length) newIndex = 0;
+        playStation(newIndex);
     }
-    setInterval(clock, 1000); clock();
+
+    // Zegar
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').innerText = 
+            now.getHours().toString().padStart(2, '0') + ":" + 
+            now.getMinutes().toString().padStart(2, '0');
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
 </script>
+
 </body>
 </html>
