@@ -1,268 +1,49 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO TRANCE TERMINAL - COSMETIC UPDATE</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
-        
-        /* Deklaracja czcionki SEEDS - wymaga instalacji czcionki w systemie użytkownika */
-        @font-face {
-            font-family: 'Seeds';
-            src: local('Seeds'), local('Seeds-Regular');
-            font-weight: normal;
-            font-style: normal;
-        }
-        
-        :root {
-            --neon-blue: #00f2ff;
-            --neon-blue-shadow: rgba(0, 242, 255, 0.5);
-            --neon-yellow: #fce300;
-            --bg-black: #000;
-            --tile-bg: #0a0a0a;
-            --border-dim: #1a1a1a;
-        }
+<style>
+/* 1. Import czcionki (pamiętaj o poprawnej ścieżce do pliku .ttf) */
+@font-face {
+    font-family: 'Seeds';
+    src: url('Seeds.ttf'); 
+}
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: var(--bg-black); color: white;
-            font-family: 'Montserrat', sans-serif;
-            height: 100vh; display: flex; flex-direction: column; padding: 2vh; overflow: hidden;
-        }
+/* 2. Zmniejszona ramka i tekst */
+.display-box {
+    width: 50%; /* Zmniejszenie o 50% */
+    aspect-ratio: 1/1;
+    border: 4px solid #fce300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        header {
-            display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-dim);
-            padding-bottom: 10px; margin-bottom: 2vh;
-        }
-        .h-text { color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+.display-box h2 {
+    font-family: 'Seeds', sans-serif;
+    color: #fce300;
+    font-size: 1.2rem;
+}
 
-        .app-main { display: flex; flex: 1; gap: 20px; min-height: 0; }
+/* 3. Aura wystająca poza kafelki */
+.tile.active {
+    border-color: #00f2ff;
+    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
+    position: relative;
+}
 
-        .grid-container {
-            flex: 1.6;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
+.tile.active::after {
+    content: '';
+    position: absolute;
+    top: -15px; left: -15px; right: -15px; bottom: -15px;
+    background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 75%);
+    z-index: -1;
+    pointer-events: none;
+}
+</style>
 
-        .group-label {
-            color: var(--neon-blue);
-            font-size: 11px;
-            letter-spacing: 3px;
-            margin: 20px 0 10px 0;
-            border-left: 3px solid var(--neon-blue);
-            padding-left: 10px;
-            text-transform: uppercase;
-            opacity: 0.8;
-        }
+<div class="controls">
+    <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="togglePlay()">
+        <path d="M8 5v14l11-7z"/>
+    </svg>
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-
-        .tile {
-            background: var(--tile-bg); border: 1.5px solid var(--border-dim); border-radius: 8px;
-            height: 65px; display: flex; align-items: center; justify-content: center;
-            text-align: center; cursor: pointer; position: relative; transition: 0.2s;
-            padding: 5px; overflow: hidden;
-        }
-        .tile span { color: var(--neon-blue); font-size: 10px; font-weight: 700; text-transform: uppercase; z-index: 5; line-height: 1.2; }
-
-        /* --- NOWY EFEKT KAFELKA JAK NA ZDJĘCIU --- */
-        .tile.active {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px var(--neon-blue-shadow);
-        }
-        
-        /* Błękitna Aura pulsacyjna wokół CAŁEGO kafelka */
-        .tile.active::after {
-            content: ''; 
-            position: absolute; 
-            top: -15px; left: -15px; right: -15px; bottom: -15px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
-            z-index: 1; 
-            animation: glow-ripple 2s infinite ease-out;
-            pointer-events: none;
-        }
-        
-        @keyframes glow-ripple {
-            0% { transform: scale(1); opacity: 0.8; }
-            100% { transform: scale(1.15); opacity: 0; }
-        }
-
-        .side-panel { flex: 0.7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
-
-        /* --- ZMNIEJSZENIE RAMKI O 50% --- */
-        .display-box {
-            width: 50%; /* Zmniejszono z 100% o 50% */
-            aspect-ratio: 1/1;
-            border: 4px solid var(--neon-yellow); /* Lekko cieńsza ramka dla skali */
-            border-radius: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 0 35px rgba(252, 227, 0, 0.3); background: #000; text-align: center;
-            padding: 10px;
-        }
-        
-        /* --- NOWY TEKST MY MUSIC STATION + CZCIONKA SEEDS --- */
-        .display-box h2 { 
-            color: var(--neon-yellow); 
-            font-family: 'Seeds', serif; /* Zastosowano czcionkę Seeds */
-            font-size: 14px; /* Dopasowany rozmiar do mniejszej ramki */
-            text-shadow: 0 0 10px var(--neon-yellow); 
-            line-height: 1.3;
-            text-transform: uppercase;
-        }
-
-        .controls { display: flex; align-items: center; gap: 20px; } /* Zmniejszono gap dla dodatkowego przycisku */
-        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 30px; height: 30px; transition: opacity 0.2s; }
-        .c-btn:hover { opacity: 0.7; }
-        .play-btn { fill: var(--neon-blue); width: 65px; height: 65px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
-        
-        /* Styl dla przycisku STOP */
-        .stop-btn { stroke-width: 0; fill: #550000; transition: fill 0.2s; }
-        .stop-btn:hover { fill: #aa0000; }
-
-        .grid-container::-webkit-scrollbar { width: 4px; }
-        .grid-container::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 10px; }
-
-        @media (max-width: 900px) { .app-main { flex-direction: column; } .grid { grid-template-columns: repeat(3, 1fr); } .display-box { width: 80%; } }
-    </style>
-</head>
-<body>
-
-<header>
-    <div class="h-text" id="status">TERMINAL / READY</div>
-    <div class="h-text" id="clock">00:00</div>
-</header>
-
-<div class="app-main">
-    <div class="grid-container">
-        <div class="group-label">Techno</div>
-        <div class="grid" id="grid-techno"></div>
-
-        <div class="group-label">Trance / Uplifting</div>
-        <div class="grid" id="grid-trance"></div>
-
-        <div class="group-label">Goa / Psy Trance</div>
-        <div class="grid" id="grid-goa"></div>
-    </div>
-
-    <aside class="side-panel">
-        <div class="display-box">
-            <h2>MY MUSIC STATION</h2>
-        </div>
-        <div class="controls">
-            <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
-            
-            <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8 5v14l11-7z"/></svg>
-            
-            <svg class="c-btn stop-btn" viewBox="0 0 24 24" onclick="stopAudio()" title="Stop"><path d="M6 6h12v12H6z"/></svg>
-            
-            <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
-        </div>
-    </aside>
+    <svg class="c-btn stop-btn" viewBox="0 0 24 24" onclick="stopAudio()" style="width: 40px; height: 40px; fill: #00f2ff;">
+        <rect x="6" y="6" width="12" height="12"/>
+    </svg>
 </div>
-
-<audio id="player"></audio>
-
-<script>
-    const STATIONS = {
-        techno: [
-            { n: "HR3", id: "hr3_clubnight" },
-            { n: "TECH88", id: "tech88" },
-            { n: "Best Of Techno", id: "best-of-techno" },
-            { n: "Techno Frequency", id: "technofrequencyradio" },
-            { n: "1000Techno", id: "1000techno" },
-            { n: "Techno-Revival", id: "techno-revival" },
-            { n: "House Delight", id: "housedelights" }
-        ],
-        trance: [
-            { n: "Trance Motion", id: "trancemotionfm" },
-            { n: "YouTrance Radio", id: "yourtranceradio" },
-            { n: "Trance Beats", id: "trancebeats" },
-            { n: "Ganorium Radio", id: "ganorium-radio" },
-            { n: "Trance Radio", id: "trancegalaxy" }
-        ],
-        goa: [
-            { n: "Space FM", id: "space_fm_1" },
-            { n: "GOA Channel", id: "goa-channel-one" },
-            { n: "GOA BASE", id: "goa-base" }
-        ]
-    };
-
-    const player = document.getElementById('player');
-    const pIco = document.getElementById('p-ico');
-    const hStatus = document.getElementById('status');
-    let allStations = [];
-    let curIdx = -1;
-
-    // Inicjalizacja grup
-    Object.keys(STATIONS).forEach(group => {
-        const container = document.getElementById(`grid-${group}`);
-        STATIONS[group].forEach(s => {
-            const globalIndex = allStations.length;
-            allStations.push(s);
-            
-            const div = document.createElement('div');
-            div.className = 'tile';
-            div.id = `tile-${globalIndex}`;
-            div.innerHTML = `<span>${s.n}</span>`;
-            div.onclick = () => play(globalIndex);
-            container.appendChild(div);
-        });
-    });
-
-    function play(idx) {
-        curIdx = idx;
-        const s = allStations[idx];
-        player.src = `https://stream.laut.fm/${s.id}`;
-        player.play();
-
-        document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
-        document.getElementById(`tile-${idx}`).classList.add('active');
-        
-        // Aktualizacja statusu na górze (zamiast w dużym kafelku)
-        hStatus.innerText = "GRA: " + s.n.toUpperCase();
-        pIco.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona Pause
-    }
-
-    function toggle() {
-        if (curIdx === -1) { play(0); return; }
-        if (player.paused) { player.play(); pIco.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); }
-        else { player.pause(); pIco.setAttribute('d', 'M8 5v14l11-7z'); }
-    }
-
-    // NOWA FUNKCJA STOP
-    function stopAudio() {
-        if (curIdx !== -1) {
-            player.pause();
-            player.currentTime = 0; // Resetuje postęp (dla plików, dla streamów po prostu zatrzymuje buffer)
-            pIco.setAttribute('d', 'M8 5v14l11-7z'); // Resetuje ikonę Play/Pause na Play
-            
-            // Opcjonalnie: usuwa podświetlenie kafelka, ale zostawiamy curIdx, żeby skip działał
-            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
-            hStatus.innerText = "ZATRZYMANO: " + allStations[curIdx].n.toUpperCase();
-        }
-    }
-
-    function skip(dir) {
-        if (allStations.length === 0) return;
-        let next = curIdx + dir;
-        if (next < 0) next = allStations.length - 1;
-        if (next >= allStations.length) next = 0;
-        play(next);
-    }
-
-    function clock() {
-        const n = new Date();
-        document.getElementById('clock').innerText = 
-            n.getHours().toString().padStart(2,'0') + ":" + 
-            n.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
-</script>
-</body>
-</html>
