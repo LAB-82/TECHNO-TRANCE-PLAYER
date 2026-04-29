@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DI.FM TERMINAL - OFFICIAL PLAYER</title>
+    <title>DI.FM TERMINAL - AUDYT FINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         
         :root {
             --neon-blue: #00f2ff;
             --neon-yellow: #fce300;
-            --bg: #000;
+            --bg-black: #050505;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: var(--bg); color: white;
+            background: #000; color: white;
             font-family: 'Montserrat', sans-serif;
             height: 100vh; display: flex; flex-direction: column; padding: 2vh; overflow: hidden;
         }
@@ -28,7 +28,7 @@
 
         .app-container { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GRID KAFELKÓW */
+        /* GRID KAFELKÓW - DOKŁADNE NAZWY DI.FM */
         .grid {
             flex: 1.2; display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -38,33 +38,33 @@
         .tile {
             background: #0a0a0a; border: 1.5px solid #1a1a1a; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; text-align: center;
-            cursor: pointer; position: relative; transition: 0.2s; padding: 8px;
+            cursor: pointer; position: relative; transition: 0.2s; padding: 10px;
         }
         .tile span { color: var(--neon-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 5; }
         .tile.active { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
 
-        /* PANEL BOCZNY Z ORYGINALNYM PLAYEREM */
+        /* PANEL BOCZNY Z INTERAKTYWNYM PRZYCISKIEM */
         .sidebar { flex: 0.8; display: flex; flex-direction: column; align-items: center; gap: 20px; }
         
         .display-frame {
             width: 100%; aspect-ratio: 1/1;
             border: 6px solid var(--neon-yellow); border-radius: 25px;
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3);
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.4);
             background: #000; overflow: hidden; position: relative;
         }
 
-        /* Osadzenie oficjalnego widżetu di.fm */
+        /* ORYGINALNY PLAYER DI.FM */
         iframe {
             width: 100%; height: 100%; border: none;
-            background: #000;
+            filter: invert(1) hue-rotate(180deg) brightness(1.2); /* Dopasowanie kolorów do terminala */
         }
 
-        .status-box {
-            text-align: center; color: var(--neon-yellow);
-            text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
+        .instruction {
+            color: var(--neon-yellow); font-size: 12px; text-align: center;
+            text-transform: uppercase; letter-spacing: 1px; line-height: 1.5;
         }
 
-        @media (max-width: 800px) { .app-container { flex-direction: column; overflow-y: auto; } }
+        @media (max-width: 800px) { .app-container { flex-direction: column; overflow-y: auto; } .grid { flex: none; } }
     </style>
 </head>
 <body>
@@ -78,18 +78,18 @@
     <div class="grid" id="grid"></div>
 
     <aside class="sidebar">
-        <div class="display-frame" id="player-container">
-            <iframe id="di-frame" src="about:blank"></iframe>
+        <div class="display-frame">
+            <iframe id="di-player" src="about:blank"></iframe>
         </div>
-        <div class="status-box">
-            <p>Kliknij Play wewnątrz ramki,</p>
-            <p>aby uruchomić darmowy stream.</p>
+        <div class="instruction">
+            <p>1. Wybierz kafelkiem stację</p>
+            <p>2. Naciśnij PLAY w żółtym oknie</p>
         </div>
     </aside>
 </div>
 
 <script>
-    // AUDYT NAZW I LINKÓW EMBED (Zgodnie z di.fm)
+    // AUDYT NAZW STACJI - DOKŁADNIE WG TWOJEJ LISTY I DI.FM
     const STATIONS = [
         // TECHNO
         { n: "Techno", id: "techno" },
@@ -108,38 +108,36 @@
     ];
 
     const grid = document.getElementById('grid');
-    const iframe = document.getElementById('di-frame');
+    const player = document.getElementById('di-player');
     const statusText = document.getElementById('status');
 
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
         t.innerHTML = `<span>${s.n}</span>`;
-        t.onclick = () => loadStation(i);
+        t.onclick = () => selectStation(i);
         grid.appendChild(t);
     });
 
-    function loadStation(i) {
+    function selectStation(i) {
         const s = STATIONS[i];
         
-        // Ładowanie oficjalnego odtwarzacza DI.FM dla danej stacji
-        // Używamy formatu player, który di.fm pozwala osadzać
-        iframe.src = `https://www.di.fm/player/${s.id}`;
+        // Ładujemy oficjalny widżet odtwarzacza DI.FM
+        player.src = `https://www.di.fm/player/${s.id}`;
         
         // UI
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
         statusText.innerText = "STACJA: " + s.n.toUpperCase();
     }
 
-    // Zegar
     function updateClock() {
         const n = new Date();
         document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0');
     }
     setInterval(updateClock, 1000); updateClock();
 
-    // Załaduj pierwszą stację na start
-    loadStation(0);
+    // Start na pierwszej stacji
+    selectStation(0);
 </script>
 </body>
 </html>
