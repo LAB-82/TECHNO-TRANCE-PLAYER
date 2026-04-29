@@ -1,49 +1,164 @@
-<style>
-/* 1. Import czcionki (pamiętaj o poprawnej ścieżce do pliku .ttf) */
-@font-face {
-    font-family: 'Seeds';
-    src: url('Seeds.ttf'); 
-}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DI.FM TERMINAL - OFFICIAL FREE STREAMS</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        :root {
+            --neon-blue: #00f2ff;
+            --neon-yellow: #fce300;
+            --bg: #000;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg); color: white;
+            font-family: 'Montserrat', sans-serif;
+            height: 100vh; display: flex; flex-direction: column; padding: 2vh; overflow: hidden;
+        }
+        header { display: flex; justify-content: space-between; border-bottom: 1px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 2vh; }
+        .h-text { color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
 
-/* 2. Zmniejszona ramka i tekst */
-.display-box {
-    width: 50%; /* Zmniejszenie o 50% */
-    aspect-ratio: 1/1;
-    border: 4px solid #fce300;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+        .app-container { display: flex; flex: 1; gap: 20px; min-height: 0; }
+        
+        .grid {
+            flex: 1.6; display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .tile {
+            background: #0a0a0a; border: 1.5px solid #1a1a1a; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            cursor: pointer; position: relative; transition: 0.2s; padding: 8px;
+        }
+        .tile span { color: var(--neon-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 5; line-height: 1.2; }
+        
+        .tile.active { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+        .tile.active::after {
+            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
+            animation: pulse 2s infinite; z-index: 1;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 
-.display-box h2 {
-    font-family: 'Seeds', sans-serif;
-    color: #fce300;
-    font-size: 1.2rem;
-}
+        .sidebar { flex: 0.6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
+        .display {
+            width: 100%; aspect-ratio: 1/1; border: 6px solid var(--neon-yellow); border-radius: 25px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3); background: #000; text-align: center;
+        }
+        .display h2 { color: var(--neon-yellow); font-size: 34px; font-weight: 900; text-shadow: 0 0 15px var(--neon-yellow); text-transform: uppercase; line-height: 1.1; }
 
-/* 3. Aura wystająca poza kafelki */
-.tile.active {
-    border-color: #00f2ff;
-    box-shadow: 0 0 20px rgba(0, 242, 255, 0.6);
-    position: relative;
-}
+        .controls { display: flex; align-items: center; gap: 30px; }
+        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 35px; height: 35px; }
+        .play-btn { fill: var(--neon-blue); width: 70px; height: 70px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
 
-.tile.active::after {
-    content: '';
-    position: absolute;
-    top: -15px; left: -15px; right: -15px; bottom: -15px;
-    background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 75%);
-    z-index: -1;
-    pointer-events: none;
-}
-</style>
+        @media (max-width: 800px) { .app-container { flex-direction: column; overflow-y: auto; } .grid { grid-template-columns: repeat(3, 1fr); flex: none; } }
+    </style>
+</head>
+<body>
 
-<div class="controls">
-    <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="togglePlay()">
-        <path d="M8 5v14l11-7z"/>
-    </svg>
+<header>
+    <div class="h-text" id="status">DI.FM / STANDBY</div>
+    <div class="h-text" id="clock">00:00</div>
+</header>
 
-    <svg class="c-btn stop-btn" viewBox="0 0 24 24" onclick="stopAudio()" style="width: 40px; height: 40px; fill: #00f2ff;">
-        <rect x="6" y="6" width="12" height="12"/>
-    </svg>
+<div class="app-container">
+    <div class="grid" id="grid"></div>
+    <aside class="sidebar">
+        <div class="display">
+            <h2 id="d-main">DI.FM</h2>
+            <h2 id="d-sub">RADIO</h2>
+        </div>
+        <div class="controls">
+            <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
+            <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8 5v14l11-7z"/></svg>
+            <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
+        </div>
+    </aside>
 </div>
+
+<audio id="player"></audio>
+
+<script>
+    // AUDYT: Pełna analiza darmowych strumieni DI.FM (publiczne serwery stream.di.fm)
+    const STATIONS = [
+        // TECHNO
+        { tile: "Techno", disp: "TECHNO", url: "https://stream.di.fm/external_free/techno" },
+        { tile: "Detroit Techno", disp: "DETROIT", url: "https://stream.di.fm/external_free/detroittechno" },
+        { tile: "Minimal Techno", disp: "MINIMAL", url: "https://stream.di.fm/external_free/minimaltechno" },
+        { tile: "Hard Techno", disp: "HARD", url: "https://stream.di.fm/external_free/hardtechno" },
+        { tile: "Dark Techno", disp: "DARK", url: "https://stream.di.fm/external_free/darktechno" },
+        { tile: "Underground Techno", disp: "UNDGRND", url: "https://stream.di.fm/external_free/undergroundtechno" },
+        // TRANCE
+        { tile: "Trance", disp: "TRANCE", url: "https://stream.di.fm/external_free/trance" },
+        { tile: "Vocal Trance", disp: "VOCAL", url: "https://stream.di.fm/external_free/vocaltrance" },
+        { tile: "Uplifting Trance", disp: "UPLIFT", url: "https://stream.di.fm/external_free/upliftingtrance" },
+        { tile: "Epic Trance", disp: "EPIC", url: "https://stream.di.fm/external_free/epictrance" },
+        { tile: "Progressive Trance", disp: "PROG", url: "https://stream.di.fm/external_free/progressive" },
+        { tile: "Psy Trance", disp: "PSY", url: "https://stream.di.fm/external_free/psytrance" }
+    ];
+
+    const grid = document.getElementById('grid'), player = document.getElementById('player'), ico = document.getElementById('p-ico');
+    const dMain = document.getElementById('d-main'), dStatus = document.getElementById('status');
+    let hls = new Hls();
+    let cur = -1;
+
+    // Generowanie kafelków
+    STATIONS.forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.innerHTML = `<span>${s.tile}</span>`;
+        div.onclick = () => play(i);
+        grid.appendChild(div);
+    });
+
+    function play(i) {
+        cur = i;
+        const s = STATIONS[i];
+        
+        if (Hls.isSupported()) {
+            hls.destroy(); // Czyścimy poprzedni stream
+            hls = new Hls();
+            hls.loadSource(s.url);
+            hls.attachMedia(player);
+            hls.on(Hls.Events.MANIFEST_PARSED, function() {
+                player.play();
+            });
+        } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
+            // Wsparcie natywne (np. Safari)
+            player.src = s.url;
+            player.play();
+        }
+
+        // UI Updates
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        dMain.innerText = s.disp;
+        dStatus.innerText = "GRA: " + s.tile.toUpperCase();
+        ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona PAUSE
+    }
+
+    function toggle() {
+        if (cur === -1) play(0);
+        else if (player.paused) { player.play(); ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8 5v14l11-7z'); }
+    }
+
+    function skip(dir) {
+        let n = cur + dir;
+        if (n < 0) n = STATIONS.length - 1;
+        if (n >= STATIONS.length) n = 0;
+        play(n);
+    }
+
+    function updateClock() {
+        const n = new Date();
+        document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0');
+    }
+    setInterval(updateClock, 1000); updateClock();
+</script>
+</body>
+</html>
