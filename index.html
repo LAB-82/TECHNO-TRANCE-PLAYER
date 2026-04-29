@@ -2,248 +2,144 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DI.FM TERMINAL - TECHNO & TRANCE</title>
-    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DI.FM TERMINAL - OFFICIAL PLAYER</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         
         :root {
             --neon-blue: #00f2ff;
             --neon-yellow: #fce300;
-            --bg-black: #000;
-            --tile-bg: #0a0a0a;
-            --border-dim: #1a1a1a;
+            --bg: #000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            background: var(--bg-black);
-            color: white;
+            background: var(--bg); color: white;
             font-family: 'Montserrat', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            padding: 2.5vh;
-            overflow: hidden;
+            height: 100vh; display: flex; flex-direction: column; padding: 2vh; overflow: hidden;
         }
 
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2vh;
-            border-bottom: 1px solid var(--border-dim);
-            padding-bottom: 10px;
+            display: flex; justify-content: space-between; border-bottom: 1px solid #1a1a1a;
+            padding-bottom: 10px; margin-bottom: 2vh;
         }
-        .header-title { color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
+        .h-text { color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
 
-        .app-main { display: flex; flex: 1; gap: 25px; min-height: 0; }
+        .app-container { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GRID KAFELKÓW - DOKŁADNE NAZWY STACJI */
-        .grid-section {
-            flex: 1.6;
-            display: grid;
+        /* GRID KAFELKÓW */
+        .grid {
+            flex: 1.2; display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 1fr);
             gap: 12px;
         }
-
         .tile {
-            background: var(--tile-bg);
-            border: 1.5px solid var(--border-dim);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            cursor: pointer;
-            position: relative;
-            transition: all 0.2s ease;
-            padding: 10px;
+            background: #0a0a0a; border: 1.5px solid #1a1a1a; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            cursor: pointer; position: relative; transition: 0.2s; padding: 8px;
+        }
+        .tile span { color: var(--neon-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 5; }
+        .tile.active { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
+
+        /* PANEL BOCZNY Z ORYGINALNYM PLAYEREM */
+        .sidebar { flex: 0.8; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        
+        .display-frame {
+            width: 100%; aspect-ratio: 1/1;
+            border: 6px solid var(--neon-yellow); border-radius: 25px;
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3);
+            background: #000; overflow: hidden; position: relative;
         }
 
-        .tile span {
-            color: var(--neon-blue);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            z-index: 5;
-            line-height: 1.2;
+        /* Osadzenie oficjalnego widżetu di.fm */
+        iframe {
+            width: 100%; height: 100%; border: none;
+            background: #000;
         }
 
-        /* EFEKT AURY ZE ZDJĘCIA DLA AKTYWNEJ STACJI */
-        .tile.active {
-            border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 25px rgba(0, 242, 255, 0.6);
-        }
-        .tile.active::after {
-            content: '';
-            position: absolute;
-            top: -10px; left: -10px; right: -10px; bottom: -10px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
-            z-index: 1;
-            animation: glow-pulse 2s infinite ease-in-out;
+        .status-box {
+            text-align: center; color: var(--neon-yellow);
+            text-transform: uppercase; font-size: 12px; letter-spacing: 1px;
         }
 
-        @keyframes glow-pulse {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 0.9; transform: scale(1.1); }
-        }
-
-        /* WYŚWIETLACZ BOCZNY - ŻÓŁTY NEON */
-        .side-panel {
-            flex: 0.7;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-        }
-
-        .display-box {
-            width: 100%;
-            aspect-ratio: 1/1;
-            background: black;
-            border: 6px solid var(--neon-yellow);
-            border-radius: 25px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 0 45px rgba(252, 227, 0, 0.35);
-            text-align: center;
-        }
-
-        .display-box h2 {
-            color: var(--neon-yellow);
-            font-size: 34px;
-            font-weight: 900;
-            line-height: 1.1;
-            text-shadow: 0 0 20px var(--neon-yellow);
-            text-transform: uppercase;
-        }
-
-        /* STEROWANIE */
-        .nav-controls { display: flex; align-items: center; gap: 40px; }
-        .nav-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 32px; height: 32px; }
-        .btn-main { fill: var(--neon-blue); width: 65px; height: 65px; filter: drop-shadow(0 0 12px var(--neon-blue)); }
-
-        @media (max-width: 800px) {
-            .app-main { flex-direction: column; overflow-y: auto; }
-            .grid-section { grid-template-columns: repeat(3, 1fr); min-height: 400px; flex: none; }
-            .display-box { aspect-ratio: 16/9; }
-        }
+        @media (max-width: 800px) { .app-container { flex-direction: column; overflow-y: auto; } }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-title" id="top-status">DI.FM / STANDBY</div>
-    <div class="header-title" id="clock">00:00</div>
+    <div class="h-text" id="status">DI.FM / WYBIERZ STACJĘ</div>
+    <div class="h-text" id="clock">00:00</div>
 </header>
 
-<div class="app-main">
-    <div class="grid-section" id="grid"></div>
+<div class="app-container">
+    <div class="grid" id="grid"></div>
 
-    <aside class="side-panel">
-        <div class="display-box">
-            <h2 id="disp-main">DI.FM</h2>
-            <h2 id="disp-sub">MINI</h2>
+    <aside class="sidebar">
+        <div class="display-frame" id="player-container">
+            <iframe id="di-frame" src="about:blank"></iframe>
         </div>
-
-        <div class="nav-controls">
-            <svg class="nav-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
-            <svg class="nav-btn btn-main" viewBox="0 0 24 24" onclick="toggle()"><path id="play-svg" d="M8 5v14l11-7z"/></svg>
-            <svg class="nav-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
+        <div class="status-box">
+            <p>Kliknij Play wewnątrz ramki,</p>
+            <p>aby uruchomić darmowy stream.</p>
         </div>
     </aside>
 </div>
 
-<audio id="audio"></audio>
-
 <script>
-    // AUDYT LINKÓW: Wykorzystanie darmowych serwerów zewnętrznych DI.FM
+    // AUDYT NAZW I LINKÓW EMBED (Zgodnie z di.fm)
     const STATIONS = [
         // TECHNO
-        { n: "Techno", l: "TECHNO", u: "https://stream.di.fm/external_free/techno" },
-        { n: "Detroit Techno", l: "DETROIT", u: "https://stream.di.fm/external_free/detroittechno" },
-        { n: "Minimal Techno", l: "MINIMAL", u: "https://stream.di.fm/external_free/minimaltechno" },
-        { n: "Hard Techno", l: "HARD", u: "https://stream.di.fm/external_free/hardtechno" },
-        { n: "Dark Techno", l: "DARK", u: "https://stream.di.fm/external_free/darktechno" },
-        { n: "Underground Techno", l: "UNDGRND", u: "https://stream.di.fm/external_free/undergroundtechno" },
+        { n: "Techno", id: "techno" },
+        { n: "Detroit Techno", id: "detroittechno" },
+        { n: "Minimal Techno", id: "minimaltechno" },
+        { n: "Hard Techno", id: "hardtechno" },
+        { n: "Dark Techno", id: "darktechno" },
+        { n: "Underground Techno", id: "undergroundtechno" },
         // TRANCE
-        { n: "Trance", l: "TRANCE", u: "https://stream.di.fm/external_free/trance" },
-        { n: "Vocal Trance", l: "VOCAL", u: "https://stream.di.fm/external_free/vocaltrance" },
-        { n: "Uplifting Trance", l: "UPLIFT", u: "https://stream.di.fm/external_free/upliftingtrance" },
-        { n: "Epic Trance", l: "EPIC", u: "https://stream.di.fm/external_free/epictrance" },
-        { n: "Progressive Trance", l: "PROG", u: "https://stream.di.fm/external_free/progressive" },
-        { n: "Psy Trance", l: "PSY", u: "https://stream.di.fm/external_free/psytrance" }
+        { n: "Trance", id: "trance" },
+        { n: "Vocal Trance", id: "vocaltrance" },
+        { n: "Uplifting Trance", id: "upliftingtrance" },
+        { n: "Epic Trance", id: "epictrance" },
+        { n: "Progressive Trance", id: "progressive" },
+        { n: "Psy Trance", id: "psytrance" }
     ];
 
     const grid = document.getElementById('grid');
-    const audio = document.getElementById('audio');
-    const playSvg = document.getElementById('play-svg');
-    const dispMain = document.getElementById('disp-main');
-    const topStatus = document.getElementById('top-status');
-    let hls = new Hls();
-    let currentIdx = -1;
+    const iframe = document.getElementById('di-frame');
+    const statusText = document.getElementById('status');
 
-    // Generowanie kafelków zgodnie z nazewnictwem DI.FM
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
         t.innerHTML = `<span>${s.n}</span>`;
-        t.onclick = () => play(i);
+        t.onclick = () => loadStation(i);
         grid.appendChild(t);
     });
 
-    function play(i) {
-        currentIdx = i;
+    function loadStation(i) {
         const s = STATIONS[i];
         
-        if (Hls.isSupported()) {
-            hls.destroy();
-            hls = new Hls();
-            hls.loadSource(s.u);
-            hls.attachMedia(audio);
-            hls.on(Hls.Events.MANIFEST_PARSED, () => audio.play());
-        } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
-            audio.src = s.u;
-            audio.play();
-        }
-
+        // Ładowanie oficjalnego odtwarzacza DI.FM dla danej stacji
+        // Używamy formatu player, który di.fm pozwala osadzać
+        iframe.src = `https://www.di.fm/player/${s.id}`;
+        
+        // UI
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        dispMain.innerText = s.l;
-        topStatus.innerText = "GRA: " + s.n.toUpperCase();
-        playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
+        statusText.innerText = "STACJA: " + s.n.toUpperCase();
     }
 
-    function toggle() {
-        if (currentIdx === -1) { play(0); return; }
-        if (audio.paused) {
-            audio.play();
-            playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
-        } else {
-            audio.pause();
-            playSvg.setAttribute('d', 'M8 5v14l11-7z');
-        }
+    // Zegar
+    function updateClock() {
+        const n = new Date();
+        document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0');
     }
+    setInterval(updateClock, 1000); updateClock();
 
-    function skip(dir) {
-        let n = currentIdx + dir;
-        if (n < 0) n = STATIONS.length - 1;
-        if (n >= STATIONS.length) n = 0;
-        play(n);
-    }
-
-    function clock() {
-        const now = new Date();
-        document.getElementById('clock').innerText = 
-            now.getHours().toString().padStart(2, '0') + ":" + 
-            now.getMinutes().toString().padStart(2, '0');
-    }
-    setInterval(clock, 1000); clock();
+    // Załaduj pierwszą stację na start
+    loadStation(0);
 </script>
 </body>
 </html>
