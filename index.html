@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DI.FM TERMINAL - TECHNO & TRANCE</title>
+    <title>TECHNO MINI TERMINAL</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
-            --neon-blue: #00f2ff; /* Morski błękit ze zdjęcia */
-            --neon-yellow: #fce300; /* Żółty z wyświetlacza bocznego */
+            --neon-blue: #00f2ff; 
+            --neon-yellow: #fce300; 
             --bg: #000;
             --tile-bg: #050505;
             --border-dim: #1a1a1a;
@@ -30,12 +30,11 @@
             border-bottom: 1px solid var(--border-dim); margin-bottom: 2vh; flex-shrink: 0;
             color: var(--neon-blue);
         }
-        .header-info { font-size: 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .header-info { font-size: 18px; font-weight: 700; text-transform: uppercase; }
         .clock { font-size: 24px; font-weight: 700; }
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
 
-        /* GRID STACJI */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(4, 1fr); 
@@ -48,33 +47,30 @@
             border: 2px solid var(--border-dim); 
             border-radius: 15px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.3s;
-            text-align: center; padding: 10px;
+            cursor: pointer; position: relative; transition: 0.2s;
+            text-align: center; padding: 5px;
         }
 
-        .tile .t-name { font-size: 16px; font-weight: 700; color: var(--neon-blue); line-height: 1.2; z-index: 2; }
+        .tile .t-name { font-size: 14px; font-weight: 700; color: var(--neon-blue); z-index: 2; pointer-events: none; }
 
-        /* AKTYWNA STACJA - EFEKT ZE ZDJĘCIA */
         .tile.active { 
             border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
         }
 
-        /* FALOWANIE (Aura wokół Techno FM na zdjęciu) */
         .aura {
             position: absolute; width: 100%; height: 100%;
             border-radius: 15px; pointer-events: none; opacity: 0;
-            box-shadow: 0 0 30px var(--neon-blue), inset 0 0 15px var(--neon-blue);
+            box-shadow: 0 0 25px var(--neon-blue), inset 0 0 10px var(--neon-blue);
         }
-        .tile.active .aura { opacity: 0.6; animation: pulse 2s infinite; }
+        .tile.active .aura { opacity: 0.7; animation: pulse 2s infinite; }
 
         @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.6; }
-            50% { transform: scale(1.05); opacity: 0.3; }
-            100% { transform: scale(1); opacity: 0.6; }
+            0% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.03); opacity: 0.4; }
+            100% { transform: scale(1); opacity: 0.7; }
         }
 
-        /* SIDEBAR - PRAWY PANEL */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; gap: 4vh;
@@ -82,53 +78,46 @@
         }
 
         .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 1/1;
-            border: 4px solid var(--neon-yellow); border-radius: 25px;
+            width: 100%; max-width: 300px; aspect-ratio: 1/1;
+            border: 5px solid var(--neon-yellow); border-radius: 20px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #000;
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3);
-            text-align: center; padding: 20px;
+            box-shadow: 0 0 35px rgba(252, 227, 0, 0.25);
+            text-align: center;
         }
-        .logo-display h2 { font-size: 42px; color: var(--neon-yellow); text-shadow: 0 0 20px var(--neon-yellow); text-transform: uppercase; }
-        .logo-display p { font-size: 14px; color: var(--neon-yellow); font-weight: 700; margin-top: 10px; }
+        .logo-display h2 { font-size: 40px; color: var(--neon-yellow); text-shadow: 0 0 15px var(--neon-yellow); }
+        .logo-display p { font-size: 14px; color: var(--neon-yellow); font-weight: 700; margin-top: 5px; letter-spacing: 2px; }
 
-        /* KONTROLKI */
         .controls { display: flex; align-items: center; gap: 2vw; }
         .c-svg { width: 40px; height: 40px; fill: var(--neon-blue); cursor: pointer; }
         .c-play { width: 80px; height: 80px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; max-width: 320px; }
-        input[type="range"] { 
-            flex: 1; appearance: none; background: #222; height: 6px; border-radius: 3px; outline: none;
-        }
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; max-width: 300px; }
+        input[type="range"] { flex: 1; appearance: none; background: #222; height: 6px; border-radius: 3px; }
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 20px; background: var(--neon-blue); border-radius: 50%; cursor: pointer;
-            box-shadow: 0 0 10px var(--neon-blue);
+            appearance: none; width: 20px; height: 20px; background: var(--neon-blue); border-radius: 50%;
         }
 
         @media (max-width: 800px) {
             .grid { grid-template-columns: repeat(3, 1fr); }
             .app-content { flex-direction: column; overflow-y: auto; }
             .sidebar { border-left: none; border-top: 1px solid var(--border-dim); padding: 20px 0; }
-            .logo-display { aspect-ratio: 16/9; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-title">DI.FM / WYBIERZ STACJĘ</div>
+    <div class="header-info" id="status">TECHNO MINI PL / WYBIERZ STACJĘ</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
 <div class="app-content">
-    <div class="grid" id="station-grid">
-        </div>
+    <div class="grid" id="station-grid"></div>
 
     <aside class="sidebar">
-        <div class="logo-display" id="main-display">
-            <h2 id="display-name">TECHNO</h2>
-            <p id="display-genre">MINI</p>
+        <div class="logo-display">
+            <h2 id="disp-top">TECHNO</h2>
+            <p id="disp-bot">MINI</p>
         </div>
 
         <div class="controls">
@@ -146,68 +135,54 @@
 <audio id="player"></audio>
 
 <script>
+    // Zaktualizowana lista z darmowymi, publicznymi strumieniami
     const STATIONS = [
-        // TECHNO
-        { name: 'Techno', genre: 'Techno', url: 'http://prem2.di.fm:80/techno?YOUR_KEY' },
-        { name: 'Detroit Techno', genre: 'Techno', url: 'http://prem2.di.fm:80/detroittechno?YOUR_KEY' },
-        { name: 'Minimal', genre: 'Techno', url: 'http://prem2.di.fm:80/minimal?YOUR_KEY' },
-        { name: 'Hard Techno', genre: 'Techno', url: 'http://prem2.di.fm:80/hardtechno?YOUR_KEY' },
-        { name: 'Dark Techno', genre: 'Techno', url: 'http://prem2.di.fm:80/darktechno?YOUR_KEY' },
-        { name: 'Techno House', genre: 'Techno', url: 'http://prem2.di.fm:80/technohouse?YOUR_KEY' },
-        // TRANCE
-        { name: 'Trance', genre: 'Trance', url: 'http://prem2.di.fm:80/trance?YOUR_KEY' },
-        { name: 'Vocal Trance', genre: 'Trance', url: 'http://prem2.di.fm:80/vocaltrance?YOUR_KEY' },
-        { name: 'Uplifting', genre: 'Trance', url: 'http://prem2.di.fm:80/upliftingtrance?YOUR_KEY' },
-        { name: 'Epic Trance', genre: 'Trance', url: 'http://prem2.di.fm:80/epictrance?YOUR_KEY' },
-        { name: 'Progressive', genre: 'Trance', url: 'http://prem2.di.fm:80/progressive?YOUR_KEY' },
-        { name: 'Psy Trance', genre: 'Trance', url: 'http://prem2.di.fm:80/psytrance?YOUR_KEY' }
+        { n: 'Techno', g: 'TECHNO', u: 'http://listen.technobase.fm/tunein-mp3-pls' },
+        { n: 'Detroit Techno', g: 'DETROIT', u: 'http://ice1.somafm.com/missioncontrol-128-mp3' },
+        { n: 'Minimal Techno', g: 'MINIMAL', u: 'http://hirschmilch.de:7000/minimal.mp3' },
+        { n: 'Hard Techno', g: 'HARD', u: 'http://stream.laut.fm/hard-techno' },
+        { n: 'Dark Techno', g: 'DARK', u: 'http://stream.laut.fm/darktechno' },
+        { n: 'Techno House', g: 'T-HOUSE', u: 'http://hirschmilch.de:7000/techno.mp3' },
+        { n: 'Trance', g: 'TRANCE', u: 'http://hirschmilch.de:7000/trance.mp3' },
+        { n: 'Vocal Trance', g: 'VOCAL', u: 'http://p-vocaltrance.radioca.st/stream' },
+        { n: 'Uplifting', g: 'UPLIFT', u: 'http://stream.uplifting-trance.com/;stream.mp3' },
+        { n: 'Epic Trance', g: 'EPIC', u: 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=9920257' }, // Uwaga: wymaga wsparcia przeglądarki dla PLS lub zmiany na bezpośredni mp3
+        { n: 'Progressive', g: 'PROG', u: 'http://hirschmilch.de:7000/prog-house.mp3' },
+        { n: 'Psy Trance', g: 'PSY', u: 'http://hirschmilch.de:7000/psytrance.mp3' }
     ];
 
-    const player = document.getElementById('player');
-    const ico = document.getElementById('p-ico');
-    const grid = document.getElementById('station-grid');
-    const dispName = document.getElementById('display-name');
-    const dispGenre = document.getElementById('display-genre');
-    const playingTitle = document.getElementById('playing-title');
-    
-    let currentIdx = -1;
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
+    const dTop = document.getElementById('disp-top'), dBot = document.getElementById('disp-bot');
+    let current = -1;
 
-    // Inicjalizacja Gridu
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `
-            <div class="aura"></div>
-            <div class="t-name">${s.name.toUpperCase()}</div>
-        `;
+        t.innerHTML = `<div class="aura"></div><div class="t-name">${s.n.toUpperCase()}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
 
     function play(i) {
-        currentIdx = i;
-        const s = STATIONS[i];
+        current = i;
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        dTop.textContent = STATIONS[i].g;
+        dBot.textContent = "MINI";
+        document.getElementById('status').textContent = "GRA: " + STATIONS[i].n;
         
-        // UI Updates
-        document.querySelectorAll('.tile').forEach((tile, idx) => tile.classList.toggle('active', idx === i));
-        dispName.textContent = s.name;
-        dispGenre.textContent = s.genre;
-        playingTitle.textContent = `GRA: ${s.name} (${s.genre})`;
-
-        // Audio logic
-        player.src = s.url;
-        player.play().catch(e => console.log("Czekam na interakcję użytkownika..."));
+        player.src = STATIONS[i].u;
+        player.play().catch(e => console.log("Błąd odtwarzania - spróbuj kliknąć Play"));
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(currentIdx === -1) { play(0); return; }
+        if(current === -1) { play(0); return; }
         if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
-    function skip(dir) {
-        let n = currentIdx + dir;
+    function skip(d) {
+        let n = current + d;
         if(n < 0) n = STATIONS.length - 1;
         if(n >= STATIONS.length) n = 0;
         play(n);
@@ -215,13 +190,11 @@
 
     function setV(v) { player.volume = v / 100; }
 
-    function updateClock() {
+    function clock() {
         const d = new Date();
         document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
     }
-    setInterval(updateClock, 1000); 
-    updateClock();
-
+    setInterval(clock, 1000); clock();
 </script>
 </body>
 </html>
