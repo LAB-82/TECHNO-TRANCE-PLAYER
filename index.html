@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DI.FM AUDYT FINAL</title>
+    <title>DI.FM TERMINAL - DARMOWE STREAMY</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         :root {
@@ -22,7 +22,6 @@
 
         .app-container { display: flex; flex: 1; gap: 20px; min-height: 0; }
         
-        /* GRID KAFELKÓW */
         .grid {
             flex: 1.6; display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -36,7 +35,6 @@
         }
         .tile span { color: var(--neon-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 5; }
         
-        /* AKTYWNA STACJA - AURA ZE ZDJĘCIA */
         .tile.active { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
         .tile.active::after {
             content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
@@ -45,7 +43,6 @@
         }
         @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
 
-        /* PANEL BOCZNY */
         .sidebar { flex: 0.6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
         .display {
             width: 100%; aspect-ratio: 1/1; border: 6px solid var(--neon-yellow); border-radius: 25px;
@@ -72,8 +69,8 @@
     <div class="grid" id="grid"></div>
     <aside class="sidebar">
         <div class="display">
-            <h2 id="d-main">TECHNO</h2>
-            <h2 id="d-sub">MINI</h2>
+            <h2 id="d-main">SELECT</h2>
+            <h2 id="d-sub">STATION</h2>
         </div>
         <div class="controls">
             <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
@@ -86,49 +83,55 @@
 <audio id="player"></audio>
 
 <script>
-    // PEŁNY AUDYT DANYCH - ZGODNIE Z TWOJĄ LISTĄ
+    // LISTA ZGODNA Z TWOIM AUDYTEM - NAZWY Z DI.FM
     const STATIONS = [
-        // TECHNO (6 stacji)
-        { tileName: "Techno", display: "TECHNO", url: "https://hirschmilch.de:7000/techno.mp3" },
-        { tileName: "Detroit Techno", display: "DETROIT", url: "https://ice1.somafm.com/missioncontrol-128-mp3" },
-        { tileName: "Minimal Techno", display: "MINIMAL", url: "https://hirschmilch.de:7000/minimal.mp3" },
-        { tileName: "Hard Techno", display: "HARD", url: "http://stream.laut.fm/hard-techno" },
-        { tileName: "Dark Techno", display: "DARK", url: "http://stream.laut.fm/darktechno" },
-        { tileName: "Underground Techno", display: "UNDGRND", url: "https://ice6.somafm.com/deepspaceone-128-mp3" },
-        
-        // TRANCE (6 stacji)
-        { tileName: "Trance", display: "TRANCE", url: "https://hirschmilch.de:7000/trance.mp3" },
-        { tileName: "Vocal Trance", display: "VOCAL", url: "https://p-vocaltrance.radioca.st/stream" },
-        { tileName: "Uplifting Trance", display: "UPLIFT", url: "http://stream.uplifting-trance.com/;stream.mp3" },
-        { tileName: "Epic Trance", display: "EPIC", url: "http://tx.clast.pro/8240/stream" },
-        { tileName: "Progressive Trance", display: "PROG", url: "https://hirschmilch.de:7000/prog-house.mp3" },
-        { tileName: "Psy Trance", display: "PSY", url: "https://hirschmilch.de:7000/psytrance.mp3" }
+        // TECHNO
+        { tile: "Techno", disp: "TECHNO", url: "" },
+        { tile: "Detroit Techno", disp: "DETROIT", url: "" },
+        { tile: "Minimal Techno", disp: "MINIMAL", url: "" },
+        { tile: "Hard Techno", disp: "HARD", url: "" },
+        { tile: "Dark Techno", disp: "DARK", url: "" },
+        { tile: "Underground Techno", disp: "UNDGRND", url: "" },
+        // TRANCE
+        { tile: "Trance", disp: "TRANCE", url: "" },
+        { tile: "Vocal Trance", disp: "VOCAL", url: "" },
+        { tile: "Uplifting Trance", disp: "UPLIFT", url: "" },
+        { tile: "Epic Trance", disp: "EPIC", url: "" },
+        { tile: "Progressive Trance", disp: "PROG", url: "" },
+        { tile: "Psy Trance", disp: "PSY", url: "" }
+    ];
+
+    // PRZYKŁADOWE LINKI (Darmowe, publiczne by kod działał od razu, możesz je podmienić na te z di.fm)
+    const fallbackUrls = [
+        "https://hirschmilch.de:7000/techno.mp3", "https://ice1.somafm.com/missioncontrol-128-mp3",
+        "https://hirschmilch.de:7000/minimal.mp3", "http://stream.laut.fm/hard-techno",
+        "http://stream.laut.fm/darktechno", "https://ice6.somafm.com/deepspaceone-128-mp3",
+        "https://hirschmilch.de:7000/trance.mp3", "https://p-vocaltrance.radioca.st/stream",
+        "http://stream.uplifting-trance.com/;stream.mp3", "http://tx.clast.pro/8240/stream",
+        "https://hirschmilch.de:7000/prog-house.mp3", "https://hirschmilch.de:7000/psytrance.mp3"
     ];
 
     const grid = document.getElementById('grid'), player = document.getElementById('player'), ico = document.getElementById('p-ico');
     const dMain = document.getElementById('d-main'), dStatus = document.getElementById('status');
     let cur = -1;
 
-    // Budowanie kafelków z właściwymi nazwami
     STATIONS.forEach((s, i) => {
         const div = document.createElement('div');
         div.className = 'tile';
-        div.innerHTML = `<span>${s.tileName}</span>`;
+        div.innerHTML = `<span>${s.tile}</span>`;
         div.onclick = () => play(i);
         grid.appendChild(div);
+        if(!s.url) s.url = fallbackUrls[i]; // Uzupełnienie jeśli nie podałeś własnych
     });
 
     function play(i) {
         cur = i;
         const s = STATIONS[i];
         player.src = s.url;
-        player.play().catch(() => {});
-        
+        player.play();
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        
-        // WYNIK AUDYTU:
-        dMain.innerText = s.display;      // To idzie na żółty ekran (skrót/gatunek)
-        dStatus.innerText = "GRA: " + s.tileName.toUpperCase(); // To idzie na górny status (pełna nazwa)
+        dMain.innerText = s.disp;
+        dStatus.innerText = "GRA: " + s.tile.toUpperCase();
         ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
     }
 
@@ -145,11 +148,11 @@
         play(n);
     }
 
-    function updateClock() {
+    function clock() {
         const n = new Date();
         document.getElementById('clock').innerText = n.getHours().toString().padStart(2,'0')+":"+n.getMinutes().toString().padStart(2,'0');
     }
-    setInterval(updateClock, 1000); updateClock();
+    setInterval(clock, 1000); clock();
 </script>
 </body>
 </html>
