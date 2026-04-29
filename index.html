@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TECHNO MINI PL - DI.FM STYLE</title>
+    <title>DI.FM TERMINAL - TECHNO MINI</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
 
         :root {
             --neon-blue: #00f2ff;
             --neon-yellow: #fce300;
-            --bg-black: #050505;
+            --bg-black: #000;
             --tile-bg: #0a0a0a;
             --border-dim: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
-            background: #000;
+            background: var(--bg-black);
             color: white;
             font-family: 'Montserrat', sans-serif;
             height: 100vh;
@@ -28,30 +27,17 @@
             overflow: hidden;
         }
 
-        /* NAGŁÓWEK */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 2vh;
         }
+        .header-title { color: var(--neon-blue); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; }
 
-        .header-title {
-            color: var(--neon-blue);
-            font-size: 14px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-        }
+        .app-main { display: flex; flex: 1; gap: 25px; min-height: 0; }
 
-        /* UKŁAD GŁÓWNY */
-        .app-main {
-            display: flex;
-            flex: 1;
-            gap: 25px;
-            min-height: 0;
-        }
-
-        /* GRID KAFELKÓW */
+        /* GRID KAFELKÓW - DOKŁADNE NAZWY */
         .grid-section {
             flex: 1.5;
             display: grid;
@@ -71,23 +57,23 @@
             cursor: pointer;
             position: relative;
             transition: all 0.2s ease;
+            padding: 10px;
         }
 
         .tile span {
             color: var(--neon-blue);
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            padding: 5px;
             z-index: 5;
+            line-height: 1.2;
         }
 
-        /* EFEKT AKTYWNOŚCI ZE ZDJĘCIA (BŁĘKITNA POŚWIATA) */
+        /* EFEKT AURY ZE ZDJĘCIA */
         .tile.active {
             border: 2px solid var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 25px rgba(0, 242, 255, 0.6);
         }
-
         .tile.active::after {
             content: '';
             position: absolute;
@@ -98,19 +84,12 @@
         }
 
         @keyframes glow-pulse {
-            0%, 100% { opacity: 0.4; transform: scale(1); }
-            50% { opacity: 0.8; transform: scale(1.1); }
+            0%, 100% { opacity: 0.5; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.1); }
         }
 
-        /* PANEL BOCZNY (ŻÓŁTY WYŚWIETLACZ) */
-        .side-panel {
-            flex: 0.7;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-        }
+        /* WYŚWIETLACZ ZE ZDJĘCIA (ŻÓŁTY NEON) */
+        .side-panel { flex: 0.7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
 
         .display-box {
             width: 100%;
@@ -122,45 +101,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3);
+            box-shadow: 0 0 45px rgba(252, 227, 0, 0.35);
             text-align: center;
         }
 
         .display-box h2 {
             color: var(--neon-yellow);
-            font-size: 44px;
+            font-size: 38px;
             font-weight: 900;
-            line-height: 0.9;
-            text-shadow: 0 0 15px var(--neon-yellow);
+            line-height: 1.1;
+            text-shadow: 0 0 20px var(--neon-yellow);
+            text-transform: uppercase;
         }
 
-        /* NAWIGACJA DOLNA */
-        .nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 40px;
-        }
-
-        .nav-btn {
-            cursor: pointer;
-            fill: none;
-            stroke: var(--neon-blue);
-            stroke-width: 2;
-            width: 32px;
-            height: 32px;
-        }
-
-        .btn-main {
-            fill: var(--neon-blue);
-            width: 60px;
-            height: 60px;
-            filter: drop-shadow(0 0 10px var(--neon-blue));
-        }
+        /* STEROWANIE */
+        .nav-controls { display: flex; align-items: center; gap: 40px; }
+        .nav-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 32px; height: 32px; }
+        .btn-main { fill: var(--neon-blue); width: 65px; height: 65px; filter: drop-shadow(0 0 12px var(--neon-blue)); }
 
         @media (max-width: 800px) {
             .app-main { flex-direction: column; overflow-y: auto; }
             .grid-section { grid-template-columns: repeat(3, 1fr); min-height: 400px; }
-            .display-box { aspect-ratio: 16/9; }
         }
     </style>
 </head>
@@ -191,20 +152,19 @@
 <audio id="audio"></audio>
 
 <script>
+    // STACJE ŚCIŚLE WG GATUNKÓW Z DI.FM
     const STATIONS = [
-        // TECHNO
         { n: "Techno", l: "TECHNO", u: "https://hirschmilch.de:7000/techno.mp3" },
         { n: "Detroit Techno", l: "DETROIT", u: "https://ice1.somafm.com/missioncontrol-128-mp3" },
         { n: "Minimal Techno", l: "MINIMAL", u: "https://hirschmilch.de:7000/minimal.mp3" },
         { n: "Hard Techno", l: "HARD", u: "https://stream.laut.fm/hard-techno" },
         { n: "Dark Techno", l: "DARK", u: "https://stream.laut.fm/darktechno" },
-        { n: "Underground Techno", l: "UNDERGR", u: "https://ice1.somafm.com/deepspaceone-128-mp3" },
-        // TRANCE
+        { n: "Underground Techno", l: "UNDERGR.", u: "https://ice6.somafm.com/deepspaceone-128-mp3" },
         { n: "Trance", l: "TRANCE", u: "https://hirschmilch.de:7000/trance.mp3" },
         { n: "Vocal Trance", l: "VOCAL", u: "https://p-vocaltrance.radioca.st/stream" },
-        { n: "Uplifting Trance", l: "UPLIFT", u: "http://stream.uplifting-trance.com/;stream.mp3" },
+        { n: "Uplifting Trance", l: "UPLIFTING", u: "http://stream.uplifting-trance.com/;stream.mp3" },
         { n: "Epic Trance", l: "EPIC", u: "http://tx.clast.pro/8240/stream" },
-        { n: "Progressive Trance", l: "PROG", u: "https://hirschmilch.de:7000/prog-house.mp3" },
+        { n: "Progressive Trance", l: "PROG.", u: "https://hirschmilch.de:7000/prog-house.mp3" },
         { n: "Psy Trance", l: "PSY", u: "https://hirschmilch.de:7000/psytrance.mp3" }
     ];
 
@@ -212,10 +172,10 @@
     const audio = document.getElementById('audio');
     const playSvg = document.getElementById('play-svg');
     const dispMain = document.getElementById('disp-main');
+    const dispSub = document.getElementById('disp-sub');
     const topStatus = document.getElementById('top-status');
     let currentIdx = -1;
 
-    // Render kafelków
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
@@ -229,13 +189,16 @@
         const s = STATIONS[i];
         
         audio.src = s.u;
-        audio.play().catch(() => console.log("User interaction required"));
+        audio.play().catch(e => console.log("Play blocked"));
         
-        // UI
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        dispMain.innerHTML = s.l + "<br>MINI";
+        
+        // Aktualizacja wyświetlacza bocznego wg wzoru ze zdjęcia
+        dispMain.innerText = s.l;
+        dispSub.innerText = "MINI";
         topStatus.innerText = "GRA: " + s.n.toUpperCase();
-        playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause
+        
+        playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
     }
 
     function toggle() {
@@ -258,10 +221,11 @@
 
     function clock() {
         const now = new Date();
-        document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('clock').innerText = 
+            now.getHours().toString().padStart(2, '0') + ":" + 
+            now.getMinutes().toString().padStart(2, '0');
     }
     setInterval(clock, 1000); clock();
 </script>
-
 </body>
 </html>
