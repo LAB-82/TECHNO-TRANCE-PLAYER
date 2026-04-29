@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TECHNO MINI PLAYER</title>
+    <title>TECHNO MINI PL - DI.FM STYLE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
 
         :root {
             --neon-blue: #00f2ff;
             --neon-yellow: #fce300;
-            --bg-color: #020202;
-            --tile-bg: rgba(10, 10, 10, 0.9);
-            --border-color: #1a1a1a;
+            --bg-black: #050505;
+            --tile-bg: #0a0a0a;
+            --border-dim: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle at 50% 50%, #0a1114 0%, #020202 100%);
+            background: #000;
             color: white;
             font-family: 'Montserrat', sans-serif;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 20px;
+            padding: 2.5vh;
             overflow: hidden;
         }
 
@@ -34,39 +33,36 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 2vh;
         }
 
-        .header-text {
+        .header-title {
             color: var(--neon-blue);
-            font-weight: 700;
             font-size: 14px;
             letter-spacing: 2px;
             text-transform: uppercase;
         }
 
-        /* GŁÓWNY UKŁAD */
-        .main-container {
+        /* UKŁAD GŁÓWNY */
+        .app-main {
             display: flex;
             flex: 1;
-            gap: 30px;
+            gap: 25px;
             min-height: 0;
         }
 
-        /* KAFELKI - LEWA STRONA */
-        .grid-container {
-            flex: 2;
+        /* GRID KAFELKÓW */
+        .grid-section {
+            flex: 1.5;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
+            gap: 12px;
         }
 
         .tile {
             background: var(--tile-bg);
-            border: 2px solid var(--border-color);
+            border: 1.5px solid var(--border-dim);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -74,103 +70,96 @@
             text-align: center;
             cursor: pointer;
             position: relative;
-            transition: all 0.3s ease;
-            padding: 10px;
+            transition: all 0.2s ease;
         }
 
         .tile span {
             color: var(--neon-blue);
+            font-size: 12px;
             font-weight: 700;
-            font-size: 13px;
             text-transform: uppercase;
-            z-index: 2;
+            padding: 5px;
+            z-index: 5;
         }
 
-        /* EFEKT AKTYWNEJ STACJI (ZE ZDJĘCIA) */
+        /* EFEKT AKTYWNOŚCI ZE ZDJĘCIA (BŁĘKITNA POŚWIATA) */
         .tile.active {
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.5);
         }
 
-        .tile.active::before {
+        .tile.active::after {
             content: '';
             position: absolute;
-            width: 110%;
-            height: 110%;
-            background: radial-gradient(circle, rgba(0,242,255,0.2) 0%, transparent 70%);
-            animation: pulse 2s infinite;
+            top: -10px; left: -10px; right: -10px; bottom: -10px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
             z-index: 1;
+            animation: glow-pulse 2s infinite ease-in-out;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 0.4; }
-            100% { transform: scale(1); opacity: 0.8; }
+        @keyframes glow-pulse {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
         }
 
-        /* PANEL BOCZNY - PRAWA STRONA */
-        .sidebar {
-            flex: 1;
+        /* PANEL BOCZNY (ŻÓŁTY WYŚWIETLACZ) */
+        .side-panel {
+            flex: 0.7;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            padding: 20px 0;
+            justify-content: center;
+            gap: 30px;
         }
 
         .display-box {
             width: 100%;
             aspect-ratio: 1/1;
-            border: 5px solid var(--neon-yellow);
-            border-radius: 20px;
+            background: black;
+            border: 6px solid var(--neon-yellow);
+            border-radius: 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.2);
-            background: black;
-        }
-
-        .display-box h1 {
-            color: var(--neon-yellow);
-            font-size: 42px;
-            font-weight: 900;
-            text-transform: uppercase;
-            text-shadow: 0 0 15px var(--neon-yellow);
-            line-height: 1;
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3);
             text-align: center;
         }
 
-        /* DOLNE PRZYCISKI NAWIGACJI */
+        .display-box h2 {
+            color: var(--neon-yellow);
+            font-size: 44px;
+            font-weight: 900;
+            line-height: 0.9;
+            text-shadow: 0 0 15px var(--neon-yellow);
+        }
+
+        /* NAWIGACJA DOLNA */
         .nav-controls {
             display: flex;
+            align-items: center;
             gap: 40px;
-            margin-top: 20px;
         }
 
         .nav-btn {
+            cursor: pointer;
             fill: none;
             stroke: var(--neon-blue);
             stroke-width: 2;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            opacity: 0.7;
+            width: 32px;
+            height: 32px;
         }
 
-        .nav-btn:hover { opacity: 1; }
-
-        .play-btn {
+        .btn-main {
+            fill: var(--neon-blue);
             width: 60px;
             height: 60px;
-            fill: var(--neon-blue);
             filter: drop-shadow(0 0 10px var(--neon-blue));
         }
 
-        /* RESPONSYWNOŚĆ */
-        @media (max-width: 900px) {
-            .grid-container { grid-template-columns: repeat(3, 1fr); }
-            .main-container { flex-direction: column; overflow-y: auto; }
+        @media (max-width: 800px) {
+            .app-main { flex-direction: column; overflow-y: auto; }
+            .grid-section { grid-template-columns: repeat(3, 1fr); min-height: 400px; }
             .display-box { aspect-ratio: 16/9; }
         }
     </style>
@@ -178,118 +167,100 @@
 <body>
 
 <header>
-    <div class="header-text" id="status-bar">TECHNO MINI PL / WYBIERZ STACJĘ</div>
-    <div class="header-text" id="clock">00:00</div>
+    <div class="header-title" id="top-status">TECHNO MINI PL / WYBIERZ STACJĘ</div>
+    <div class="header-title" id="clock">00:00</div>
 </header>
 
-<div class="main-container">
-    <div class="grid-container" id="grid">
-        </div>
+<div class="app-main">
+    <div class="grid-section" id="grid"></div>
 
-    <aside class="sidebar">
-        <div class="display-box" id="display">
-            <h1 id="main-label">TECHNO</h1>
-            <h1 id="sub-label">MINI</h1>
+    <aside class="side-panel">
+        <div class="display-box">
+            <h2 id="disp-main">TECHNO</h2>
+            <h2 id="disp-sub">MINI</h2>
         </div>
 
         <div class="nav-controls">
-            <svg class="nav-btn" viewBox="0 0 24 24" onclick="changeStation(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
-            <svg class="nav-btn play-btn" viewBox="0 0 24 24" onclick="togglePlay()"><path id="play-icon" d="M8 5v14l11-7z"/></svg>
-            <svg class="nav-btn" viewBox="0 0 24 24" onclick="changeStation(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
+            <svg class="nav-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
+            <svg class="nav-btn btn-main" viewBox="0 0 24 24" onclick="toggle()"><path id="play-svg" d="M8 5v14l11-7z"/></svg>
+            <svg class="nav-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
         </div>
     </aside>
 </div>
 
-<audio id="audio-player"></audio>
+<audio id="audio"></audio>
 
 <script>
-    const stations = [
-        { name: "Techno", url: "https://hirschmilch.de:7000/techno.mp3", label: "TECHNO" },
-        { name: "Detroit Techno", url: "https://ice1.somafm.com/missioncontrol-128-mp3", label: "DETROIT" },
-        { name: "Minimal Techno", url: "https://hirschmilch.de:7000/minimal.mp3", label: "MINIMAL" },
-        { name: "Hard Techno", url: "http://stream.laut.fm/hard-techno", label: "HARD" },
-        { name: "Dark Techno", url: "http://stream.laut.fm/darktechno", label: "DARK" },
-        { name: "Techno House", url: "https://hirschmilch.de:7000/house.mp3", label: "T-HOUSE" },
-        { name: "Trance", url: "https://hirschmilch.de:7000/trance.mp3", label: "TRANCE" },
-        { name: "Vocal Trance", url: "http://p-vocaltrance.radioca.st/stream", label: "VOCAL" },
-        { name: "Uplifting Trance", url: "http://stream.uplifting-trance.com/;stream.mp3", label: "UPLIFT" },
-        { name: "Epic Trance", url: "http://tx.clast.pro/8240/stream", label: "EPIC" },
-        { name: "Progressive Trance", url: "https://hirschmilch.de:7000/prog-house.mp3", label: "PROG" },
-        { name: "Psy Trance", url: "https://hirschmilch.de:7000/psytrance.mp3", label: "PSY" }
+    const STATIONS = [
+        // TECHNO
+        { n: "Techno", l: "TECHNO", u: "https://hirschmilch.de:7000/techno.mp3" },
+        { n: "Detroit Techno", l: "DETROIT", u: "https://ice1.somafm.com/missioncontrol-128-mp3" },
+        { n: "Minimal Techno", l: "MINIMAL", u: "https://hirschmilch.de:7000/minimal.mp3" },
+        { n: "Hard Techno", l: "HARD", u: "https://stream.laut.fm/hard-techno" },
+        { n: "Dark Techno", l: "DARK", u: "https://stream.laut.fm/darktechno" },
+        { n: "Underground Techno", l: "UNDERGR", u: "https://ice1.somafm.com/deepspaceone-128-mp3" },
+        // TRANCE
+        { n: "Trance", l: "TRANCE", u: "https://hirschmilch.de:7000/trance.mp3" },
+        { n: "Vocal Trance", l: "VOCAL", u: "https://p-vocaltrance.radioca.st/stream" },
+        { n: "Uplifting Trance", l: "UPLIFT", u: "http://stream.uplifting-trance.com/;stream.mp3" },
+        { n: "Epic Trance", l: "EPIC", u: "http://tx.clast.pro/8240/stream" },
+        { n: "Progressive Trance", l: "PROG", u: "https://hirschmilch.de:7000/prog-house.mp3" },
+        { n: "Psy Trance", l: "PSY", u: "https://hirschmilch.de:7000/psytrance.mp3" }
     ];
 
     const grid = document.getElementById('grid');
-    const player = document.getElementById('audio-player');
-    const playIcon = document.getElementById('play-icon');
-    const mainLabel = document.getElementById('main-label');
-    const statusBar = document.getElementById('status-bar');
-    
-    let currentIndex = -1;
+    const audio = document.getElementById('audio');
+    const playSvg = document.getElementById('play-svg');
+    const dispMain = document.getElementById('disp-main');
+    const topStatus = document.getElementById('top-status');
+    let currentIdx = -1;
 
-    // Generowanie kafelków
-    stations.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'tile';
-        div.innerHTML = `<span>${s.name}</span>`;
-        div.onclick = () => playStation(i);
-        grid.appendChild(div);
+    // Render kafelków
+    STATIONS.forEach((s, i) => {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `<span>${s.n}</span>`;
+        t.onclick = () => play(i);
+        grid.appendChild(t);
     });
 
-    function playStation(index) {
-        if (currentIndex === index && !player.paused) {
-            player.pause();
-            updateUI();
-            return;
-        }
-
-        currentIndex = index;
-        const s = stations[index];
+    function play(i) {
+        currentIdx = i;
+        const s = STATIONS[i];
         
-        player.src = s.url;
-        player.play().catch(e => console.log("Autoplay blocked or link broken"));
+        audio.src = s.u;
+        audio.play().catch(() => console.log("User interaction required"));
         
-        mainLabel.innerHTML = s.label + "<br>MINI";
-        statusBar.innerText = "GRA: " + s.name.toUpperCase();
-        
-        updateUI();
+        // UI
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        dispMain.innerHTML = s.l + "<br>MINI";
+        topStatus.innerText = "GRA: " + s.n.toUpperCase();
+        playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Pause
     }
 
-    function updateUI() {
-        const tiles = document.querySelectorAll('.tile');
-        tiles.forEach((t, i) => {
-            t.classList.toggle('active', i === currentIndex);
-        });
-
-        if (player.paused) {
-            playIcon.setAttribute('d', 'M8 5v14l11-7z'); // Ikona Play
+    function toggle() {
+        if (currentIdx === -1) { play(0); return; }
+        if (audio.paused) {
+            audio.play();
+            playSvg.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
         } else {
-            playIcon.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona Pause
+            audio.pause();
+            playSvg.setAttribute('d', 'M8 5v14l11-7z');
         }
     }
 
-    function togglePlay() {
-        if (currentIndex === -1) playStation(0);
-        else if (player.paused) player.play();
-        else player.pause();
-        updateUI();
+    function skip(dir) {
+        let n = currentIdx + dir;
+        if (n < 0) n = STATIONS.length - 1;
+        if (n >= STATIONS.length) n = 0;
+        play(n);
     }
 
-    function changeStation(dir) {
-        let newIndex = currentIndex + dir;
-        if (newIndex < 0) newIndex = stations.length - 1;
-        if (newIndex >= stations.length) newIndex = 0;
-        playStation(newIndex);
-    }
-
-    // Zegar
-    function updateClock() {
+    function clock() {
         const now = new Date();
-        document.getElementById('clock').innerText = 
-            now.getHours().toString().padStart(2, '0') + ":" + 
-            now.getMinutes().toString().padStart(2, '0');
+        document.getElementById('clock').innerText = now.getHours().toString().padStart(2, '0') + ":" + now.getMinutes().toString().padStart(2, '0');
     }
-    setInterval(updateClock, 1000);
-    updateClock();
+    setInterval(clock, 1000); clock();
 </script>
 
 </body>
