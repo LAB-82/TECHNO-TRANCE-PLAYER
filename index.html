@@ -7,6 +7,13 @@
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
+        
+        /* IMPORT CZCIONKI SEEDS */
+        @font-face {
+            font-family: 'Seeds';
+            src: url('SEEDS.TTF') format('truetype');
+        }
+
         :root {
             --neon-blue: #00f2ff;
             --neon-yellow: #fce300;
@@ -32,29 +39,52 @@
         .tile {
             background: #0a0a0a; border: 1.5px solid #1a1a1a; border-radius: 12px;
             display: flex; align-items: center; justify-content: center; text-align: center;
-            cursor: pointer; position: relative; transition: 0.2s; padding: 8px;
+            cursor: pointer; position: relative; transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 8px;
         }
         .tile span { color: var(--neon-blue); font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 5; line-height: 1.2; }
         
-        .tile.active { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.5); }
-        .tile.active::after {
-            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
-            animation: pulse 2s infinite; z-index: 1;
+        /* EFEKT AURY - ZAMROŻONA CHMURA */
+        .tile.active { 
+            border-color: var(--neon-blue); 
+            background: rgba(0, 242, 255, 0.05);
+            /* Aura wychodząca poza krawędzie */
+            box-shadow: 
+                0 0 15px rgba(0, 242, 255, 0.5), 
+                0 0 35px rgba(0, 242, 255, 0.2);
         }
-        @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        .tile.active::before {
+            content: '';
+            position: absolute;
+            top: -12px; left: -12px; right: -12px; bottom: -12px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.15) 0%, transparent 75%);
+            filter: blur(8px);
+            z-index: -1;
+            animation: cloudFloat 4s ease-in-out infinite;
+        }
+        @keyframes cloudFloat {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
 
         .sidebar { flex: 0.6; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
         .display {
             width: 100%; aspect-ratio: 1/1; border: 6px solid var(--neon-yellow); border-radius: 25px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3); background: #000; text-align: center;
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.2); background: #000; text-align: center;
         }
-        .display h2 { color: var(--neon-yellow); font-size: 34px; font-weight: 900; text-shadow: 0 0 15px var(--neon-yellow); text-transform: uppercase; line-height: 1.1; }
+        .display h2 { 
+            font-family: 'Seeds', sans-serif; 
+            color: var(--neon-yellow); font-size: 38px; font-weight: 900; 
+            text-shadow: 0 0 15px var(--neon-yellow); text-transform: uppercase; line-height: 1.1; 
+        }
 
-        .controls { display: flex; align-items: center; gap: 30px; }
-        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 35px; height: 35px; }
-        .play-btn { fill: var(--neon-blue); width: 70px; height: 70px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
+        .controls { display: flex; align-items: center; gap: 20px; }
+        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 35px; height: 35px; transition: 0.2s; }
+        .c-btn:hover { filter: drop-shadow(0 0 8px var(--neon-blue)); }
+        .play-btn { fill: var(--neon-blue); width: 70px; height: 70px; filter: drop-shadow(0 0 12px var(--neon-blue)); }
+        
+        /* IKONA STOP - KWADRAT */
+        .stop-btn { fill: var(--neon-blue); stroke: none; width: 40px; height: 40px; }
 
         @media (max-width: 800px) { .app-container { flex-direction: column; overflow-y: auto; } .grid { grid-template-columns: repeat(3, 1fr); flex: none; } }
     </style>
@@ -70,12 +100,17 @@
     <div class="grid" id="grid"></div>
     <aside class="sidebar">
         <div class="display">
-            <h2 id="d-main">DI.FM</h2>
-            <h2 id="d-sub">RADIO</h2>
+            <h2 id="d-main">MY MUSIC</h2>
+            <h2 id="d-sub">STATION</h2>
         </div>
         <div class="controls">
             <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
             <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8 5v14l11-7z"/></svg>
+            
+            <svg class="c-btn stop-btn" viewBox="0 0 24 24" onclick="stopAudio()">
+                <rect x="6" y="6" width="12" height="12"/>
+            </svg>
+
             <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
         </div>
     </aside>
@@ -84,16 +119,13 @@
 <audio id="player"></audio>
 
 <script>
-    // AUDYT: Pełna analiza darmowych strumieni DI.FM (publiczne serwery stream.di.fm)
     const STATIONS = [
-        // TECHNO
         { tile: "Techno", disp: "TECHNO", url: "https://stream.di.fm/external_free/techno" },
         { tile: "Detroit Techno", disp: "DETROIT", url: "https://stream.di.fm/external_free/detroittechno" },
         { tile: "Minimal Techno", disp: "MINIMAL", url: "https://stream.di.fm/external_free/minimaltechno" },
         { tile: "Hard Techno", disp: "HARD", url: "https://stream.di.fm/external_free/hardtechno" },
         { tile: "Dark Techno", disp: "DARK", url: "https://stream.di.fm/external_free/darktechno" },
         { tile: "Underground Techno", disp: "UNDGRND", url: "https://stream.di.fm/external_free/undergroundtechno" },
-        // TRANCE
         { tile: "Trance", disp: "TRANCE", url: "https://stream.di.fm/external_free/trance" },
         { tile: "Vocal Trance", disp: "VOCAL", url: "https://stream.di.fm/external_free/vocaltrance" },
         { tile: "Uplifting Trance", disp: "UPLIFT", url: "https://stream.di.fm/external_free/upliftingtrance" },
@@ -107,7 +139,6 @@
     let hls = new Hls();
     let cur = -1;
 
-    // Generowanie kafelków
     STATIONS.forEach((s, i) => {
         const div = document.createElement('div');
         div.className = 'tile';
@@ -121,30 +152,40 @@
         const s = STATIONS[i];
         
         if (Hls.isSupported()) {
-            hls.destroy(); // Czyścimy poprzedni stream
+            hls.destroy();
             hls = new Hls();
             hls.loadSource(s.url);
             hls.attachMedia(player);
-            hls.on(Hls.Events.MANIFEST_PARSED, function() {
-                player.play();
-            });
+            hls.on(Hls.Events.MANIFEST_PARSED, () => player.play());
         } else if (player.canPlayType('application/vnd.apple.mpegurl')) {
-            // Wsparcie natywne (np. Safari)
             player.src = s.url;
             player.play();
         }
 
-        // UI Updates
+        updateUI(i, s.disp, s.tile);
+    }
+
+    function updateUI(i, dispText, statusText) {
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        dMain.innerText = s.disp;
-        dStatus.innerText = "GRA: " + s.tile.toUpperCase();
-        ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona PAUSE
+        dMain.innerText = dispText;
+        dStatus.innerText = "GRA: " + statusText.toUpperCase();
+        ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
     }
 
     function toggle() {
         if (cur === -1) play(0);
         else if (player.paused) { player.play(); ico.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); }
         else { player.pause(); ico.setAttribute('d', 'M8 5v14l11-7z'); }
+    }
+
+    function stopAudio() {
+        player.pause();
+        player.currentTime = 0;
+        ico.setAttribute('d', 'M8 5v14l11-7z');
+        dStatus.innerText = "DI.FM / STANDBY";
+        dMain.innerText = "MY MUSIC";
+        document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+        cur = -1;
     }
 
     function skip(dir) {
