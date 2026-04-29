@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO TRANCE TERMINAL - FINAL 15</title>
+    <title>TECHNO TRANCE TERMINAL - COSMETIC UPDATE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&display=swap');
         
+        /* Deklaracja czcionki SEEDS - wymaga instalacji czcionki w systemie użytkownika */
+        @font-face {
+            font-family: 'Seeds';
+            src: local('Seeds'), local('Seeds-Regular');
+            font-weight: normal;
+            font-style: normal;
+        }
+        
         :root {
             --neon-blue: #00f2ff;
+            --neon-blue-shadow: rgba(0, 242, 255, 0.5);
             --neon-yellow: #fce300;
             --bg-black: #000;
             --tile-bg: #0a0a0a;
@@ -58,39 +67,68 @@
             background: var(--tile-bg); border: 1.5px solid var(--border-dim); border-radius: 8px;
             height: 65px; display: flex; align-items: center; justify-content: center;
             text-align: center; cursor: pointer; position: relative; transition: 0.2s;
-            padding: 5px;
+            padding: 5px; overflow: hidden;
         }
         .tile span { color: var(--neon-blue); font-size: 10px; font-weight: 700; text-transform: uppercase; z-index: 5; line-height: 1.2; }
 
+        /* --- NOWY EFEKT KAFELKA JAK NA ZDJĘCIU --- */
         .tile.active {
             border-color: var(--neon-blue);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.5);
+            box-shadow: 0 0 20px var(--neon-blue-shadow);
         }
+        
+        /* Błękitna Aura pulsacyjna wokół CAŁEGO kafelka */
         .tile.active::after {
-            content: ''; position: absolute; top: -5px; left: -5px; right: -5px; bottom: -5px;
-            background: radial-gradient(circle, rgba(0, 242, 255, 0.2) 0%, transparent 70%);
-            z-index: 1; animation: glow 2s infinite;
+            content: ''; 
+            position: absolute; 
+            top: -15px; left: -15px; right: -15px; bottom: -15px;
+            background: radial-gradient(circle, rgba(0, 242, 255, 0.3) 0%, transparent 70%);
+            z-index: 1; 
+            animation: glow-ripple 2s infinite ease-out;
+            pointer-events: none;
         }
-        @keyframes glow { 0%, 100% { opacity: 0.4; } 50% { opacity: 0.8; } }
+        
+        @keyframes glow-ripple {
+            0% { transform: scale(1); opacity: 0.8; }
+            100% { transform: scale(1.15); opacity: 0; }
+        }
 
         .side-panel { flex: 0.7; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; }
 
+        /* --- ZMNIEJSZENIE RAMKI O 50% --- */
         .display-box {
-            width: 100%; aspect-ratio: 1/1;
-            border: 6px solid var(--neon-yellow); border-radius: 25px;
+            width: 50%; /* Zmniejszono z 100% o 50% */
+            aspect-ratio: 1/1;
+            border: 4px solid var(--neon-yellow); /* Lekko cieńsza ramka dla skali */
+            border-radius: 15px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 0 45px rgba(252, 227, 0, 0.25); background: #000; text-align: center;
+            box-shadow: 0 0 35px rgba(252, 227, 0, 0.3); background: #000; text-align: center;
+            padding: 10px;
         }
-        .display-box h2 { color: var(--neon-yellow); font-size: 32px; font-weight: 900; text-shadow: 0 0 20px var(--neon-yellow); line-height: 1.1; }
+        
+        /* --- NOWY TEKST MY MUSIC STATION + CZCIONKA SEEDS --- */
+        .display-box h2 { 
+            color: var(--neon-yellow); 
+            font-family: 'Seeds', serif; /* Zastosowano czcionkę Seeds */
+            font-size: 14px; /* Dopasowany rozmiar do mniejszej ramki */
+            text-shadow: 0 0 10px var(--neon-yellow); 
+            line-height: 1.3;
+            text-transform: uppercase;
+        }
 
-        .controls { display: flex; align-items: center; gap: 35px; }
-        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 35px; height: 35px; }
-        .play-btn { fill: var(--neon-blue); width: 75px; height: 75px; filter: drop-shadow(0 0 12px var(--neon-blue)); }
+        .controls { display: flex; align-items: center; gap: 20px; } /* Zmniejszono gap dla dodatkowego przycisku */
+        .c-btn { cursor: pointer; fill: none; stroke: var(--neon-blue); stroke-width: 2; width: 30px; height: 30px; transition: opacity 0.2s; }
+        .c-btn:hover { opacity: 0.7; }
+        .play-btn { fill: var(--neon-blue); width: 65px; height: 65px; filter: drop-shadow(0 0 10px var(--neon-blue)); }
+        
+        /* Styl dla przycisku STOP */
+        .stop-btn { stroke-width: 0; fill: #550000; transition: fill 0.2s; }
+        .stop-btn:hover { fill: #aa0000; }
 
         .grid-container::-webkit-scrollbar { width: 4px; }
         .grid-container::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 10px; }
 
-        @media (max-width: 900px) { .app-main { flex-direction: column; } .grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 900px) { .app-main { flex-direction: column; } .grid { grid-template-columns: repeat(3, 1fr); } .display-box { width: 80%; } }
     </style>
 </head>
 <body>
@@ -114,12 +152,15 @@
 
     <aside class="side-panel">
         <div class="display-box">
-            <h2 id="d-main">SELECT</h2>
-            <h2 id="d-sub">STATION</h2>
+            <h2>MY MUSIC STATION</h2>
         </div>
         <div class="controls">
             <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M19 20L9 12L19 4V20Z M5 19V5"/></svg>
+            
             <svg class="c-btn play-btn" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8 5v14l11-7z"/></svg>
+            
+            <svg class="c-btn stop-btn" viewBox="0 0 24 24" onclick="stopAudio()" title="Stop"><path d="M6 6h12v12H6z"/></svg>
+            
             <svg class="c-btn" viewBox="0 0 24 24" onclick="skip(1)"><path d="M5 4L15 12L5 20V4Z M19 5V19"/></svg>
         </div>
     </aside>
@@ -154,8 +195,6 @@
 
     const player = document.getElementById('player');
     const pIco = document.getElementById('p-ico');
-    const dMain = document.getElementById('d-main');
-    const dSub = document.getElementById('d-sub');
     const hStatus = document.getElementById('status');
     let allStations = [];
     let curIdx = -1;
@@ -185,13 +224,9 @@
         document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
         document.getElementById(`tile-${idx}`).classList.add('active');
         
-        // Aktualizacja żółtego wyświetlacza
-        const nameParts = s.n.split(' ');
-        dMain.innerText = nameParts[0].toUpperCase();
-        dSub.innerText = nameParts[1] ? nameParts[1].toUpperCase() : "MINI";
-        
+        // Aktualizacja statusu na górze (zamiast w dużym kafelku)
         hStatus.innerText = "GRA: " + s.n.toUpperCase();
-        pIco.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z');
+        pIco.setAttribute('d', 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'); // Ikona Pause
     }
 
     function toggle() {
@@ -200,7 +235,21 @@
         else { player.pause(); pIco.setAttribute('d', 'M8 5v14l11-7z'); }
     }
 
+    // NOWA FUNKCJA STOP
+    function stopAudio() {
+        if (curIdx !== -1) {
+            player.pause();
+            player.currentTime = 0; // Resetuje postęp (dla plików, dla streamów po prostu zatrzymuje buffer)
+            pIco.setAttribute('d', 'M8 5v14l11-7z'); // Resetuje ikonę Play/Pause na Play
+            
+            // Opcjonalnie: usuwa podświetlenie kafelka, ale zostawiamy curIdx, żeby skip działał
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+            hStatus.innerText = "ZATRZYMANO: " + allStations[curIdx].n.toUpperCase();
+        }
+    }
+
     function skip(dir) {
+        if (allStations.length === 0) return;
         let next = curIdx + dir;
         if (next < 0) next = allStations.length - 1;
         if (next >= allStations.length) next = 0;
