@@ -3,238 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ELECTRONIC PROTOTYPE TERMINAL</title>
+    <title>CYBER-PCB PROTOTYPE v2.0</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
         :root {
-            --pcb-green: #002200;
-            --trace-gold: #b3941d;
-            --trace-active: #00ff00;
-            --panel-bg: #000;
-            --text: #00ff00;
+            --pcb-base: #020502;
+            --trace-dim: #1a331a;
+            --trace-hot: #00ff41;
+            --accent: #ff003c;
+            --display-bg: #050a05;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: #000; color: var(--text); 
-            font-family: 'Courier Prime', monospace; overflow: hidden; 
+            background: var(--pcb-base); color: var(--trace-hot); 
+            font-family: 'Share Tech Mono', monospace; overflow: hidden; 
             height: 100vh; width: 100vw;
         }
 
-        /* TŁO PCB Z ELEMENTAMI DODATKOWYMI */
-        #pcb-master {
+        /* TŁO PŁYTY DRUKOWANEJ */
+        #pcb-layer {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none;
+            z-index: 0; pointer-events: none; opacity: 0.6;
         }
 
-        .app-shell { display: flex; height: 100vh; position: relative; z-index: 1; }
+        .terminal-container { display: flex; height: 100vh; position: relative; z-index: 1; }
 
-        /* OBSZAR UKŁADÓW */
-        .pcb-canvas { flex: 1.4; position: relative; overflow: hidden; cursor: crosshair; }
-
-        /* KAFELKI JAKO PRAWDZIWE UKŁADY SCALONE */
-        .ic-chip {
-            position: absolute; background: #111; border: 2px solid #444;
-            width: 70px; height: 50px; z-index: 5;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.2s; font-size: 8px; text-align: center; font-weight: bold;
+        /* AREA KOMPONENTÓW */
+        .breadboard { 
+            flex: 1.5; position: relative; overflow: hidden; 
+            background-image: radial-gradient(circle, #111 1px, transparent 1px);
+            background-size: 20px 20px;
         }
+
+        /* MODUŁY / CHIPY */
+        .module {
+            position: absolute; background: #0a0a0a; border: 1px solid #333;
+            padding: 5px; min-width: 90px; height: 45px; z-index: 10;
+            box-shadow: 4px 4px 0px #000; cursor: pointer;
+            display: flex; flex-direction: column; justify-content: center;
+        }
+
+        .module::before { /* Piny boczne */
+            content: ''; position: absolute; left: -6px; top: 10%; bottom: 10%; width: 6px;
+            background: repeating-linear-gradient(to bottom, #555 0, #555 3px, transparent 3px, transparent 6px);
+        }
+
+        .module.cpu { width: 130px; height: 90px; border: 2px solid var(--trace-hot); background: #000; }
+        .module.active { border-color: #fff; box-shadow: 0 0 15px var(--trace-hot); }
+        .module label { font-size: 9px; color: #555; text-transform: uppercase; cursor: pointer; }
+        .module .val { font-size: 11px; color: var(--trace-hot); }
+
+        /* PANEL HAKERA / STEROWANIE */
+        .right-panel { 
+            flex: 0.6; background: #0a0a0a; border-left: 4px solid #1a1a1a;
+            display: flex; flex-direction: column; padding: 0; position: relative;
+        }
+
+        .module-header {
+            background: #1a1a1a; padding: 10px; font-size: 14px; color: #fff;
+            border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between;
+        }
+
+        .vfd-display {
+            background: var(--display-bg); margin: 15px; padding: 15px;
+            border: 1px solid #1a331a; box-shadow: inset 0 0 10px #000;
+            height: 140px; position: relative;
+        }
+
+        .vfd-text { font-size: 12px; color: var(--trace-hot); text-shadow: 0 0 5px var(--trace-hot); line-height: 1.4; }
+
+        .fader-rack { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 30px; }
         
-        .ic-chip::after { /* Nóżki układu */
-            content: ''; position: absolute; top: -5px; left: 5px; right: 5px; bottom: -5px;
-            background: repeating-linear-gradient(90deg, #666 0, #666 4px, transparent 4px, transparent 10px);
-            z-index: -1;
+        /* Stylizowane suwaki */
+        .fader-gate { position: relative; height: 40px; background: #050505; border: 1px solid #222; }
+        .fader-gate input[type=range] {
+            width: 100%; -webkit-appearance: none; background: transparent;
+            position: absolute; top: 0; z-index: 5; height: 100%;
+        }
+        .fader-gate input::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 40px; height: 38px; 
+            background: #222; border: 2px solid var(--accent); cursor: ns-resize;
         }
 
-        .ic-chip.central { width: 110px; height: 80px; border-color: var(--text); box-shadow: 0 0 15px rgba(0,255,0,0.2); }
-        .ic-chip.active { border-color: #fff; background: #222; box-shadow: 0 0 20px var(--trace-active); color: #fff; }
-
-        /* PANEL STEROWANIA - STYL RETRO COMP */
-        .control-panel { 
-            flex: 0.6; background: var(--panel-bg); border-left: 2px solid #004400;
-            padding: 20px; display: flex; flex-direction: column; gap: 20px;
-            box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+        .btn-matrix { 
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 15px; 
+            border-top: 1px solid #222;
         }
-
-        .monitor-screen {
-            border: 2px solid #004400; padding: 10px; background: #001100;
-            height: 180px; position: relative; overflow: hidden;
+        .square-btn {
+            aspect-ratio: 1; background: #111; border: 1px solid #333;
+            color: var(--trace-hot); font-family: inherit; cursor: pointer;
         }
-        .monitor-screen h2 { font-size: 14px; margin-bottom: 5px; color: #ff0000; }
-        .data-stream { font-size: 10px; line-height: 1.2; opacity: 0.8; }
+        .square-btn:active { background: var(--accent); color: #fff; }
 
-        .btn-group { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
-        .hw-btn {
-            width: 50px; height: 50px; border: 2px solid var(--text);
-            background: transparent; color: var(--text); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .hw-btn:active { background: var(--text); color: #000; }
-        .hw-btn svg { width: 24px; height: 24px; fill: currentColor; }
-
-        .fader-box { margin-top: auto; border-top: 1px solid #004400; padding-top: 20px; }
-        .fader-label { font-size: 10px; margin-bottom: 10px; }
-        input[type="range"] {
-            width: 100%; -webkit-appearance: none; background: #004400; height: 4px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 30px; background: #ff0000; border: 1px solid #fff;
-        }
-
-        @media (max-width: 800px) {
-            .app-shell { flex-direction: column; }
-            .control-panel { flex: 1; border-left: none; border-top: 2px solid #004400; }
+        @media (max-width: 900px) {
+            .terminal-container { flex-direction: column; }
+            .right-panel { border-left: none; border-top: 4px solid #1a1a1a; }
         }
     </style>
 </head>
 <body>
 
-<svg id="pcb-master"></svg>
+<svg id="pcb-layer"></svg>
 
-<div class="app-shell">
-    <div class="pcb-canvas" id="stage">
-        <!-- Kafelki zostaną wstrzyknięte przez JS -->
-    </div>
+<div class="terminal-container">
+    <div class="breadboard" id="main-board"></div>
 
-    <aside class="control-panel" id="ui-core">
-        <div class="monitor-screen">
-            <h2>[SYSTEM_STATUS]</h2>
-            <div class="data-stream" id="log">
-                READY TO CONNECT...<br>
-                WAITING FOR INPUT...<br>
-                VOLTAGE: 5.02V<br>
-                SIGNAL: NULL
+    <aside class="right-panel">
+        <div class="module-header">
+            <span>CORE_CONTROLLER v2.0</span>
+            <span style="color:var(--accent)">ONLINE</span>
+        </div>
+
+        <div class="vfd-display">
+            <div class="vfd-text" id="console-log">INIT SYSTEM...<br>READY_</div>
+            <div id="stat-bar" style="position:absolute; bottom:5px; right:10px; font-size:10px; color:#333;">TX/RX [||||||||]</div>
+        </div>
+
+        <div class="fader-rack">
+            <div style="font-size:10px; color:#444;">MASTER_GAIN</div>
+            <div class="fader-gate">
+                <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
             </div>
-            <div id="now-playing" style="position:absolute; bottom:10px; left:10px; font-weight:bold;">IDLE</div>
+            <div style="font-size:10px; color:#444;">DATA_BUS_LOAD</div>
+            <div style="height:4px; background:#111; position:relative;">
+                <div id="load-bar" style="width:45%; height:100%; background:var(--trace-hot);"></div>
+            </div>
         </div>
 
-        <div class="btn-group">
-            <button class="hw-btn" onclick="skip(-1)">
-                <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            </button>
-            <button class="hw-btn" style="width:70px; height:70px;" onclick="toggle()">
-                <svg id="play-svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            </button>
-            <button class="hw-btn" onclick="skip(1)">
-                <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-            </button>
-        </div>
-
-        <div class="fader-box">
-            <div class="fader-label">GAIN_CONTROL (VOL)</div>
-            <input type="range" id="vol" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
+        <div class="btn-matrix">
+            <button class="square-btn" onclick="skip(-1)">PREV</button>
+            <button class="square-btn" style="border-color:var(--accent)" onclick="toggle()">PLAY</button>
+            <button class="square-btn" onclick="skip(1)">NEXT</button>
         </div>
     </aside>
 </div>
 
-<audio id="stream"></audio>
+<audio id="audio-engine"></audio>
 
 <script>
-    const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', p: {t:15, l:10} },
-        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', p: {t:10, l:50} },
-        { n: '1000 TECH', u: 'https://laut.fm/1000techno', p: {t:35, l:15} },
-        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true, p: {t:45, l:45} },
-        { n: 'BEST TECH', u: 'https://laut.fm/best-of-techno', p: {t:75, l:12} },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', p: {t:80, l:55} },
-        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', p: {t:5, l:30} },
-        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', p: {t:70, l:80} },
-        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', p: {t:30, l:80} }
+    const CHIPS = [
+        { n: 'T-88', u: 'https://laut.fm/tech88', x: 10, y: 15 },
+        { n: 'HR3-C', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 10 },
+        { n: '1K-T', u: 'https://laut.fm/1000techno', x: 15, y: 40 },
+        { n: 'GEHIRN_TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', core: true, x: 40, y: 50 },
+        { n: 'B-TECH', u: 'https://laut.fm/best-of-techno', x: 12, y: 75 },
+        { n: 'BURN', u: 'https://laut.fm/chris_burn', x: 55, y: 80 },
+        { n: 'DEEP', u: 'https://laut.fm/deep-house-sounds', x: 30, y: 5 },
+        { n: 'BOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 70 },
+        { n: 'SYMB', u: 'https://laut.fm/symbiotic-beats', x: 78, y: 30 }
     ];
 
-    const svg = document.getElementById('pcb-master');
-    const stage = document.getElementById('stage');
-    const stream = document.getElementById('stream');
-    const log = document.getElementById('log');
-    const playIco = document.getElementById('play-svg');
-    let current = -1;
+    const board = document.getElementById('main-board');
+    const svg = document.getElementById('pcb-layer');
+    const engine = document.getElementById('audio-engine');
+    const log = document.getElementById('console-log');
+    let activeID = -1;
 
-    function init() {
-        STATIONS.forEach((s, i) => {
-            const div = document.createElement('div');
-            div.className = `ic-chip ${s.central ? 'central' : ''}`;
-            div.id = `ic-${i}`;
-            div.style.top = s.p.t + '%';
-            div.style.left = s.p.l + '%';
-            div.innerHTML = s.n;
-            div.onclick = () => play(i);
-            stage.appendChild(div);
+    function buildHardware() {
+        CHIPS.forEach((c, i) => {
+            const m = document.createElement('div');
+            m.className = `module ${c.core ? 'cpu' : ''}`;
+            m.style.left = c.x + '%';
+            m.style.top = c.y + '%';
+            m.id = `mod-${i}`;
+            m.innerHTML = `<label>${c.core ? 'Master_CPU' : 'Node_'+i}</label><div class="val">${c.n}</div>`;
+            m.onclick = () => mountStream(i);
+            board.appendChild(m);
         });
-        setTimeout(drawPCB, 100);
+        setTimeout(routeTraces, 100);
     }
 
-    function drawPCB() {
+    function routeTraces() {
         svg.innerHTML = '';
-        const uiRect = document.getElementById('ui-core').getBoundingClientRect();
-        
-        STATIONS.forEach((s, i) => {
-            const el = document.getElementById(`ic-${i}`);
+        const w = window.innerWidth;
+        const h = window.innerHeight;
+        const panelX = w * 0.7; // Start panelu
+
+        CHIPS.forEach((c, i) => {
+            const el = document.getElementById(`mod-${i}`);
             const r = el.getBoundingClientRect();
-            const startX = r.left + r.width/2;
+            const startX = r.left + r.width;
             const startY = r.top + r.height/2;
 
-            // Główna szyna do panelu sterowania
-            line(startX, startY, uiRect.left, startY, '#004400', 1);
+            // RYSOWANIE MAGISTRALI (KĄTY PROSTE)
+            const midX = startX + (panelX - startX) * 0.5;
             
-            // Dodatkowe "szumy" - losowe punkty i ścieżki jak na zdjęciu 1
-            if(Math.random() > 0.5) {
-                line(startX, startY, startX + 50, startY - 50, '#003300', 0.5);
-                dot(startX + 50, startY - 50);
-            }
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            // Ścieżka typu S (Manhattan routing)
+            const d = `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${startY + (i*10 - 45)} L ${panelX} ${startY + (i*10 - 45)}`;
+            
+            path.setAttribute("d", d);
+            path.setAttribute("stroke", "var(--trace-dim)");
+            path.setAttribute("stroke-width", "1.5");
+            path.setAttribute("fill", "none");
+            svg.appendChild(path);
+
+            // Punkty lutownicze (Vias)
+            drawVia(startX, startY);
         });
     }
 
-    function line(x1, y1, x2, y2, color, width) {
-        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        const midX = x1 + (x2 - x1) / 2;
-        // Załamanie 45 stopni
-        const d = `M ${x1} ${y1} L ${midX} ${y1} L ${x2} ${y2}`;
-        path.setAttribute("d", d);
-        path.setAttribute("stroke", color);
-        path.setAttribute("stroke-width", width);
-        path.setAttribute("fill", "none");
-        svg.appendChild(path);
+    function drawVia(x, y) {
+        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", "3");
+        c.setAttribute("fill", "#333");
+        svg.appendChild(c);
     }
 
-    function dot(x, y) {
-        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", 2);
-        circle.setAttribute("fill", "#004400");
-        svg.appendChild(circle);
-    }
-
-    function play(i) {
-        current = i;
-        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        document.getElementById('now-playing').textContent = STATIONS[i].n;
+    function mountStream(i) {
+        activeID = i;
+        document.querySelectorAll('.module').forEach((m, idx) => m.classList.toggle('active', idx === i));
         
-        // Logika naprawcza dla stacji
-        stream.src = STATIONS[i].u;
-        stream.load(); // Ważne dla streamów laut.fm
-        stream.play().catch(e => {
-            log.innerHTML += "<br>ERROR: INTERACTION REQUIRED";
-        });
+        log.innerHTML = `MOUNTING_NODE: ${CHIPS[i].n}<br>ADDR: ${CHIPS[i].u}<br>STATUS: STREAMING...`;
         
-        log.innerHTML = `CONNECTING TO: ${STATIONS[i].n}...<br>BUFFERING...<br>STREAM_OK`;
-        playIco.innerHTML = '<path d="M14,19H18V5H14M6,19H10V5H6V19Z"/>';
+        engine.src = CHIPS[i].u;
+        engine.load();
+        engine.play().catch(() => { log.innerHTML += "<br>!! USER_ACTION_REQUIRED !!"; });
+        
+        document.getElementById('load-bar').style.width = Math.random() * 100 + '%';
     }
 
     function toggle() {
-        if(current === -1) { play(3); return; }
-        if(stream.paused) { stream.play(); playIco.innerHTML = '<path d="M14,19H18V5H14M6,19H10V5H6V19Z"/>'; }
-        else { stream.pause(); playIco.innerHTML = '<path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>'; }
+        if(activeID === -1) mountStream(3);
+        else engine.paused ? engine.play() : engine.pause();
     }
 
     function skip(dir) {
-        let n = current + dir;
-        if(n >= 0 && n < STATIONS.length) play(n);
+        let n = activeID + dir;
+        if(n >= 0 && n < CHIPS.length) mountStream(n);
     }
 
-    function setV(v) { stream.volume = v; }
+    function setV(v) { engine.volume = v; }
 
-    window.onresize = drawPCB;
-    init();
+    window.onresize = routeTraces;
+    buildHardware();
 </script>
 </body>
 </html>
