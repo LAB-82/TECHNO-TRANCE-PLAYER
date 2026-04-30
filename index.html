@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - DENSE CIRCUIT PCB</title>
+    <title>RMF TERMINAL - CENTRAL CPU EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
@@ -13,8 +13,8 @@
             --bg: #000;
             --tile: #0a0a0a;
             --border: #1a1a1a;
-            --circuit-dim: #151515;
-            --circuit-mid: #222;
+            --circuit: #252525;
+            --power-line: rgba(252, 227, 0, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,15 +25,13 @@
             overflow: hidden; 
         }
 
-        /* Tło z teksturą miedzi */
+        /* Tło PCB */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(var(--circuit-dim) 1px, transparent 1px),
-                linear-gradient(90deg, var(--circuit-dim) 1px, transparent 1px);
-            background-size: 20px 20px;
+            background-image: radial-gradient(var(--circuit) 1px, transparent 1px);
+            background-size: 30px 30px;
             z-index: -2;
         }
 
@@ -48,53 +46,58 @@
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; position: relative; }
 
-        /* DEKORACYJNE ŚCIEŻKI SVG (TŁO) */
-        .pcb-lines {
+        /* DEKORACYJNE ŚCIEŻKI DO PANELU I DO ŚRODKA */
+        .pcb-canvas {
             position: absolute;
-            top: 0; left: 0; width: 70%; height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none;
             z-index: 0;
-            opacity: 0.4;
         }
 
         .grid { 
             flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-auto-rows: 1fr;
-            gap: 12px; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-template-rows: repeat(5, 1fr);
+            gap: 25px; 
             overflow-y: auto;
-            padding: 10px;
+            padding: 20px;
             z-index: 1;
         }
 
-        .grid::-webkit-scrollbar { width: 4px; }
-        .grid::-webkit-scrollbar-thumb { background: var(--circuit-mid); border-radius: 10px; }
+        .grid::-webkit-scrollbar { width: 0; }
 
-        /* KAFELKI - PRZYWRÓCONY ROZMIAR I STYL */
+        /* KAFELKI JAKO UKŁADY SCALONE */
         .tile {
-            background: var(--tile); border: 1px solid var(--border); border-radius: 4px;
+            background: var(--tile); border: 1px solid var(--border); border-radius: 2px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; min-height: 80px;
-            transition: all 0.2s ease;
+            cursor: pointer; position: relative; transition: all 0.2s;
         }
 
-        /* Nóżki procesora - detal PCB */
+        /* Piny układu scalonego */
         .tile::before {
             content: ""; position: absolute;
-            width: calc(100% + 16px); height: 60%;
-            left: -8px; top: 20%;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 4px, var(--circuit-mid) 4px, var(--circuit-mid) 6px);
+            width: calc(100% + 12px); height: 70%;
+            left: -6px; top: 15%;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 4px, var(--circuit) 4px, var(--circuit) 8px);
             z-index: -1;
         }
 
-        .tile .t-top { font-size: 14px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; z-index: 2; }
-        .tile .t-bottom { font-size: 10px; font-weight: 600; color: var(--yellow); margin-top: 4px; opacity: 0.7; z-index: 2; }
+        /* Styl dla procesora centralnego */
+        .tile.central-cpu {
+            grid-column: 2;
+            grid-row: 3;
+            border: 2px solid var(--yellow);
+            box-shadow: 0 0 20px rgba(252, 227, 0, 0.2);
+            transform: scale(1.1);
+        }
+
+        .tile .t-top { font-size: 13px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; }
+        .tile .t-bottom { font-size: 9px; font-weight: 600; color: var(--yellow); margin-top: 4px; opacity: 0.6; }
 
         .tile.active { 
-            border: 1px solid var(--yellow-neon); 
+            border-color: var(--yellow-neon); 
             background: #111;
-            box-shadow: 0 0 15px rgba(252, 227, 0, 0.3);
-            transform: scale(1.02);
+            box-shadow: 0 0 15px var(--yellow-neon);
         }
 
         /* PANEL BOCZNY */
@@ -103,70 +106,58 @@
             align-items: center; justify-content: center; gap: 4vh;
             border-left: 1px solid var(--border); padding-left: 3vw;
             z-index: 1;
+            background: rgba(0,0,0,0.4);
         }
 
         .logo-display {
             width: 100%; max-width: 320px; aspect-ratio: 16/10;
-            border: 2px solid var(--yellow); border-radius: 10px;
+            border: 2px solid var(--yellow);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             background: #000;
-            box-shadow: inset 0 0 20px rgba(252, 227, 0, 0.1);
         }
 
         .logo-display h2 { 
-            font-family: 'Megrim', cursive; 
-            font-size: 52px; 
-            color: var(--yellow); 
-            text-shadow: 0 0 10px var(--yellow); 
+            font-family: 'Megrim', cursive; font-size: 48px; 
+            color: var(--yellow); text-shadow: 0 0 10px var(--yellow); 
         }
 
         .controls { display: flex; align-items: center; gap: 30px; }
-        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; transition: transform 0.1s; }
-        .c-svg:active { transform: scale(0.9); }
+        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; }
         .c-play { width: 70px; height: 70px; border: 2px solid var(--yellow); border-radius: 50%; padding: 12px; }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
-        .vol-btn { width: 35px; height: 35px; border: 1.5px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; font-weight: bold; }
-        .vol-bar { flex: 1; height: 30px; border: 1px solid var(--circuit-mid); display: flex; align-items: center; padding: 0 10px; }
-        
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
-        input[type="range"]::-webkit-slider-runnable-track { background: var(--yellow); height: 2px; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; background: var(--yellow); border-radius: 0; margin-top: -6px; border: 2px solid #000; }
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 300px; }
+        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; }
+        .vol-bar { flex: 1; height: 2px; background: var(--circuit); }
+        input[type="range"] { width: 100%; appearance: none; background: transparent; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: var(--yellow); }
 
         @media (max-width: 600px) {
             .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; gap: 8px; }
-            .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 20px 0; gap: 20px; }
-            .pcb-lines { display: none; }
+            .grid { grid-template-columns: repeat(2, 1fr); height: 50vh; flex: none; }
+            .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 20px 0; }
+            .tile.central-cpu { grid-column: auto; grid-row: auto; transform: none; }
+            .pcb-canvas { display: none; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">TECHNO TERMINAL V2</div>
+    <div class="header-info" id="playing-now">MOTHERBOARD RMF</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
 <div class="app-content">
-    <!-- SVG ze skomplikowanymi ścieżkami jak na zdjęciu d6afb6 -->
-    <svg class="pcb-lines" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
-        <g stroke="#222" stroke-width="2" fill="none">
-            <!-- Pionowe i poziome magistrale -->
-            <path d="M50,0 V800 M150,0 V800 M250,0 V800 M350,0 V800 M450,0 V800" />
-            <path d="M0,100 H600 M0,300 H600 M0,500 H600 M0,700 H600" />
-            
-            <!-- Skośne połączenia (styl PCB) -->
-            <path d="M50,100 L100,150 H200 L250,200" stroke="#333" />
-            <path d="M450,300 L400,350 H300 L250,400" stroke="#333" />
-            <path d="M150,500 L200,550 H400 L450,600" stroke="#333" />
-            
-            <!-- Punkty lutownicze -->
-            <circle cx="50" cy="100" r="4" fill="#222" />
-            <circle cx="250" cy="200" r="4" fill="#222" />
-            <circle cx="450" cy="300" r="4" fill="#222" />
-            <circle cx="150" cy="500" r="4" fill="#222" />
-        </g>
+    <svg class="pcb-canvas" id="pcb-svg">
+        <defs>
+            <marker id="dot" markerWidth="4" markerHeight="4" refX="2" refY="2">
+                <circle cx="2" cy="2" r="2" fill="#252525" />
+            </marker>
+        </defs>
+        <!-- Linie zasilające do boku -->
+        <path d="M500,100 H800 M500,300 H800 M500,500 H800" stroke="rgba(252,227,0,0.1)" stroke-width="1" fill="none" />
+        <!-- Ścieżki zbieżne (generowane wizualnie w CSS/SVG) -->
+        <path d="M50,50 L350,300 M650,50 L350,300 M50,550 L350,300 M650,550 L350,300" stroke="#151515" stroke-width="2" fill="none" />
     </svg>
 
     <div class="grid" id="station-grid"></div>
@@ -174,7 +165,7 @@
     <aside class="sidebar">
         <div class="logo-display">
             <h2 id="display-name">TECHNO</h2>
-            <p id="display-cat" style="font-size: 10px; color: var(--yellow); margin-top: 5px; letter-spacing: 2px;">CIRCUIT MODULE</p>
+            <p style="font-size: 10px; color: var(--yellow); margin-top: 10px;">CORE PROCESSOR</p>
         </div>
 
         <div class="controls">
@@ -202,14 +193,17 @@
         { n: '1000 TECHNO', c: 'TECHNO', u: 'https://laut.fm/1000techno' },
         { n: 'BEST OF TECHNO', c: 'TECHNO', u: 'https://laut.fm/best-of-techno' },
         { n: 'CHRIS BURN', c: 'TECHNO', u: 'https://laut.fm/chris_burn' },
-        { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' }
+        { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN TREIBER', c: 'CORE', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true },
+        { n: 'DEEP HOUSE', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
+        { n: 'HOUSEBOMB FN', c: 'HOUSE', u: 'https://laut.fm/housebomb-fn' },
+        { n: 'SYMBIOTIC BEATS', c: 'HOUSE', u: 'https://laut.fm/symbiotic-beats' },
+        { n: 'HOUSE', c: 'HOUSE', u: 'https://laut.fm/house' },
+        { n: 'FAF RECORDS 979', c: 'HOUSE', u: 'https://laut.fm/faf-records-979' },
+        { n: 'TORNADO FM', c: 'HOUSE', u: 'https://laut.fm/tornadofm' }
     ];
 
-    const player = document.getElementById('player'), 
-          ico = document.getElementById('p-ico'), 
-          grid = document.getElementById('station-grid'),
-          dispName = document.getElementById('display-name'),
-          nowPlaying = document.getElementById('playing-now');
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), dispName = document.getElementById('display-name');
 
     let current = -1;
 
@@ -221,7 +215,7 @@
 
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
-        t.className = 'tile';
+        t.className = s.central ? 'tile central-cpu' : 'tile';
         t.innerHTML = `<div class="t-top">${s.n}</div><div class="t-bottom">${s.c}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
@@ -231,23 +225,20 @@
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
         dispName.textContent = STATIONS[i].n;
-        nowPlaying.textContent = "GRA: " + STATIONS[i].n;
         player.src = STATIONS[i].u;
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(current === -1) play(0);
+        if(current === -1) play(6);
         else if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
     function skip(d) {
         let n = current + d;
-        if(n < 0) n = STATIONS.length - 1;
-        if(n >= STATIONS.length) n = 0;
-        play(n);
+        if(n >= 0 && n < STATIONS.length) play(n);
     }
 
     function setV(v) { player.volume = v / 100; }
