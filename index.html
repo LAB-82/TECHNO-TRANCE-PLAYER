@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - PCB CIRCUIT EDITION</title>
+    <title>RMF TERMINAL - PCB TECHNO EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
@@ -13,8 +13,7 @@
             --bg: #000;
             --tile: #0a0a0a;
             --border: #222;
-            --blue-wave: #00ccff;
-            --circuit-line: #333; /* Kolor ścieżek obwodu */
+            --circuit-line: #333;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,14 +24,14 @@
             overflow: hidden; 
         }
 
-        /* Tło w stylu PCB */
+        /* Tło z siatką punktową PCB */
         body::before {
             content: "";
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background-image: radial-gradient(var(--circuit-line) 1px, transparent 1px);
             background-size: 40px 40px;
-            opacity: 0.1;
+            opacity: 0.15;
             z-index: -1;
         }
 
@@ -45,139 +44,126 @@
         .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }
         .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
 
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; position: relative; }
+
+        /* KONTENER NA ŚCIEŻKI (SVG BACKGROUND) */
+        .circuit-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
 
         .grid { 
             flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-auto-rows: 1fr;
-            gap: 20px; 
+            grid-template-columns: repeat(3, 1fr); 
+            grid-auto-rows: minmax(100px, 1fr);
+            gap: 40px 30px; 
             overflow-y: auto;
-            padding: 10px;
+            padding: 20px;
+            z-index: 1;
         }
 
         .grid::-webkit-scrollbar { width: 4px; }
         .grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
-        /* KAFELKI JAKO UKŁADY SCALONE */
+        /* KAFELKI - UKŁADY SCALONE */
         .tile {
             background: var(--tile); 
             border: 1px solid var(--border); 
-            border-radius: 4px;
+            border-radius: 2px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; min-height: 85px;
+            cursor: pointer; position: relative;
             transition: all 0.3s;
         }
 
-        /* Nóżki układu scalonego (prawa i lewa strona) */
+        /* Nóżki procesora */
         .tile::before, .tile::after {
             content: "";
             position: absolute;
-            width: 8px; height: 60%;
+            width: 10px; height: 50%;
             border-top: 2px solid var(--circuit-line);
             border-bottom: 2px solid var(--circuit-line);
-            top: 20%;
+            top: 25%;
         }
-        .tile::before { left: -9px; border-left: 2px solid var(--circuit-line); }
-        .tile::after { right: -9px; border-right: 2px solid var(--circuit-line); }
+        .tile::before { left: -11px; border-left: 2px solid var(--circuit-line); }
+        .tile::after { right: -11px; border-right: 2px solid var(--circuit-line); }
 
-        .tile .t-top { font-size: 13px; font-weight: 700; color: var(--yellow); z-index: 2; text-align: center; text-transform: uppercase; }
-        .tile .t-bottom { font-size: 9px; font-weight: 600; color: var(--yellow); margin-top: 4px; z-index: 2; opacity: 0.6; }
+        .tile .t-top { font-size: 14px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; padding: 0 5px; }
+        .tile .t-bottom { font-size: 10px; font-weight: 600; color: var(--yellow); margin-top: 5px; opacity: 0.6; }
 
         .tile.active { 
             border-color: var(--yellow-neon); 
-            background: #151510;
-            box-shadow: 0 0 20px rgba(255, 251, 0, 0.15);
+            background: #111;
+            box-shadow: 0 0 15px rgba(252, 227, 0, 0.2);
         }
         .tile.active::before, .tile.active::after { border-color: var(--yellow-neon); }
 
-        /* BOCZNY PANEL */
+        /* PANEL BOCZNY */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; gap: 4vh;
             border-left: 1px solid var(--border); padding-left: 3vw;
-            position: relative;
+            z-index: 1;
         }
 
         .logo-display {
             width: 100%; max-width: 300px; aspect-ratio: 16/10;
             border: 2px solid var(--yellow); 
-            position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #050505;
-            padding: 20px;
-        }
-
-        /* Ścieżki odchodzące od wyświetlacza (jak na obrazku PCB) */
-        .logo-display::before {
-            content: ""; position: absolute; top: -20px; width: 2px; height: 20px; background: var(--yellow);
-            box-shadow: -40px 0 var(--yellow), 40px 0 var(--yellow);
+            background: #000;
+            position: relative;
         }
 
         .logo-display h2 { 
             font-family: 'Megrim', cursive; 
-            font-size: 48px; 
+            font-size: 44px; 
             color: var(--yellow); 
             text-shadow: 0 0 10px var(--yellow); 
-        }
-        
-        /* PRZYCISKI STEROWANIA Z "PUNKTAMI LUTOWNICZYMI" */
-        .controls { display: flex; align-items: center; gap: 40px; position: relative; }
-        
-        .c-svg { 
-            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; 
-            position: relative;
-        }
-        
-        .c-play { 
-            width: 75px; height: 75px; 
-            padding: 10px;
-            border: 2px solid var(--yellow);
-            border-radius: 50%;
+            line-height: 1;
         }
 
-        /* Wolumator */
+        .controls { display: flex; align-items: center; gap: 30px; }
+        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; }
+        .c-play { width: 70px; height: 70px; border: 2px solid var(--yellow); border-radius: 50%; padding: 10px; }
+
         .vol-box { display: flex; align-items: center; gap: 15px; width: 300px; }
-        .vol-btn { 
-            width: 35px; height: 35px; border: 1px solid var(--yellow); 
-            background: none; color: var(--yellow); cursor: pointer; 
-            border-radius: 2px;
-        }
-        .vol-bar { 
-            flex: 1; height: 20px; border-bottom: 2px solid var(--circuit-line); 
-            display: flex; align-items: center; position: relative;
-        }
+        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; }
+        .vol-bar { flex: 1; height: 2px; background: var(--circuit-line); position: relative; }
         
         input[type="range"] { width: 100%; appearance: none; background: transparent; }
-        input[type="range"]::-webkit-slider-runnable-track { background: var(--circuit-line); height: 2px; }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 14px; height: 14px; 
-            background: var(--yellow); border-radius: 0; 
-            margin-top: -6px;
-        }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; background: var(--yellow); }
 
-        /* RESPONSYWNOŚĆ */
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(3, 1fr); height: 55vh; }
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(2, 1fr); height: 50vh; flex: none; }
             .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 20px 0; }
-            .logo-display h2 { font-size: 32px; }
+            .circuit-overlay { display: none; } /* Ukrywamy ścieżki na mobile dla czytelności */
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">PCB TERMINAL v1.0</div>
+    <div class="header-info" id="playing-now">TECHNO CIRCUIT</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
 <div class="app-content">
+    <!-- SVG dla ścieżek łączących kafelki -->
+    <svg class="circuit-overlay" viewBox="0 0 800 600" preserveAspectRatio="none">
+        <path d="M100,150 L100,250 M350,150 L350,250 M600,150 L600,250 M100,200 L600,200" stroke="#222" stroke-width="2" fill="none" />
+        <circle cx="100" cy="200" r="4" fill="#222" />
+        <circle cx="350" cy="200" r="4" fill="#222" />
+        <circle cx="600" cy="200" r="4" fill="#222" />
+    </svg>
+
     <div class="grid" id="station-grid"></div>
 
     <aside class="sidebar">
         <div class="logo-display">
             <h2 id="display-name">TECHNO</h2>
-            <p id="display-cat" style="font-size: 10px; color: var(--yellow); opacity: 0.7;">CIRCUIT READY</p>
+            <p style="font-size: 9px; color: var(--yellow); margin-top: 10px; letter-spacing: 2px;">CORE MODULE</p>
         </div>
 
         <div class="controls">
@@ -205,27 +191,14 @@
         { n: '1000 TECHNO', c: 'TECHNO', u: 'https://laut.fm/1000techno' },
         { n: 'BEST OF TECHNO', c: 'TECHNO', u: 'https://laut.fm/best-of-techno' },
         { n: 'CHRIS BURN', c: 'TECHNO', u: 'https://laut.fm/chris_burn' },
-        { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' },
-        { n: 'DRUMANDBASS FM', c: 'D&B', u: 'https://laut.fm/drumandbass_fm' },
-        { n: 'FMBASE', c: 'D&B', u: 'https://laut.fm/fmbase' },
-        { n: 'DNBZONE', c: 'D&B', u: 'https://laut.fm/dnbzone' },
-        { n: 'DNB BASE', c: 'D&B', u: 'https://laut.fm/dnb-base' },
-        { n: 'A5RECORDINGS', c: 'D&B', u: 'https://laut.fm/a5recordings' },
-        { n: 'DJMO', c: 'D&B', u: 'https://laut.fm/djmo' },
-        { n: 'DEEP HOUSE', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
-        { n: 'HOUSEBOMB FN', c: 'HOUSE', u: 'https://laut.fm/housebomb-fn' },
-        { n: 'SYMBIOTIC BEATS', c: 'HOUSE', u: 'https://laut.fm/symbiotic-beats' },
-        { n: 'TRANCEMOTION', c: 'TRANCE', u: 'https://laut.fm/trancemotionfm' },
-        { n: 'YOURTRANCE', c: 'TRANCE', u: 'https://laut.fm/yourtranceradio' },
-        { n: 'GOA FM', c: 'GOA', u: 'https://laut.fm/goafm' },
-        { n: 'PSYCORE', c: 'PSY', u: 'https://laut.fm/psycore' },
-        { n: 'GEHIRN TREIBER', c: 'BEAT', u: 'https://laut.fm/gehirn-treiber-beat-radio' }
+        { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' }
     ];
 
     const player = document.getElementById('player'), 
           ico = document.getElementById('p-ico'), 
           grid = document.getElementById('station-grid'),
-          dispName = document.getElementById('display-name');
+          dispName = document.getElementById('display-name'),
+          nowPlaying = document.getElementById('playing-now');
 
     let current = -1;
 
@@ -247,6 +220,7 @@
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
         dispName.textContent = STATIONS[i].n;
+        nowPlaying.textContent = "GRA: " + STATIONS[i].n;
         player.src = STATIONS[i].u;
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
@@ -260,7 +234,9 @@
 
     function skip(d) {
         let n = current + d;
-        if(n >= 0 && n < STATIONS.length) play(n);
+        if(n < 0) n = STATIONS.length - 1;
+        if(n >= STATIONS.length) n = 0;
+        play(n);
     }
 
     function setV(v) { player.volume = v / 100; }
