@@ -3,26 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Techno Trance Player</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>INDUSTRIAL_HARDWARE_INTERFACE_V5</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
+
+        :root {
+            --pcb-color: #030805;
+            --copper-trace: #1a3a2a;
+            --active-cyan: #00f2ff;
+            --ic-black: #151515;
+            --accent-red: #ff0055;
+            --text-gold: #c3a343;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            background: var(--pcb-color); color: var(--active-cyan); 
+            font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh;
+        }
+
+        /* BACKGROUND PCB LAYER */
+        #pcb-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
+        }
+
+        .main-frame { display: flex; height: 100vh; position: relative; z-index: 1; }
+
+        /* OBSZAR PŁYTY GŁÓWNEJ */
+        .pcb-board { 
+            flex: 1.8; position: relative; overflow: hidden; 
+            background-image: radial-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* PRAWDZIWY UKŁAD SCALONY (DIP-16) */
+        .ic-module {
+            position: absolute; width: 150px; height: 85px;
+            background: var(--ic-black); border-radius: 3px;
+            cursor: pointer; z-index: 10;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.9), inset 0 0 10px rgba(255,255,255,0.05);
+            transition: 0.3s; border: 1px solid #222;
+        }
+
+        /* Piny układu scalonego (Realistyczne nóżki) */
+        .ic-module::before {
+            content: ''; position: absolute; top: -12px; left: 10px; right: 10px; bottom: -12px;
+            background: repeating-linear-gradient(90deg, #555 0, #555 6px, transparent 6px, transparent 18px);
+            z-index: -1;
+        }
+
+        /* Klucz polaryzacji (Wcięcie) */
+        .ic-notch {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            width: 25px; height: 10px; background: var(--pcb-color);
+            border-radius: 0 0 15px 15px; border: 1px solid #222;
+        }
+
+        .ic-module:hover { transform: scale(1.05); border-color: var(--active-cyan); }
+        .ic-module.active { border-color: #fff; box-shadow: 0 0 40px rgba(0, 242, 255, 0.5); }
+
+        .ic-label {
+            padding: 15px 10px; display: flex; flex-direction: column; align-items: center;
+        }
+
+        .ic-name { font-family: 'Orbitron'; font-size: 11px; color: var(--text-gold); font-weight: bold; text-align: center; }
+        .ic-serial { font-size: 8px; color: #444; margin-top: 10px; letter-spacing: 1px; }
+
+        /* PANEL KONTROLNY - BEZ ZMIAN UI/LOGIKI */
+        .side-panel { 
+            flex: 0.7; background: #050505; border-left: 2px solid #111; 
+            display: flex; flex-direction: column; 
+        }
+
+        .status-header { padding: 20px; border-bottom: 2px solid var(--accent-red); font-family: 'Orbitron'; font-size: 14px; }
+        .console-out { margin: 15px; padding: 15px; background: #000; height: 200px; border: 1px solid #1a1a1a; font-size: 12px; color: #39ff14; }
+        .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
+        .control-btn { background: #0a0a0a; border: 1px solid #222; color: var(--active-cyan); padding: 15px; cursor: pointer; font-family: 'Orbitron'; }
+        .control-btn:hover { background: var(--active-cyan); color: #000; }
+
+        .volume-ctrl { padding: 20px; flex: 1; }
+        input[type=range] { -webkit-appearance: none; width: 100%; height: 10px; background: #111; outline: none; border: 1px solid #222; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 35px; background: var(--accent-red); cursor: pointer; }
+    </style>
 </head>
 <body>
 
-<div class="pcb-layout">
-    <div class="header">
-        <h1>Techno Trance Player</h1>
+<svg id="pcb-canvas"></svg>
+
+<div class="main-frame">
+    <div class="pcb-board" id="board">
+        <!-- Komponenty generowane przez JS -->
     </div>
-    <div class="controls">
-        <button class="play-button">Play</button>
-        <button class="stop-button">Stop</button>
-        <button class="settings-button">Settings</button>
-    </div>
-    <div class="visuals">
-        <img src="https://i.pinimg.com/1200x/03/3c/41/033c4160b74306a81ead2e2fbf76238a.jpg" alt="Visual Element 1" class="visual-element">
-        <img src="https://i.pinimg.com/1200x/cf/96/bf/cf96bfef1933905e222649771dd47f1c.jpg" alt="Visual Element 2" class="visual-element">
-        <img src="https://i.pinimg.com/1200x/b2/45/15/b24515e1ea47e66e9a6a9fb8815d3a06.jpg" alt="Visual Element 3" class="visual-element">
-    </div>
+
+    <aside class="side-panel">
+        <div class="status-header">HARDWARE_OS // BUS_X9</div>
+        <div class="console-out" id="log">> INITIALIZING HARDWARE...<br>> PCB_LINK: ACTIVE</div>
+        <div class="btn-grid">
+            <button class="control-btn" onclick="skip(-1)">PREV</button>
+            <button class="control-btn" onclick="toggle()" style="border-color:var(--accent-red)">SYNC</button>
+            <button class="control-btn" onclick="skip(1)">NEXT</button>
+        </div>
+        <div class="volume-ctrl">
+            <label style="font-size: 10px; color:#444;">SIGNAL_GAIN</label>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
+            <div id="meter" style="height: 5px; background: #000; margin-top: 20px;">
+                <div id="bar" style="width: 50%; height:100%; background: var(--active-cyan);"></div>
+            </div>
+        </div>
+    </aside>
 </div>
 
+<audio id="player" crossorigin="anonymous"></audio>
+
+<script>
+    const STATIONS = [
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 10, y: 15 },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 12 },
+        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 15, y: 40 },
+        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 42, y: 48 },
+        { n: 'BEST OF TECHNO', u: 'https://laut.fm/best-of-techno', x: 12, y: 75 },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 55, y: 80 },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 30, y: 5 },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 72 },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 78, y: 35 }
+    ];
+
+    const canvas = document.getElementById('pcb-canvas');
+    const board = document.getElementById('board');
+    const player = document.getElementById('player');
+    const logOut = document.getElementById('log');
+    let current = -1;
+
+    function buildPCB() {
+        // ZAGĘSZCZANIE POWIERZCHNI (Ścieżki miedzi w tle)
+        for(let j=0; j<40; j++){
+            const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const x = Math.random() * 80;
+            const y = Math.random() * 100;
+            p.setAttribute("d", `M ${x}% ${y}% L ${x+5}% ${y}% L ${x+7}% ${y+5}%`);
+            p.setAttribute("stroke", "#0a1a10");
+            p.setAttribute("fill", "none");
+            p.setAttribute("stroke-width", "1");
+            canvas.appendChild(p);
+        }
+
+        STATIONS.forEach((s, i) => {
+            const ic = document.createElement('div');
+            ic.className = 'ic-module';
+            ic.style.left = s.x + '%'; ic.style.top = s.y + '%';
+            ic.id = `ic-${i}`;
+            ic.innerHTML = `<div class="ic-notch"></div><div class="ic-label"><span class="ic-name">${s.n}</span><span class="ic-serial">SN-74HC${100+i}N</span></div>`;
+            ic.onclick = () => mount(i);
+            board.appendChild(ic);
+        });
+
+        drawWiring();
+    }
+
+    function drawWiring() {
+        const panelX = window.innerWidth * 0.72;
+        STATIONS.forEach((s, i) => {
+            const el = document.getElementById(`ic-${i}`);
+            const r = el.getBoundingClientRect();
+            const x = r.left + r.width;
+            const y = r.top + r.height/2;
+
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const d = `M ${x} ${y} L ${x + 30} ${y} L ${x + 30} ${y + (i*15 - 70)} L ${panelX} ${y + (i*15 - 70)}`;
+            path.setAttribute("d", d);
+            path.setAttribute("stroke", "var(--copper-trace)");
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("fill", "none");
+            path.id = `trace-${i}`;
+            canvas.appendChild(path);
+        });
+    }
+
+    function mount(i) {
+        current = i;
+        document.querySelectorAll('.ic-module').forEach((m, idx) => m.classList.toggle('active', idx === i));
+        document.querySelectorAll('path').forEach(p => { if(p.id.startsWith('trace-')) p.setAttribute('stroke', 'var(--copper-trace)'); });
+
+        const activeTrace = document.getElementById(`trace-${i}`);
+        if(activeTrace) {
+            activeTrace.setAttribute('stroke', 'var(--active-cyan)');
+            activeTrace.setAttribute('stroke-width', '3');
+        }
+
+        logOut.innerHTML = `> MOUNTING IC_ARRAY_${i}...<br>> ID: ${STATIONS[i].n}<br>> DATA_LINK: OK<br>> BUFFERING...`;
+        
+        // FIX STACJI
+        player.pause();
+        player.src = STATIONS[i].u;
+        player.load();
+        player.play().then(() => { logOut.innerHTML += `<br>> SIGNAL_LOCKED.`; });
+    }
+
+    function toggle() { if(current === -1) mount(0); else player.paused ? player.play() : player.pause(); }
+    function skip(dir) { let n = current + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
+    function setV(v) { player.volume = v; document.getElementById('bar').style.width = (v*100)+'%'; }
+
+    window.onresize = () => { canvas.innerHTML = ''; buildPCB(); };
+    buildPCB();
+</script>
 </body>
 </html>
