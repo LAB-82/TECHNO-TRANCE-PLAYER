@@ -3,198 +3,211 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER_PCB_TECHNO_V7</title>
+    <title>TECHNO_TRANCE_PCB_PRO_V7_FINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
 
         :root {
-            --pcb-bg: #010a01;
-            --trace-dim: #102e1a;
-            --neon-green: #39ff14;
-            --neon-pulse: #fff;
-            --chip-body: rgba(10, 15, 10, 0.95);
-            --panel-glass: rgba(0, 20, 10, 0.85);
+            --laminat: #010502;
+            --miedz: #0a1f11;
+            --neon: #00f2ff;
+            --gold: #c3a343;
+            --chip-body: #0a0a0a;
+            --alert: #ff0055;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: var(--pcb-bg); 
-            color: var(--neon-green); 
-            font-family: 'JetBrains Mono', monospace; 
+            background: var(--laminat); 
+            color: var(--neon);
+            font-family: 'JetBrains Mono', monospace;
             overflow: hidden; height: 100vh;
         }
 
-        /* TŁO PCB - ŚCIEŻKI I PRĄD */
-        #pcb-overlay {
+        /* BACKGROUND PCB - ANIMOWANE ŚCIEŻKI */
+        #pcb-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
+            z-index: 0; pointer-events: none;
         }
 
-        .main-wrapper { display: flex; height: 100vh; position: relative; z-index: 10; }
+        .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
 
-        .board-area { flex: 2; position: relative; overflow: hidden; perspective: 1000px; }
+        .motherboard { 
+            flex: 2; position: relative; 
+            background-image: 
+                linear-gradient(var(--miedz) 1px, transparent 1px),
+                linear-gradient(90deg, var(--miedz) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
 
-        /* REALISTYCZNY UKŁAD SCALONY (Z REFERENCJI) */
-        .ic-processor {
-            position: absolute; width: 140px; height: 140px;
+        /* UKŁAD SCALONY - ZGODNY Z IMAGE_C8A6D7.PNG */
+        .ic-chip {
+            position: absolute; width: 150px; height: 150px;
             background: var(--chip-body);
-            border: 2px solid var(--neon-green);
-            box-shadow: 0 0 20px rgba(57, 255, 20, 0.2), inset 0 0 15px rgba(57, 255, 20, 0.1);
-            cursor: pointer; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid #333;
+            cursor: pointer; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 0 20px rgba(0,0,0,1);
         }
 
-        /* PINY ZE WSZYSTKICH STRON (ZDJĘCIE 1) */
-        .ic-processor::before {
-            content: ''; position: absolute;
-            top: -15px; bottom: -15px; left: 10px; right: 10px;
-            background: repeating-linear-gradient(90deg, var(--neon-green) 0, var(--neon-green) 2px, transparent 2px, transparent 10px);
-            opacity: 0.6;
+        /* PINY Z CZTERECH STRON */
+        .ic-chip::before {
+            content: ''; position: absolute; top: -15px; bottom: -15px; left: 20px; right: 20px;
+            background: repeating-linear-gradient(90deg, #555 0px, #555 2px, transparent 2px, transparent 12px);
         }
-        .ic-processor::after {
-            content: ''; position: absolute;
-            left: -15px; right: -15px; top: 10px; bottom: 10px;
-            background: repeating-linear-gradient(0deg, var(--neon-green) 0, var(--neon-green) 2px, transparent 2px, transparent 10px);
-            opacity: 0.6;
+        .ic-chip::after {
+            content: ''; position: absolute; left: -15px; right: -15px; top: 20px; bottom: 20px;
+            background: repeating-linear-gradient(0deg, #555 0px, #555 2px, transparent 2px, transparent 12px);
         }
 
-        .ic-processor.active {
-            border-color: #fff;
-            box-shadow: 0 0 40px var(--neon-green);
-            transform: translateZ(20px);
+        .chip-surface {
+            position: relative; width: 100%; height: 100%; background: var(--chip-body);
+            z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid #222;
         }
 
-        .ic-label { font-family: 'Orbitron'; font-size: 10px; z-index: 5; text-align: center; font-weight: bold; }
-        .ic-data { font-size: 7px; color: #555; z-index: 5; margin-top: 5px; }
+        .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); text-align: center; }
+        .chip-spec { font-size: 7px; color: #444; margin-top: 8px; }
 
-        /* PANEL KONTROLNY (STYLE PINTEREST) */
-        .side-hud { 
-            flex: 0.7; background: var(--panel-glass); 
-            border-left: 1px solid var(--neon-green);
-            backdrop-filter: blur(15px);
+        .ic-chip.active {
+            border-color: var(--neon);
+            box-shadow: 0 0 40px rgba(0, 242, 255, 0.4);
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        /* PANEL KONTROLNY - CYBERPUNK HUD STYLE */
+        .control-tower { 
+            flex: 0.8; background: rgba(0, 8, 5, 0.95); 
+            border-left: 2px solid var(--neon);
             display: flex; flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
-        .hud-top { padding: 30px; border-bottom: 1px solid var(--neon-green); text-shadow: 0 0 10px var(--neon-green); }
-        .vfd-display { 
-            flex: 1; margin: 20px; padding: 20px; 
-            background: rgba(0,0,0,0.3); border: 1px dashed var(--neon-green);
-            font-size: 11px; line-height: 1.6; overflow-y: auto;
+        .hud-header { 
+            padding: 25px; border-bottom: 2px solid var(--alert); 
+            font-family: 'Orbitron'; letter-spacing: 2px;
+            background: linear-gradient(90deg, rgba(255,0,85,0.1), transparent);
         }
 
-        .controls-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--neon-green); padding: 1px; }
-        .hud-btn { background: #000; border: none; color: var(--neon-green); padding: 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
-        .hud-btn:hover { background: var(--neon-green); color: #000; }
-
-        /* ANIMACJA PRZEPŁYWU PRĄDU */
-        @keyframes pulseLine {
-            to { stroke-dashoffset: -100; }
+        .terminal { 
+            margin: 20px; padding: 15px; background: rgba(0,0,0,0.8); flex: 1; 
+            border: 1px solid #1a1a1a; font-size: 11px; color: #39ff14; 
+            overflow-y: auto; box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.05);
         }
-        .flow-line { 
-            fill: none; stroke: var(--neon-green); stroke-width: 1.5; 
-            stroke-dasharray: 10, 20; animation: pulseLine 3s linear infinite; 
-            opacity: 0.3;
-        }
-        .flow-line.active { opacity: 1; stroke: #fff; stroke-width: 2.5; filter: drop-shadow(0 0 5px var(--neon-green)); }
 
+        .btn-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: #222; padding: 1px; }
+        .hw-btn {
+            background: #000; border: none; color: var(--neon);
+            padding: 20px 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px;
+            transition: 0.3s;
+        }
+        .hw-btn:hover { background: var(--neon); color: #000; }
+
+        .slider-wrap { padding: 30px; border-top: 1px solid #222; }
+
+        /* PRZEPŁYW PRĄDU (SVG ANIMATION) */
+        .power-trace {
+            stroke-dasharray: 20;
+            animation: flow 5s linear infinite;
+        }
+        @keyframes flow { to { stroke-dashoffset: -100; } }
     </style>
 </head>
 <body>
 
-<svg id="pcb-overlay"></svg>
+<svg id="pcb-bg"></svg>
 
-<div class="main-wrapper">
-    <div class="board-area" id="motherboard"></div>
+<div class="main-interface">
+    <div class="motherboard" id="board"></div>
 
-    <aside class="side-hud">
-        <div class="hud-top">
-            <h2 style="font-family: 'Orbitron'; font-size: 14px;">SIGNAL_PROCESSOR_v7.0</h2>
-            <div style="font-size: 8px; opacity: 0.6;">HARDWARE_AUDIT_VERIFIED: 2026</div>
+    <aside class="control-tower">
+        <div class="hud-header">LINK_INTERFACE_V7</div>
+        <div class="terminal" id="term-out">> SYSTEM_READY<br>> STANDBY_FOR_INPUT...</div>
+        <div class="btn-matrix">
+            <button class="hw-btn" onclick="skip(-1)">PREV</button>
+            <button class="hw-btn" onclick="toggle()" style="color:var(--alert)">SYNC</button>
+            <button class="hw-btn" onclick="skip(1)">NEXT</button>
         </div>
-        
-        <div class="vfd-display" id="monitor">> SYSTEM_IDLE...<br>> READY_FOR_MOUNT</div>
-
-        <div class="controls-grid">
-            <button class="hud-btn" onclick="skip(-1)">PREV</button>
-            <button class="hud-btn" onclick="toggle()">PLAY/SYNC</button>
-            <button class="hud-btn" onclick="skip(1)">NEXT</button>
-        </div>
-
-        <div style="padding: 30px;">
-            <input type="range" min="0" max="1" step="0.01" value="0.5" style="width: 100%; accent-color: var(--neon-green);" oninput="setVol(this.value)">
+        <div class="slider-wrap">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" style="width:100%; accent-color:var(--neon)" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<audio id="core-engine" crossorigin="anonymous"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 15, y: 15 },
-        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 50, y: 10 },
-        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 20, y: 45 },
-        { n: 'GEHIRN', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 55, y: 50 },
-        { n: 'B.O. TECHNO', u: 'https://laut.fm/best-of-techno', x: 15, y: 75 },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 50, y: 80 },
-        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 80, y: 15 },
-        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 82, y: 50 },
-        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 80, y: 80 }
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 10, y: 15 },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 10 },
+        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 15, y: 40 },
+        { n: 'GEHIRN', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 48, y: 45 },
+        { n: 'B.O. TECHNO', u: 'https://laut.fm/best-of-techno', x: 12, y: 75 },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 55, y: 80 },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 78, y: 15 },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 45 },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 80, y: 78 }
     ];
 
-    const motherboard = document.getElementById('motherboard');
-    const svg = document.getElementById('pcb-overlay');
-    const engine = document.getElementById('core-engine');
-    const monitor = document.getElementById('monitor');
-    let activeID = -1;
+    const svg = document.getElementById('pcb-bg');
+    const board = document.getElementById('board');
+    const player = document.getElementById('player');
+    const term = document.getElementById('term-out');
+    let currentIdx = -1;
 
-    function initPCB() {
-        // Generowanie ożebrowania tła (PCB TRACES)
-        for(let i=0; i<40; i++) {
-            const l = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const y = i * 25;
-            l.setAttribute("d", `M 0 ${y} L ${window.innerWidth} ${y}`);
-            l.setAttribute("class", "flow-line");
-            svg.appendChild(l);
+    function buildHardware() {
+        let traces = "";
+        // Gęste tło ścieżek
+        for(let i=0; i<150; i++) {
+            const x = Math.random()*100;
+            const y = Math.random()*100;
+            traces += `<path class="power-trace" d="M ${x}% ${y}% L ${x+5}% ${y+2}%" stroke="#0a2211" stroke-width="0.5" fill="none"/>`;
         }
+        svg.innerHTML = traces;
 
         STATIONS.forEach((s, i) => {
-            const chip = document.createElement('div');
-            chip.className = 'ic-processor';
-            chip.style.left = s.x + '%'; chip.style.top = s.y + '%';
-            chip.innerHTML = `<div class="ic-label">${s.n}</div><div class="ic-data">BUS_ADDR: 0x${i}F<br>CORE: X-82</div>`;
-            chip.onclick = () => mount(i);
-            motherboard.appendChild(chip);
+            const ic = document.createElement('div');
+            ic.className = 'ic-chip';
+            ic.style.left = s.x + '%'; ic.style.top = s.y + '%';
+            ic.id = `ic-${i}`;
+            ic.innerHTML = `<div class="chip-surface">
+                <span class="chip-id">${s.n}</span>
+                <span class="chip-spec">UART_LOGIC_0x${i}A</span>
+            </div>`;
+            ic.onclick = () => mount(i);
+            board.appendChild(ic);
         });
     }
 
     function mount(i) {
-        activeID = i;
-        document.querySelectorAll('.ic-processor').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        currentIdx = i;
+        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
         
-        monitor.innerHTML = `> MOUNTING_COMPONENT: ${STATIONS[i].n}...<br>> ATTEMPTING_STREAM_HANDSHAKE...<br>> ADDR: ${STATIONS[i].u}`;
+        term.innerHTML += `<br>> MOUNTING_SOURCE: ${STATIONS[i].n}...`;
+        term.scrollTop = term.scrollHeight;
 
-        // AUDIO FIX: Reset i wymuszenie typu
-        engine.pause();
-        engine.innerHTML = `<source src="${STATIONS[i].u}" type="audio/mpeg">`;
-        engine.load();
+        player.pause();
+        player.src = STATIONS[i].u;
+        player.load();
         
-        const playPromise = engine.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                monitor.innerHTML += `<br>> STATUS: SIGNAL_LOCKED_STABLE`;
-            }).catch(error => {
-                monitor.innerHTML += `<br>> ERROR: INTERACTIVE_BOOT_REQUIRED`;
-            });
-        }
+        player.play()
+            .then(() => { term.innerHTML += `<br>> SIGNAL_LOCKED_STABLE.`; })
+            .catch(e => { term.innerHTML += `<br>> ERROR: BYPASS_REQUIRED. PRESS SYNC.`; });
     }
 
-    function toggle() { if(activeID === -1) mount(0); else engine.paused ? engine.play() : engine.pause(); }
-    function skip(dir) { let n = activeID + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
-    function setVol(v) { engine.volume = v; }
+    function toggle() { 
+        if(currentIdx === -1) mount(0); 
+        else player.paused ? player.play() : player.pause(); 
+    }
+    
+    function skip(dir) { 
+        let n = currentIdx + dir; 
+        if(n >= 0 && n < STATIONS.length) mount(n); 
+    }
 
-    window.onresize = () => { svg.innerHTML = ''; initPCB(); };
-    initPCB();
+    function setV(v) { player.volume = v; }
+
+    window.onresize = () => { svg.innerHTML = ''; buildHardware(); };
+    buildHardware();
 </script>
 </body>
 </html>
