@@ -2,243 +2,276 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CYBER-PCB PROTOTYPE v2.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEURAL-CORE PCB TERMINAL 2199</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
 
         :root {
-            --pcb-base: #020502;
-            --trace-dim: #1a331a;
-            --trace-hot: #00ff41;
-            --accent: #ff003c;
-            --display-bg: #050a05;
+            --pcb-deep: #02040a;
+            --trace-cyan: #00f2ff;
+            --trace-dim: #102a43;
+            --accent-pink: #ff0055;
+            --hacker-green: #39ff14;
+            --glow: 0 0 15px rgba(0, 242, 255, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: var(--pcb-base); color: var(--trace-hot); 
-            font-family: 'Share Tech Mono', monospace; overflow: hidden; 
-            height: 100vh; width: 100vw;
+            background: var(--pcb-deep); color: var(--trace-cyan); 
+            font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh;
         }
 
-        /* TŁO PŁYTY DRUKOWANEJ */
-        #pcb-layer {
+        /* TŁO ARCHITEKTURY PCB */
+        #pcb-svg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none; opacity: 0.6;
+            z-index: 0; pointer-events: none;
         }
 
-        .terminal-container { display: flex; height: 100vh; position: relative; z-index: 1; }
+        .main-frame { display: flex; height: 100vh; position: relative; z-index: 1; }
 
-        /* AREA KOMPONENTÓW */
-        .breadboard { 
-            flex: 1.5; position: relative; overflow: hidden; 
-            background-image: radial-gradient(circle, #111 1px, transparent 1px);
-            background-size: 20px 20px;
+        /* OBSZAR UKŁADÓW SCALONYCH */
+        .chipset-area { flex: 1.6; position: relative; perspective: 1000px; }
+
+        .chip {
+            position: absolute; background: rgba(5, 15, 25, 0.9);
+            border: 1px solid var(--trace-dim); width: 110px; height: 70px;
+            cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            box-shadow: 0 0 10px rgba(0,0,0,0.8); z-index: 10;
         }
 
-        /* MODUŁY / CHIPY */
-        .module {
-            position: absolute; background: #0a0a0a; border: 1px solid #333;
-            padding: 5px; min-width: 90px; height: 45px; z-index: 10;
-            box-shadow: 4px 4px 0px #000; cursor: pointer;
-            display: flex; flex-direction: column; justify-content: center;
+        /* Efekt pofalowanych styków */
+        .chip::before {
+            content: ''; position: absolute; top: -2px; left: 10px; right: 10px; height: 2px;
+            background: repeating-linear-gradient(90deg, var(--trace-cyan) 0, var(--trace-cyan) 2px, transparent 2px, transparent 6px);
+            opacity: 0.5;
         }
 
-        .module::before { /* Piny boczne */
-            content: ''; position: absolute; left: -6px; top: 10%; bottom: 10%; width: 6px;
-            background: repeating-linear-gradient(to bottom, #555 0, #555 3px, transparent 3px, transparent 6px);
+        .chip.active {
+            border-color: var(--trace-cyan); box-shadow: var(--glow);
+            transform: translateZ(20px) scale(1.1); background: #0a1e2f;
         }
 
-        .module.cpu { width: 130px; height: 90px; border: 2px solid var(--trace-hot); background: #000; }
-        .module.active { border-color: #fff; box-shadow: 0 0 15px var(--trace-hot); }
-        .module label { font-size: 9px; color: #555; text-transform: uppercase; cursor: pointer; }
-        .module .val { font-size: 11px; color: var(--trace-hot); }
-
-        /* PANEL HAKERA / STEROWANIE */
-        .right-panel { 
-            flex: 0.6; background: #0a0a0a; border-left: 4px solid #1a1a1a;
-            display: flex; flex-direction: column; padding: 0; position: relative;
+        .chip.central-brain { 
+            width: 160px; height: 100px; border: 2px solid var(--accent-pink);
+            background: radial-gradient(circle, #1a0510 0%, #02040a 100%);
+            box-shadow: 0 0 30px rgba(255, 0, 85, 0.3);
         }
 
-        .module-header {
-            background: #1a1a1a; padding: 10px; font-size: 14px; color: #fff;
-            border-bottom: 2px solid var(--accent); display: flex; justify-content: space-between;
+        .chip-label { font-family: 'Orbitron'; font-size: 10px; text-align: center; pointer-events: none; }
+        .chip-status { font-size: 8px; color: var(--trace-dim); margin-top: 5px; }
+        .active .chip-status { color: var(--hacker-green); }
+
+        /* PANEL STEROWANIA - HACKER DASHBOARD */
+        .hacker-panel { 
+            flex: 0.6; background: rgba(2, 6, 12, 0.95); 
+            border-left: 1px solid var(--trace-dim); display: flex; flex-direction: column;
+            backdrop-filter: blur(10px);
         }
 
-        .vfd-display {
-            background: var(--display-bg); margin: 15px; padding: 15px;
-            border: 1px solid #1a331a; box-shadow: inset 0 0 10px #000;
-            height: 140px; position: relative;
+        .hud-header {
+            padding: 20px; background: rgba(16, 42, 67, 0.3); border-bottom: 2px solid var(--trace-cyan);
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .vfd-text { font-size: 12px; color: var(--trace-hot); text-shadow: 0 0 5px var(--trace-hot); line-height: 1.4; }
-
-        .fader-rack { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 30px; }
-        
-        /* Stylizowane suwaki */
-        .fader-gate { position: relative; height: 40px; background: #050505; border: 1px solid #222; }
-        .fader-gate input[type=range] {
-            width: 100%; -webkit-appearance: none; background: transparent;
-            position: absolute; top: 0; z-index: 5; height: 100%;
-        }
-        .fader-gate input::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 40px; height: 38px; 
-            background: #222; border: 2px solid var(--accent); cursor: ns-resize;
+        .hud-display {
+            padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 20px;
         }
 
-        .btn-matrix { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; padding: 15px; 
-            border-top: 1px solid #222;
+        .visualizer {
+            height: 120px; border: 1px solid var(--trace-dim); background: #000;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
         }
-        .square-btn {
-            aspect-ratio: 1; background: #111; border: 1px solid #333;
-            color: var(--trace-hot); font-family: inherit; cursor: pointer;
-        }
-        .square-btn:active { background: var(--accent); color: #fff; }
 
-        @media (max-width: 900px) {
-            .terminal-container { flex-direction: column; }
-            .right-panel { border-left: none; border-top: 4px solid #1a1a1a; }
+        /* Animowane paski danych w wizualizatorze */
+        .data-bar {
+            width: 4px; height: 20%; background: var(--trace-cyan); margin: 1px;
+            animation: pulse 1s infinite ease-in-out;
+        }
+
+        @keyframes pulse { 0%, 100% { height: 20%; } 50% { height: 80%; } }
+
+        .control-hex {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+        }
+
+        .hex-btn {
+            background: transparent; border: 1px solid var(--trace-dim); color: var(--trace-cyan);
+            padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px;
+            transition: 0.2s; clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0 50%);
+        }
+
+        .hex-btn:hover { border-color: var(--trace-cyan); background: rgba(0, 242, 255, 0.1); }
+        .hex-btn.play-btn { border-color: var(--accent-pink); color: var(--accent-pink); }
+
+        .fader-group { margin-top: auto; padding: 20px; }
+        .fader-label { font-size: 10px; color: var(--trace-dim); margin-bottom: 10px; display: flex; justify-content: space-between;}
+
+        input[type=range] {
+            width: 100%; -webkit-appearance: none; background: var(--trace-dim); height: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 15px; height: 15px; background: var(--trace-cyan);
+            border-radius: 50%; cursor: pointer; box-shadow: var(--glow);
+        }
+
+        @media (max-width: 1000px) {
+            .main-frame { flex-direction: column; }
+            .hacker-panel { flex: 1; border-left: none; border-top: 1px solid var(--trace-dim); }
         }
     </style>
 </head>
 <body>
 
-<svg id="pcb-layer"></svg>
+<svg id="pcb-svg"></svg>
 
-<div class="terminal-container">
-    <div class="breadboard" id="main-board"></div>
+<div class="main-frame">
+    <div class="chipset-area" id="board">
+        <!-- Chipy zostaną wygenerowane przez JS -->
+    </div>
 
-    <aside class="right-panel">
-        <div class="module-header">
-            <span>CORE_CONTROLLER v2.0</span>
-            <span style="color:var(--accent)">ONLINE</span>
-        </div>
+    <aside class="hacker-panel">
+        <header class="hud-header">
+            <div style="font-family: 'Orbitron'; font-size: 14px;">NEURAL_LINK_v4.2</div>
+            <div style="color: var(--hacker-green); font-size: 10px;">SIGNAL: STABLE</div>
+        </header>
 
-        <div class="vfd-display">
-            <div class="vfd-text" id="console-log">INIT SYSTEM...<br>READY_</div>
-            <div id="stat-bar" style="position:absolute; bottom:5px; right:10px; font-size:10px; color:#333;">TX/RX [||||||||]</div>
-        </div>
-
-        <div class="fader-rack">
-            <div style="font-size:10px; color:#444;">MASTER_GAIN</div>
-            <div class="fader-gate">
-                <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
+        <div class="hud-display">
+            <div class="visualizer" id="viz">
+                <!-- Data bars generated by JS -->
             </div>
-            <div style="font-size:10px; color:#444;">DATA_BUS_LOAD</div>
-            <div style="height:4px; background:#111; position:relative;">
-                <div id="load-bar" style="width:45%; height:100%; background:var(--trace-hot);"></div>
+
+            <div style="font-size: 11px; color: var(--accent-pink);">[ DECODING_STATION_METADATA ]</div>
+            <div id="meta-info" style="font-size: 14px; min-height: 40px;">STATION_ID: NULL_ID</div>
+
+            <div class="control-hex">
+                <button class="hex-btn" onclick="skip(-1)">PREV</button>
+                <button class="hex-btn play-btn" onclick="toggle()">SYNC</button>
+                <button class="hex-btn" onclick="skip(1)">NEXT</button>
             </div>
         </div>
 
-        <div class="btn-matrix">
-            <button class="square-btn" onclick="skip(-1)">PREV</button>
-            <button class="square-btn" style="border-color:var(--accent)" onclick="toggle()">PLAY</button>
-            <button class="square-btn" onclick="skip(1)">NEXT</button>
+        <div class="fader-group">
+            <div class="fader-label"><span>NEURAL_GAIN</span><span id="vol-val">50%</span></div>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<audio id="audio-engine"></audio>
+<audio id="core-audio"></audio>
 
 <script>
-    const CHIPS = [
-        { n: 'T-88', u: 'https://laut.fm/tech88', x: 10, y: 15 },
-        { n: 'HR3-C', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 10 },
-        { n: '1K-T', u: 'https://laut.fm/1000techno', x: 15, y: 40 },
-        { n: 'GEHIRN_TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', core: true, x: 40, y: 50 },
-        { n: 'B-TECH', u: 'https://laut.fm/best-of-techno', x: 12, y: 75 },
-        { n: 'BURN', u: 'https://laut.fm/chris_burn', x: 55, y: 80 },
-        { n: 'DEEP', u: 'https://laut.fm/deep-house-sounds', x: 30, y: 5 },
-        { n: 'BOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 70 },
-        { n: 'SYMB', u: 'https://laut.fm/symbiotic-beats', x: 78, y: 30 }
+    const NET_NODES = [
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 15, y: 15 },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 50, y: 10 },
+        { n: '1K TECHNO', u: 'https://laut.fm/1000techno', x: 20, y: 40 },
+        { n: 'GEHIRN CORE', u: 'https://laut.fm/gehirn-treiber-beat-radio', core: true, x: 45, y: 45 },
+        { n: 'B-TECHNO', u: 'https://laut.fm/best-of-techno', x: 10, y: 70 },
+        { n: 'BURN_NODE', u: 'https://laut.fm/chris_burn', x: 55, y: 80 },
+        { n: 'DEEP_D', u: 'https://laut.fm/deep-house-sounds', x: 35, y: 5 },
+        { n: 'H-BOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 70 },
+        { n: 'SYM_BEATS', u: 'https://laut.fm/symbiotic-beats', x: 80, y: 35 }
     ];
 
-    const board = document.getElementById('main-board');
-    const svg = document.getElementById('pcb-layer');
-    const engine = document.getElementById('audio-engine');
-    const log = document.getElementById('console-log');
-    let activeID = -1;
+    const board = document.getElementById('board');
+    const svg = document.getElementById('pcb-svg');
+    const audio = document.getElementById('core-audio');
+    const meta = document.getElementById('meta-info');
+    let activeNode = -1;
 
-    function buildHardware() {
-        CHIPS.forEach((c, i) => {
-            const m = document.createElement('div');
-            m.className = `module ${c.core ? 'cpu' : ''}`;
-            m.style.left = c.x + '%';
-            m.style.top = c.y + '%';
-            m.id = `mod-${i}`;
-            m.innerHTML = `<label>${c.core ? 'Master_CPU' : 'Node_'+i}</label><div class="val">${c.n}</div>`;
-            m.onclick = () => mountStream(i);
-            board.appendChild(m);
+    function buildPCB() {
+        NET_NODES.forEach((node, i) => {
+            const chip = document.createElement('div');
+            chip.className = `chip ${node.core ? 'central-brain' : ''}`;
+            chip.style.left = node.x + '%';
+            chip.style.top = node.y + '%';
+            chip.id = `node-${i}`;
+            chip.innerHTML = `<span class="chip-label">${node.n}</span><span class="chip-status">OFFLINE</span>`;
+            chip.onclick = () => connect(i);
+            board.appendChild(chip);
         });
-        setTimeout(routeTraces, 100);
+
+        // Generowanie pasków wizualizacji
+        const viz = document.getElementById('viz');
+        for(let i=0; i<30; i++) {
+            const bar = document.createElement('div');
+            bar.className = 'data-bar';
+            bar.style.animationDelay = (i * 0.05) + 's';
+            viz.appendChild(bar);
+        }
+
+        setTimeout(drawTraces, 200);
     }
 
-    function routeTraces() {
+    function drawTraces() {
         svg.innerHTML = '';
-        const w = window.innerWidth;
-        const h = window.innerHeight;
-        const panelX = w * 0.7; // Start panelu
+        const panelWidth = window.innerWidth * 0.7;
 
-        CHIPS.forEach((c, i) => {
-            const el = document.getElementById(`mod-${i}`);
+        NET_NODES.forEach((node, i) => {
+            const el = document.getElementById(`node-${i}`);
             const r = el.getBoundingClientRect();
-            const startX = r.left + r.width;
+            const startX = r.left + r.width/2;
             const startY = r.top + r.height/2;
 
-            // RYSOWANIE MAGISTRALI (KĄTY PROSTE)
-            const midX = startX + (panelX - startX) * 0.5;
-            
+            // Tworzenie "magistrali danych" (Data Bus)
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            // Ścieżka typu S (Manhattan routing)
-            const d = `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${startY + (i*10 - 45)} L ${panelX} ${startY + (i*10 - 45)}`;
+            const midX = startX + (panelWidth - startX) * 0.4;
+            
+            // Architektura schodkowa (Z-Trace)
+            const d = `M ${startX} ${startY} L ${midX} ${startY} L ${midX} ${startY + (i*12-50)} L ${window.innerWidth} ${startY + (i*12-50)}`;
             
             path.setAttribute("d", d);
-            path.setAttribute("stroke", "var(--trace-dim)");
-            path.setAttribute("stroke-width", "1.5");
+            path.setAttribute("stroke", "rgba(16, 42, 67, 0.4)");
+            path.setAttribute("stroke-width", "2");
             path.setAttribute("fill", "none");
+            path.id = `trace-${i}`;
             svg.appendChild(path);
 
-            // Punkty lutownicze (Vias)
-            drawVia(startX, startY);
+            // Dodatkowe mikro-ścieżki (Decorations)
+            if(i % 2 === 0) {
+                const dec = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                dec.setAttribute("cx", startX + 20); dec.setAttribute("cy", startY - 20);
+                dec.setAttribute("r", "2"); dec.setAttribute("fill", "var(--trace-dim)");
+                svg.appendChild(dec);
+            }
         });
     }
 
-    function drawVia(x, y) {
-        const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-        c.setAttribute("cx", x); c.setAttribute("cy", y); c.setAttribute("r", "3");
-        c.setAttribute("fill", "#333");
-        svg.appendChild(c);
-    }
+    function connect(i) {
+        activeNode = i;
+        document.querySelectorAll('.chip').forEach((c, idx) => {
+            c.classList.toggle('active', idx === i);
+            c.querySelector('.chip-status').textContent = (idx === i) ? 'SYNC_ACTIVE' : 'OFFLINE';
+        });
 
-    function mountStream(i) {
-        activeID = i;
-        document.querySelectorAll('.module').forEach((m, idx) => m.classList.toggle('active', idx === i));
+        document.querySelectorAll('path').forEach(p => p.setAttribute('stroke', 'rgba(16, 42, 67, 0.4)'));
+        document.getElementById(`trace-${i}`).setAttribute('stroke', 'var(--trace-cyan)');
+
+        meta.textContent = `STATION: ${NET_NODES[i].n} | NODE_ID: 0x${i}FF4`;
         
-        log.innerHTML = `MOUNTING_NODE: ${CHIPS[i].n}<br>ADDR: ${CHIPS[i].u}<br>STATUS: STREAMING...`;
-        
-        engine.src = CHIPS[i].u;
-        engine.load();
-        engine.play().catch(() => { log.innerHTML += "<br>!! USER_ACTION_REQUIRED !!"; });
-        
-        document.getElementById('load-bar').style.width = Math.random() * 100 + '%';
+        audio.src = NET_NODES[i].u;
+        audio.load();
+        audio.play().catch(() => meta.textContent = "USER_INTERACTION_REQUIRED");
     }
 
     function toggle() {
-        if(activeID === -1) mountStream(3);
-        else engine.paused ? engine.play() : engine.pause();
+        if(activeNode === -1) connect(3);
+        else audio.paused ? audio.play() : audio.pause();
     }
 
     function skip(dir) {
-        let n = activeID + dir;
-        if(n >= 0 && n < CHIPS.length) mountStream(n);
+        let next = activeNode + dir;
+        if(next >= 0 && next < NET_NODES.length) connect(next);
     }
 
-    function setV(v) { engine.volume = v; }
+    function setV(v) { 
+        audio.volume = v; 
+        document.getElementById('vol-val').textContent = Math.round(v*100) + '%';
+    }
 
-    window.onresize = routeTraces;
-    buildHardware();
+    window.onresize = drawTraces;
+    buildPCB();
 </script>
 </body>
 </html>
