@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>RMF TERMINAL - FINAL COSMETICS</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        /* Dodano czcionkę Megrim dla efektu napisu z obrazka */
+        @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
             --yellow: #fce300;
@@ -37,15 +38,13 @@
 
         .grid { 
             flex: 1.4; display: grid; 
-            /* Dostosowano siatkę do większej liczby kafelków */
             grid-template-columns: repeat(5, 1fr); 
             grid-auto-rows: 1fr;
             gap: 10px; 
-            overflow-y: auto; /* Dodano przewijanie dla siatki przy wielu stacjach */
+            overflow-y: auto;
             padding-right: 5px;
         }
 
-        /* Stylizacja scrollbara dla siatki */
         .grid::-webkit-scrollbar { width: 4px; }
         .grid::-webkit-scrollbar-track { background: var(--bg); }
         .grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
@@ -92,6 +91,7 @@
             border-left: 1px solid var(--border); padding-left: 3vw;
         }
 
+        /* Stylizacja logo z obrazka */
         .logo-display {
             width: 100%; max-width: 320px; aspect-ratio: 16/10;
             border: 2.5px solid var(--yellow); border-radius: 20px;
@@ -101,8 +101,16 @@
             text-align: center;
             padding: 20px;
         }
-        .logo-display h2 { font-size: 32px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); margin-bottom: 5px; }
-        .logo-display p { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; }
+        .logo-display h2 { 
+            font-family: 'Megrim', cursive; /* Czcionka symulująca styl z obrazka */
+            font-size: 52px; 
+            color: var(--yellow); 
+            text-shadow: 0 0 10px var(--yellow); 
+            margin-bottom: 0px;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+        .logo-display p { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; margin-top: 5px; }
 
         .controls { display: flex; align-items: center; gap: 3vw; }
         .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; filter: drop-shadow(0 0 8px rgba(252, 227, 0, 0.6)); }
@@ -123,7 +131,7 @@
             .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }
             .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid var(--border); padding: 20px 0; gap: 20px; }
             .logo-display { width: 95%; height: 100px; aspect-ratio: auto; }
-            .logo-display h2 { font-size: 22px; }
+            .logo-display h2 { font-size: 38px; }
             .vol-box { width: 95%; }
         }
     </style>
@@ -131,7 +139,7 @@
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">WYBIERZ STACJĘ</div>
+    <div class="header-info" id="playing-now">SYSTEM ONLINE</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -140,7 +148,8 @@
 
     <aside class="sidebar">
         <div class="logo-display">
-            <h2 id="display-name">-</h2>
+            <!-- Napis wzorowany na pliku image_36afc8.png -->
+            <h2 id="display-name">TECHNO</h2>
             <p id="display-cat">Terminal Ready</p>
         </div>
 
@@ -164,48 +173,37 @@
 
 <script>
     const STATIONS = [
-        // TECHNO
         { n: 'TECH 88', c: 'TECHNO', u: 'https://laut.fm/tech88' },
         { n: 'HR 3 CLUBNIGHT', c: 'TECHNO', u: 'https://laut.fm/hr3_clubnight' },
         { n: '1000 TECHNO', c: 'TECHNO', u: 'https://laut.fm/1000techno' },
         { n: 'BEST OF TECHNO', c: 'TECHNO', u: 'https://laut.fm/best-of-techno' },
         { n: 'CHRIS BURN', c: 'TECHNO', u: 'https://laut.fm/chris_burn' },
         { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' },
-        
-        // DRUM N BASS
-        { n: 'DRUMANDBASS FM', c: 'D&B', u: 'https://laut.fm/drumandbass_fm' },
-        { n: 'FMBASE', c: 'D&B', u: 'https://laut.fm/fmbase' },
-        { n: 'DNBZONE', c: 'D&B', u: 'https://laut.fm/dnbzone' },
-        { n: 'DNB BASE', c: 'D&B', u: 'https://laut.fm/dnb-base' },
-        { n: 'A5RECORDINGS', c: 'D&B', u: 'https://laut.fm/a5recordings' },
-        { n: 'DJMO', c: 'D&B', u: 'https://laut.fm/djmo' },
-
-        // HOUSE
-        { n: 'DEEP HOUSE', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
+        { n: 'DRUMANDBASS FM', c: 'DRUM N BASS', u: 'https://laut.fm/drumandbass_fm' },
+        { n: 'FMBASE', c: 'DRUM N BASS', u: 'https://laut.fm/fmbase' },
+        { n: 'DNBZONE', c: 'DRUM N BASS', u: 'https://laut.fm/dnbzone' },
+        { n: 'DNB BASE', c: 'DRUM N BASS', u: 'https://laut.fm/dnb-base' },
+        { n: 'A5RECORDINGS', c: 'DRUM N BASS', u: 'https://laut.fm/a5recordings' },
+        { n: 'DJMO', c: 'DRUM N BASS', u: 'https://laut.fm/djmo' },
+        { n: 'DEEP HOUSE SOUNDS', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
         { n: 'HOUSEBOMB FN', c: 'HOUSE', u: 'https://laut.fm/housebomb-fn' },
         { n: 'SYMBIOTIC BEATS', c: 'HOUSE', u: 'https://laut.fm/symbiotic-beats' },
         { n: 'HOUSE', c: 'HOUSE', u: 'https://laut.fm/house' },
         { n: 'FAF RECORDS 979', c: 'HOUSE', u: 'https://laut.fm/faf-records-979' },
         { n: 'TORNADO FM', c: 'HOUSE', u: 'https://laut.fm/tornadofm' },
-
-        // TRANCE
         { n: 'TRANCEMOTION FM', c: 'TRANCE', u: 'https://laut.fm/trancemotionfm' },
         { n: 'TRANCEBEATS', c: 'TRANCE', u: 'https://laut.fm/trancebeats' },
         { n: 'YOURTRANCE-RADIO', c: 'TRANCE', u: 'https://laut.fm/yourtranceradio' },
         { n: 'TRANCE', c: 'TRANCE', u: 'https://laut.fm/trance' },
         { n: 'CLUBNIGHT', c: 'TRANCE', u: 'https://laut.fm/clubnight' },
         { n: 'TRANCE 02', c: 'TRANCE', u: 'https://laut.fm/trance02' },
-
-        // GOA / PSY
-        { n: 'GOA FM', c: 'GOA', u: 'https://laut.fm/goafm' },
-        { n: 'GOA BASE', c: 'GOA', u: 'https://laut.fm/goa-base' },
-        { n: 'GOA CHANNEL ONE', c: 'GOA', u: 'https://laut.fm/goa-channel-one' },
-        { n: 'PSY GOA DARKSPY', c: 'PSY', u: 'https://laut.fm/psychedelic_goa_trance_pro_darkspy' },
-        { n: 'PSYCORE', c: 'PSY', u: 'https://laut.fm/psycore' },
-        { n: 'PSYTRANCELICIOUS', c: 'PSY', u: 'https://laut.fm/psytrancelicious' },
-
-        // EXTRA
-        { n: 'GEHIRN TREIBER', c: 'BEAT', u: 'https://laut.fm/gehirn-treiber-beat-radio' }
+        { n: 'GOA FM', c: 'GOA / PSY', u: 'https://laut.fm/goafm' },
+        { n: 'GOA BASE', c: 'GOA / PSY', u: 'https://laut.fm/goa-base' },
+        { n: 'GOA CHANNEL ONE', c: 'GOA / PSY', u: 'https://laut.fm/goa-channel-one' },
+        { n: 'PSY GOA DARKSPY', c: 'GOA / PSY', u: 'https://laut.fm/psychedelic_goa_trance_pro_darkspy' },
+        { n: 'PSYCORE', c: 'GOA / PSY', u: 'https://laut.fm/psycore' },
+        { n: 'PSYTRANCELICIOUS', c: 'GOA / PSY', u: 'https://laut.fm/psytrancelicious' },
+        { n: 'GEHIRN TREIBER', c: 'GEHIRN BEAT', u: 'https://laut.fm/gehirn-treiber-beat-radio' }
     ];
 
     const player = document.getElementById('player'), 
@@ -246,7 +244,7 @@
         dispCat.textContent = s.c;
         
         player.src = s.u;
-        player.play().catch(e => console.log("Autoplay blocked or URL error"));
+        player.play().catch(e => console.log("Stream load error"));
         
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
