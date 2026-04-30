@@ -3,208 +3,238 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - PCB SCHEMATIC</title>
+    <title>ELECTRONIC PROTOTYPE TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
 
         :root {
-            --yellow: #fce300;
-            --bg: #030303;
-            --tile: #0a0a0a;
-            --trace: rgba(252, 227, 0, 0.2);
-            --trace-active: rgba(252, 227, 0, 0.8);
+            --pcb-green: #002200;
+            --trace-gold: #b3941d;
+            --trace-active: #00ff00;
+            --panel-bg: #000;
+            --text: #00ff00;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         body { 
-            height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif; overflow: hidden; 
+            background: #000; color: var(--text); 
+            font-family: 'Courier Prime', monospace; overflow: hidden; 
+            height: 100vh; width: 100vw;
         }
 
-        /* PCB Background */
-        .pcb-board {
+        /* TŁO PCB Z ELEMENTAMI DODATKOWYMI */
+        #pcb-master {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             z-index: 0; pointer-events: none;
         }
 
-        .app-container { display: flex; height: 100vh; position: relative; z-index: 1; }
+        .app-shell { display: flex; height: 100vh; position: relative; z-index: 1; }
 
-        /* Obszar roboczy dla komponentów */
-        .component-area { flex: 1.5; position: relative; overflow: hidden; }
+        /* OBSZAR UKŁADÓW */
+        .pcb-canvas { flex: 1.4; position: relative; overflow: hidden; cursor: crosshair; }
 
-        /* STYLIZACJA KAFELKÓW (UKŁADÓW SCALONYCH) */
-        .tile {
-            position: absolute; background: var(--tile); border: 1px solid #1a1a1a;
-            padding: 8px; width: 80px; height: 50px; cursor: pointer;
+        /* KAFELKI JAKO PRAWDZIWE UKŁADY SCALONE */
+        .ic-chip {
+            position: absolute; background: #111; border: 2px solid #444;
+            width: 70px; height: 50px; z-index: 5;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: all 0.3s; z-index: 2;
+            transition: 0.2s; font-size: 8px; text-align: center; font-weight: bold;
         }
-
-        /* Nóżki procesora */
-        .tile::before {
-            content: ""; position: absolute; width: calc(100% + 8px); height: 60%;
-            left: -4px; top: 20%;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, #333 2px, #333 4px);
+        
+        .ic-chip::after { /* Nóżki układu */
+            content: ''; position: absolute; top: -5px; left: 5px; right: 5px; bottom: -5px;
+            background: repeating-linear-gradient(90deg, #666 0, #666 4px, transparent 4px, transparent 10px);
             z-index: -1;
         }
 
-        .tile .t-top { font-size: 8px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; }
-        .tile.active { border-color: var(--yellow); box-shadow: 0 0 15px var(--yellow); }
+        .ic-chip.central { width: 110px; height: 80px; border-color: var(--text); box-shadow: 0 0 15px rgba(0,255,0,0.2); }
+        .ic-chip.active { border-color: #fff; background: #222; box-shadow: 0 0 20px var(--trace-active); color: #fff; }
 
-        /* CENTRALNY UKŁAD */
-        .central-cpu { width: 120px; height: 80px; border: 2px solid var(--yellow); background: #000; }
-        .central-cpu .t-top { font-size: 11px; }
-
-        /* PANEL STEROWANIA */
-        .sidebar { 
-            flex: 0.5; display: flex; flex-direction: column; align-items: center; 
-            justify-content: center; gap: 40px; border-left: 1px solid #1a1a1a;
-            background: rgba(0,0,0,0.9); z-index: 3;
+        /* PANEL STEROWANIA - STYL RETRO COMP */
+        .control-panel { 
+            flex: 0.6; background: var(--panel-bg); border-left: 2px solid #004400;
+            padding: 20px; display: flex; flex-direction: column; gap: 20px;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.5);
         }
 
-        .logo-display {
-            width: 90%; max-width: 250px; border: 2px solid var(--yellow);
-            padding: 20px; text-align: center; background: #000;
+        .monitor-screen {
+            border: 2px solid #004400; padding: 10px; background: #001100;
+            height: 180px; position: relative; overflow: hidden;
         }
-        .logo-display h2 { font-family: 'Megrim'; font-size: 32px; color: var(--yellow); }
+        .monitor-screen h2 { font-size: 14px; margin-bottom: 5px; color: #ff0000; }
+        .data-stream { font-size: 10px; line-height: 1.2; opacity: 0.8; }
 
-        .controls { display: flex; align-items: center; gap: 20px; }
-        .c-svg { width: 30px; height: 30px; fill: var(--yellow); cursor: pointer; }
-        .c-play { width: 60px; height: 60px; border: 2px solid var(--yellow); border-radius: 50%; padding: 10px; }
+        .btn-group { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+        .hw-btn {
+            width: 50px; height: 50px; border: 2px solid var(--text);
+            background: transparent; color: var(--text); cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hw-btn:active { background: var(--text); color: #000; }
+        .hw-btn svg { width: 24px; height: 24px; fill: currentColor; }
 
-        .vol-box { width: 200px; display: flex; align-items: center; gap: 10px; }
-        input[type="range"] { flex: 1; accent-color: var(--yellow); }
+        .fader-box { margin-top: auto; border-top: 1px solid #004400; padding-top: 20px; }
+        .fader-label { font-size: 10px; margin-bottom: 10px; }
+        input[type="range"] {
+            width: 100%; -webkit-appearance: none; background: #004400; height: 4px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 20px; height: 30px; background: #ff0000; border: 1px solid #fff;
+        }
 
-        @media (max-width: 600px) {
-            .app-container { flex-direction: column; }
-            .sidebar { width: 100%; height: auto; padding: 20px 0; }
+        @media (max-width: 800px) {
+            .app-shell { flex-direction: column; }
+            .control-panel { flex: 1; border-left: none; border-top: 2px solid #004400; }
         }
     </style>
 </head>
 <body>
 
-<svg class="pcb-board" id="pcb-svg"></svg>
+<svg id="pcb-master"></svg>
 
-<div class="app-container">
-    <div class="component-area" id="canvas"></div>
+<div class="app-shell">
+    <div class="pcb-canvas" id="stage">
+        <!-- Kafelki zostaną wstrzyknięte przez JS -->
+    </div>
 
-    <aside class="sidebar" id="main-panel">
-        <div class="logo-display">
-            <h2 id="display-name">READY</h2>
-            <p style="font-size: 8px; color: var(--yellow); margin-top: 5px;">SYSTEM BUS CONNECTED</p>
+    <aside class="control-panel" id="ui-core">
+        <div class="monitor-screen">
+            <h2>[SYSTEM_STATUS]</h2>
+            <div class="data-stream" id="log">
+                READY TO CONNECT...<br>
+                WAITING FOR INPUT...<br>
+                VOLTAGE: 5.02V<br>
+                SIGNAL: NULL
+            </div>
+            <div id="now-playing" style="position:absolute; bottom:10px; left:10px; font-weight:bold;">IDLE</div>
         </div>
 
-        <div class="controls" id="control-hub">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+        <div class="btn-group">
+            <button class="hw-btn" onclick="skip(-1)">
+                <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            </button>
+            <button class="hw-btn" style="width:70px; height:70px;" onclick="toggle()">
+                <svg id="play-svg" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            </button>
+            <button class="hw-btn" onclick="skip(1)">
+                <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+            </button>
         </div>
 
-        <div class="vol-box">
-            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+        <div class="fader-box">
+            <div class="fader-label">GAIN_CONTROL (VOL)</div>
+            <input type="range" id="vol" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<audio id="player"></audio>
+<audio id="stream"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', pos: {t: 10, l: 15} },
-        { n: 'HR 3 CLUB', u: 'https://laut.fm/hr3_clubnight', pos: {t: 15, l: 60} },
-        { n: '1000 TECH', u: 'https://laut.fm/1000techno', pos: {t: 40, l: 10} },
-        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true, pos: {t: 45, l: 40} },
-        { n: 'BEST TECH', u: 'https://laut.fm/best-of-techno', pos: {t: 75, l: 15} },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', pos: {t: 80, l: 55} },
-        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', pos: {t: 5, l: 40} },
-        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', pos: {t: 70, l: 80} },
-        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', pos: {t: 30, l: 80} }
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', p: {t:15, l:10} },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', p: {t:10, l:50} },
+        { n: '1000 TECH', u: 'https://laut.fm/1000techno', p: {t:35, l:15} },
+        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true, p: {t:45, l:45} },
+        { n: 'BEST TECH', u: 'https://laut.fm/best-of-techno', p: {t:75, l:12} },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', p: {t:80, l:55} },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', p: {t:5, l:30} },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', p: {t:70, l:80} },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', p: {t:30, l:80} }
     ];
 
-    const canvas = document.getElementById('canvas');
-    const svg = document.getElementById('pcb-svg');
-    const panel = document.getElementById('main-panel');
-    const hub = document.getElementById('control-hub');
+    const svg = document.getElementById('pcb-master');
+    const stage = document.getElementById('stage');
+    const stream = document.getElementById('stream');
+    const log = document.getElementById('log');
+    const playIco = document.getElementById('play-svg');
     let current = -1;
 
-    // RENDEROWANIE KAFELKÓW I ŚCIEŻEK
-    function initPCB() {
+    function init() {
         STATIONS.forEach((s, i) => {
-            const t = document.createElement('div');
-            t.className = s.central ? 'tile central-cpu' : 'tile';
-            t.style.top = s.pos.t + '%';
-            t.style.left = s.pos.l + '%';
-            t.innerHTML = `<div class="t-top">${s.n}</div>`;
-            t.onclick = () => play(i);
-            t.id = 'tile-' + i;
-            canvas.appendChild(t);
+            const div = document.createElement('div');
+            div.className = `ic-chip ${s.central ? 'central' : ''}`;
+            div.id = `ic-${i}`;
+            div.style.top = s.p.t + '%';
+            div.style.left = s.p.l + '%';
+            div.innerHTML = s.n;
+            div.onclick = () => play(i);
+            stage.appendChild(div);
         });
-        
-        // Czekamy chwilę na wyrenderowanie DOM, by pobrać pozycje
-        setTimeout(drawTraces, 100);
+        setTimeout(drawPCB, 100);
     }
 
-    function drawTraces() {
+    function drawPCB() {
         svg.innerHTML = '';
-        const panelRect = panel.getBoundingClientRect();
-        const hubRect = hub.getBoundingClientRect();
-
+        const uiRect = document.getElementById('ui-core').getBoundingClientRect();
+        
         STATIONS.forEach((s, i) => {
-            const tile = document.getElementById('tile-' + i);
-            const rect = tile.getBoundingClientRect();
+            const el = document.getElementById(`ic-${i}`);
+            const r = el.getBoundingClientRect();
+            const startX = r.left + r.width/2;
+            const startY = r.top + r.height/2;
+
+            // Główna szyna do panelu sterowania
+            line(startX, startY, uiRect.left, startY, '#004400', 1);
             
-            const startX = rect.left + rect.width / 2;
-            const startY = rect.top + rect.height / 2;
-
-            // 1. Ścieżka do panelu (Zasilanie/Dane)
-            createTrace(startX, startY, panelRect.left, startY);
-
-            // 2. Ścieżka od Hubu Sterowania do kafelka
-            createTrace(hubRect.left, hubRect.top + hubRect.height/2, startX, startY, true);
+            // Dodatkowe "szumy" - losowe punkty i ścieżki jak na zdjęciu 1
+            if(Math.random() > 0.5) {
+                line(startX, startY, startX + 50, startY - 50, '#003300', 0.5);
+                dot(startX + 50, startY - 50);
+            }
         });
     }
 
-    function createTrace(x1, y1, x2, y2, isControl = false) {
+    function line(x1, y1, x2, y2, color, width) {
         const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
         const midX = x1 + (x2 - x1) / 2;
-        
-        // Stylizacja ścieżki z załamaniem 45 stopni
+        // Załamanie 45 stopni
         const d = `M ${x1} ${y1} L ${midX} ${y1} L ${x2} ${y2}`;
-        
         path.setAttribute("d", d);
-        path.setAttribute("stroke", isControl ? "rgba(252,227,0,0.1)" : "rgba(252,227,0,0.2)");
-        path.setAttribute("stroke-width", "1.5");
+        path.setAttribute("stroke", color);
+        path.setAttribute("stroke-width", width);
         path.setAttribute("fill", "none");
         svg.appendChild(path);
     }
 
-    // LOGIKA ODTWARZACZA (BEZ ZMIAN)
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), dispName = document.getElementById('display-name');
+    function dot(x, y) {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", x); circle.setAttribute("cy", y); circle.setAttribute("r", 2);
+        circle.setAttribute("fill", "#004400");
+        svg.appendChild(circle);
+    }
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        dispName.textContent = STATIONS[i].n;
-        player.src = STATIONS[i].u;
-        player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        document.getElementById('now-playing').textContent = STATIONS[i].n;
+        
+        // Logika naprawcza dla stacji
+        stream.src = STATIONS[i].u;
+        stream.load(); // Ważne dla streamów laut.fm
+        stream.play().catch(e => {
+            log.innerHTML += "<br>ERROR: INTERACTION REQUIRED";
+        });
+        
+        log.innerHTML = `CONNECTING TO: ${STATIONS[i].n}...<br>BUFFERING...<br>STREAM_OK`;
+        playIco.innerHTML = '<path d="M14,19H18V5H14M6,19H10V5H6V19Z"/>';
     }
 
     function toggle() {
-        if(current === -1) play(3);
-        else if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(current === -1) { play(3); return; }
+        if(stream.paused) { stream.play(); playIco.innerHTML = '<path d="M14,19H18V5H14M6,19H10V5H6V19Z"/>'; }
+        else { stream.pause(); playIco.innerHTML = '<path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>'; }
     }
 
-    function skip(d) {
-        let n = current + d;
+    function skip(dir) {
+        let n = current + dir;
         if(n >= 0 && n < STATIONS.length) play(n);
     }
 
-    function setV(v) { player.volume = v / 100; }
+    function setV(v) { stream.volume = v; }
 
-    window.addEventListener('resize', drawTraces);
-    initPCB();
+    window.onresize = drawPCB;
+    init();
 </script>
 </body>
 </html>
