@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO_TRANCE_PCB_PRO_V9_FIXED</title>
+    <title>TECHNO_TRANCE_PCB_PRO_V6_FIXED</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
 
@@ -23,36 +23,38 @@
             overflow: hidden;
         }
 
+        /* TŁO PCB - GĘSTE ŚCIEŻKI */
         #pcb-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none;
+            z-index: 0; opacity: 0.4; pointer-events: none;
         }
 
         .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
 
+        /* OBSZAR UKŁADÓW */
         .motherboard { 
             flex: 2; position: relative; 
             background: radial-gradient(circle at 50% 50%, #051008 0%, #020503 100%);
         }
 
-        /* UKŁAD SCALONY - TWOJA ORYGINALNA STRUKTURA V6 */
+        /* REALISTYCZNY UKŁAD SCALONY (IC) */
         .ic-chip {
             position: absolute; width: 160px; height: 80px;
             background: var(--chip-body); border-radius: 2px;
             cursor: pointer; box-shadow: 10px 15px 30px rgba(0,0,0,0.8);
             border-top: 1px solid #333; border-left: 1px solid #222;
-            z-index: 10;
         }
 
-        /* DODANE NÓŻKI (PINS) - REALIZM METALU ZGODNIE Z PROŚBĄ */
+        /* Nóżki układu (Pins) - poprawione na gęstsze zgodnie z foto */
         .ic-chip::before {
-            content: ''; position: absolute; top: -10px; left: 10px; right: 10px; bottom: -10px;
+            content: ''; position: absolute; top: -12px; left: 8px; right: 8px; bottom: -12px;
             background: repeating-linear-gradient(90deg, 
-                #777 0px, #aaa 3px, #777 6px, 
-                transparent 6px, transparent 18px);
+                #444 0px, #888 2px, #444 4px, 
+                transparent 4px, transparent 10px);
             z-index: -1;
         }
 
+        /* Wycięcie techniczne (Notch) */
         .notch {
             position: absolute; left: 0; top: 50%; transform: translateY(-50%);
             width: 12px; height: 20px; background: var(--laminat);
@@ -75,7 +77,7 @@
         /* PANEL KONTROLNY */
         .control-tower { 
             flex: 0.8; background: rgba(0,0,0,0.9); border-left: 3px solid #111;
-            display: flex; flex-direction: column; z-index: 20;
+            display: flex; flex-direction: column; 
         }
 
         .hud-header { padding: 25px; border-bottom: 2px solid #ff0055; font-family: 'Orbitron'; letter-spacing: 2px; }
@@ -89,31 +91,31 @@
         .hw-btn {
             background: #080808; border: 1px solid #222; color: var(--neon);
             padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px;
+            transition: 0.2s;
         }
-        .hw-btn:hover { background: var(--neon); color: #000; }
+        .hw-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
 
         .slider-wrap { padding: 30px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: #111; height: 4px; }
         input[type=range]::-webkit-slider-thumb { 
             -webkit-appearance: none; width: 20px; height: 35px; background: #ff0055; cursor: pointer; 
+            border: 1px solid #000; box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
         }
 
-        /* ŚCIEŻKI I ANIMACJA PRZEPŁYWU (ŚWIATEŁKO) */
-        .trace-line {
-            fill: none; stroke: var(--miedz); stroke-width: 2;
-            transition: stroke 0.3s, filter 0.3s;
+        /* ANIMACJA PRZEPŁYWU PRĄDU PO ŚCIEŻCE */
+        .flow-effect {
+            stroke-dasharray: 10, 30;
+            stroke: #fff;
+            stroke-width: 3;
+            filter: blur(1px) drop-shadow(0 0 5px var(--neon));
+            animation: flow 1.5s linear infinite;
+            display: none;
         }
-        .trace-flow {
-            fill: none; stroke: var(--neon); stroke-width: 2.5;
-            stroke-dasharray: 15, 50;
-            stroke-dashoffset: 100;
-            filter: drop-shadow(0 0 5px var(--neon));
-            visibility: hidden;
-        }
-        .active-trace { stroke: var(--neon); filter: drop-shadow(0 0 3px var(--neon)); }
-        .active-flow { visibility: visible; animation: flowAnim 2s linear infinite; }
 
-        @keyframes flowAnim { to { stroke-dashoffset: 0; } }
+        @keyframes flow {
+            from { stroke-dashoffset: 100; }
+            to { stroke-dashoffset: 0; }
+        }
     </style>
 </head>
 <body>
@@ -121,7 +123,9 @@
 <svg id="pcb-bg"></svg>
 
 <div class="main-interface">
-    <div class="motherboard" id="board"></div>
+    <div class="motherboard" id="board">
+        <!-- Generowane przez JS -->
+    </div>
 
     <aside class="control-tower">
         <div class="hud-header">SYSTEM_AUDIT: OK</div>
@@ -159,10 +163,14 @@
     let currentIdx = -1;
 
     function buildHardware() {
-        board.innerHTML = "";
-        svg.innerHTML = "";
-        
-        const towerX = window.innerWidth * 0.72; // Punkt styku z panelem
+        let traceHTML = "";
+        for(let i=0; i<300; i++) {
+            const x1 = Math.random()*100;
+            const y1 = Math.random()*100;
+            traceHTML += `<path d="M ${x1} ${y1} L ${x1+2} ${y1+2}" stroke="#0a1a10" stroke-width="0.1" fill="none"/>`;
+            if(i % 5 === 0) traceHTML += `<circle cx="${x1}" cy="${y1}" r="0.2" fill="#11331a"/>`;
+        }
+        svg.innerHTML = traceHTML;
 
         STATIONS.forEach((s, i) => {
             const ic = document.createElement('div');
@@ -171,31 +179,39 @@
             ic.id = `ic-${i}`;
             ic.innerHTML = `<div class="notch"></div><div class="chip-label">
                 <span class="chip-id">${s.n}</span>
-                <span class="chip-spec">BUS_SYNC_0${i}</span>
+                <span class="chip-spec">VOLTAGE_BUS_0${i} / 74HC${100+i}</span>
             </div>`;
             ic.onclick = () => mount(i);
             board.appendChild(ic);
+        });
+        drawActiveTraces();
+    }
 
-            // RYSOWANIE ŚCIEŻEK (TRACES) ŁĄCZĄCYCH UKŁADY Z PANELEM
-            const r = ic.getBoundingClientRect();
-            const startX = r.left + r.width;
-            const startY = r.top + r.height / 2;
-            const endY = (window.innerHeight / STATIONS.length) * i + 50;
+    function drawActiveTraces() {
+        const panelX = window.innerWidth * 0.7;
+        STATIONS.forEach((s, i) => {
+            const el = document.getElementById(`ic-${i}`);
+            const r = el.getBoundingClientRect();
+            const x = r.left + r.width;
+            const y = r.top + r.height/2;
 
-            const d = `M ${startX} ${startY} L ${startX + 50} ${startY} L ${startX + 100} ${endY} L ${towerX} ${endY}`;
+            const dPath = `M ${x} ${y} L ${x+40} ${y} L ${x+60} ${y+(i*12-50)} L ${panelX} ${y+(i*12-50)}`;
             
-            // Podstawa ścieżki
-            const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            line.setAttribute("d", d);
-            line.setAttribute("class", "trace-line");
-            line.id = `line-${i}`;
-            svg.appendChild(line);
+            // Podstawowa ścieżka miedziana
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", dPath);
+            path.setAttribute("stroke", "var(--miedz)");
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("fill", "none");
+            path.id = `line-${i}`;
+            svg.appendChild(path);
 
-            // Warstwa przepływu prądu (światełko)
+            // Dodatkowa warstwa animowanego "światełka"
             const flow = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            flow.setAttribute("d", d);
-            flow.setAttribute("class", "trace-flow");
+            flow.setAttribute("d", dPath);
+            flow.setAttribute("class", "flow-effect");
             flow.id = `flow-${i}`;
+            flow.setAttribute("fill", "none");
             svg.appendChild(flow);
         });
     }
@@ -204,26 +220,45 @@
         currentIdx = i;
         document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
         
-        // Reset i aktywacja ścieżek
-        document.querySelectorAll('.trace-line').forEach(l => l.classList.remove('active-trace'));
-        document.querySelectorAll('.trace-flow').forEach(f => f.classList.remove('active-flow'));
+        // Resetowanie wszystkich ścieżek
+        document.querySelectorAll('path').forEach(p => {
+            if(p.id.startsWith('line-')) {
+                p.setAttribute('stroke', 'var(--miedz)');
+                p.style.filter = 'none';
+            }
+            if(p.id.startsWith('flow-')) {
+                p.style.display = 'none';
+            }
+        });
 
-        document.getElementById(`line-${i}`).classList.add('active-trace');
-        document.getElementById(`flow-${i}`).classList.add('active-flow');
+        // Aktywacja konkretnej ścieżki i światełka
+        const activeLine = document.getElementById(`line-${i}`);
+        const activeFlow = document.getElementById(`flow-${i}`);
+        if(activeLine && activeFlow) {
+            activeLine.setAttribute('stroke', 'var(--neon)');
+            activeLine.style.filter = 'drop-shadow(0 0 8px var(--neon))';
+            activeFlow.style.display = 'block';
+        }
 
-        term.innerHTML = `> MOUNTING_COMPONENT: ${STATIONS[i].n}<br>> DATA_FLOW: ACTIVE<br>> SYNC: OK`;
+        term.innerHTML = `> ACCESSING_CHIP: 0x${i.toString(16).toUpperCase()}<br>> NAME: ${STATIONS[i].n}<br>> DATA_FLOW: STABLE<br>> STREAM: CONNECTING...`;
         
         player.pause();
+        player.src = ""; 
         player.src = STATIONS[i].u;
-        player.play().catch(e => { term.innerHTML += `<br>> ERROR: PRESS SYNC`; });
+        player.load();
+        player.play().then(() => {
+            term.innerHTML += `<br>> STATUS: SYNC_LOCKED`;
+        }).catch(e => {
+            term.innerHTML += `<br>> ERROR: USER_GATING_ACTIVE`;
+        });
     }
 
     function toggle() { if(currentIdx === -1) mount(0); else player.paused ? player.play() : player.pause(); }
     function skip(dir) { let n = currentIdx + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
     function setV(v) { player.volume = v; }
 
-    window.onresize = buildHardware;
-    window.onload = buildHardware;
+    window.onresize = () => { svg.innerHTML = ''; buildHardware(); };
+    buildHardware();
 </script>
 </body>
 </html>
