@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - FINAL COSMETICS</title>
+    <title>RMF TERMINAL - PCB CIRCUIT EDITION</title>
     <style>
-        /* Dodano czcionkę Megrim dla efektu napisu z obrazka */
         @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
@@ -13,8 +12,9 @@
             --yellow-neon: #fffb00;
             --bg: #000;
             --tile: #0a0a0a;
-            --border: #1a1a1a;
+            --border: #222;
             --blue-wave: #00ccff;
+            --circuit-line: #333; /* Kolor ścieżek obwodu */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,6 +23,17 @@
             background: var(--bg); color: #fff; 
             font-family: 'Montserrat Alternates', sans-serif;
             overflow: hidden; 
+        }
+
+        /* Tło w stylu PCB */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(var(--circuit-line) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.1;
+            z-index: -1;
         }
 
         body { display: flex; flex-direction: column; padding: 2vh; }
@@ -40,106 +51,123 @@
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-auto-rows: 1fr;
-            gap: 10px; 
+            gap: 20px; 
             overflow-y: auto;
-            padding-right: 5px;
+            padding: 10px;
         }
 
         .grid::-webkit-scrollbar { width: 4px; }
-        .grid::-webkit-scrollbar-track { background: var(--bg); }
         .grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
 
+        /* KAFELKI JAKO UKŁADY SCALONE */
         .tile {
-            background: var(--tile); border: 1px solid var(--border); border-radius: 12px;
+            background: var(--tile); 
+            border: 1px solid var(--border); 
+            border-radius: 4px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; overflow: visible; min-height: 80px;
+            cursor: pointer; position: relative; min-height: 85px;
+            transition: all 0.3s;
         }
 
-        .tile .t-top { font-size: 14px; font-weight: 700; color: var(--yellow); line-height: 1.2; z-index: 2; text-align: center; padding: 0 5px; text-transform: uppercase; }
-        .tile .t-bottom { font-size: 10px; font-weight: 600; color: var(--yellow); margin-top: 4px; text-align: center; z-index: 2; opacity: 0.8; }
+        /* Nóżki układu scalonego (prawa i lewa strona) */
+        .tile::before, .tile::after {
+            content: "";
+            position: absolute;
+            width: 8px; height: 60%;
+            border-top: 2px solid var(--circuit-line);
+            border-bottom: 2px solid var(--circuit-line);
+            top: 20%;
+        }
+        .tile::before { left: -9px; border-left: 2px solid var(--circuit-line); }
+        .tile::after { right: -9px; border-right: 2px solid var(--circuit-line); }
+
+        .tile .t-top { font-size: 13px; font-weight: 700; color: var(--yellow); z-index: 2; text-align: center; text-transform: uppercase; }
+        .tile .t-bottom { font-size: 9px; font-weight: 600; color: var(--yellow); margin-top: 4px; z-index: 2; opacity: 0.6; }
 
         .tile.active { 
-            border: 2px solid var(--yellow-neon); 
-            background: #111;
-            box-shadow: 0 0 15px var(--yellow-neon);
+            border-color: var(--yellow-neon); 
+            background: #151510;
+            box-shadow: 0 0 20px rgba(255, 251, 0, 0.15);
         }
-        .tile.active .t-top, .tile.active .t-bottom { color: var(--yellow-neon); }
+        .tile.active::before, .tile.active::after { border-color: var(--yellow-neon); }
 
-        .waves {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; z-index: 1;
-        }
-        .tile.active .waves { opacity: 1; }
-        .wave {
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;
-            width: 10px; height: 10px; opacity: 0;
-            box-shadow: 0 0 15px var(--blue-wave);
-            animation: ripple 3s infinite linear;
-        }
-        .wave:nth-child(2) { animation-delay: 1s; }
-        .wave:nth-child(3) { animation-delay: 2s; }
-
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.9; }
-            100% { width: 320%; height: 320%; opacity: 0; }
-        }
-
+        /* BOCZNY PANEL */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; gap: 4vh;
             border-left: 1px solid var(--border); padding-left: 3vw;
+            position: relative;
         }
 
-        /* Stylizacja logo z obrazka */
         .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/10;
-            border: 2.5px solid var(--yellow); border-radius: 20px;
+            width: 100%; max-width: 300px; aspect-ratio: 16/10;
+            border: 2px solid var(--yellow); 
+            position: relative;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(0, 0, 0, 0.6);
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.2);
-            text-align: center;
+            background: #050505;
             padding: 20px;
         }
+
+        /* Ścieżki odchodzące od wyświetlacza (jak na obrazku PCB) */
+        .logo-display::before {
+            content: ""; position: absolute; top: -20px; width: 2px; height: 20px; background: var(--yellow);
+            box-shadow: -40px 0 var(--yellow), 40px 0 var(--yellow);
+        }
+
         .logo-display h2 { 
-            font-family: 'Megrim', cursive; /* Czcionka symulująca styl z obrazka */
-            font-size: 52px; 
+            font-family: 'Megrim', cursive; 
+            font-size: 48px; 
             color: var(--yellow); 
             text-shadow: 0 0 10px var(--yellow); 
-            margin-bottom: 0px;
-            letter-spacing: -2px;
-            line-height: 1;
         }
-        .logo-display p { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; margin-top: 5px; }
-
-        .controls { display: flex; align-items: center; gap: 3vw; }
-        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; filter: drop-shadow(0 0 8px rgba(252, 227, 0, 0.6)); }
-        .c-play { width: 70px; height: 70px; fill: var(--yellow); filter: drop-shadow(0 0 12px var(--yellow)); }
-
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
-        .vol-btn { width: 35px; height: 35px; border: 1.5px solid var(--yellow); border-radius: 8px; background: none; color: var(--yellow); cursor: pointer; font-family: inherit; font-weight: bold; }
-        .vol-bar { flex: 1; height: 35px; border: 1.5px solid var(--yellow); border-radius: 8px; padding: 0 12px; display: flex; align-items: center; }
         
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
-        input[type="range"]::-webkit-slider-runnable-track { background: var(--yellow); height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 18px; height: 18px; background: var(--yellow); border-radius: 50%; margin-top: -7px; border: 2px solid #000; }
-        input[type="range"].at-mid::-webkit-slider-thumb { box-shadow: 0 0 12px var(--yellow), 0 0 20px var(--yellow); }
+        /* PRZYCISKI STEROWANIA Z "PUNKTAMI LUTOWNICZYMI" */
+        .controls { display: flex; align-items: center; gap: 40px; position: relative; }
+        
+        .c-svg { 
+            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; 
+            position: relative;
+        }
+        
+        .c-play { 
+            width: 75px; height: 75px; 
+            padding: 10px;
+            border: 2px solid var(--yellow);
+            border-radius: 50%;
+        }
 
+        /* Wolumator */
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 300px; }
+        .vol-btn { 
+            width: 35px; height: 35px; border: 1px solid var(--yellow); 
+            background: none; color: var(--yellow); cursor: pointer; 
+            border-radius: 2px;
+        }
+        .vol-bar { 
+            flex: 1; height: 20px; border-bottom: 2px solid var(--circuit-line); 
+            display: flex; align-items: center; position: relative;
+        }
+        
+        input[type="range"] { width: 100%; appearance: none; background: transparent; }
+        input[type="range"]::-webkit-slider-runnable-track { background: var(--circuit-line); height: 2px; }
+        input[type="range"]::-webkit-slider-thumb { 
+            appearance: none; width: 14px; height: 14px; 
+            background: var(--yellow); border-radius: 0; 
+            margin-top: -6px;
+        }
+
+        /* RESPONSYWNOŚĆ */
         @media (max-width: 600px) {
-            .header-info, .clock { font-size: 18px; }
-            .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }
-            .sidebar { width: 100%; height: auto; border-left: none; border-top: 1px solid var(--border); padding: 20px 0; gap: 20px; }
-            .logo-display { width: 95%; height: 100px; aspect-ratio: auto; }
-            .logo-display h2 { font-size: 38px; }
-            .vol-box { width: 95%; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 55vh; }
+            .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 20px 0; }
+            .logo-display h2 { font-size: 32px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">SYSTEM ONLINE</div>
+    <div class="header-info" id="playing-now">PCB TERMINAL v1.0</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -148,9 +176,8 @@
 
     <aside class="sidebar">
         <div class="logo-display">
-            <!-- Napis wzorowany na pliku image_36afc8.png -->
             <h2 id="display-name">TECHNO</h2>
-            <p id="display-cat">Terminal Ready</p>
+            <p id="display-cat" style="font-size: 10px; color: var(--yellow); opacity: 0.7;">CIRCUIT READY</p>
         </div>
 
         <div class="controls">
@@ -162,7 +189,7 @@
         <div class="vol-box">
             <button class="vol-btn" onclick="adj(-5)">-</button>
             <div class="vol-bar">
-                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
             </div>
             <button class="vol-btn" onclick="adj(5)">+</button>
         </div>
@@ -179,40 +206,26 @@
         { n: 'BEST OF TECHNO', c: 'TECHNO', u: 'https://laut.fm/best-of-techno' },
         { n: 'CHRIS BURN', c: 'TECHNO', u: 'https://laut.fm/chris_burn' },
         { n: 'RETROELECTRONIC', c: 'TECHNO', u: 'https://laut.fm/retroelectronicmusic' },
-        { n: 'DRUMANDBASS FM', c: 'DRUM N BASS', u: 'https://laut.fm/drumandbass_fm' },
-        { n: 'FMBASE', c: 'DRUM N BASS', u: 'https://laut.fm/fmbase' },
-        { n: 'DNBZONE', c: 'DRUM N BASS', u: 'https://laut.fm/dnbzone' },
-        { n: 'DNB BASE', c: 'DRUM N BASS', u: 'https://laut.fm/dnb-base' },
-        { n: 'A5RECORDINGS', c: 'DRUM N BASS', u: 'https://laut.fm/a5recordings' },
-        { n: 'DJMO', c: 'DRUM N BASS', u: 'https://laut.fm/djmo' },
-        { n: 'DEEP HOUSE SOUNDS', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
+        { n: 'DRUMANDBASS FM', c: 'D&B', u: 'https://laut.fm/drumandbass_fm' },
+        { n: 'FMBASE', c: 'D&B', u: 'https://laut.fm/fmbase' },
+        { n: 'DNBZONE', c: 'D&B', u: 'https://laut.fm/dnbzone' },
+        { n: 'DNB BASE', c: 'D&B', u: 'https://laut.fm/dnb-base' },
+        { n: 'A5RECORDINGS', c: 'D&B', u: 'https://laut.fm/a5recordings' },
+        { n: 'DJMO', c: 'D&B', u: 'https://laut.fm/djmo' },
+        { n: 'DEEP HOUSE', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
         { n: 'HOUSEBOMB FN', c: 'HOUSE', u: 'https://laut.fm/housebomb-fn' },
         { n: 'SYMBIOTIC BEATS', c: 'HOUSE', u: 'https://laut.fm/symbiotic-beats' },
-        { n: 'HOUSE', c: 'HOUSE', u: 'https://laut.fm/house' },
-        { n: 'FAF RECORDS 979', c: 'HOUSE', u: 'https://laut.fm/faf-records-979' },
-        { n: 'TORNADO FM', c: 'HOUSE', u: 'https://laut.fm/tornadofm' },
-        { n: 'TRANCEMOTION FM', c: 'TRANCE', u: 'https://laut.fm/trancemotionfm' },
-        { n: 'TRANCEBEATS', c: 'TRANCE', u: 'https://laut.fm/trancebeats' },
-        { n: 'YOURTRANCE-RADIO', c: 'TRANCE', u: 'https://laut.fm/yourtranceradio' },
-        { n: 'TRANCE', c: 'TRANCE', u: 'https://laut.fm/trance' },
-        { n: 'CLUBNIGHT', c: 'TRANCE', u: 'https://laut.fm/clubnight' },
-        { n: 'TRANCE 02', c: 'TRANCE', u: 'https://laut.fm/trance02' },
-        { n: 'GOA FM', c: 'GOA / PSY', u: 'https://laut.fm/goafm' },
-        { n: 'GOA BASE', c: 'GOA / PSY', u: 'https://laut.fm/goa-base' },
-        { n: 'GOA CHANNEL ONE', c: 'GOA / PSY', u: 'https://laut.fm/goa-channel-one' },
-        { n: 'PSY GOA DARKSPY', c: 'GOA / PSY', u: 'https://laut.fm/psychedelic_goa_trance_pro_darkspy' },
-        { n: 'PSYCORE', c: 'GOA / PSY', u: 'https://laut.fm/psycore' },
-        { n: 'PSYTRANCELICIOUS', c: 'GOA / PSY', u: 'https://laut.fm/psytrancelicious' },
-        { n: 'GEHIRN TREIBER', c: 'GEHIRN BEAT', u: 'https://laut.fm/gehirn-treiber-beat-radio' }
+        { n: 'TRANCEMOTION', c: 'TRANCE', u: 'https://laut.fm/trancemotionfm' },
+        { n: 'YOURTRANCE', c: 'TRANCE', u: 'https://laut.fm/yourtranceradio' },
+        { n: 'GOA FM', c: 'GOA', u: 'https://laut.fm/goafm' },
+        { n: 'PSYCORE', c: 'PSY', u: 'https://laut.fm/psycore' },
+        { n: 'GEHIRN TREIBER', c: 'BEAT', u: 'https://laut.fm/gehirn-treiber-beat-radio' }
     ];
 
     const player = document.getElementById('player'), 
           ico = document.getElementById('p-ico'), 
-          grid = document.getElementById('station-grid'), 
-          vRange = document.getElementById('v-range'),
-          dispName = document.getElementById('display-name'),
-          dispCat = document.getElementById('display-cat'),
-          nowPlaying = document.getElementById('playing-now');
+          grid = document.getElementById('station-grid'),
+          dispName = document.getElementById('display-name');
 
     let current = -1;
 
@@ -225,57 +238,37 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">${s.n}</div>
-            <div class="t-bottom">${s.c}</div>
-        `;
+        t.innerHTML = `<div class="t-top">${s.n}</div><div class="t-bottom">${s.c}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
 
     function play(i) {
         current = i;
-        const s = STATIONS[i];
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        
-        nowPlaying.textContent = "GRA: " + s.n;
-        dispName.textContent = s.n;
-        dispCat.textContent = s.c;
-        
-        player.src = s.u;
-        player.play().catch(e => console.log("Stream load error"));
-        
+        dispName.textContent = STATIONS[i].n;
+        player.src = STATIONS[i].u;
+        player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(current === -1) { play(0); return; }
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        if(current === -1) play(0);
+        else if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
-    function skip(d) { 
-        let n = current + d; 
-        if(n < 0) n = STATIONS.length - 1;
-        if(n >= STATIONS.length) n = 0;
-        play(n); 
+    function skip(d) {
+        let n = current + d;
+        if(n >= 0 && n < STATIONS.length) play(n);
     }
 
-    function setV(v) { 
-        player.volume = v / 100;
-        if(parseInt(v) === 50) vRange.classList.add('at-mid');
-        else vRange.classList.remove('at-mid');
-    }
-
+    function setV(v) { player.volume = v / 100; }
     function adj(d) { 
-        let newVal = parseInt(vRange.value) + d;
-        if(newVal < 0) newVal = 0;
-        if(newVal > 100) newVal = 100;
-        vRange.value = newVal; 
-        setV(newVal); 
+        const r = document.getElementById('v-range');
+        r.value = parseInt(r.value) + d;
+        setV(r.value);
     }
 </script>
-
 </body>
 </html>
