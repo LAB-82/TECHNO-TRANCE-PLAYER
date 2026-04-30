@@ -2,225 +2,228 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>TECHNO_PCB_V8_FINAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNO_TRANCE_PCB_PRO_V9_FIXED</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=JetBrains+Mono:wght@100;400;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
 
         :root {
-            --pcb-base: #010804;
-            --trace-bg: #061a0d;
-            --neon-cyan: #00f2ff;
-            --neon-green: #39ff14;
-            --gold: #ffcc00;
-            --circuit-glow: rgba(0, 242, 255, 0.15);
+            --laminat: #020503;
+            --miedz: #1a3a2a;
+            --neon: #00f2ff;
+            --gold: #b8a033;
+            --chip-body: #111111;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: var(--pcb-base); 
-            color: var(--neon-cyan);
+            background: var(--laminat); 
+            color: var(--neon);
             font-family: 'JetBrains Mono', monospace;
-            overflow: hidden; height: 100vh;
-            /* Efekt ziarnistości laminatu */
-            background-image: url('https://www.transparenttextures.com/patterns/dark-matter.png');
+            overflow: hidden;
         }
 
-        /* SVG BACKGROUND - HIGH DENSITY TRACES */
-        #pcb-svg {
+        #pcb-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1; pointer-events: none; opacity: 0.6;
+            z-index: 1; pointer-events: none;
         }
 
-        .interface-grid {
-            display: grid; grid-template-columns: 1fr 350px;
-            height: 100vh; position: relative; z-index: 10;
+        .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
+
+        .motherboard { 
+            flex: 2; position: relative; 
+            background: radial-gradient(circle at 50% 50%, #051008 0%, #020503 100%);
         }
 
-        /* MOTHERBOARD AREA */
-        .board {
-            position: relative; overflow: hidden;
-            border: 20px solid #000;
-            box-shadow: inset 0 0 100px rgba(0,0,0,0.8);
+        /* UKŁAD SCALONY - TWOJA ORYGINALNA STRUKTURA V6 */
+        .ic-chip {
+            position: absolute; width: 160px; height: 80px;
+            background: var(--chip-body); border-radius: 2px;
+            cursor: pointer; box-shadow: 10px 15px 30px rgba(0,0,0,0.8);
+            border-top: 1px solid #333; border-left: 1px solid #222;
+            z-index: 10;
         }
 
-        /* REALISTYCZNY UKŁAD SCALONY (ZGODNY Z ZDJĘCIEM) */
-        .chip {
-            position: absolute; width: 130px; height: 130px;
-            background: linear-gradient(145deg, #111, #000);
-            border: 1px solid #333; cursor: pointer;
-            transition: all 0.3s; z-index: 20;
+        /* DODANE NÓŻKI (PINS) - REALIZM METALU ZGODNIE Z PROŚBĄ */
+        .ic-chip::before {
+            content: ''; position: absolute; top: -10px; left: 10px; right: 10px; bottom: -10px;
+            background: repeating-linear-gradient(90deg, 
+                #777 0px, #aaa 3px, #777 6px, 
+                transparent 6px, transparent 18px);
+            z-index: -1;
         }
 
-        /* Piny ze wszystkich 4 stron (Referencja: image_c8a6d7.png) */
-        .chip::before {
-            content: ''; position: absolute; top: -12px; left: 15px; right: 15px; bottom: -12px;
-            background: repeating-linear-gradient(90deg, #444 0px, #444 2px, transparent 2px, transparent 8px);
-        }
-        .chip::after {
-            content: ''; position: absolute; left: -12px; top: 15px; bottom: 15px; right: -12px;
-            background: repeating-linear-gradient(0deg, #444 0px, #444 2px, transparent 2px, transparent 8px);
+        .notch {
+            position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            width: 12px; height: 20px; background: var(--laminat);
+            border-radius: 0 10px 10px 0; border: 1px solid #222;
         }
 
-        .chip-top {
-            position: relative; width: 100%; height: 100%; background: #0a0a0a;
-            z-index: 5; border: 1px solid #222; display: flex; flex-direction: column;
-            padding: 10px; text-align: left;
+        .chip-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; pointer-events: none;
         }
 
-        .chip-label { font-family: 'Orbitron'; font-size: 9px; color: var(--gold); font-weight: 900; }
-        .chip-serial { font-size: 6px; color: #444; margin-top: auto; }
+        .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); font-weight: 700; }
+        .chip-spec { font-size: 7px; color: #444; margin-top: 5px; text-transform: uppercase; }
 
-        .chip.active {
-            box-shadow: 0 0 30px var(--neon-cyan), inset 0 0 10px var(--neon-cyan);
-            border-color: var(--neon-cyan);
+        .ic-chip.active {
+            border-color: var(--neon);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
         }
 
-        /* PANEL KONTROLNY - STYLE PINTEREST (HACKER HUD) */
-        .sidebar {
-            background: rgba(0, 10, 5, 0.9);
-            border-left: 2px solid var(--neon-cyan);
-            backdrop-filter: blur(10px);
-            display: flex; flex-direction: column;
-            box-shadow: -10px 0 50px rgba(0,0,0,1);
+        /* PANEL KONTROLNY */
+        .control-tower { 
+            flex: 0.8; background: rgba(0,0,0,0.9); border-left: 3px solid #111;
+            display: flex; flex-direction: column; z-index: 20;
         }
 
-        .terminal-header {
-            padding: 20px; font-family: 'Orbitron'; background: rgba(0, 242, 255, 0.1);
-            border-bottom: 1px solid var(--neon-cyan); font-size: 12px;
+        .hud-header { padding: 25px; border-bottom: 2px solid #ff0055; font-family: 'Orbitron'; letter-spacing: 2px; }
+        .terminal { 
+            margin: 20px; padding: 15px; background: #000; flex: 1; 
+            border: 1px solid #1a1a1a; font-size: 12px; color: #39ff14; 
+            box-shadow: inset 0 0 10px rgba(57, 255, 20, 0.1);
         }
 
-        .terminal-log {
-            flex: 1; padding: 15px; font-size: 10px; color: var(--neon-green);
-            overflow-y: auto; line-height: 1.4;
-            background-image: linear-gradient(rgba(0, 255, 0, 0.05) 50%, transparent 50%);
-            background-size: 100% 4px;
+        .btn-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
+        .hw-btn {
+            background: #080808; border: 1px solid #222; color: var(--neon);
+            padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px;
+        }
+        .hw-btn:hover { background: var(--neon); color: #000; }
+
+        .slider-wrap { padding: 30px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: #111; height: 4px; }
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 20px; height: 35px; background: #ff0055; cursor: pointer; 
         }
 
-        .controls {
-            display: grid; grid-template-columns: repeat(3, 1fr);
-            border-top: 1px solid #333;
+        /* ŚCIEŻKI I ANIMACJA PRZEPŁYWU (ŚWIATEŁKO) */
+        .trace-line {
+            fill: none; stroke: var(--miedz); stroke-width: 2;
+            transition: stroke 0.3s, filter 0.3s;
         }
-
-        .btn {
-            background: #000; border: 1px solid #111; color: var(--neon-cyan);
-            padding: 20px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px;
+        .trace-flow {
+            fill: none; stroke: var(--neon); stroke-width: 2.5;
+            stroke-dasharray: 15, 50;
+            stroke-dashoffset: 100;
+            filter: drop-shadow(0 0 5px var(--neon));
+            visibility: hidden;
         }
-        .btn:hover { background: var(--neon-cyan); color: #000; box-shadow: 0 0 20px var(--neon-cyan); }
+        .active-trace { stroke: var(--neon); filter: drop-shadow(0 0 3px var(--neon)); }
+        .active-flow { visibility: visible; animation: flowAnim 2s linear infinite; }
 
-        .volume-area { padding: 30px; background: #050505; }
-        input[type=range] { width: 100%; accent-color: var(--neon-cyan); }
-
-        /* ANIMACJA PRZEPŁYWU PRĄDU */
-        .trace { stroke: var(--trace-bg); stroke-width: 1.5; fill: none; }
-        .trace-active { 
-            stroke: var(--neon-cyan); stroke-width: 2; 
-            stroke-dasharray: 100; animation: dash 2s linear infinite; 
-            filter: drop-shadow(0 0 5px var(--neon-cyan));
-        }
-        @keyframes dash { from { stroke-dashoffset: 200; } to { stroke-dashoffset: 0; } }
-
+        @keyframes flowAnim { to { stroke-dashoffset: 0; } }
     </style>
 </head>
 <body>
 
-<svg id="pcb-svg"></svg>
+<svg id="pcb-bg"></svg>
 
-<div class="interface-grid">
-    <div class="board" id="board-area"></div>
+<div class="main-interface">
+    <div class="motherboard" id="board"></div>
 
-    <aside class="sidebar">
-        <div class="terminal-header">NODE_STATUS: ONLINE</div>
-        <div class="terminal-log" id="log">> INITIALIZING_PCB_BIOS...<br>> SCANNING_I/O_CHIPS...</div>
-        
-        <div class="controls">
-            <button class="btn" onclick="skip(-1)">[ PREV ]</button>
-            <button class="btn" onclick="toggle()">[ SYNC ]</button>
-            <button class="btn" onclick="skip(1)">[ NEXT ]</button>
+    <aside class="control-tower">
+        <div class="hud-header">SYSTEM_AUDIT: OK</div>
+        <div class="terminal" id="term-out">> LINK_STABLISHED...<br>> WAITING_FOR_IO</div>
+        <div class="btn-matrix">
+            <button class="hw-btn" onclick="skip(-1)">PREV</button>
+            <button class="hw-btn" onclick="toggle()" style="border-color:#ff0055">SYNC</button>
+            <button class="hw-btn" onclick="skip(1)">NEXT</button>
         </div>
-
-        <div class="volume-area">
-            <input type="range" min="0" max="1" step="0.01" oninput="setVol(this.value)">
+        <div class="slider-wrap">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<audio id="core-audio" crossorigin="anonymous"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 10, y: 10 },
-        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 15 },
-        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 12, y: 45 },
-        { n: 'GEHIRN', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 50, y: 50 },
-        { n: 'B.O. TECHNO', u: 'https://laut.fm/best-of-techno', x: 15, y: 75 },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 60, y: 80 },
-        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 80, y: 10 },
-        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 75, y: 45 },
-        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 82, y: 80 }
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 8, y: 12 },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 42, y: 10 },
+        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 12, y: 38 },
+        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 45, y: 45 },
+        { n: 'BEST OF TECHNO', u: 'https://laut.fm/best-of-techno', x: 10, y: 72 },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 50, y: 78 },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 75, y: 10 },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 72, y: 45 },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 75, y: 75 }
     ];
 
-    const log = document.getElementById('log');
-    const board = document.getElementById('board-area');
-    const audio = document.getElementById('core-audio');
-    const svg = document.getElementById('pcb-svg');
+    const svg = document.getElementById('pcb-bg');
+    const board = document.getElementById('board');
+    const player = document.getElementById('player');
+    const term = document.getElementById('term-out');
     let currentIdx = -1;
 
-    function buildPCB() {
-        // Gęste ścieżki tła
-        let traces = "";
-        for(let i=0; i<60; i++) {
-            let x = Math.random()*100, y = Math.random()*100;
-            traces += `<path class="trace" d="M ${x}% ${y}% L ${x+10}% ${y+5}% L ${x+15}% ${y}%" />`;
-        }
-        svg.innerHTML = traces;
+    function buildHardware() {
+        board.innerHTML = "";
+        svg.innerHTML = "";
+        
+        const towerX = window.innerWidth * 0.72; // Punkt styku z panelem
 
         STATIONS.forEach((s, i) => {
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            chip.style.left = s.x + '%'; chip.style.top = s.y + '%';
-            chip.onclick = () => mount(i);
-            chip.innerHTML = `<div class="chip-top">
-                <div class="chip-label">${s.n}</div>
-                <div class="chip-serial">ID: 0x${i}FF_${Math.random().toString(16).slice(2,6)}</div>
+            const ic = document.createElement('div');
+            ic.className = 'ic-chip';
+            ic.style.left = s.x + '%'; ic.style.top = s.y + '%';
+            ic.id = `ic-${i}`;
+            ic.innerHTML = `<div class="notch"></div><div class="chip-label">
+                <span class="chip-id">${s.n}</span>
+                <span class="chip-spec">BUS_SYNC_0${i}</span>
             </div>`;
-            board.appendChild(chip);
+            ic.onclick = () => mount(i);
+            board.appendChild(ic);
+
+            // RYSOWANIE ŚCIEŻEK (TRACES) ŁĄCZĄCYCH UKŁADY Z PANELEM
+            const r = ic.getBoundingClientRect();
+            const startX = r.left + r.width;
+            const startY = r.top + r.height / 2;
+            const endY = (window.innerHeight / STATIONS.length) * i + 50;
+
+            const d = `M ${startX} ${startY} L ${startX + 50} ${startY} L ${startX + 100} ${endY} L ${towerX} ${endY}`;
+            
+            // Podstawa ścieżki
+            const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            line.setAttribute("d", d);
+            line.setAttribute("class", "trace-line");
+            line.id = `line-${i}`;
+            svg.appendChild(line);
+
+            // Warstwa przepływu prądu (światełko)
+            const flow = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            flow.setAttribute("d", d);
+            flow.setAttribute("class", "trace-flow");
+            flow.id = `flow-${i}`;
+            svg.appendChild(flow);
         });
     }
 
     function mount(i) {
         currentIdx = i;
-        document.querySelectorAll('.chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
         
-        // Animacja ścieżki (uproszczona dla wydajności)
-        svg.innerHTML += `<line x1="100%" y1="50%" x2="${STATIONS[i].x}%" y2="${STATIONS[i].y}%" class="trace-active" />`;
+        // Reset i aktywacja ścieżek
+        document.querySelectorAll('.trace-line').forEach(l => l.classList.remove('active-trace'));
+        document.querySelectorAll('.trace-flow').forEach(f => f.classList.remove('active-flow'));
 
-        log.innerHTML += `<br>> MOUNTING_SOURCE: ${STATIONS[i].n}...`;
-        log.scrollTop = log.scrollHeight;
+        document.getElementById(`line-${i}`).classList.add('active-trace');
+        document.getElementById(`flow-${i}`).classList.add('active-flow');
 
-        // AUDIO ENGINE FIX
-        audio.pause();
-        audio.src = STATIONS[i].u;
-        audio.load();
+        term.innerHTML = `> MOUNTING_COMPONENT: ${STATIONS[i].n}<br>> DATA_FLOW: ACTIVE<br>> SYNC: OK`;
         
-        // Próba odtworzenia - jeśli przeglądarka blokuje, prosimy o SYNC
-        audio.play().catch(() => {
-            log.innerHTML += `<br><span style="color:red">> ERROR: BYPASS_REQUIRED. PRESS SYNC.</span>`;
-        });
+        player.pause();
+        player.src = STATIONS[i].u;
+        player.play().catch(e => { term.innerHTML += `<br>> ERROR: PRESS SYNC`; });
     }
 
-    function toggle() { 
-        if(currentIdx === -1) mount(0); 
-        else audio.paused ? audio.play() : audio.pause(); 
-    }
+    function toggle() { if(currentIdx === -1) mount(0); else player.paused ? player.play() : player.pause(); }
+    function skip(dir) { let n = currentIdx + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
+    function setV(v) { player.volume = v; }
 
-    function skip(dir) { 
-        let n = currentIdx + dir; 
-        if(n >= 0 && n < STATIONS.length) mount(n); 
-    }
-
-    function setVol(v) { audio.volume = v; }
-
-    buildPCB();
+    window.onresize = buildHardware;
+    window.onload = buildHardware;
 </script>
 </body>
 </html>
