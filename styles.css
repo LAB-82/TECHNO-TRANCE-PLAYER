@@ -13,8 +13,10 @@ body {
     height: auto;
     margin: auto;
     background-color: #1a1a1a;
+    border-radius: 15px; /* Zaokrąglone rogi */
     overflow: hidden;
     padding: 20px;
+    box-shadow: 0 0 30px rgba(0, 255, 204, 0.5);
 }
 
 .header {
@@ -45,16 +47,20 @@ button {
 
 button:hover {
     background-color: #00ffcc;
+    filter: brightness(1.2);
 }
 
 .visuals {
     display: flex;
+    flex-direction: column; /* Kolumna dla obrazów */
     justify-content: center;
+    align-items: center;
 }
 
 .visual-element {
-    width: 100%; /* Szerokość dopasowana do kontenera */
-    max-width: 600px; /* Maks. szerokość zdjęcia, aby nie było za duże */
-    border-radius: 15px; /* Zaokrąglone rogi dla efektu nowoczesności */
+    width: 90%; /* Szerokość dopasowana do kontenera */
+    max-width: 600px; /* Maks. szerokość zdjęcia */
+    border-radius: 15px; /* Zaokrąglone rogi dla wizualnych elementów */
     box-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+    margin: 10px 0; /* Odstęp między wizualami */
 }
