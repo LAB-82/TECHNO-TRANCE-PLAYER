@@ -3,176 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - ULTRADENSE PCB</title>
+    <title>RMF TERMINAL - PCB SCHEMATIC</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Megrim&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
             --yellow: #fce300;
-            --yellow-neon: #fffb00;
-            --bg: #000;
+            --bg: #030303;
             --tile: #0a0a0a;
-            --border: #1a1a1a;
-            --circuit: #181818;
-            --trace: #222;
+            --trace: rgba(252, 227, 0, 0.2);
+            --trace-active: rgba(252, 227, 0, 0.8);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg); color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden; 
+        body { 
+            height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
+            font-family: 'Montserrat Alternates', sans-serif; overflow: hidden; 
         }
 
-        /* Tło - mikrosiatka PCB */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: 
-                linear-gradient(var(--circuit) 1px, transparent 1px),
-                linear-gradient(90deg, var(--circuit) 1px, transparent 1px);
-            background-size: 15px 15px;
-            z-index: -2;
+        /* PCB Background */
+        .pcb-board {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
         }
 
-        body { display: flex; flex-direction: column; padding: 2vh; }
+        .app-container { display: flex; height: 100vh; position: relative; z-index: 1; }
 
-        header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); margin-bottom: 2vh; flex-shrink: 0;
-        }
-        .header-info { font-size: 20px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }
-        .clock { color: var(--yellow); font-size: 20px; font-weight: 700; }
+        /* Obszar roboczy dla komponentów */
+        .component-area { flex: 1.5; position: relative; overflow: hidden; }
 
-        .app-content { display: flex; flex: 1; gap: 2vw; min-height: 0; position: relative; }
-
-        /* KONTENER GRID - KAFELKI O 50% MNIEJSZE */
-        .grid { 
-            flex: 1.6; display: grid; 
-            grid-template-columns: repeat(6, 1fr); 
-            grid-auto-rows: 60px; /* Znacznie mniejsza wysokość */
-            gap: 15px 10px; 
-            overflow-y: auto;
-            padding: 20px;
-            z-index: 1;
-            align-content: start;
-        }
-
-        .grid::-webkit-scrollbar { width: 2px; }
-
-        /* KAFELKI JAKO MINI UKŁADY SCALONE */
+        /* STYLIZACJA KAFELKÓW (UKŁADÓW SCALONYCH) */
         .tile {
-            background: var(--tile); border: 1px solid var(--border); border-radius: 1px;
+            position: absolute; background: var(--tile); border: 1px solid #1a1a1a;
+            padding: 8px; width: 80px; height: 50px; cursor: pointer;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: all 0.2s;
-            /* Linie połączenia biegnące do prawego panelu */
-            background-image: linear-gradient(to right, transparent 95%, rgba(252,227,0,0.05) 95%);
+            transition: all 0.3s; z-index: 2;
         }
 
-        /* Piny mikroprocesora */
+        /* Nóżki procesora */
         .tile::before {
-            content: ""; position: absolute;
-            width: calc(100% + 6px); height: 80%;
-            left: -3px; top: 10%;
-            background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, var(--trace) 2px, var(--trace) 4px);
+            content: ""; position: absolute; width: calc(100% + 8px); height: 60%;
+            left: -4px; top: 20%;
+            background-image: repeating-linear-gradient(to bottom, transparent, transparent 2px, #333 2px, #333 4px);
             z-index: -1;
         }
 
-        /* Centralny Procesor (Gehirn) */
-        .tile.central-cpu {
-            grid-column: span 2;
-            grid-row: span 2;
-            border: 1.5px solid var(--yellow);
-            background: #050505;
-            z-index: 10;
-        }
+        .tile .t-top { font-size: 8px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; }
+        .tile.active { border-color: var(--yellow); box-shadow: 0 0 15px var(--yellow); }
 
-        .tile .t-top { font-size: 9px; font-weight: 700; color: var(--yellow); text-align: center; text-transform: uppercase; line-height: 1; }
-        .tile .t-bottom { font-size: 7px; font-weight: 600; color: var(--yellow); margin-top: 2px; opacity: 0.5; }
+        /* CENTRALNY UKŁAD */
+        .central-cpu { width: 120px; height: 80px; border: 2px solid var(--yellow); background: #000; }
+        .central-cpu .t-top { font-size: 11px; }
 
-        .tile.active { 
-            border-color: var(--yellow-neon); 
-            background: #111;
-            box-shadow: 0 0 10px rgba(252, 227, 0, 0.4);
-        }
-
-        /* BOCZNY PANEL - MODUŁ ZASILANIA */
+        /* PANEL STEROWANIA */
         .sidebar { 
-            flex: 0.5; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 3vh;
-            border-left: 2px solid var(--border); padding-left: 2vw;
-            z-index: 2;
-            background: rgba(0,0,0,0.8);
-            position: relative;
-        }
-
-        /* Linie magistrali zasilającej od każdego rzędu */
-        .sidebar::before {
-            content: ""; position: absolute; left: -20px; top: 0; bottom: 0; width: 2px;
-            background: repeating-linear-gradient(to bottom, var(--yellow) 0, var(--yellow) 2px, transparent 2px, transparent 10px);
-            opacity: 0.3;
+            flex: 0.5; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; gap: 40px; border-left: 1px solid #1a1a1a;
+            background: rgba(0,0,0,0.9); z-index: 3;
         }
 
         .logo-display {
-            width: 100%; max-width: 260px; aspect-ratio: 16/10;
-            border: 2px solid var(--yellow);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: #000; position: relative;
+            width: 90%; max-width: 250px; border: 2px solid var(--yellow);
+            padding: 20px; text-align: center; background: #000;
         }
-
-        .logo-display h2 { 
-            font-family: 'Megrim', cursive; font-size: 38px; 
-            color: var(--yellow); text-shadow: 0 0 10px var(--yellow); 
-        }
+        .logo-display h2 { font-family: 'Megrim'; font-size: 32px; color: var(--yellow); }
 
         .controls { display: flex; align-items: center; gap: 20px; }
-        .c-svg { width: 28px; height: 28px; fill: var(--yellow); cursor: pointer; }
+        .c-svg { width: 30px; height: 30px; fill: var(--yellow); cursor: pointer; }
         .c-play { width: 60px; height: 60px; border: 2px solid var(--yellow); border-radius: 50%; padding: 10px; }
 
-        .vol-box { display: flex; align-items: center; gap: 10px; width: 240px; }
-        .vol-btn { width: 30px; height: 30px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; font-size: 12px; }
-        .vol-bar { flex: 1; height: 2px; background: var(--trace); }
-        
-        input[type="range"] { width: 100%; appearance: none; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 10px; height: 10px; background: var(--yellow); border-radius: 0; }
+        .vol-box { width: 200px; display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { flex: 1; accent-color: var(--yellow); }
 
         @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-            .sidebar { border-left: none; border-top: 2px solid var(--border); padding: 15px 0; }
-            .logo-display h2 { font-size: 28px; }
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; padding: 20px 0; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-info" id="playing-now">NANOPROCESSOR UNIT</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
+<svg class="pcb-board" id="pcb-svg"></svg>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
+<div class="app-container">
+    <div class="component-area" id="canvas"></div>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="main-panel">
         <div class="logo-display">
-            <h2 id="display-name">TECHNO</h2>
-            <p style="font-size: 8px; color: var(--yellow); margin-top: 5px; letter-spacing: 1px;">BUS TERMINAL</p>
+            <h2 id="display-name">READY</h2>
+            <p style="font-size: 8px; color: var(--yellow); margin-top: 5px;">SYSTEM BUS CONNECTED</p>
         </div>
 
-        <div class="controls">
+        <div class="controls" id="control-hub">
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
             <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
         </div>
 
         <div class="vol-box">
-            <button class="vol-btn" onclick="adj(-5)">-</button>
-            <div class="vol-bar">
-                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
-            </div>
-            <button class="vol-btn" onclick="adj(5)">+</button>
+            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
@@ -181,39 +110,76 @@
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', c: 'TECH', u: 'https://laut.fm/tech88' },
-        { n: 'HR 3 CLUB', c: 'TECH', u: 'https://laut.fm/hr3_clubnight' },
-        { n: '1000 TECH', c: 'TECH', u: 'https://laut.fm/1000techno' },
-        { n: 'BEST TECH', c: 'TECH', u: 'https://laut.fm/best-of-techno' },
-        { n: 'CHRIS BURN', c: 'TECH', u: 'https://laut.fm/chris_burn' },
-        { n: 'RETRO ELEC', c: 'TECH', u: 'https://laut.fm/retroelectronicmusic' },
-        { n: 'GEHIRN TREIBER BEAT', c: 'CORE CPU', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true },
-        { n: 'DEEP HOUSE', c: 'HOUSE', u: 'https://laut.fm/deep-house-sounds' },
-        { n: 'HOUSEBOMB', c: 'HOUSE', u: 'https://laut.fm/housebomb-fn' },
-        { n: 'SYMBIOTIC', c: 'HOUSE', u: 'https://laut.fm/symbiotic-beats' },
-        { n: 'HOUSE FM', c: 'HOUSE', u: 'https://laut.fm/house' },
-        { n: 'FAF 979', c: 'HOUSE', u: 'https://laut.fm/faf-records-979' },
-        { n: 'TORNADO', c: 'HOUSE', u: 'https://laut.fm/tornadofm' }
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', pos: {t: 10, l: 15} },
+        { n: 'HR 3 CLUB', u: 'https://laut.fm/hr3_clubnight', pos: {t: 15, l: 60} },
+        { n: '1000 TECH', u: 'https://laut.fm/1000techno', pos: {t: 40, l: 10} },
+        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', central: true, pos: {t: 45, l: 40} },
+        { n: 'BEST TECH', u: 'https://laut.fm/best-of-techno', pos: {t: 75, l: 15} },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', pos: {t: 80, l: 55} },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', pos: {t: 5, l: 40} },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', pos: {t: 70, l: 80} },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', pos: {t: 30, l: 80} }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), dispName = document.getElementById('display-name');
+    const canvas = document.getElementById('canvas');
+    const svg = document.getElementById('pcb-svg');
+    const panel = document.getElementById('main-panel');
+    const hub = document.getElementById('control-hub');
     let current = -1;
 
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    // RENDEROWANIE KAFELKÓW I ŚCIEŻEK
+    function initPCB() {
+        STATIONS.forEach((s, i) => {
+            const t = document.createElement('div');
+            t.className = s.central ? 'tile central-cpu' : 'tile';
+            t.style.top = s.pos.t + '%';
+            t.style.left = s.pos.l + '%';
+            t.innerHTML = `<div class="t-top">${s.n}</div>`;
+            t.onclick = () => play(i);
+            t.id = 'tile-' + i;
+            canvas.appendChild(t);
+        });
+        
+        // Czekamy chwilę na wyrenderowanie DOM, by pobrać pozycje
+        setTimeout(drawTraces, 100);
     }
-    setInterval(clock, 1000); clock();
 
-    STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = s.central ? 'tile central-cpu' : 'tile';
-        // Specyficzne pozycjonowanie centralne dla 6 kolumn
-        if(s.central) { t.style.gridColumn = "3 / span 2"; t.style.gridRow = "2 / span 2"; }
-        t.innerHTML = `<div class="t-top">${s.n}</div><div class="t-bottom">${s.c}</div>`;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
-    });
+    function drawTraces() {
+        svg.innerHTML = '';
+        const panelRect = panel.getBoundingClientRect();
+        const hubRect = hub.getBoundingClientRect();
+
+        STATIONS.forEach((s, i) => {
+            const tile = document.getElementById('tile-' + i);
+            const rect = tile.getBoundingClientRect();
+            
+            const startX = rect.left + rect.width / 2;
+            const startY = rect.top + rect.height / 2;
+
+            // 1. Ścieżka do panelu (Zasilanie/Dane)
+            createTrace(startX, startY, panelRect.left, startY);
+
+            // 2. Ścieżka od Hubu Sterowania do kafelka
+            createTrace(hubRect.left, hubRect.top + hubRect.height/2, startX, startY, true);
+        });
+    }
+
+    function createTrace(x1, y1, x2, y2, isControl = false) {
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const midX = x1 + (x2 - x1) / 2;
+        
+        // Stylizacja ścieżki z załamaniem 45 stopni
+        const d = `M ${x1} ${y1} L ${midX} ${y1} L ${x2} ${y2}`;
+        
+        path.setAttribute("d", d);
+        path.setAttribute("stroke", isControl ? "rgba(252,227,0,0.1)" : "rgba(252,227,0,0.2)");
+        path.setAttribute("stroke-width", "1.5");
+        path.setAttribute("fill", "none");
+        svg.appendChild(path);
+    }
+
+    // LOGIKA ODTWARZACZA (BEZ ZMIAN)
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), dispName = document.getElementById('display-name');
 
     function play(i) {
         current = i;
@@ -225,7 +191,7 @@
     }
 
     function toggle() {
-        if(current === -1) play(6);
+        if(current === -1) play(3);
         else if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
@@ -236,11 +202,9 @@
     }
 
     function setV(v) { player.volume = v / 100; }
-    function adj(d) { 
-        const r = document.getElementById('v-range');
-        r.value = parseInt(r.value) + d;
-        setV(r.value);
-    }
+
+    window.addEventListener('resize', drawTraces);
+    initPCB();
 </script>
 </body>
 </html>
