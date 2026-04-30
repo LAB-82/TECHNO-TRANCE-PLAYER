@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL_PCB_STATION_v2.5</title>
+    <title>CYBER_DECK_PCB_AUDIT_v3</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
 
         :root {
             --pcb-deep: #020408;
             --trace-cyan: #00f2ff;
-            --trace-dim: #0a1b2b;
+            --trace-dim: #102a43; /* Rozjaśnione dla lepszej widoczności */
             --accent: #ff0055;
             --hacker-green: #39ff14;
         }
@@ -21,81 +21,67 @@
             font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh;
         }
 
+        /* SVG Z DUŻĄ GĘSTOŚCIĄ ŚCIEŻEK */
         #pcb-master-svg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; pointer-events: none; opacity: 0.8;
+            z-index: 0; pointer-events: none;
         }
 
         .main-frame { display: flex; height: 100vh; position: relative; z-index: 1; }
 
-        /* BREADBOARD AREA */
-        .chipset-area { flex: 1.8; position: relative; overflow: hidden; }
-
-        .tech-label {
-            position: absolute; font-size: 10px; color: #1a3a4a; pointer-events: none;
-            text-transform: uppercase; letter-spacing: 1px;
+        /* BREADBOARD - TŁO Z SIATKĄ */
+        .chipset-area { 
+            flex: 1.8; position: relative; overflow: hidden; 
+            background: radial-gradient(circle at 50% 50%, #050a0f 0%, #020408 100%);
         }
 
-        /* POWIĘKSZONE KAFELKI O 25% */
+        /* SILKSCREEN - ETYKIETY TECHNICZNE */
+        .tech-meta {
+            position: absolute; font-size: 9px; color: #1a3a4a; font-weight: bold;
+            pointer-events: none; text-transform: uppercase; opacity: 0.6;
+        }
+
+        /* POWIĘKSZONE KAFELKI O 25% (125px wide) */
         .chip {
-            position: absolute; background: #050a0f; border: 1px solid #1a3a4a;
-            padding: 10px; min-width: 125px; min-height: 56px; cursor: pointer; z-index: 10;
-            box-shadow: inset 0 0 10px rgba(0,0,0,1), 4px 4px 0px #000;
-            transition: 0.2s ease-in-out;
+            position: absolute; background: rgba(5, 15, 25, 0.95); border: 1px solid #1a3a4a;
+            padding: 12px; min-width: 125px; min-height: 60px; cursor: pointer; z-index: 10;
+            box-shadow: 4px 4px 0px #000, inset 0 0 15px rgba(0, 242, 255, 0.05);
+            transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .chip:hover { border-color: var(--trace-cyan); transform: translateY(-2px); }
-        .chip.active { border-color: #fff; background: #0a1a2a; box-shadow: 0 0 25px var(--trace-cyan); }
+        .chip:hover { border-color: var(--trace-cyan); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+        .chip.active { border-color: #fff; background: #0a1a2a; box-shadow: 0 0 30px var(--trace-cyan); }
         
-        .chip-n { font-family: 'Orbitron'; font-size: 12px; color: #fff; display: block; margin-bottom: 4px; }
-        .chip-u { font-size: 9px; color: #3a5a7a; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .chip-n { font-family: 'Orbitron'; font-size: 13px; color: #fff; display: block; margin-bottom: 5px; }
+        .chip-u { font-size: 8px; color: #3a5a7a; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
 
-        /* PANEL PO PRAWEJ - HACKER MODULE */
+        /* PANEL PO PRAWEJ - BEZ ZMIAN UI */
         .hacker-panel { 
-            flex: 0.7; background: rgba(5, 10, 15, 0.98); 
-            border-left: 2px solid #111; display: flex; flex-direction: column;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+            flex: 0.7; background: #050a0f; border-left: 2px solid #111; 
+            display: flex; flex-direction: column; z-index: 100;
         }
 
         .hud-top {
             padding: 18px; border-bottom: 2px solid var(--accent);
-            background: linear-gradient(to right, #100, #000);
-            display: flex; justify-content: space-between; font-size: 14px;
-            font-family: 'Orbitron';
+            background: #000; display: flex; justify-content: space-between; font-family: 'Orbitron';
         }
 
         .vfd-screen {
             margin: 15px; padding: 15px; background: #000; border: 1px solid #1a1a1a;
             height: 200px; position: relative; overflow: hidden;
-            box-shadow: inset 0 0 20px #000;
         }
 
-        .vfd-screen::after {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, transparent 0, rgba(0, 242, 255, 0.03) 1px, transparent 2px);
-            pointer-events: none;
-        }
-
-        .matrix-btn-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; 
-        }
+        .matrix-btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 15px; }
 
         .hacker-btn {
             background: #0a0a0a; border: 1px solid #222; color: var(--trace-cyan);
             padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 12px;
-            text-shadow: 0 0 5px var(--trace-cyan); transition: 0.1s;
         }
-
         .hacker-btn:hover { background: var(--trace-cyan); color: #000; }
 
         .fader-box { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 15px; }
-        
-        input[type=range] {
-            -webkit-appearance: none; width: 100%; background: #111; height: 6px; border: 1px solid #222;
-        }
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none; height: 35px; width: 18px; background: var(--accent); border: 1px solid #fff; cursor: pointer;
-        }
+        input[type=range] { -webkit-appearance: none; background: #111; height: 6px; border: 1px solid #222; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 35px; width: 18px; background: var(--accent); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -103,40 +89,37 @@
 <svg id="pcb-master-svg"></svg>
 
 <div class="main-frame">
-    <div class="chipset-area" id="board"></div>
+    <div class="chipset-area" id="board">
+        <!-- Generowane przez JS -->
+    </div>
 
     <aside class="hacker-panel">
         <div class="hud-top">
-            <span style="color:var(--accent)">SIGNAL_PROCESSOR</span>
+            <span style="color:var(--accent)">AUDIT_STATUS: OK</span>
             <span id="clock">00:00:00</span>
         </div>
-
         <div class="vfd-screen">
-            <div id="log-console" style="font-size: 12px; color: var(--hacker-green); line-height: 1.5;">
-                > SYSTEM READY<br>
-                > SELECT NODE TO MOUNT...<br>
-                > WAITING FOR INPUT_
+            <div id="log-console" style="font-size: 12px; color: var(--hacker-green);">
+                > NODE SCAN COMPLETED...<br>
+                > PCB TRACE DENSITY: MAX<br>
+                > AUDIO ENGINE: READY_
             </div>
         </div>
-
         <div class="matrix-btn-grid">
             <button class="hacker-btn" onclick="skip(-1)">PREV</button>
             <button class="hacker-btn" onclick="toggle()" style="border-color:var(--accent)">SYNC</button>
             <button class="hacker-btn" onclick="skip(1)">NEXT</button>
         </div>
-
         <div class="fader-box">
-            <label style="font-size:11px; color:#555; letter-spacing: 2px;">OUTPUT_LEVEL</label>
-            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
-            <div id="signal-meter" style="height:8px; background:#111; margin-top:20px; border: 1px solid #222;">
-                <div id="bar" style="width:50%; height:100%; background:var(--trace-cyan); transition: width 0.1s;"></div>
+            <div id="signal-meter" style="height:10px; background:#111; border: 1px solid #222;">
+                <div id="bar" style="width:50%; height:100%; background:var(--trace-cyan);"></div>
             </div>
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<!-- AUDYT AUDIO: Dodano parametry stabilizujące strumień -->
-<audio id="player" crossorigin="anonymous" preload="auto"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = [
@@ -151,102 +134,102 @@
         { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 78, y: 35 }
     ];
 
-    const board = document.getElementById('board');
     const svg = document.getElementById('pcb-master-svg');
+    const board = document.getElementById('board');
     const player = document.getElementById('player');
-    const consoleLog = document.getElementById('log-console');
     let currentIdx = -1;
 
-    function init() {
+    function build() {
+        // 1. ZAGĘSZCZANIE POWIERZCHNI DODATKOWYMI ELEMENTAMI
+        for(let i=0; i<40; i++) {
+            const meta = document.createElement('div');
+            meta.className = 'tech-meta';
+            meta.style.left = Math.random()*90+'%';
+            meta.style.top = Math.random()*90+'%';
+            meta.textContent = `L${Math.floor(Math.random()*999)} / R${Math.floor(Math.random()*99)} / BUS_${Math.random().toString(16).slice(2,5)}`;
+            board.appendChild(meta);
+        }
+
         STATIONS.forEach((s, i) => {
             const chip = document.createElement('div');
             chip.className = 'chip';
             chip.style.left = s.x + '%'; chip.style.top = s.y + '%';
+            chip.id = `chip-${i}`;
             chip.innerHTML = `<span class="chip-n">${s.n}</span><span class="chip-u">${s.u}</span>`;
             chip.onclick = () => mount(i);
-            chip.id = `chip-${i}`;
             board.appendChild(chip);
         });
 
-        drawConnections();
-        setInterval(() => {
-            document.getElementById('clock').textContent = new Date().toLocaleTimeString('pl-PL');
-        }, 1000);
+        drawPCB();
     }
 
-    function drawConnections() {
+    function drawPCB() {
         svg.innerHTML = '';
-        const w = window.innerWidth;
-        const panelX = w * 0.72;
+        const panelX = window.innerWidth * 0.72;
 
+        // TŁO - ŚLEPE ŚCIEŻKI (DODATKOWE ZAGĘSZCZENIE)
+        for(let i=0; i<30; i++) {
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            const x = Math.random() * panelX;
+            const y = Math.random() * window.innerHeight;
+            path.setAttribute("d", `M ${x} ${y} L ${x+40} ${y} L ${x+40} ${y+40}`);
+            path.setAttribute("stroke", "#0a1b2b");
+            path.setAttribute("fill", "none");
+            svg.appendChild(path);
+        }
+
+        // GŁÓWNE POŁĄCZENIA - WIDOCZNE I JASNE
         STATIONS.forEach((s, i) => {
             const el = document.getElementById(`chip-${i}`);
             const r = el.getBoundingClientRect();
-            const x = r.left + r.width;
-            const y = r.top + r.height/2;
+            const startX = r.left + r.width;
+            const startY = r.top + r.height/2;
 
-            // Główna magistrala danych ( kąty 90 stopni )
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            const d = `M ${x} ${y} L ${x + 30} ${y} L ${x + 30} ${y + (i*18 - 80)} L ${panelX} ${y + (i*18 - 80)}`;
+            const d = `M ${startX} ${startY} L ${startX + 40} ${startY} L ${startX + 40} ${startY + (i*15-60)} L ${panelX} ${startY + (i*15-60)}`;
             path.setAttribute("d", d);
-            path.setAttribute("stroke", "#0a1b2b");
-            path.setAttribute("fill", "none");
+            path.setAttribute("stroke", "var(--trace-dim)");
             path.setAttribute("stroke-width", "1.5");
-            path.id = `path-${i}`;
+            path.setAttribute("fill", "none");
+            path.id = `trace-${i}`;
             svg.appendChild(path);
 
-            // Dodatkowe ścieżki dekoracyjne (Cross-linking)
-            if(i < STATIONS.length - 1) {
-                const p2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                p2.setAttribute("d", `M ${r.left} ${r.top} L ${r.left - 20} ${r.top} L ${r.left - 20} ${r.top + 40}`);
-                p2.setAttribute("stroke", "#05101a");
-                p2.setAttribute("fill", "none");
-                svg.appendChild(p2);
-            }
+            // Punkty lutownicze (VIAS)
+            const via = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            via.setAttribute("cx", startX); via.setAttribute("cy", startY);
+            via.setAttribute("r", "3"); via.setAttribute("fill", "#1a3a4a");
+            svg.appendChild(via);
         });
     }
 
     function mount(i) {
         currentIdx = i;
         document.querySelectorAll('.chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        document.querySelectorAll('path').forEach(p => {
-            if(p.id.startsWith('path-')) p.setAttribute('stroke', '#0a1b2b');
-        });
+        document.querySelectorAll('path').forEach(p => { if(p.id.startsWith('trace-')) p.setAttribute('stroke', 'var(--trace-dim)'); });
         
-        const activePath = document.getElementById(`path-${i}`);
-        if(activePath) {
-            activePath.setAttribute('stroke', 'var(--trace-cyan)');
-            activePath.setAttribute('stroke-width', '2.5');
+        const activeTrace = document.getElementById(`trace-${i}`);
+        if(activeTrace) {
+            activeTrace.setAttribute('stroke', 'var(--trace-cyan)');
+            activeTrace.setAttribute('stroke-width', '3');
+            activeTrace.style.filter = 'drop-shadow(0 0 5px var(--trace-cyan))';
         }
 
-        consoleLog.innerHTML = `> MOUNTING NODE_${i}...<br>> ID: ${STATIONS[i].n}<br>> LINK: ESTABLISHED<br>> PROTOCOL: HTTPS/STREAM<br>> STATUS: BUFFERING...`;
+        document.getElementById('log-console').innerHTML = `> MOUNTING: ${STATIONS[i].n}<br>> ADDR: ${STATIONS[i].u}<br>> STREAM_SYNC: OK`;
         
-        // POPRAWKA DZIAŁANIA STACJI:
+        // FIX STACJI: Wymuszenie odświeżenia
         player.pause();
         player.src = STATIONS[i].u;
-        player.load(); // Wymuszone przeładowanie bufora
-        player.play()
-            .then(() => { consoleLog.innerHTML += `<br>> SIGNAL_LOCKED: OK`; })
-            .catch(e => { consoleLog.innerHTML += `<br>> ERROR: INTERACTION REQUIRED`; });
+        player.load();
+        player.play().catch(e => console.log("Init required"));
     }
 
-    function toggle() {
-        if(currentIdx === -1) mount(3);
-        else player.paused ? player.play() : player.pause();
-    }
+    function toggle() { if(currentIdx === -1) mount(3); else player.paused ? player.play() : player.pause(); }
+    function skip(dir) { let n = currentIdx + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
+    function setV(v) { player.volume = v; document.getElementById('bar').style.width = (v*100)+'%'; }
 
-    function skip(dir) {
-        let n = currentIdx + dir;
-        if(n >= 0 && n < STATIONS.length) mount(n);
-    }
-
-    function setV(v) { 
-        player.volume = v; 
-        document.getElementById('bar').style.width = (v*100)+'%';
-    }
-
-    window.onresize = drawConnections;
-    init();
+    setInterval(() => { document.getElementById('clock').textContent = new Date().toLocaleTimeString(); }, 1000);
+    window.onresize = drawPCB;
+    build();
 </script>
 </body>
 </html>
