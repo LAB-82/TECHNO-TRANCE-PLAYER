@@ -3,259 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEHIRN TREIBER - TACTICAL HUD</title>
+    <title>GEHIRN TREIBER - NEON HUD</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
         :root {
-            --hud-green: #00ff66;
-            --hud-dim: #003311;
-            --hud-bg: #020502;
-            --hud-border: rgba(0, 255, 102, 0.3);
+            --neon-cyan: #00f2ff;
+            --neon-pink: #ff00e5;
+            --neon-blue: #0044ff;
+            --bg-dark: #05080a;
+            --glass: rgba(0, 242, 255, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--hud-bg);
-            color: var(--hud-green);
-            font-family: 'Share Tech Mono', monospace;
+            background-color: var(--bg-dark);
+            color: var(--neon-cyan);
+            font-family: 'Orbitron', sans-serif;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            /* Efekt głębi tła */
+            background: radial-gradient(circle at center, #0a1921 0%, #05080a 100%);
             overflow: hidden;
-            /* Efekt siatki celowniczej */
-            background-image: 
-                radial-gradient(circle, var(--hud-dim) 1px, transparent 1px),
-                linear-gradient(var(--hud-border) 1px, transparent 1px),
-                linear-gradient(90deg, var(--hud-border) 1px, transparent 1px);
-            background-size: 100px 100px, 20px 20px, 20px 20px;
         }
 
-        /* Główna Rama HUD */
-        .hud-frame {
+        /* Główny kontener */
+        .hud-interface {
             width: 95vw;
-            height: 90vh;
-            border: 2px solid var(--hud-green);
-            position: relative;
+            height: 85vh;
             display: flex;
+            gap: 30px;
             padding: 20px;
-            gap: 20px;
-            box-shadow: inset 0 0 50px rgba(0, 255, 102, 0.1);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 20px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5), inset 0 0 20px rgba(0, 242, 255, 0.1);
         }
 
-        /* Ozdobne narożniki celownika */
-        .hud-frame::before {
-            content: ""; position: absolute; top: -10px; left: -10px;
-            width: 40px; height: 40px; border-top: 5px solid var(--hud-green); border-left: 5px solid var(--hud-green);
-        }
-        .hud-frame::after {
-            content: ""; position: absolute; bottom: -10px; right: -10px;
-            width: 40px; height: 40px; border-bottom: 5px solid var(--hud-green); border-right: 5px solid var(--hud-green);
-        }
-
-        /* Lewa sekcja - GRID stacji */
+        /* Lewa sekcja - Kafelki */
         .grid {
-            flex: 2;
+            flex: 1.8;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 15px;
+            gap: 20px;
         }
 
-        /* Kafelki w stylu przycisków kokpitu */
-        .hud-tile {
-            background: rgba(0, 51, 17, 0.2);
-            border: 1px solid var(--hud-green);
+        .neon-tile {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.3);
+            border-radius: 10px;
+            position: relative;
+            cursor: pointer;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            padding: 10px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.2s;
+            align-items: center;
+            transition: 0.3s;
+            overflow: hidden;
         }
 
-        .hud-tile:hover {
-            background: var(--hud-dim);
-            box-shadow: 0 0 15px var(--hud-green);
+        /* Dekoracyjny pasek na górze kafelka */
+        .neon-tile::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);
         }
 
-        .hud-tile.active {
-            background: var(--hud-green);
-            color: var(--hud-bg);
+        .neon-tile:hover, .neon-tile.active {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            transform: scale(1.02);
         }
 
-        .tile-id { font-size: 10px; margin-bottom: 5px; }
-        .tile-name { font-size: 16px; font-weight: bold; text-transform: uppercase; }
+        .neon-tile.active {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 25px rgba(255, 0, 229, 0.4);
+        }
 
-        /* Prawy Panel - Control Box */
-        .sidebar {
+        .tile-name { font-size: 14px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 10px var(--neon-cyan); }
+
+        /* Prawy Panel */
+        .control-panel {
             flex: 1;
-            border-left: 2px solid var(--hud-green);
-            padding-left: 20px;
             display: flex;
             flex-direction: column;
             gap: 25px;
+            padding: 20px;
+            border-left: 1px dashed rgba(0, 242, 255, 0.3);
         }
 
-        .display-unit {
-            border: 1px solid var(--hud-green);
-            padding: 15px;
-            background: rgba(0, 255, 102, 0.05);
+        /* Wyświetlacz kołowy / Gauge */
+        .gauge-area {
+            height: 150px;
+            border: 2px double var(--neon-cyan);
+            border-radius: 50%;
+            width: 150px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2);
+            position: relative;
         }
 
-        .label { font-size: 12px; letter-spacing: 2px; margin-bottom: 10px; display: block;}
-
-        /* Przyciski Sterowania */
-        .ctrl-group { display: flex; gap: 10px; flex-wrap: wrap; }
-        .hud-btn {
-            background: transparent;
-            border: 1px solid var(--hud-green);
-            color: var(--hud-green);
-            padding: 10px 15px;
-            font-family: inherit;
-            cursor: pointer;
+        /* Przyciski Transportu */
+        .btn-group { display: flex; gap: 10px; }
+        .neon-btn {
             flex: 1;
+            background: transparent;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 12px;
+            border-radius: 5px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 10px;
+            cursor: pointer;
+            transition: 0.3s;
             text-transform: uppercase;
         }
-        .hud-btn:hover { background: var(--hud-green); color: var(--hud-bg); }
 
-        /* Volume Slider */
-        .vol-section { margin-top: auto; }
-        .vol-controls { display: flex; align-items: center; gap: 10px; }
-        input[type="range"] {
-            flex: 1;
-            appearance: none;
-            background: var(--hud-dim);
-            height: 2px;
+        .neon-btn:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 20px var(--neon-cyan);
         }
+
+        .btn-stop { border-color: var(--neon-pink); color: var(--neon-pink); }
+        .btn-stop:hover { background: var(--neon-pink); color: #000; box-shadow: 0 0 20px var(--neon-pink); }
+
+        /* Suwak głośności - Gradient */
+        .volume-box { margin-top: auto; }
+        input[type="range"] {
+            width: 100%;
+            appearance: none;
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 5px;
+            outline: none;
+        }
+
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: 12px;
-            height: 24px;
-            background: var(--hud-green);
+            width: 20px;
+            height: 20px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
             cursor: pointer;
+            box-shadow: 0 0 15px var(--neon-cyan);
         }
 
-        .scanner-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background: rgba(0, 255, 102, 0.2);
-            top: 0;
-            animation: scan 4s linear infinite;
+        .status-bar {
+            font-size: 9px;
+            color: var(--neon-pink);
+            text-transform: uppercase;
+            margin-top: 10px;
+            animation: blink 2s infinite;
         }
 
-        @keyframes scan {
-            0% { top: 0; }
-            100% { top: 100%; }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
-<div class="hud-frame">
-    <div class="scanner-line"></div>
+<div class="hud-interface">
+    <!-- Grid Stacji -->
+    <div class="grid" id="main-grid"></div>
 
-    <!-- Grid Stacji (Modele danych) -->
-    <div class="grid" id="hud-grid"></div>
-
-    <!-- Panel Taktyczny -->
-    <aside class="sidebar">
-        <div class="display-unit">
-            <span class="label">> TRACKING_TARGET</span>
-            <h2 id="target-id" style="font-size: 24px;">NO_SIGNAL</h2>
-            <div id="freq" style="font-size: 11px; margin-top: 10px; color: #008833;">FREQ: --.--- MHz</div>
+    <!-- Panel Kontrolny -->
+    <aside class="control-panel">
+        <div class="gauge-area">
+            <span style="font-size: 10px; opacity: 0.6;">SIGNAL</span>
+            <div id="signal-val" style="font-size: 24px; font-weight: bold;">-- %</div>
+            <div style="position: absolute; width: 110%; height: 110%; border: 1px solid var(--neon-pink); border-radius: 50%; opacity: 0.2; animation: rotate 10s linear infinite;"></div>
         </div>
 
-        <div class="ctrl-group">
-            <span class="label" style="width: 100%;">TRANSPORT_ENGAGE</span>
-            <button class="hud-btn" onclick="play()">ENGAGE</button>
-            <button class="hud-btn" onclick="stop()">ABORT</button>
-            <button class="hud-btn" id="mute-btn" onclick="toggleMute()">SILENCE</button>
+        <div style="text-align: center;">
+            <span style="font-size: 10px; color: var(--text-grey);">NOW STREAMING:</span>
+            <h2 id="current-target" style="font-size: 18px; margin-top: 5px; color: #fff; text-shadow: 0 0 10px var(--neon-cyan);">STANDBY...</h2>
         </div>
 
-        <div class="vol-section">
-            <span class="label">AMPLITUDE_MODULATION</span>
-            <div class="vol-controls">
-                <button class="hud-btn" style="flex: 0;" onclick="adjVol(-5)">-</button>
-                <input type="range" id="vol-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
-                <button class="hud-btn" style="flex: 0;" onclick="adjVol(5)">+</button>
+        <div class="btn-group">
+            <button class="neon-btn" onclick="play()">Start</button>
+            <button class="neon-btn btn-stop" onclick="stop()">Stop</button>
+            <button class="neon-btn" id="mute-btn" onclick="toggleMute()">Mute</button>
+        </div>
+
+        <div class="volume-box">
+            <div style="display: flex; justify-content: space-between; font-size: 10px; margin-bottom: 5px;">
+                <span>VOLUME</span>
+                <span id="vol-display">70%</span>
             </div>
-        </div>
-
-        <div style="font-size: 10px; opacity: 0.5; margin-top: auto;">
-            GEHIRN_TREIBER // HUD_INTERFACE_OS_v5.1<br>
-            COORDS: 52.23N / 21.01E
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="neon-btn" style="flex:0; padding: 5px 10px;" onclick="adjVol(-5)">-</button>
+                <input type="range" id="v-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
+                <button class="neon-btn" style="flex:0; padding: 5px 10px;" onclick="adjVol(5)">+</button>
+            </div>
+            <div class="status-bar">System: Online // Encryption: Active</div>
         </div>
     </aside>
 </div>
 
-<audio id="audio-engine"></audio>
+<audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
-        { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
-        { n: 'BEST TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
-        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
-        { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
-        { n: 'GEHIRN TRBR', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
-        { n: 'AUX_01', u: '' },
-        { n: 'AUX_02', u: '' }
+        { n: 'TECHNO CORE', u: 'https://stream.laut.fm/tech88' },
+        { n: 'NEON NIGHTS', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: 'CYBER BEAT', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'DATA STREAM', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'VOID RADIO', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'SYNTH WAVE', u: 'https://stream.laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN TRB', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
+        { n: 'NODE_08', u: '' },
+        { n: 'NODE_09', u: '' }
     ];
 
-    const grid = document.getElementById('hud-grid');
-    const audio = document.getElementById('audio-engine');
-    const targetDisplay = document.getElementById('target-id');
-    const volSlider = document.getElementById('vol-slider');
+    const grid = document.getElementById('main-grid');
+    const audio = document.getElementById('player');
+    const volSlider = document.getElementById('v-slider');
     let currentIdx = -1;
 
-    // Generowanie kafelków HUD
     STATIONS.forEach((s, i) => {
         const tile = document.createElement('div');
-        tile.className = 'hud-tile';
-        tile.innerHTML = `
-            <div class="tile-id">ID: 0x0${i.toString(16)}</div>
-            <div class="tile-name">${s.n}</div>
-        `;
-        tile.onclick = () => selectTarget(i);
+        tile.className = 'neon-tile';
+        tile.innerHTML = `<span style="font-size: 9px; opacity: 0.5;">0${i+1}</span><div class="tile-name">${s.n}</div>`;
+        tile.onclick = () => {
+            if(!s.u) return;
+            currentIdx = i;
+            document.querySelectorAll('.neon-tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+            document.getElementById('current-target').textContent = s.n;
+            document.getElementById('signal-val').textContent = Math.floor(Math.random() * 20 + 80) + '%';
+            audio.src = s.u;
+            audio.play();
+        };
         grid.appendChild(tile);
     });
 
-    function selectTarget(i) {
-        if (!STATIONS[i].u) return;
-        currentIdx = i;
-        document.querySelectorAll('.hud-tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        targetDisplay.textContent = STATIONS[i].n;
-        document.getElementById('freq').textContent = `FREQ: ${(88 + Math.random() * 20).toFixed(3)} MHz`;
-        
-        audio.src = STATIONS[i].u;
-        audio.play();
-    }
-
     function play() { if(currentIdx !== -1) audio.play(); }
     function stop() { audio.pause(); }
-    
-    function toggleMute() {
-        audio.muted = !audio.muted;
-        document.getElementById('mute-btn').style.background = audio.muted ? 'var(--hud-green)' : 'transparent';
-        document.getElementById('mute-btn').style.color = audio.muted ? 'var(--hud-bg)' : 'var(--hud-green)';
+    function toggleMute() { audio.muted = !audio.muted; }
+    function updateVol(v) { 
+        audio.volume = v / 100; 
+        document.getElementById('vol-display').textContent = v + '%';
     }
-
-    function updateVol(v) { audio.volume = v / 100; }
-    
-    function adjVol(delta) {
-        let newVal = parseInt(volSlider.value) + delta;
-        newVal = Math.max(0, Math.min(100, newVal));
-        volSlider.value = newVal;
-        updateVol(newVal);
+    function adjVol(d) {
+        volSlider.value = parseInt(volSlider.value) + d;
+        updateVol(volSlider.value);
     }
-
-    audio.volume = 0.7;
 </script>
+
+<style>
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
 </body>
 </html>
