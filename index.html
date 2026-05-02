@@ -2,93 +2,90 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - SIMPLE PRO</title>
+    <title>GEHIRN TREIBER - VST COMMAND</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron&family=Rajdhani:wght@500&display=swap');
-        body { background: #05070a; color: #fff; font-family: 'Rajdhani', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+        :root { --blue: #00d4ff; --bg: #0d0d0d; }
+        body { background: #000; color: #fff; font-family: 'Rajdhani', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         
-        .vst-box { background: #0d1117; border: 2px solid #1e2633; padding: 20px; display: flex; gap: 20px; box-shadow: 0 0 30px #000; }
+        .vst-container { background: #1a1a1a; padding: 20px; border: 3px solid #333; display: flex; gap: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
         
-        /* Grid 2 kolumny */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .btn { background: #1a222d; border: 1px solid #333; color: #aaa; padding: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; text-align: center; transition: 0.2s; }
-        .btn:hover { border-color: #00f2ff; color: #fff; }
-        .btn.active { border-color: #00f2ff; box-shadow: 0 0 10px #00f2ff; color: #00f2ff; }
+        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .vst-btn { 
+            background: linear-gradient(180deg, #333, #222); 
+            border: 1px solid #111; padding: 15px; width: 120px; 
+            text-align: center; cursor: pointer; position: relative;
+        }
+        .vst-btn.active { border-color: var(--blue); box-shadow: 0 0 10px var(--blue); }
+        .vst-btn .led { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; background: #400; border-radius: 50%; }
+        .vst-btn.active .led { background: #f00; box-shadow: 0 0 5px #f00; }
+        .vst-btn span { font-family: 'Orbitron'; font-size: 10px; display: block; color: #ddd; }
 
-        .display { background: #000; border: 1px solid #bc00ff; padding: 15px; width: 300px; display: flex; flex-direction: column; justify-content: center; }
-        #track-name { font-family: 'Orbitron'; color: #bc00ff; font-size: 14px; text-shadow: 0 0 5px #bc00ff; }
-        canvas { background: #000; height: 80px; margin-top: 10px; border-top: 1px solid #111; }
+        .sidebar { background: #222; padding: 20px; border: 1px solid #333; width: 280px; display: flex; flex-direction: column; gap: 15px; }
+        .lcd { background: #001a1f; border: 2px solid #000; padding: 15px; color: var(--blue); font-family: 'Orbitron'; text-shadow: 0 0 5px var(--blue); }
+        .lcd h2 { font-size: 16px; margin: 5px 0; }
+        
+        .vol-range { width: 100%; accent-color: var(--blue); }
+        .ctrl-btn { background: #333; border: 1px solid #444; color: #fff; padding: 10px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="vst-box">
-    <div class="grid" id="menu"></div>
-    
-    <div class="display">
-        <div style="font-size: 10px; color: #555;">NOW PLAYING</div>
-        <div id="track-name">STANDBY</div>
-        <canvas id="canvas"></canvas>
-        <input type="range" style="width:100%; margin-top:15px;" oninput="audio.volume = this.value/100">
-    </div>
+<div class="vst-container">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="lcd">
+            <span style="font-size: 9px; opacity: 0.7;">OSCILLATOR UNIT</span>
+            <h2 id="display">READY</h2>
+            <div style="font-size: 9px;">STATUS: ONLINE</div>
+        </div>
+
+        <div style="display: flex; gap: 5px;">
+            <button class="ctrl-btn" onclick="playAudio()" style="flex:1; color: #0f0;">PLAY</button>
+            <button class="ctrl-btn" onclick="pauseAudio()" style="flex:1; color: #f00;">STOP</button>
+        </div>
+
+        <input type="range" class="vol-range" min="0" max="1" step="0.01" value="0.7" oninput="setVol(this.value)">
+    </aside>
 </div>
 
-<audio id="audio" crossorigin="anonymous"></audio>
+<audio id="player"></audio>
 
 <script>
-    const audio = document.getElementById('audio');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const stations = [
-        { n: 'TECH 88', s: 'tech88' }, { n: '1000 TECHNO', s: '1000techno' },
-        { n: 'CHRIS BURN', s: 'chris_burn' }, { n: 'GEHIRN', s: 'gehirn-treiber-beat-radio' },
-        { n: 'DEEP HOUSE', s: 'deep-house-sounds' }, { n: 'TORNADO', s: 'tornadofm' }
+    const player = document.getElementById('player');
+    const display = document.getElementById('display');
+    
+    const STATIONS = [
+        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
+        { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'BEST OF', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    let audioCtx, analyser, dataArray, source;
+    const grid = document.getElementById('station-grid');
 
-    stations.forEach(st => {
-        const b = document.createElement('div');
-        b.className = 'btn';
-        b.innerHTML = st.n;
-        b.onclick = () => {
-            // Inicjalizacja wizualizacji tylko przy pierwszym kliknięciu
-            if (!audioCtx) {
-                audioCtx = new AudioContext();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                draw();
-            }
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-
-            document.querySelectorAll('.btn').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            document.getElementById('track-name').innerHTML = st.n;
-            
-            audio.src = "https://stream.laut.fm/" + st.s;
-            audio.play();
+    STATIONS.forEach((s, i) => {
+        const btn = document.createElement('div');
+        btn.className = 'vst-btn';
+        btn.innerHTML = `<div class="led"></div><span>PRG ${i+1}</span><div style="font-size:11px; font-weight:bold;">${s.n}</div>`;
+        btn.onclick = () => {
+            document.querySelectorAll('.vst-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            display.innerText = s.n;
+            player.src = s.u;
+            player.play();
         };
-        document.getElementById('menu').appendChild(b);
+        grid.appendChild(btn);
     });
 
-    function draw() {
-        requestAnimationFrame(draw);
-        analyser.getByteFrequencyData(dataArray);
-        ctx.fillStyle = '#000';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#00f2ff';
-        ctx.beginPath();
-        let x = 0;
-        for(let i=0; i<dataArray.length; i++) {
-            let y = canvas.height - (dataArray[i]/255 * canvas.height);
-            if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            x += canvas.width / dataArray.length;
-        }
-        ctx.stroke();
-    }
+    function playAudio() { player.play(); }
+    function pauseAudio() { player.pause(); }
+    function setVol(v) { player.volume = v; }
 </script>
+
 </body>
 </html>
