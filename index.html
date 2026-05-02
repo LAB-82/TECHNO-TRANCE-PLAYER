@@ -2,20 +2,15 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF ULTRA-HUD SYSTEM</title>
+    <title>GEHIRN TREIBER - INFOGRAPHIC HUD FINAL</title>
     <style>
-        /* --- CAŁKOWICIE NOWA ARCHITEKTURA WIZUALNA (ULTRA-HUD) --- */
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;600;700&display=swap');
 
         :root {
-            --rmf-gold: #fce300;
-            --hud-blue: #00f2ff;
-            --hud-purple: #bc00ff;
-            --hud-orange: #ff8c00;
-            --bg-black: #020205;
-            --panel-bg: rgba(0, 20, 30, 0.8);
-            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.5);
+            --neon-cyan: #00f2ff;
+            --neon-magenta: #ff00e5;
+            --neon-blue: #0066ff;
+            --bg-black: #010407;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,293 +18,257 @@
         body {
             background-color: var(--bg-black);
             color: #fff;
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             height: 100vh;
-            overflow: hidden;
             display: flex;
-            flex-direction: column;
-            padding: 20px;
-            /* Tło z efektem siatki z image_94921f.png */
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(188, 0, 255, 0.1), transparent),
-                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Subtelna siatka w tle z obrazka */
+            background-image: radial-gradient(circle at center, #0a121d 0%, #010407 100%),
+                              linear-gradient(rgba(0, 242, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 242, 255, 0.03) 1px, transparent 1px);
             background-size: 100% 100%, 30px 30px, 30px 30px;
         }
 
-        /* NAGŁÓWEK - STYLIZOWANY NA TOP_IC Z TWOJEJ GRAFIKI */
-        header {
+        .terminal-interface {
+            width: 95vw;
+            height: 85vh;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 40px;
-            background: linear-gradient(90deg, transparent, var(--panel-bg), transparent);
-            border-top: 2px solid var(--hud-blue);
-            border-bottom: 2px solid var(--hud-blue);
-            box-shadow: var(--neon-glow);
-            margin-bottom: 20px;
-            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
-        }
-
-        #playing-now {
-            color: var(--rmf-gold);
-            text-shadow: 0 0 10px var(--rmf-gold);
-            letter-spacing: 3px;
-            font-size: 1.2rem;
-        }
-
-        .clock {
-            font-family: 'Share Tech Mono', monospace;
-            color: var(--hud-blue);
-            font-size: 1.5rem;
-        }
-
-        .app-content {
-            display: flex;
-            flex: 1;
-            gap: 20px;
-            min-height: 0;
-        }
-
-        /* GRID STACJI - MODUŁY INSPIROWANE image_94f397.jpg */
-        .grid {
-            flex: 2;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-            gap: 15px;
-            overflow-y: auto;
-            padding-right: 10px;
-        }
-
-        .tile {
-            background: rgba(0, 242, 255, 0.03);
-            border: 1px solid rgba(0, 242, 255, 0.2);
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
+            gap: 40px;
+            padding: 30px;
+            border: 1px solid rgba(0, 242, 255, 0.1);
             position: relative;
-            transition: 0.3s;
-            clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
         }
 
-        .tile:hover {
-            background: rgba(0, 242, 255, 0.1);
-            border-color: var(--hud-blue);
-            box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.2);
+        /* LEWA STRONA - PIONOWE KAPSUŁY (STACJE) */
+        .station-nodes {
+            flex: 2;
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            padding-bottom: 50px;
+            gap: 15px;
         }
 
-        .tile.active {
-            border-color: var(--rmf-gold);
-            background: rgba(252, 227, 0, 0.1);
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.3);
+        .pill-node {
+            width: 60px;
+            height: 80%;
+            background: rgba(0, 242, 255, 0.03);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            border-radius: 50px; /* Styl kapsuły z image_a240c4.jpg */
+            position: relative;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 10px;
         }
 
-        .tile .t-top { color: var(--hud-blue); font-size: 0.8rem; margin-bottom: 5px; }
-        .tile .t-bottom { color: #fff; font-size: 0.9rem; font-weight: bold; }
-        .tile.active .t-bottom { color: var(--rmf-gold); }
+        .pill-node:hover, .pill-node.active {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4), inset 0 0 15px rgba(0, 242, 255, 0.2);
+            height: 85%;
+        }
 
-        /* SIDEBAR - CENTRALNY AWATAR (Inspiracja: image_9495a6.png) */
+        .pill-node.active {
+            border-color: var(--neon-magenta);
+            box-shadow: 0 0 40px rgba(255, 0, 229, 0.4);
+        }
+
+        /* Wypełnienie wewnątrz kapsuły */
+        .pill-fill {
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to top, var(--neon-blue), var(--neon-cyan));
+            border-radius: 50px;
+            filter: blur(2px);
+            opacity: 0.5;
+            transition: 0.5s;
+        }
+        .pill-node.active .pill-fill { height: 60%; opacity: 1; background: var(--neon-magenta); }
+
+        .pill-label {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 700;
+            white-space: nowrap;
+            color: var(--neon-cyan);
+        }
+
+        /* PRAWA STRONA - ANALITYKA I VOLUME */
         .sidebar {
             flex: 1;
-            background: var(--panel-bg);
-            border: 1px solid var(--hud-purple);
-            border-radius: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            padding: 30px;
-            position: relative;
-            box-shadow: 0 0 30px rgba(188, 0, 255, 0.2);
+            gap: 40px;
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            padding-left: 30px;
         }
 
-        .logo-display {
-            width: 220px;
-            height: 220px;
-            position: relative;
+        /* KOŁOWE WYKRESY */
+        .infographic-rings {
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ring {
+            width: 80px;
+            height: 80px;
+            border: 3px solid #111;
+            border-top-color: var(--neon-cyan);
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
-        }
-
-        /* UNIKATOWY AWATAR HUD - PURE CSS */
-        .logo-display::before {
-            content: ""; position: absolute; inset: 0;
-            border: 4px solid var(--hud-blue);
-            border-radius: 50%;
-            border-top-color: transparent;
-            border-bottom-color: var(--hud-purple);
-            animation: spin 4s linear infinite;
-        }
-
-        .logo-display::after {
-            content: ""; position: absolute; inset: 15px;
-            border: 2px dashed var(--rmf-gold);
-            border-radius: 50%;
-            animation: spin 8s linear reverse infinite;
-            opacity: 0.5;
-        }
-
-        .logo-display h2 {
-            font-size: 3.5rem;
-            color: var(--rmf-gold);
-            text-shadow: 0 0 20px var(--rmf-gold);
-            z-index: 5;
-        }
-
-        /* ELEMENTY STERUJĄCE - STYL RETRO-FUTURISTIC */
-        .controls {
-            display: flex;
-            gap: 20px;
             align-items: center;
-            z-index: 5;
+            font-size: 12px;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
         }
 
-        .c-svg {
-            width: 50px; height: 50px;
-            fill: var(--hud-blue);
-            cursor: pointer;
-            filter: drop-shadow(0 0 8px var(--hud-blue));
-            transition: 0.3s;
+        /* NEONOWY SUWAK (RURA) */
+        .volume-module {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        .c-svg:hover { fill: var(--rmf-gold); filter: drop-shadow(0 0 12px var(--rmf-gold)); }
-        .c-play { width: 80px; height: 80px; fill: var(--rmf-gold); }
-
-        /* VOLUME - STYL ANALOG HUD (Inspiracja: image_9491c0.png) */
-        .vol-box { width: 100%; padding: 0 20px; }
-        
-        input[type="range"] {
+        .tube-slider {
             width: 100%;
-            appearance: none;
-            background: rgba(188, 0, 255, 0.2);
-            height: 6px;
-            border-radius: 3px;
-            outline: none;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 0 5px;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            z-index: 10;
         }
 
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none;
+            -webkit-appearance: none;
             width: 25px;
             height: 25px;
-            background: var(--rmf-gold);
-            border: 3px solid var(--bg-black);
+            background: #fff;
+            border: 4px solid var(--neon-cyan);
             border-radius: 50%;
+            box-shadow: 0 0 20px var(--neon-cyan);
             cursor: pointer;
-            box-shadow: 0 0 10px var(--rmf-gold);
         }
 
-        /* ANIMACJE */
-        @keyframes spin { to { transform: rotate(360deg); } }
+        .hud-button {
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 50px;
+            color: var(--neon-cyan);
+            padding: 15px;
+            font-family: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: 0.3s;
+        }
 
-        /* SCROLLBAR STYLING */
-        .grid::-webkit-scrollbar { width: 4px; }
-        .grid::-webkit-scrollbar-track { background: transparent; }
-        .grid::-webkit-scrollbar-thumb { background: var(--hud-blue); border-radius: 10px; }
+        .hud-button:hover {
+            background: var(--neon-cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
 
-        /* EFEKT FAL PRZY AKTYWNEJ STACJI */
-        .waves {
-            position: absolute; inset: 0; pointer-events: none; opacity: 0;
+        .title-unit {
+            border-bottom: 2px solid var(--neon-magenta);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
         }
-        .active .waves { opacity: 1; }
-        .wave {
-            position: absolute; inset: 0;
-            border: 2px solid var(--rmf-gold);
-            animation: wave-anim 2s infinite;
-            border-radius: inherit;
-        }
-        @keyframes wave-anim {
-            0% { transform: scale(1); opacity: 1; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
+
     </style>
 </head>
 <body>
 
-<header>
-    <div id="playing-now">SYSTEM READY // RMF UNIT</div>
-    <div class="clock" id="timer">00:00:00</div>
-</header>
+<div class="terminal-interface">
+    <!-- Grid stacji jako kapsuły -->
+    <div class="station-nodes" id="node-container"></div>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
-
+    <!-- Panel Analityczny -->
     <aside class="sidebar">
-        <div class="logo-display">
-            <h2>RMF</h2>
-            <p style="color: var(--hud-blue); font-size: 0.7rem; letter-spacing: 2px;">HUD_CORE_v3.2</p>
+        <div class="title-unit">
+            <h1 id="active-name" style="font-size: 32px; letter-spacing: 5px;">SELECT_NODE</h1>
+            <p style="font-size: 12px; color: var(--neon-magenta);">INFOGRAPHIC_STATION_ANALYSIS</p>
         </div>
 
-        <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+        <div class="infographic-rings">
+            <div class="ring">100%</div>
+            <div class="ring" style="border-top-color: var(--neon-magenta);">75%</div>
+            <div class="ring">50%</div>
         </div>
 
-        <div class="vol-box">
-            <p style="font-size: 0.6rem; color: var(--hud-purple); margin-bottom: 5px;">GAIN_CONTROL</p>
-            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+        <div class="volume-module">
+            <label style="font-size: 12px; opacity: 0.5;">AMPLITUDE_CONTROL</label>
+            <div class="tube-slider">
+                <input type="range" min="0" max="100" value="70" oninput="updateVol(this.value)">
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="hud-button" style="flex: 2;" onclick="audio.play()">Engage</button>
+                <button class="hud-button" style="flex: 1; border-color: var(--neon-magenta); color: var(--neon-magenta);" onclick="audio.pause()">Abort</button>
+            </div>
+        </div>
+
+        <div style="margin-top: auto;">
+            <svg width="100%" height="60">
+                <polyline points="0,50 50,20 100,45 150,10 200,40 300,30" 
+                fill="none" stroke="var(--neon-cyan)" stroke-width="2" />
+            </svg>
+            <p style="font-size: 10px; opacity: 0.3;">DATA_LOG_STREAM: ACTIVE_ENCRYPTION_v8.4</p>
         </div>
     </aside>
 </div>
 
-<audio id="player"></audio>
+<audio id="main-audio"></audio>
 
 <script>
-    /* TWOJA BAZA LOGICZNA - NIENARUSZONA */
     const STATIONS = [
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+        { n: 'NODE_A', u: 'https://stream.laut.fm/tech88' },
+        { n: 'NODE_B', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: 'NODE_C', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'NODE_D', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'NODE_E', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'GEHIRN', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
-    let current = -1;
-
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.toLocaleTimeString('pl-PL', {hour12: false});
-    }
-    setInterval(clock, 1000); clock();
+    const container = document.getElementById('node-container');
+    const audio = document.getElementById('main-audio');
+    const title = document.getElementById('active-name');
 
     STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `<div class="waves"><div class="wave"></div></div><div class="t-top">STATION_${i+1}</div><div class="t-bottom">${s.s}</div>`;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+        const node = document.createElement('div');
+        node.className = 'pill-node';
+        node.innerHTML = `
+            <div class="pill-fill"></div>
+            <div class="pill-label">${s.n}</div>
+        `;
+        node.onclick = () => {
+            document.querySelectorAll('.pill-node').forEach(n => n.classList.remove('active'));
+            node.classList.add('active');
+            title.textContent = s.n;
+            audio.src = s.u;
+            audio.play();
+        };
+        container.appendChild(node);
     });
 
-    function play(i) {
-        current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "LINK_ESTABLISHED: " + STATIONS[i].n;
-        const streamBase = "https://rs201-krk.rmfstream.pl/";
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
-        player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
-    }
-
-    function toggle() {
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
-    }
-
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
-    function setV(v) { player.volume = v / 100; }
+    function updateVol(v) { audio.volume = v / 100; }
 </script>
+
 </body>
 </html>
