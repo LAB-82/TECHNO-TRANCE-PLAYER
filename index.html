@@ -2,119 +2,303 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - INDUSTRIAL AUDIT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEHIRN TREIBER - VST UNIT</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
 
         :root {
-            --orange: #e08a1e;
-            --orange-dim: #2a1a05;
-            --bg: #030303;
+            --vst-bg: #1a1a1a;
+            --vst-panel: #222;
+            --vst-border: #333;
+            --lcd-blue: #00d4ff;
+            --lcd-bg: #001a1f;
+            --text-grey: #888;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg);
-            color: var(--orange);
+            background-color: #0d0d0d;
+            color: #fff;
             font-family: 'Rajdhani', sans-serif;
-            margin: 0; padding: 20px;
-            display: flex; flex-direction: column; height: 100vh;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
         }
 
-        /* Układ RMF - Siatka 5x3 dla Techno */
-        .app-content { display: flex; gap: 30px; flex: 1; margin-top: 20px; }
+        /* Główny panel VST */
+        .vst-container {
+            width: 1000px;
+            background: var(--vst-bg);
+            border: 4px solid #111;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            display: flex;
+            gap: 20px;
+        }
 
+        /* Lewa sekcja - Banki/Stacje (Układ RMF) */
         .grid {
-            flex: 1.8;
+            flex: 1.5;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 25px;
+            gap: 12px;
         }
 
-        /* KAFELEK PO AUDYCIE */
-        .tile {
-            background: var(--orange-dim);
-            border: 1px solid #443322;
-            position: relative;
+        /* Przyciski jak w Sylenth1 */
+        .vst-button {
+            background: linear-gradient(180deg, #333 0%, #222 100%);
+            border: 1px solid #111;
+            border-radius: 4px;
+            height: 60px;
             cursor: pointer;
-            display: flex; flex-direction: column;
-            justify-content: center; align-items: center;
-            clip-path: polygon(10% 0, 90% 0, 100% 15%, 100% 85%, 90% 100%, 100% 100%, 10% 100%, 0 85%, 0 15%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.5);
         }
 
-        /* NÓŻKI (PINY) - METALICZNE */
-        .tile::before {
-            content: ''; position: absolute; left: -10px; height: 70%; width: 6px;
-            background: repeating-linear-gradient(to bottom, #555, #222 5px, transparent 5px, transparent 10px);
-        }
-        .tile::after {
-            content: ''; position: absolute; right: -10px; height: 70%; width: 6px;
-            background: repeating-linear-gradient(to bottom, #555, #222 5px, transparent 5px, transparent 10px);
+        .vst-button:active {
+            background: #111;
+            transform: translateY(1px);
         }
 
-        /* NAROŻNIKI HUD */
-        .bracket {
-            position: absolute; width: 15px; height: 15px;
-            border: 2px solid var(--orange);
-        }
-        .tl { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-        .br { bottom: 0; right: 0; border-left: 0; border-top: 0; }
-
-        .tile.active {
-            background: var(--orange);
-            color: #000;
+        .vst-button.active {
+            border-color: var(--lcd-blue);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
         }
 
+        .vst-button .led {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #400;
+        }
+
+        .vst-button.active .led {
+            background: #f00;
+            box-shadow: 0 0 5px #f00;
+        }
+
+        .vst-button .label {
+            font-size: 11px;
+            color: var(--text-grey);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .vst-button .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ddd;
+        }
+
+        /* Prawy Panel - Control Unit */
         .sidebar {
-            flex: 0.7; border: 2px solid var(--orange);
-            padding: 20px; display: flex; flex-direction: column;
-            background: linear-gradient(180deg, rgba(224, 138, 30, 0.1) 0%, transparent 100%);
+            flex: 0.8;
+            background: var(--vst-panel);
+            border: 1px solid var(--vst-border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
 
-        h2 { text-transform: uppercase; letter-spacing: 3px; border-bottom: 2px solid var(--orange); }
+        /* Wyświetlacz LCD */
+        .lcd-display {
+            background: var(--lcd-bg);
+            border: 2px solid #000;
+            padding: 15px;
+            height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--lcd-blue);
+            text-shadow: 0 0 8px var(--lcd-blue);
+        }
+
+        .lcd-display span { font-size: 10px; opacity: 0.6; }
+        .lcd-display h2 { font-size: 18px; margin-top: 5px; overflow: hidden; white-space: nowrap; }
+
+        /* Sekcja Transportu */
+        .transport {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .ctrl-btn {
+            background: #2a2a2a;
+            border: 1px solid #111;
+            color: #fff;
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 3px;
+            text-transform: uppercase;
+        }
+
+        .ctrl-btn:hover { background: #333; }
+        .btn-play { color: #0f0; }
+        .btn-stop { color: #f00; }
+
+        /* Sekcja Głośności */
+        .volume-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            appearance: none;
+            background: #111;
+            height: 6px;
+            border-radius: 3px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #888;
+            border: 1px solid #000;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+
+        .vol-btn {
+            width: 30px;
+            height: 30px;
+            background: #2a2a2a;
+            border: 1px solid #111;
+            color: var(--text-grey);
+            cursor: pointer;
+        }
 
     </style>
 </head>
 <body>
 
-<header style="border-bottom: 4px double var(--orange); padding-bottom: 10px;">
-    <h1 style="margin:0; font-size: 40px;">GEHIRN TREIBER // TERMINAL</h1>
-</header>
+<div class="vst-container">
+    <!-- Grid Stacji -->
+    <div class="grid" id="vst-grid"></div>
 
-<div class="app-content">
-    <div class="grid" id="grid"></div>
-    
+    <!-- Panel Sterowania -->
     <aside class="sidebar">
-        <h2>STATUS: CONNECTED</h2>
-        <div id="display" style="font-size: 30px; margin: 40px 0;">SELECT MODULE...</div>
-        <div style="margin-top:auto;">
-            <p>> VOL: 88%</p>
-            <p>> FREQ: 128.00 Hz</p>
-            <p>> SIG: HIGH</p>
+        <div class="lcd-display">
+            <span>CURRENT PROGRAM</span>
+            <h2 id="display-name">READY</h2>
+            <div id="status" style="font-size: 9px; margin-top: 10px;">OSCILLATOR: STANDBY</div>
+        </div>
+
+        <div class="transport">
+            <button class="ctrl-btn btn-play" onclick="playCurrent()">PLAY</button>
+            <button class="ctrl-btn btn-stop" onclick="stopAudio()">STOP</button>
+            <button class="ctrl-btn" id="mute-btn" onclick="toggleMute()">MUTE</button>
+        </div>
+
+        <div class="volume-section">
+            <label style="font-size: 11px; color: var(--text-grey);">MASTER VOLUME</label>
+            <div class="volume-controls">
+                <button class="vol-btn" onclick="adjVol(-5)">-</button>
+                <input type="range" id="vol-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
+                <button class="vol-btn" onclick="adjVol(5)">+</button>
+            </div>
+        </div>
+
+        <div style="font-size: 10px; color: #444; text-align: center; margin-top: auto;">
+            GEHIRN TREIBER VST v1.0
         </div>
     </aside>
 </div>
 
-<script>
-    const STATIONS = ["TECH 88", "HR 3 CLUB", "1000 TECHNO", "BEST OF", "CHRIS BURN", "RETRO ELEC", "GEHIRN TREIBER"];
-    const grid = document.getElementById('grid');
+<audio id="main-audio"></audio>
 
-    STATIONS.forEach((name, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `
-            <div class="bracket tl"></div>
-            <div class="bracket br"></div>
-            <span style="font-size: 10px; opacity: 0.7;">MODULE-0${i}</span>
-            <span style="font-weight: 700; font-size: 18px;">${name}</span>
+<script>
+    const STATIONS = [
+        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
+        { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'BEST OF', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
+        { n: 'INIT BANK', u: '' },
+        { n: 'USER BANK', u: '' }
+    ];
+
+    const grid = document.getElementById('vst-grid');
+    const audio = document.getElementById('main-audio');
+    const display = document.getElementById('display-name');
+    const volSlider = document.getElementById('vol-slider');
+    let currentIdx = -1;
+
+    // Generowanie przycisków VST
+    STATIONS.forEach((s, i) => {
+        const btn = document.createElement('div');
+        btn.className = 'vst-button';
+        btn.innerHTML = `
+            <div class="led"></div>
+            <div class="label">PRG ${i+1}</div>
+            <div class="name">${s.n}</div>
         `;
-        t.onclick = () => {
-            document.querySelectorAll('.tile').forEach(x => x.classList.remove('active'));
-            t.classList.add('active');
-            document.getElementById('display').innerText = name;
-        };
-        grid.appendChild(t);
+        btn.onclick = () => selectStation(i);
+        grid.appendChild(btn);
     });
+
+    function selectStation(i) {
+        if (!STATIONS[i].u) return;
+        currentIdx = i;
+        document.querySelectorAll('.vst-button').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        display.textContent = STATIONS[i].n;
+        document.getElementById('status').textContent = "OSCILLATOR: ACTIVE // SIGNAL OK";
+        
+        audio.src = STATIONS[i].u;
+        audio.play();
+    }
+
+    function playCurrent() { if(currentIdx !== -1) audio.play(); }
+    function stopAudio() { audio.pause(); audio.currentTime = 0; }
+    
+    function toggleMute() {
+        audio.muted = !audio.muted;
+        document.getElementById('mute-btn').style.color = audio.muted ? '#f00' : '#fff';
+    }
+
+    function updateVol(v) { audio.volume = v / 100; }
+    
+    function adjVol(delta) {
+        let newVal = parseInt(volSlider.value) + delta;
+        if(newVal < 0) newVal = 0;
+        if(newVal > 100) newVal = 100;
+        volSlider.value = newVal;
+        updateVol(newVal);
+    }
+
+    // Initial Volume
+    audio.volume = 0.7;
 </script>
+
 </body>
 </html>
