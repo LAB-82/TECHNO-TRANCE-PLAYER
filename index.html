@@ -3,302 +3,259 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEHIRN TREIBER - VST UNIT</title>
+    <title>GEHIRN TREIBER - TACTICAL HUD</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
         :root {
-            --vst-bg: #1a1a1a;
-            --vst-panel: #222;
-            --vst-border: #333;
-            --lcd-blue: #00d4ff;
-            --lcd-bg: #001a1f;
-            --text-grey: #888;
+            --hud-green: #00ff66;
+            --hud-dim: #003311;
+            --hud-bg: #020502;
+            --hud-border: rgba(0, 255, 102, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: #0d0d0d;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--hud-bg);
+            color: var(--hud-green);
+            font-family: 'Share Tech Mono', monospace;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            overflow: hidden;
+            /* Efekt siatki celowniczej */
+            background-image: 
+                radial-gradient(circle, var(--hud-dim) 1px, transparent 1px),
+                linear-gradient(var(--hud-border) 1px, transparent 1px),
+                linear-gradient(90deg, var(--hud-border) 1px, transparent 1px);
+            background-size: 100px 100px, 20px 20px, 20px 20px;
         }
 
-        /* Główny panel VST */
-        .vst-container {
-            width: 1000px;
-            background: var(--vst-bg);
-            border: 4px solid #111;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        /* Główna Rama HUD */
+        .hud-frame {
+            width: 95vw;
+            height: 90vh;
+            border: 2px solid var(--hud-green);
+            position: relative;
             display: flex;
+            padding: 20px;
             gap: 20px;
+            box-shadow: inset 0 0 50px rgba(0, 255, 102, 0.1);
         }
 
-        /* Lewa sekcja - Banki/Stacje (Układ RMF) */
+        /* Ozdobne narożniki celownika */
+        .hud-frame::before {
+            content: ""; position: absolute; top: -10px; left: -10px;
+            width: 40px; height: 40px; border-top: 5px solid var(--hud-green); border-left: 5px solid var(--hud-green);
+        }
+        .hud-frame::after {
+            content: ""; position: absolute; bottom: -10px; right: -10px;
+            width: 40px; height: 40px; border-bottom: 5px solid var(--hud-green); border-right: 5px solid var(--hud-green);
+        }
+
+        /* Lewa sekcja - GRID stacji */
         .grid {
-            flex: 1.5;
+            flex: 2;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
-            gap: 12px;
+            gap: 15px;
         }
 
-        /* Przyciski jak w Sylenth1 */
-        .vst-button {
-            background: linear-gradient(180deg, #333 0%, #222 100%);
-            border: 1px solid #111;
-            border-radius: 4px;
-            height: 60px;
-            cursor: pointer;
+        /* Kafelki w stylu przycisków kokpitu */
+        .hud-tile {
+            background: rgba(0, 51, 17, 0.2);
+            border: 1px solid var(--hud-green);
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            padding: 10px;
             position: relative;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .vst-button:active {
-            background: #111;
-            transform: translateY(1px);
-        }
-
-        .vst-button.active {
-            border-color: var(--lcd-blue);
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
-        }
-
-        .vst-button .led {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #400;
-        }
-
-        .vst-button.active .led {
-            background: #f00;
-            box-shadow: 0 0 5px #f00;
-        }
-
-        .vst-button .label {
-            font-size: 11px;
-            color: var(--text-grey);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .vst-button .name {
-            font-size: 14px;
-            font-weight: 700;
-            color: #ddd;
-        }
-
-        /* Prawy Panel - Control Unit */
-        .sidebar {
-            flex: 0.8;
-            background: var(--vst-panel);
-            border: 1px solid var(--vst-border);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* Wyświetlacz LCD */
-        .lcd-display {
-            background: var(--lcd-bg);
-            border: 2px solid #000;
-            padding: 15px;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            font-family: 'Orbitron', sans-serif;
-            color: var(--lcd-blue);
-            text-shadow: 0 0 8px var(--lcd-blue);
-        }
-
-        .lcd-display span { font-size: 10px; opacity: 0.6; }
-        .lcd-display h2 { font-size: 18px; margin-top: 5px; overflow: hidden; white-space: nowrap; }
-
-        /* Sekcja Transportu */
-        .transport {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .ctrl-btn {
-            background: #2a2a2a;
-            border: 1px solid #111;
-            color: #fff;
-            padding: 8px 15px;
-            font-size: 12px;
-            font-weight: bold;
             cursor: pointer;
-            border-radius: 3px;
-            text-transform: uppercase;
+            transition: all 0.2s;
         }
 
-        .ctrl-btn:hover { background: #333; }
-        .btn-play { color: #0f0; }
-        .btn-stop { color: #f00; }
+        .hud-tile:hover {
+            background: var(--hud-dim);
+            box-shadow: 0 0 15px var(--hud-green);
+        }
 
-        /* Sekcja Głośności */
-        .volume-section {
+        .hud-tile.active {
+            background: var(--hud-green);
+            color: var(--hud-bg);
+        }
+
+        .tile-id { font-size: 10px; margin-bottom: 5px; }
+        .tile-name { font-size: 16px; font-weight: bold; text-transform: uppercase; }
+
+        /* Prawy Panel - Control Box */
+        .sidebar {
+            flex: 1;
+            border-left: 2px solid var(--hud-green);
+            padding-left: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 10px;
+            gap: 25px;
         }
 
-        .volume-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            width: 100%;
+        .display-unit {
+            border: 1px solid var(--hud-green);
+            padding: 15px;
+            background: rgba(0, 255, 102, 0.05);
         }
 
+        .label { font-size: 12px; letter-spacing: 2px; margin-bottom: 10px; display: block;}
+
+        /* Przyciski Sterowania */
+        .ctrl-group { display: flex; gap: 10px; flex-wrap: wrap; }
+        .hud-btn {
+            background: transparent;
+            border: 1px solid var(--hud-green);
+            color: var(--hud-green);
+            padding: 10px 15px;
+            font-family: inherit;
+            cursor: pointer;
+            flex: 1;
+            text-transform: uppercase;
+        }
+        .hud-btn:hover { background: var(--hud-green); color: var(--hud-bg); }
+
+        /* Volume Slider */
+        .vol-section { margin-top: auto; }
+        .vol-controls { display: flex; align-items: center; gap: 10px; }
         input[type="range"] {
             flex: 1;
             appearance: none;
-            background: #111;
-            height: 6px;
-            border-radius: 3px;
+            background: var(--hud-dim);
+            height: 2px;
         }
-
         input[type="range"]::-webkit-slider-thumb {
             appearance: none;
-            width: 16px;
-            height: 16px;
-            background: #888;
-            border: 1px solid #000;
-            border-radius: 2px;
+            width: 12px;
+            height: 24px;
+            background: var(--hud-green);
             cursor: pointer;
         }
 
-        .vol-btn {
-            width: 30px;
-            height: 30px;
-            background: #2a2a2a;
-            border: 1px solid #111;
-            color: var(--text-grey);
-            cursor: pointer;
+        .scanner-line {
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: rgba(0, 255, 102, 0.2);
+            top: 0;
+            animation: scan 4s linear infinite;
         }
 
+        @keyframes scan {
+            0% { top: 0; }
+            100% { top: 100%; }
+        }
     </style>
 </head>
 <body>
 
-<div class="vst-container">
-    <!-- Grid Stacji -->
-    <div class="grid" id="vst-grid"></div>
+<div class="hud-frame">
+    <div class="scanner-line"></div>
 
-    <!-- Panel Sterowania -->
+    <!-- Grid Stacji (Modele danych) -->
+    <div class="grid" id="hud-grid"></div>
+
+    <!-- Panel Taktyczny -->
     <aside class="sidebar">
-        <div class="lcd-display">
-            <span>CURRENT PROGRAM</span>
-            <h2 id="display-name">READY</h2>
-            <div id="status" style="font-size: 9px; margin-top: 10px;">OSCILLATOR: STANDBY</div>
+        <div class="display-unit">
+            <span class="label">> TRACKING_TARGET</span>
+            <h2 id="target-id" style="font-size: 24px;">NO_SIGNAL</h2>
+            <div id="freq" style="font-size: 11px; margin-top: 10px; color: #008833;">FREQ: --.--- MHz</div>
         </div>
 
-        <div class="transport">
-            <button class="ctrl-btn btn-play" onclick="playCurrent()">PLAY</button>
-            <button class="ctrl-btn btn-stop" onclick="stopAudio()">STOP</button>
-            <button class="ctrl-btn" id="mute-btn" onclick="toggleMute()">MUTE</button>
+        <div class="ctrl-group">
+            <span class="label" style="width: 100%;">TRANSPORT_ENGAGE</span>
+            <button class="hud-btn" onclick="play()">ENGAGE</button>
+            <button class="hud-btn" onclick="stop()">ABORT</button>
+            <button class="hud-btn" id="mute-btn" onclick="toggleMute()">SILENCE</button>
         </div>
 
-        <div class="volume-section">
-            <label style="font-size: 11px; color: var(--text-grey);">MASTER VOLUME</label>
-            <div class="volume-controls">
-                <button class="vol-btn" onclick="adjVol(-5)">-</button>
+        <div class="vol-section">
+            <span class="label">AMPLITUDE_MODULATION</span>
+            <div class="vol-controls">
+                <button class="hud-btn" style="flex: 0;" onclick="adjVol(-5)">-</button>
                 <input type="range" id="vol-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
-                <button class="vol-btn" onclick="adjVol(5)">+</button>
+                <button class="hud-btn" style="flex: 0;" onclick="adjVol(5)">+</button>
             </div>
         </div>
 
-        <div style="font-size: 10px; color: #444; text-align: center; margin-top: auto;">
-            GEHIRN TREIBER VST v1.0
+        <div style="font-size: 10px; opacity: 0.5; margin-top: auto;">
+            GEHIRN_TREIBER // HUD_INTERFACE_OS_v5.1<br>
+            COORDS: 52.23N / 21.01E
         </div>
     </aside>
 </div>
 
-<audio id="main-audio"></audio>
+<audio id="audio-engine"></audio>
 
 <script>
     const STATIONS = [
         { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
         { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
         { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
-        { n: 'BEST OF', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'BEST TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
         { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
         { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
-        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
-        { n: 'INIT BANK', u: '' },
-        { n: 'USER BANK', u: '' }
+        { n: 'GEHIRN TRBR', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
+        { n: 'AUX_01', u: '' },
+        { n: 'AUX_02', u: '' }
     ];
 
-    const grid = document.getElementById('vst-grid');
-    const audio = document.getElementById('main-audio');
-    const display = document.getElementById('display-name');
+    const grid = document.getElementById('hud-grid');
+    const audio = document.getElementById('audio-engine');
+    const targetDisplay = document.getElementById('target-id');
     const volSlider = document.getElementById('vol-slider');
     let currentIdx = -1;
 
-    // Generowanie przycisków VST
+    // Generowanie kafelków HUD
     STATIONS.forEach((s, i) => {
-        const btn = document.createElement('div');
-        btn.className = 'vst-button';
-        btn.innerHTML = `
-            <div class="led"></div>
-            <div class="label">PRG ${i+1}</div>
-            <div class="name">${s.n}</div>
+        const tile = document.createElement('div');
+        tile.className = 'hud-tile';
+        tile.innerHTML = `
+            <div class="tile-id">ID: 0x0${i.toString(16)}</div>
+            <div class="tile-name">${s.n}</div>
         `;
-        btn.onclick = () => selectStation(i);
-        grid.appendChild(btn);
+        tile.onclick = () => selectTarget(i);
+        grid.appendChild(tile);
     });
 
-    function selectStation(i) {
+    function selectTarget(i) {
         if (!STATIONS[i].u) return;
         currentIdx = i;
-        document.querySelectorAll('.vst-button').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        display.textContent = STATIONS[i].n;
-        document.getElementById('status').textContent = "OSCILLATOR: ACTIVE // SIGNAL OK";
+        document.querySelectorAll('.hud-tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        targetDisplay.textContent = STATIONS[i].n;
+        document.getElementById('freq').textContent = `FREQ: ${(88 + Math.random() * 20).toFixed(3)} MHz`;
         
         audio.src = STATIONS[i].u;
         audio.play();
     }
 
-    function playCurrent() { if(currentIdx !== -1) audio.play(); }
-    function stopAudio() { audio.pause(); audio.currentTime = 0; }
+    function play() { if(currentIdx !== -1) audio.play(); }
+    function stop() { audio.pause(); }
     
     function toggleMute() {
         audio.muted = !audio.muted;
-        document.getElementById('mute-btn').style.color = audio.muted ? '#f00' : '#fff';
+        document.getElementById('mute-btn').style.background = audio.muted ? 'var(--hud-green)' : 'transparent';
+        document.getElementById('mute-btn').style.color = audio.muted ? 'var(--hud-bg)' : 'var(--hud-green)';
     }
 
     function updateVol(v) { audio.volume = v / 100; }
     
     function adjVol(delta) {
         let newVal = parseInt(volSlider.value) + delta;
-        if(newVal < 0) newVal = 0;
-        if(newVal > 100) newVal = 100;
+        newVal = Math.max(0, Math.min(100, newVal));
         volSlider.value = newVal;
         updateVol(newVal);
     }
 
-    // Initial Volume
     audio.volume = 0.7;
 </script>
-
 </body>
 </html>
