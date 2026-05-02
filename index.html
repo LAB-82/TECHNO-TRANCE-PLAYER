@@ -1,112 +1,155 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON HUD</title>    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
-        
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - INFOGRAPHIC STYLE</title>    <style>        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
         :root {            
-            /* Kolorystyka z image_36594b.jpg */
-            --cyan: #00f2ff;            
-            --bg-dark: #050a0f;
-            --glow: 0 0 15px rgba(0, 242, 255, 0.6);
+            /* Nowa paleta kolorów na podstawie image_975ac4.png */
+            --yellow: #00e5ff; /* Cyan zamiast żółtego */
+            --yellow-neon: #00f2ff;            
+            --bg: #030812;     /* Głęboki granat tła */
+            --tile: rgba(0, 229, 255, 0.03);            
+            --border: rgba(0, 229, 255, 0.2);            
+            --blue-wave: #7000ff; /* Fiolet dla akcentów/fal */
+            --accent-pink: #ff00c8;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }                
-        body { 
-            height: 100vh; width: 100vw; background: var(--bg-dark); color: #fff; 
-            font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 2vh;
+        html, body {             
+            height: 100vh; width: 100vw;             
+            background: var(--bg); color: #fff;             
+            font-family: 'Montserrat Alternates', sans-serif;            
+            overflow: hidden;         
         }
-
+        body { 
+            display: flex; flex-direction: column; padding: 2vh; 
+            background-image: radial-gradient(circle at 50% 50%, #0a1628 0%, #030812 100%);
+        }
         header {             
-            height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--cyan); margin-bottom: 2vh;
-            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.1);
+            height: 50px; display: flex; justify-content: space-between; align-items: center;            
+            border-bottom: 1px solid var(--border); margin-bottom: 2vh; flex-shrink: 0;        
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--cyan); text-shadow: var(--glow); }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--cyan); font-size: 22px; }
-
-        .app-content { display: flex; flex: 1; gap: 2vw; height: calc(100vh - 120px); }
-
+        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; text-shadow: 0 0 10px var(--yellow); }        
+        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
+        
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
         .grid {             
-            flex: 1.5; display: grid;             
+            flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 15px;         
-        }
-
-        /* TILE - STYLIZACJA RAMKI Z PUNKTAMI Z image_36594b.jpg */
-        .tile {            
-            background: rgba(0, 242, 255, 0.05); 
-            border: 2px solid var(--cyan);
-            border-radius: 12px;
-            position: relative; cursor: pointer; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        /* Charakterystyczne punkty (nody) na krawędziach kafelka */
-        .tile::before, .tile::after {
-            content: ''; position: absolute; width: 8px; height: 8px;
-            background: var(--bg-dark); border: 2px solid var(--cyan); border-radius: 50%;
-            z-index: 5; box-shadow: var(--glow);
-        }
-        .tile::before { top: -5px; left: 20%; }
-        .tile::after { bottom: -5px; right: 20%; }
-
-        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.3); }        
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--cyan); text-transform: uppercase; }
-
-        .tile.active { 
-            background: rgba(0, 242, 255, 0.2); 
-            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.4), var(--glow);
-            transform: translateY(-2px);
-        }
-
-        .sidebar {             
-            flex: 0.5; display: flex; flex-direction: column;             
-            align-items: center; justify-content: space-around;
-            background: rgba(0, 242, 255, 0.02); border: 2px solid var(--cyan);
-            padding: 20px; border-radius: 20px;
-        }
-
-        .logo-display {            
-            width: 100%; aspect-ratio: 1; border: 2px solid var(--cyan); border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; box-shadow: var(--glow);
-        }
-        /* Dodatkowy pierścień neonowy */
-        .logo-display::after {
-            content: ''; position: absolute; inset: 10px; border: 1px dashed var(--cyan); border-radius: 50%; opacity: 0.5;
+            gap: 12px;         
         }
         
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: var(--cyan); text-shadow: var(--glow); }
-        .logo-display p { font-size: 10px; color: var(--cyan); letter-spacing: 2px; }
-
-        .controls { display: flex; gap: 20px; align-items: center; }        
-        .c-svg { width: 45px; height: 45px; fill: var(--cyan); cursor: pointer; filter: drop-shadow(0 0 8px var(--cyan)); }
-        .c-play { width: 70px; height: 70px; }
-
-        .vol-box { width: 100%; }
-        input[type="range"] { 
-            width: 100%; appearance: none; background: #0a1a25; height: 8px; border-radius: 4px; border: 1px solid var(--cyan);
+        .tile {            
+            background: var(--tile); 
+            border: 1px solid var(--border); 
+            border-radius: 12px;            
+            display: flex; flex-direction: column; align-items: center; justify-content: center;            
+            cursor: pointer; position: relative; overflow: visible;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 18px; height: 18px; background: var(--cyan); border-radius: 50%; cursor: pointer; box-shadow: var(--glow);
+        
+        .tile .t-top { font-size: 22px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; }        
+        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #6e84a3; margin-top: 4px; text-align: center; z-index: 2; }
+        
+        .tile.active {             
+            border: 2px solid var(--yellow-neon);             
+            background: rgba(0, 229, 255, 0.1);            
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.3), inset 0 0 10px rgba(0, 229, 255, 0.2);
+        }        
+        .tile.active .t-top { color: #fff; text-shadow: 0 0 8px var(--yellow); }
+        .tile.active .t-bottom { color: var(--yellow); }
+        
+        /* FALE - ZGODNIE Z KOLORYSTYKĄ INFOGRAFIKI */        
+        .waves {            
+            position: absolute; width: 100%; height: 100%;            
+            display: flex; align-items: center; justify-content: center;            
+            pointer-events: none; opacity: 0; z-index: 1;        
+        }        
+        .tile.active .waves { opacity: 1; }        
+        .wave {            
+            position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%;            
+            width: 10px; height: 10px; opacity: 0;            
+            box-shadow: 0 0 15px var(--blue-wave);            
+            animation: ripple 3s infinite linear;        
+        }        
+        .wave:nth-child(2) { border-color: var(--accent-pink); box-shadow: 0 0 15px var(--accent-pink); animation-delay: 1s; }        
+        .wave:nth-child(3) { animation-delay: 2s; }
+        
+        @keyframes ripple {            
+            0% { width: 0; height: 0; opacity: 0.9; }            
+            100% { width: 280%; height: 280%; opacity: 0; }        
         }
-        /* TWOJA LOGIKA AT-MID - ZMIANA KOLORU NA BIAŁY */
-        input[type="range"].at-mid::-webkit-slider-thumb { background: #fff; box-shadow: 0 0 15px #fff; }
-
-        @media (max-width: 800px) {
-            .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); }
+        
+        .sidebar {             
+            flex: 0.6; display: flex; flex-direction: column;             
+            align-items: center; justify-content: center; gap: 4vh;            
+            border-left: 1px solid var(--border); padding-left: 3vw;        
         }
-    </style></head><body>
-
-<header>    <div class="header-info" id="playing-now">RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
-
+        
+        .logo-display {            
+            width: 100%; max-width: 320px; aspect-ratio: 16/10;            
+            border: 2px solid var(--yellow); border-radius: 50% 50% 50% 50% / 15% 15% 15% 15%; /* Szklany kształt */            
+            display: flex; flex-direction: column; align-items: center; justify-content: center;            
+            background: linear-gradient(135deg, rgba(0, 229, 255, 0.1) 0%, rgba(112, 0, 255, 0.1) 100%);            
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.1);
+            position: relative;
+        }        
+        .logo-display::before {
+            content: ''; position: absolute; top: -5px; width: 40%; height: 2px; background: var(--yellow); box-shadow: 0 0 10px var(--yellow);
+        }
+        .logo-display h2 { font-size: 46px; color: #fff; text-shadow: 0 0 20px var(--yellow); }        
+        .logo-display p { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .controls { display: flex; align-items: center; gap: 3vw; }        
+        .c-svg {             
+            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer;             
+            filter: drop-shadow(0 0 5px var(--yellow)); 
+        }        
+        .c-play { 
+            width: 70px; height: 70px; fill: #fff; 
+            filter: drop-shadow(0 0 15px var(--yellow)); 
+        }
+        
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }        
+        .vol-btn { 
+            width: 35px; height: 35px; border: 1px solid var(--border); border-radius: 50%; 
+            background: var(--tile); color: var(--yellow); cursor: pointer; 
+            font-family: inherit; font-weight: bold; transition: 0.3s;
+        }        
+        .vol-btn:hover { background: var(--yellow); color: var(--bg); }
+        
+        .vol-bar { 
+            flex: 1; height: 12px; border: 1px solid var(--border); border-radius: 20px; 
+            padding: 0 5px; display: flex; align-items: center; background: rgba(0,0,0,0.3);
+        }                
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }        
+        input[type="range"]::-webkit-slider-runnable-track { 
+            background: linear-gradient(90deg, var(--yellow) 0%, var(--blue-wave) 100%); 
+            height: 4px; border-radius: 2px; 
+        }                
+        input[type="range"]::-webkit-slider-thumb {             
+            appearance: none; width: 18px; height: 18px;             
+            background: #fff; border-radius: 50%;             
+            margin-top: -7px; border: 2px solid var(--yellow);
+            box-shadow: 0 0 10px var(--yellow);
+        }        
+        input[type="range"].at-mid::-webkit-slider-thumb {            
+            box-shadow: 0 0 15px var(--accent-pink);
+            border-color: var(--accent-pink);
+        }
+        
+        @media (max-width: 600px) {            
+            .header-info, .clock { font-size: 20px; }            
+            .app-content { flex-direction: column; }            
+            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 50vh; flex: none; }            
+            .sidebar { width: 100%; height: 40vh; border-left: none; border-top: 1px solid var(--border); padding: 5px 0; gap: 10px; }            
+            .logo-display { width: 95%; height: 65px; aspect-ratio: auto; border-radius: 10px; }            
+            .logo-display h2 { font-size: 26px; }            
+            .vol-box { width: 95%; }        
+        }    </style></head><body>
+<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>NEON INTERFACE</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>Najlepsza muzyka</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
-        <div class="vol-box">            <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
-
+        <div class="vol-box">            <button class="vol-btn" onclick="adj(-5)">-</button>            <div class="vol-bar">                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">            </div>            <button class="vol-btn" onclick="adj(5)">+</button>        </div>    </aside></div>
 <audio id="player"></audio>
-
 <script>    
     const STATIONS = [        
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
@@ -125,46 +168,41 @@
         { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },        
         { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }    
     ];
-
     const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');    
     let current = -1;
-
     function clock() {        
         const d = new Date();        
         document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');    
     }    
     setInterval(clock, 1000); clock();
-
     STATIONS.forEach((s, i) => {        
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
-            <div class="t-top">RMF</div>            
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
+            <div class="t-top">RMF FM</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
         grid.appendChild(t);    
     });
-
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = STATIONS[i].n;
-        document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];        
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
         player.play();        
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');    
     }
-
     function toggle() {        
         if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }        
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }    
     }
-
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
     function setV(v) {         
         player.volume = v / 100;        
         if(parseInt(v) === 50) vRange.classList.add('at-mid');        
         else vRange.classList.remove('at-mid');    
-    }
+    }        
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
 </script></body></html>
