@@ -5,65 +5,34 @@
     <title>GEHIRN TREIBER - TRON SYNTH HUD</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
-        :root {
-            --cyan: #00f2ff;
-            --magenta: #bc00ff;
-            --bg-black: #05070a;
-            --panel-bg: #0d1117;
-            --panel-border: #1e2633;
-            --slot-bg: #020305;
-        }
+        :root { --cyan: #00f2ff; --magenta: #bc00ff; --bg-black: #05070a; --panel-bg: #0d1117; --panel-border: #1e2633; --slot-bg: #020305; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; }
-       .synth-container {
-            width: 100%; height: 100%;
-            display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px;
-        }
-        /* LEWY PANEL */
-       .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
-       .track-info-box {
-            border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05);
-            padding: 15px; min-height: 80px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1);
-        }
-       .stations-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            overflow-y: auto; padding-right: 5px; flex-grow: 1;
-        }
-       .stations-grid::-webkit-scrollbar { width: 4px; }
-       .stations-grid::-webkit-scrollbar-track { background: var(--slot-bg); }
-       .stations-grid::-webkit-scrollbar-thumb { background: var(--magenta); }
-       .category-header {
-            font-family: 'Orbitron'; font-size: 10px; color: var(--cyan);
-            border-bottom: 1px solid var(--panel-border); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px;
-        }
-       .osc-module {
-            border: 1px solid var(--panel-border); padding: 5px; background: var(--panel-bg);
-            cursor: pointer; transition: 0.2s; position: relative;
-        }
-       .osc-module:hover { border-color: var(--cyan); background: #161c27; }
-       .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); background: #161c27; }
-       .station-slot {
-            background: var(--slot-bg); height: 32px; display: flex; align-items: center;
-            padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0;
-        }
-       .osc-module.active.station-slot { color: var(--cyan); }
-        /* ŚRODEK */
-       .main-display { border: 1px solid var(--panel-border); background: #010204; position: relative; }
+     .synth-container { width: 100%; height: 100%; display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px; }
+     .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+     .track-info-box { border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05); padding: 15px; min-height: 80px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1); }
+     .stations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow-y: auto; padding-right: 5px; flex-grow: 1; }
+     .stations-grid::-webkit-scrollbar { width: 4px; }
+     .stations-grid::-webkit-scrollbar-track { background: var(--slot-bg); }
+     .stations-grid::-webkit-scrollbar-thumb { background: var(--magenta); }
+     .category-header { font-family: 'Orbitron'; font-size: 10px; color: var(--cyan); border-bottom: 1px solid var(--panel-border); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px; }
+     .osc-module { border: 1px solid var(--panel-border); padding: 5px; background: var(--panel-bg); cursor: pointer; transition: 0.2s; }
+     .osc-module:hover { border-color: var(--cyan); background: #161c27; }
+     .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); background: #161c27; }
+     .station-slot { background: var(--slot-bg); height: 32px; display: flex; align-items: center; padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0; }
+     .osc-module.active.station-slot { color: var(--cyan); }
+     .main-display { border: 1px solid var(--panel-border); background: #010204; position: relative; }
         #eq-canvas { width: 100%; height: 100%; display: block; }
-        /* PRAWY PANEL */
-       .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
-       .module-box { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-       .env-visual { height: 140px; background: #000; border: 1px solid #111; }
-       .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-       .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-       .synth-btn {
-            background: #1a222d; border: 1px solid var(--panel-border); color: #fff;
-            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; transition: 0.2s;
-        }
-       .synth-btn:hover { border-color: var(--cyan); background: #222c3a; }
-       .synth-btn:active { background: var(--cyan); color: #000; }
-       .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
-       .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
+     .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
+     .module-box { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+     .env-visual { height: 140px; background: #000; border: 1px solid #111; }
+     .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+     .synth-btn { background: #1a222d; border: 1px solid var(--panel-border); color: #fff; padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; transition: 0.2s; }
+     .synth-btn:hover { border-color: var(--cyan); background: #222c3a; }
+     .synth-btn:active { background: var(--cyan); color: #000; }
+     .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
+     .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -74,31 +43,16 @@
             <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">CURRENT SIGNAL</div>
             <div id="track-title" style="font-size: 11px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 5px var(--magenta);">LINK START...</div>
         </div>
-
         <div class="stations-grid">
-            <div>
-                <div class="category-header">TECHNO</div>
-                <div id="techno-group"></div>
-            </div>
-            <div>
-                <div class="category-header">HOUSE</div>
-                <div id="house-group"></div>
-            </div>
+            <div><div class="category-header">TECHNO</div><div id="techno-group"></div></div>
+            <div><div class="category-header">HOUSE</div><div id="house-group"></div></div>
         </div>
     </div>
-
-    <main class="main-display">
-        <canvas id="eq-canvas"></canvas>
-    </main>
-
+    <main class="main-display"><canvas id="eq-canvas"></canvas></main>
     <aside class="control-sidebar">
         <div class="module-box">
             <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 8px;">ENV 1 [VCA]</div>
-            <div class="env-visual">
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" />
-                </svg>
-            </div>
+            <div class="env-visual"><svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" /></svg></div>
         </div>
         <div class="playback-frame">
             <div class="btn-grid">
@@ -110,7 +64,7 @@
     </aside>
 </div>
 
-<audio id="audio-engine"></audio>
+<audio id="audio-engine" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = {
@@ -138,16 +92,33 @@
     const canvas = document.getElementById('eq-canvas');
     const ctx = canvas.getContext('2d');
 
-    audio.volume = 0.7;
+    let audioCtx, analyser, source, dataArray;
+    let isInitialized = false;
+
+    // Publiczny proxy - działa na GitHub Pages
+    const CORS_PROXY = 'https://corsproxy.io/?';
+
+    function setupAudio() {
+        if (!isInitialized &&!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            analyser.smoothingTimeConstant = 0.8;
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            isInitialized = true;
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
 
     async function getMeta(slug) {
         try {
             const r = await fetch(`https://api.laut.fm/station/${slug}/current_song`);
             const d = await r.json();
             trackTitle.textContent = d.artist.name.toUpperCase() + " - " + d.title.toUpperCase();
-        } catch(e) {
-            trackTitle.textContent = "SIGNAL ACTIVE";
-        }
+        } catch(e) { trackTitle.textContent = "EQ ACTIVE"; }
     }
 
     function initStations() {
@@ -160,10 +131,12 @@
                 div.onclick = () => {
                     document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
                     div.classList.add('active');
-                    audio.src = `https://stream.laut.fm/${s.slug}`;
+                    setupAudio();
+                    // Stream przez proxy
+                    audio.src = CORS_PROXY + encodeURIComponent(`https://stream.laut.fm/${s.slug}`);
                     audio.play().catch(e => {
-                        console.log("Stream play error:", e);
-                        trackTitle.textContent = "STREAM ERROR";
+                        console.log("Stream error:", e);
+                        trackTitle.textContent = "PROXY ERROR";
                     });
                     getMeta(s.slug);
                 };
@@ -174,53 +147,39 @@
 
     initStations();
 
-    document.getElementById('playBtn').onclick = () => {
-        if (audio.src) audio.play();
-    };
+    document.getElementById('playBtn').onclick = () => { setupAudio(); if (audio.src) audio.play(); };
     document.getElementById('stopBtn').onclick = () => audio.pause();
     document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
+    audio.volume = 0.7;
 
-    // Fake EQ - dekoracja, nie prawdziwa analiza
-    let time = 0;
     function draw() {
         requestAnimationFrame(draw);
         if (canvas.width!== canvas.clientWidth || canvas.height!== canvas.clientHeight) {
             canvas.width = canvas.clientWidth;
             canvas.height = canvas.clientHeight;
         }
-
         ctx.fillStyle = '#010204';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        // Rysuj tylko jak gra
-        if (!audio.paused && audio.src) {
-            time += 0.05;
-
-            // Glow pod spodem
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = 'rgba(188, 0, 255, 0.2)';
-            drawWave(0.3);
-
-            // Główna linia
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = 'rgba(0, 242, 255, 0.8)';
-            drawWave(0.5);
+        if (isInitialized &&!audio.paused) {
+            analyser.getByteFrequencyData(dataArray);
+            ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(188, 0, 255, 0.2)'; drawEQLine();
+            ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0, 242, 255, 0.9)'; drawEQLine();
         }
     }
 
-    function drawWave(amplitude) {
+    function drawEQLine() {
+        const sliceWidth = canvas.width / dataArray.length;
         ctx.beginPath();
-        const sliceWidth = canvas.width / 128;
         let x = 0;
-        for(let i = 0; i < 128; i++) {
-            const v = (Math.sin(i * 0.2 + time) * 0.3 + Math.sin(i * 0.1 + time * 1.5) * 0.2 + 0.5) * amplitude;
-            const y = (v * canvas.height / 2) + (canvas.height / 2.5);
+        for(let i = 0; i < dataArray.length; i++) {
+            const v = dataArray[i] / 255.0;
+            const y = (1 - v) * canvas.height * 0.8 + canvas.height * 0.1;
             if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
             x += sliceWidth;
         }
         ctx.stroke();
     }
-
     draw();
 </script>
 </body>
