@@ -2,206 +2,282 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO-TRANCE-PLAYER - Modified Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RMF TERMINAL - PCB EDITION</title>
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #0a0a0a;
-            color: #00ff00;
-            font-family: 'Courier New', Courier, monospace;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        
+        :root {
+            --yellow: #fce300;
+            --yellow-neon: #fffb00;
+            --bg: #050505;
+            --tile: #121212;
+            --border: #222;
+            --blue-wave: #00ccff;
+            --trace: #1a3a1a; /* Kolor ścieżek na PCB */
         }
 
-        /* Warstwa tła dla połączeń (ścieżek) */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { 
+            height: 100vh; width: 100vw; 
+            background: var(--bg); color: #fff; 
+            font-family: 'Montserrat Alternates', sans-serif;
+            overflow: hidden; 
+        }
+
+        body { display: flex; flex-direction: column; padding: 2vh; }
+
+        /* Tło dla połączeń */
         #pcb-canvas {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
             z-index: 0;
-        }
-
-        #container {
-            position: relative;
-            z-index: 1;
-            width: 80vw;
-            height: 80vh;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        /* Wygląd układu scalonego - USUNIĘTO PASKI */
-        .chip {
-            width: 100px;
-            height: 60px;
-            background-color: #121212; /* Jednolity ciemny kolor */
-            border-radius: 3px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 5px rgba(255,255,255,0.1);
-            border: 1px solid #333;
-            cursor: pointer;
-            transition: transform 0.2s;
-            user-select: none;
-        }
-
-        .chip:hover {
-            transform: scale(1.05);
-            border-color: #00ff00;
-        }
-
-        .chip-label {
-            font-size: 10px;
-            color: #555;
-            text-transform: uppercase;
             pointer-events: none;
         }
 
-        /* NÓŻKI UKŁADU SCALONEGO */
-        .chip::before, .chip::after {
+        header { 
+            height: 50px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border); margin-bottom: 2vh; flex-shrink: 0;
+            position: relative; z-index: 2;
+        }
+        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }
+        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
+
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; position: relative; z-index: 1; }
+        
+        .grid { 
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 25px; /* Większy odstęp na nóżki i ścieżki */
+            padding: 10px;
+        }
+
+        /* UKŁAD SCALONY - MODYFIKACJA */
+        .tile {
+            background: var(--tile); 
+            border: 1px solid #333; 
+            border-radius: 4px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative;
+            box-shadow: 2px 4px 10px rgba(0,0,0,0.8);
+            transition: transform 0.2s;
+        }
+
+        /* NÓŻKI (PINY) UKŁADU */
+        .tile::before, .tile::after {
             content: '';
             position: absolute;
-            width: 110%; /* Wystają poza obudowę */
+            width: 10px;
             height: 80%;
-            /* Generator pinów */
+            top: 10%;
             background: repeating-linear-gradient(
                 to bottom,
-                #777, /* Kolor cyny/metalu */
-                #777 3px,
-                transparent 3px,
-                transparent 8px
+                #666, #666 4px,
+                transparent 4px, transparent 10px
             );
-            z-index: -1;
+        }
+        .tile::before { left: -10px; border-radius: 2px 0 0 2px; }
+        .tile::after { right: -10px; border-radius: 0 2px 2px 0; }
+
+        .tile .t-top { font-size: 18px; font-weight: 700; color: var(--yellow); z-index: 2; }
+        .tile .t-bottom { font-size: 11px; font-weight: 600; color: #666; margin-top: 4px; text-align: center; z-index: 2; }
+
+        .tile.active { 
+            border: 1px solid var(--yellow-neon); 
+            background: #1a1a00;
+            box-shadow: 0 0 20px rgba(255, 251, 0, 0.2);
+        }
+        .tile.active .t-bottom { color: var(--yellow); }
+
+        /* FALE */
+        .waves {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none; opacity: 0; z-index: 1;
+        }
+        .tile.active .waves { opacity: 1; }
+        .wave {
+            position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%;
+            width: 10px; height: 10px; opacity: 0;
+            animation: ripple 3s infinite linear;
+        }
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 1; }
+            100% { width: 250%; height: 250%; opacity: 0; }
         }
 
-        .chip::before { left: -5%; }
-        .chip::after { right: -5%; }
-
-        .status-led {
-            width: 6px;
-            height: 6px;
-            background-color: #300;
-            border-radius: 50%;
-            margin-top: 5px;
+        .sidebar { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; gap: 4vh;
+            border-left: 1px solid var(--border); padding-left: 3vw;
         }
 
-        .active .status-led {
-            background-color: #0f0;
-            box-shadow: 0 0 10px #0f0;
+        .logo-display {
+            width: 100%; max-width: 320px; aspect-ratio: 16/10;
+            border: 2px solid var(--yellow); border-radius: 20px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .logo-display h2 { font-size: 40px; color: var(--yellow); }
+        .logo-display p { font-size: 10px; color: var(--yellow); text-transform: uppercase; }
+
+        .controls { display: flex; align-items: center; gap: 3vw; }
+        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; }
+        .c-play { width: 70px; height: 70px; }
+
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
+        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; }
+        .vol-bar { flex: 1; height: 35px; border: 1px solid var(--yellow); display: flex; align-items: center; padding: 0 10px; }
+        input[type="range"] { flex: 1; appearance: none; background: var(--yellow); height: 2px; }
+
+        @media (max-width: 600px) {
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; }
+            .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 10px 0; }
         }
     </style>
 </head>
 <body>
 
-    <canvas id="pcb-canvas"></canvas>
+<canvas id="pcb-canvas"></canvas>
 
-    <div id="container">
-        <!-- Układy zostaną wygenerowane przez JS -->
-    </div>
+<header>
+    <div class="header-info" id="playing-now">SYSTEM READY</div>
+    <div class="clock" id="timer">00:00</div>
+</header>
 
-    <script>
-        const container = document.getElementById('container');
-        const canvas = document.getElementById('pcb-canvas');
-        const ctx = canvas.getContext('2d');
-        const chipCount = 12;
-        const chips = [];
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
+    <aside class="sidebar">
+        <div class="logo-display">
+            <h2 id="display-name">RMF FM</h2>
+            <p id="display-slogan">Najlepsza muzyka</p>
+        </div>
+        <div class="controls">
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+        </div>
+        <div class="vol-box">
+            <button class="vol-btn" onclick="adj(-5)">-</button>
+            <div class="vol-bar"><input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)"></div>
+            <button class="vol-btn" onclick="adj(5)">+</button>
+        </div>
+    </aside>
+</div>
 
-        // Inicjalizacja Canvas
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            drawConnections();
-        }
+<audio id="player"></audio>
 
-        // Tworzenie układów scalonych
-        for (let i = 0; i < chipCount; i++) {
-            const chip = document.createElement('div');
-            chip.className = 'chip';
-            chip.innerHTML = `
-                <div class="chip-label">IC-${1024 + i}</div>
-                <div class="status-led"></div>
+<script>
+    const STATIONS = [
+        { n: 'RMF FM', s: 'Ogólnopolskie', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' },
+        { n: 'RMF 80s', s: 'Lata 80', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: 'Lata 90', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: 'Lata 2000', u: 'rmf_2000' },
+        { n: 'RMF CHILL', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+    ];
+
+    const player = document.getElementById('player'), 
+          ico = document.getElementById('p-ico'), 
+          grid = document.getElementById('station-grid'), 
+          canvas = document.getElementById('pcb-canvas'),
+          ctx = canvas.getContext('2d');
+    
+    let current = -1;
+
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    }
+    setInterval(clock, 1000); clock();
+
+    function initGrid() {
+        grid.innerHTML = '';
+        STATIONS.forEach((s, i) => {
+            const t = document.createElement('div');
+            t.className = 'tile';
+            t.innerHTML = `
+                <div class="waves"><div class="wave"></div><div class="wave"></div></div>
+                <div class="t-top">IC-${i+100}</div>
+                <div class="t-bottom">${s.n}</div>
             `;
-            
-            chip.onclick = () => {
-                chip.classList.toggle('active');
-                playTone(i);
-            };
+            t.onclick = () => play(i);
+            grid.appendChild(t);
+        });
+        setTimeout(drawTraces, 100);
+    }
 
-            container.appendChild(chip);
-            chips.push(chip);
-        }
+    function drawTraces() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = '#1a3a1a';
+        ctx.lineWidth = 2;
 
-        // Funkcja rysująca połączenia między układami
-        function drawConnections() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.strokeStyle = '#1a3a1a'; // Ciemnozielone ścieżki
-            ctx.lineWidth = 2;
-
-            for (let i = 0; i < chips.length; i++) {
-                const rectA = chips[i].getBoundingClientRect();
+        const tiles = document.querySelectorAll('.tile');
+        tiles.forEach((tile, i) => {
+            if (i < tiles.length - 1) {
+                const r1 = tile.getBoundingClientRect();
+                const r2 = tiles[i+1].getBoundingClientRect();
                 
-                // Połącz z następnym układem w tablicy
-                if (chips[i+1]) {
-                    const rectB = chips[i+1].getBoundingClientRect();
-                    
-                    const x1 = rectA.left + rectA.width / 2;
-                    const y1 = rectA.top + rectA.height / 2;
-                    const x2 = rectB.left + rectB.width / 2;
-                    const y2 = rectB.top + rectB.height / 2;
+                ctx.beginPath();
+                ctx.moveTo(r1.left + r1.width/2, r1.top + r1.height/2);
+                ctx.lineTo(r1.left + r1.width/2, r2.top + r2.height/2);
+                ctx.lineTo(r2.left + r2.width/2, r2.top + r2.height/2);
+                ctx.stroke();
 
-                    ctx.beginPath();
-                    ctx.moveTo(x1, y1);
-                    // Styl prowadzenia ścieżek "pod kątem prostym"
-                    ctx.lineTo(x1, y2);
-                    ctx.lineTo(x2, y2);
-                    ctx.stroke();
-
-                    // Dodanie małych "punktów lutowniczych"
-                    ctx.fillStyle = '#2d5a2d';
-                    ctx.beginPath();
-                    ctx.arc(x1, y1, 3, 0, Math.PI * 2);
-                    ctx.fill();
-                }
+                // Małe punkty lutownicze
+                ctx.fillStyle = '#2d5a2d';
+                ctx.beginPath();
+                ctx.arc(r1.left + r1.width/2, r1.top + r1.height/2, 3, 0, Math.PI*2);
+                ctx.fill();
             }
-        }
+        });
+    }
 
-        // Prosty silnik audio (Techno-Trance vibe)
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function play(i) {
+        current = i;
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "LINK: " + STATIONS[i].n;
+        document.getElementById('display-name').textContent = STATIONS[i].n;
+        document.getElementById('display-slogan').textContent = STATIONS[i].s;
         
-        function playTone(index) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            
-            osc.type = index % 2 === 0 ? 'sawtooth' : 'square';
-            osc.frequency.setValueAtTime(110 * (index % 4 + 1), audioCtx.currentTime);
-            
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-            
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.5);
-        }
+        player.src = STATIONS[i].u.includes('http') ? STATIONS[i].u : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
+        player.play();
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+    }
 
-        window.addEventListener('resize', resizeCanvas);
-        
-        // Opóźnienie rysowania, aby boundingBoxy były gotowe
-        setTimeout(resizeCanvas, 100);
+    function toggle() {
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+    }
 
-    </script>
+    function skip(d) { 
+        let n = current + d; 
+        if(n >= 0 && n < STATIONS.length) play(n); 
+    }
+
+    function setV(v) { player.volume = v / 100; }
+    function adj(d) { 
+        const v = document.getElementById('v-range');
+        v.value = parseInt(v.value) + d; 
+        setV(v.value); 
+    }
+
+    window.onresize = drawTraces;
+    initGrid();
+</script>
 </body>
 </html>
