@@ -1,14 +1,14 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF COMMAND CENTER</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF CYBER MAINFRAME</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
         
         :root {            
             --yellow: #fce300;            
             --yellow-neon: #fffb00;            
-            --bg: #020408; /* Bardzo ciemny granat/czerń z obrazka */
-            --tile: rgba(10, 15, 25, 0.9);            
-            --border: #1a2a44; /* Techniczny błękitny kontur */
-            --blue-wave: #00ccff; 
-            --panel-shadow: 0 0 20px rgba(252, 227, 0, 0.15);
+            --bg: #010810; 
+            --tile: rgba(0, 20, 40, 0.7);            
+            --border: #004a7c; /* Ciemniejszy błękit linii z obrazka */
+            --accent-red: #ff1a1a; /* Czerwone akcenty ostrzegawcze */
+            --blue-wave: #00f2ff; 
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
@@ -19,59 +19,72 @@
             overflow: hidden;         
         }
 
-        /* Efekt pokoju operacyjnego - lekkie gradienty na krawędziach */
+        /* Stylizacja tła na wzór płytki drukowanej / mainframe */
         body { 
             display: flex; flex-direction: column; padding: 2vh; 
             background-image: 
-                radial-gradient(circle at 50% -20%, #1a2a44 0%, transparent 50%),
-                linear-gradient(180deg, #020408 0%, #050a15 100%);
-            border: 4px solid #0a1425;
+                linear-gradient(rgba(0, 74, 124, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 74, 124, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+            position: relative;
+        }
+
+        /* Dekoracyjne linie w tle nawiązujące do image_1f5e03.jpg */
+        body::before {
+            content: ""; position: absolute; inset: 0;
+            background: repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(0, 242, 255, 0.03) 100px, rgba(0, 242, 255, 0.03) 101px);
+            pointer-events: none;
         }
 
         header {             
             height: 50px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 3px solid var(--yellow); margin-bottom: 2vh; flex-shrink: 0;
-            box-shadow: 0 5px 15px rgba(252, 227, 0, 0.2);
-            padding: 0 15px;
-            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border); border-left: 5px solid var(--yellow);
+            margin-bottom: 2vh; flex-shrink: 0;
+            padding: 0 15px; background: rgba(0, 0, 0, 0.8);
+            box-shadow: -10px 0 20px rgba(0, 242, 255, 0.1);
         }        
-        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }        
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .header-info { font-size: 22px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px; }        
+        .clock { color: var(--blue-wave); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px var(--blue-wave); }
 
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
+        .app-content { display: flex; flex: 1; gap: 2vw; min-height: 0; }
         
         .grid {             
             flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 12px;         
+            gap: 10px;         
         }
 
-        /* TILE - STYL MODULARNEGO PANELU Z image_15e5a2.jpg */
+        /* TILE - STYL MODUŁU SYSTEMOWEGO */
         .tile {            
             background: var(--tile); 
             border: 1px solid var(--border); 
-            border-left: 4px solid var(--border); /* Akcent boczny typowy dla HUD */
-            border-radius: 2px;            
+            border-bottom: 3px solid var(--border);
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
             cursor: pointer; position: relative; overflow: visible;
-            transition: all 0.2s ease;
+            transition: 0.15s;
         }
 
-        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; opacity: 0.8; }        
-        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #4e6a8e; margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; }
+        /* Małe "piny" w rogach jak na schematach */
+        .tile::after {
+            content: ""; position: absolute; top: 2px; right: 2px; width: 4px; height: 4px; background: var(--accent-red); box-shadow: 0 0 5px var(--accent-red);
+        }
 
-        /* AKTYWNY PANEL - ROZŚWIETLENIE CENTER-COMMAND */
+        .tile .t-top { font-size: 18px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; letter-spacing: -0.5px; }        
+        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--blue-wave); margin-top: 5px; text-align: center; z-index: 2; opacity: 0.7; }
+
+        /* AKTYWNA STACJA - PRZECIĄŻENIE SYSTEMU */
         .tile.active {             
-            border-color: var(--yellow-neon);
-            border-left-color: var(--yellow-neon);
-            background: rgba(252, 227, 0, 0.08);
-            box-shadow: 0 0 25px rgba(252, 227, 0, 0.3), inset 0 0 10px rgba(252, 227, 0, 0.1);
-            transform: scale(1.02);
+            border: 1px solid var(--yellow-neon);
+            border-bottom: 3px solid var(--yellow-neon);
+            background: rgba(252, 227, 0, 0.1);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
+            transform: translateY(-2px);
         }        
-        .tile.active .t-top, .tile.active .t-bottom { color: var(--yellow-neon); opacity: 1; text-shadow: 0 0 8px var(--yellow); }
+        .tile.active .t-top { color: #fff; text-shadow: 0 0 8px var(--yellow); }
+        .tile.active .t-bottom { color: var(--yellow); opacity: 1; }
 
-        /* FALE BŁĘKITNE - ZACHOWANA LOGIKA I KOLOR */
+        /* FALE - ZACHOWANA LOGIKA */
         .waves {            
             position: absolute; width: 100%; height: 100%;            
             display: flex; align-items: center; justify-content: center;            
@@ -79,72 +92,70 @@
         }        
         .tile.active .waves { opacity: 1; }        
         .wave {            
-            position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%;            
+            position: absolute; border: 1px solid var(--accent-red); border-radius: 2px; /* Kanciaste fale */
             width: 10px; height: 10px; opacity: 0;            
-            box-shadow: 0 0 15px var(--blue-wave);            
-            animation: ripple 3s infinite linear;        
+            animation: ripple 2.5s infinite linear;        
         }        
-        .wave:nth-child(2) { animation-delay: 1s; }        
-        .wave:nth-child(3) { animation-delay: 2s; }
+        .wave:nth-child(2) { border-color: var(--blue-wave); animation-delay: 0.8s; }        
+        .wave:nth-child(3) { border-color: var(--yellow); animation-delay: 1.6s; }
 
         @keyframes ripple {            
-            0% { width: 0; height: 0; opacity: 0.9; }            
-            100% { width: 300%; height: 300%; opacity: 0; }        
+            0% { width: 10%; height: 10%; opacity: 1; }            
+            100% { width: 150%; height: 150%; opacity: 0; border-width: 4px; }        
         }
 
         .sidebar {             
             flex: 0.6; display: flex; flex-direction: column;             
-            align-items: center; justify-content: center; gap: 4vh;            
+            align-items: center; justify-content: center; gap: 3vh;            
             border: 1px solid var(--border); 
-            background: rgba(5, 10, 20, 0.8);
+            background: rgba(0, 10, 20, 0.9);
             padding: 20px;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
+            position: relative;
         }
 
-        /* LOGO DISPLAY - STYL MONITORA Z OBRAZKA */
+        /* DISPLAY - STYL PROCESORA Z OBRAZKA */
         .logo-display {            
-            width: 100%; max-width: 320px; aspect-ratio: 16/10;            
-            border: 2px solid var(--border); 
-            border-top: 4px solid var(--yellow);
+            width: 100%; max-width: 300px; aspect-ratio: 1/1;            
+            border: 1px solid var(--blue-wave);
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: #000;            
-            position: relative;
-            box-shadow: var(--panel-shadow);
+            background: radial-gradient(circle, #002244 0%, #000 100%);            
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2), inset 0 0 20px rgba(0, 242, 255, 0.1);
         }        
-        .logo-display h2 { font-size: 40px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
-        .logo-display p { font-size: 11px; color: #4e6a8e; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+        .logo-display h2 { font-size: 36px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
+        .logo-display p { font-size: 10px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 4px; }
 
-        .controls { display: flex; align-items: center; gap: 3vw; }        
+        .controls { display: flex; align-items: center; gap: 2vw; }        
         .c-svg {             
-            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer;             
-            filter: drop-shadow(0 0 5px var(--yellow)); 
+            width: 35px; height: 35px; fill: var(--blue-wave); cursor: pointer;             
+            filter: drop-shadow(0 0 5px var(--blue-wave)); 
         }        
-        .c-play { width: 75px; height: 75px; filter: drop-shadow(0 0 15px var(--yellow)); }
+        .c-play { width: 70px; height: 70px; fill: var(--yellow); filter: drop-shadow(0 0 15px var(--yellow)); }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; }        
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; }        
         .vol-btn { 
-            width: 40px; height: 40px; border: 1px solid var(--border); 
-            background: var(--tile); color: var(--yellow); cursor: pointer; 
-            font-size: 18px; font-weight: bold;
+            width: 35px; height: 35px; border: 1px solid var(--blue-wave); 
+            background: none; color: var(--blue-wave); cursor: pointer; 
+            font-size: 16px; font-weight: bold;
         }        
         .vol-bar { 
-            flex: 1; height: 40px; border: 1px solid var(--border); 
-            background: #000; display: flex; align-items: center; padding: 0 10px;
+            flex: 1; height: 30px; border: 1px solid var(--border); 
+            background: #000; display: flex; align-items: center; padding: 0 5px;
+            position: relative;
         }                
-        input[type="range"] { flex: 1; appearance: none; background: #1a2a44; height: 4px; outline: none; }        
+        input[type="range"] { flex: 1; appearance: none; background: #002244; height: 8px; outline: none; }        
         input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 12px; height: 24px;             
-            background: var(--yellow); border-radius: 0;             
-            cursor: pointer; box-shadow: 0 0 10px var(--yellow);
+            appearance: none; width: 20px; height: 20px;             
+            background: var(--accent-red); border: 2px solid #fff;
+            cursor: pointer; box-shadow: 0 0 10px var(--accent-red);
         }        
         input[type="range"].at-mid::-webkit-slider-thumb {            
-            background: #fff; box-shadow: 0 0 20px #fff;
+            background: var(--yellow); box-shadow: 0 0 15px var(--yellow);
         }
 
         @media (max-width: 600px) {            
-            .app-content { flex-direction: column; }            
             .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; flex: none; }            
-            .sidebar { width: 100%; padding: 10px; gap: 20px; }        
+            .sidebar { width: 100%; border-top: 2px solid var(--yellow); }
+            .logo-display { aspect-ratio: 16/9; }        
         }
     </style></head><body>
 
@@ -158,7 +169,7 @@
     <aside class="sidebar">        
         <div class="logo-display">            
             <h2>RMF FM</h2>            
-            <p>Najlepsza muzyka</p>        
+            <p>System Active</p>        
         </div>
         <div class="controls">            
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            
