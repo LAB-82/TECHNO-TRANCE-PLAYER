@@ -6,8 +6,8 @@
             --yellow-neon: #fffb00;            
             --bg: #010810; 
             --tile: rgba(0, 20, 40, 0.7);            
-            --border: #004a7c; /* Ciemniejszy błękit linii z obrazka */
-            --accent-red: #ff1a1a; /* Czerwone akcenty ostrzegawcze */
+            --border: #004a7c; 
+            --accent-red: #ff1a1a; 
             --blue-wave: #00f2ff; 
         }
 
@@ -19,21 +19,12 @@
             overflow: hidden;         
         }
 
-        /* Stylizacja tła na wzór płytki drukowanej / mainframe */
         body { 
             display: flex; flex-direction: column; padding: 2vh; 
             background-image: 
                 linear-gradient(rgba(0, 74, 124, 0.1) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 74, 124, 0.1) 1px, transparent 1px);
             background-size: 30px 30px;
-            position: relative;
-        }
-
-        /* Dekoracyjne linie w tle nawiązujące do image_1f5e03.jpg */
-        body::before {
-            content: ""; position: absolute; inset: 0;
-            background: repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(0, 242, 255, 0.03) 100px, rgba(0, 242, 255, 0.03) 101px);
-            pointer-events: none;
         }
 
         header {             
@@ -41,13 +32,11 @@
             border: 1px solid var(--border); border-left: 5px solid var(--yellow);
             margin-bottom: 2vh; flex-shrink: 0;
             padding: 0 15px; background: rgba(0, 0, 0, 0.8);
-            box-shadow: -10px 0 20px rgba(0, 242, 255, 0.1);
         }        
-        .header-info { font-size: 22px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 1px; }        
-        .clock { color: var(--blue-wave); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px var(--blue-wave); }
+        .header-info { font-size: 22px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }        
+        .clock { color: var(--blue-wave); font-size: 24px; font-weight: 700; }
 
         .app-content { display: flex; flex: 1; gap: 2vw; min-height: 0; }
-        
         .grid {             
             flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
@@ -55,36 +44,23 @@
             gap: 10px;         
         }
 
-        /* TILE - STYL MODUŁU SYSTEMOWEGO */
         .tile {            
             background: var(--tile); 
             border: 1px solid var(--border); 
-            border-bottom: 3px solid var(--border);
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
             cursor: pointer; position: relative; overflow: visible;
             transition: 0.15s;
         }
 
-        /* Małe "piny" w rogach jak na schematach */
-        .tile::after {
-            content: ""; position: absolute; top: 2px; right: 2px; width: 4px; height: 4px; background: var(--accent-red); box-shadow: 0 0 5px var(--accent-red);
-        }
+        .tile .t-top { font-size: 18px; font-weight: 700; color: var(--yellow); z-index: 2; }        
+        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--blue-wave); margin-top: 5px; text-align: center; z-index: 2; }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; letter-spacing: -0.5px; }        
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--blue-wave); margin-top: 5px; text-align: center; z-index: 2; opacity: 0.7; }
-
-        /* AKTYWNA STACJA - PRZECIĄŻENIE SYSTEMU */
         .tile.active {             
             border: 1px solid var(--yellow-neon);
-            border-bottom: 3px solid var(--yellow-neon);
             background: rgba(252, 227, 0, 0.1);
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.4);
-            transform: translateY(-2px);
         }        
-        .tile.active .t-top { color: #fff; text-shadow: 0 0 8px var(--yellow); }
-        .tile.active .t-bottom { color: var(--yellow); opacity: 1; }
 
-        /* FALE - ZACHOWANA LOGIKA */
         .waves {            
             position: absolute; width: 100%; height: 100%;            
             display: flex; align-items: center; justify-content: center;            
@@ -92,70 +68,46 @@
         }        
         .tile.active .waves { opacity: 1; }        
         .wave {            
-            position: absolute; border: 1px solid var(--accent-red); border-radius: 2px; /* Kanciaste fale */
+            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%; /* POWRÓT DO OKRĘGU */
             width: 10px; height: 10px; opacity: 0;            
             animation: ripple 2.5s infinite linear;        
         }        
-        .wave:nth-child(2) { border-color: var(--blue-wave); animation-delay: 0.8s; }        
-        .wave:nth-child(3) { border-color: var(--yellow); animation-delay: 1.6s; }
+        .wave:nth-child(2) { animation-delay: 0.8s; }        
+        .wave:nth-child(3) { animation-delay: 1.6s; }
 
         @keyframes ripple {            
-            0% { width: 10%; height: 10%; opacity: 1; }            
-            100% { width: 150%; height: 150%; opacity: 0; border-width: 4px; }        
+            0% { width: 0; height: 0; opacity: 1; }            
+            100% { width: 250%; height: 250%; opacity: 0; }        
         }
 
         .sidebar {             
             flex: 0.6; display: flex; flex-direction: column;             
             align-items: center; justify-content: center; gap: 3vh;            
-            border: 1px solid var(--border); 
-            background: rgba(0, 10, 20, 0.9);
-            padding: 20px;
-            position: relative;
+            border: 1px solid var(--border); background: rgba(0, 10, 20, 0.9); padding: 20px;
         }
 
-        /* DISPLAY - STYL PROCESORA Z OBRAZKA */
         .logo-display {            
             width: 100%; max-width: 300px; aspect-ratio: 1/1;            
             border: 1px solid var(--blue-wave);
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
             background: radial-gradient(circle, #002244 0%, #000 100%);            
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2), inset 0 0 20px rgba(0, 242, 255, 0.1);
         }        
-        .logo-display h2 { font-size: 36px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
-        .logo-display p { font-size: 10px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 4px; }
+        .logo-display h2 { font-size: 36px; color: var(--yellow); }        
+        .logo-display p { font-size: 10px; color: var(--blue-wave); letter-spacing: 4px; }
 
         .controls { display: flex; align-items: center; gap: 2vw; }        
-        .c-svg {             
-            width: 35px; height: 35px; fill: var(--blue-wave); cursor: pointer;             
-            filter: drop-shadow(0 0 5px var(--blue-wave)); 
-        }        
-        .c-play { width: 70px; height: 70px; fill: var(--yellow); filter: drop-shadow(0 0 15px var(--yellow)); }
+        .c-svg { width: 35px; height: 35px; fill: var(--blue-wave); cursor: pointer; }        
+        .c-play { width: 70px; height: 70px; fill: var(--yellow); }
 
         .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; }        
-        .vol-btn { 
-            width: 35px; height: 35px; border: 1px solid var(--blue-wave); 
-            background: none; color: var(--blue-wave); cursor: pointer; 
-            font-size: 16px; font-weight: bold;
-        }        
-        .vol-bar { 
-            flex: 1; height: 30px; border: 1px solid var(--border); 
-            background: #000; display: flex; align-items: center; padding: 0 5px;
-            position: relative;
-        }                
-        input[type="range"] { flex: 1; appearance: none; background: #002244; height: 8px; outline: none; }        
-        input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 20px; height: 20px;             
-            background: var(--accent-red); border: 2px solid #fff;
-            cursor: pointer; box-shadow: 0 0 10px var(--accent-red);
-        }        
-        input[type="range"].at-mid::-webkit-slider-thumb {            
-            background: var(--yellow); box-shadow: 0 0 15px var(--yellow);
-        }
+        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--blue-wave); background: none; color: var(--blue-wave); cursor: pointer; }        
+        .vol-bar { flex: 1; height: 30px; border: 1px solid var(--border); background: #000; display: flex; align-items: center; padding: 0 5px; }                
+        input[type="range"] { flex: 1; appearance: none; background: #002244; height: 8px; }        
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; background: var(--yellow); cursor: pointer; }
 
         @media (max-width: 600px) {            
             .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; flex: none; }            
-            .sidebar { width: 100%; border-top: 2px solid var(--yellow); }
-            .logo-display { aspect-ratio: 16/9; }        
+            .sidebar { width: 100%; }
         }
     </style></head><body>
 
@@ -169,7 +121,7 @@
     <aside class="sidebar">        
         <div class="logo-display">            
             <h2>RMF FM</h2>            
-            <p>System Active</p>        
+            <p>MAINFRAME ACTIVE</p>        
         </div>
         <div class="controls">            
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            
