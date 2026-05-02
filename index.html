@@ -1,117 +1,114 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>TECHNO TRANCE PLAYER - AUDIT FINAL</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>TECHNO TRANCE PLAYER - HEX EDITION</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
         
         :root {            
-            --amber: #ff8800;            
-            --blue-neon: #00ccff;            
-            --bg-deep: #0a0500;
-            --glass: rgba(255, 136, 0, 0.05);
+            --hex-amber: #ffb300;            
+            --hex-bg: #121212;
+            --hex-dark: #000000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         body { 
-            height: 100vh; width: 100vw; background: var(--bg-deep); color: #fff; 
+            height: 100vh; width: 100vw; background: var(--hex-bg); color: #fff; 
             font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 2vh;
+            /* Tło - siatka heksagonalna CSS */
             background-image: 
-                radial-gradient(circle at center, #1a0d00 0%, #000 100%),
-                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 136, 0, 0.03) 2px, rgba(255, 136, 0, 0.03) 4px);
+                radial-gradient(circle at center, rgba(255, 179, 0, 0.05) 0%, transparent 70%),
+                linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
+                linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
+                linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
+                linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
+                linear-gradient(60deg, #0a0a0a 25%, transparent 25.5%, transparent 75%, #0a0a0a 75%, #0a0a0a), 
+                linear-gradient(60deg, #0a0a0a 25%, transparent 25.5%, transparent 75%, #0a0a0a 75%, #0a0a0a);
+            background-size: 100% 100%, 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px;
+            background-position: 0 0, 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
         }
 
         header {             
             height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--amber); margin-bottom: 2vh;
-            box-shadow: 0 0 20px rgba(255, 136, 0, 0.2);
+            border-bottom: 3px solid var(--hex-amber); margin-bottom: 2vh;
+            background: rgba(0,0,0,0.8); padding: 0 20px;
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--amber); text-shadow: 0 0 10px var(--amber); }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--amber); font-size: 22px; }
+        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--hex-amber); text-shadow: 2px 2px 0px #000; }        
+        .clock { font-family: 'Orbitron', sans-serif; color: var(--hex-amber); font-size: 22px; }
 
         .app-content { display: flex; flex: 1; gap: 20px; height: calc(100vh - 120px); }
 
-        /* GRID 5x3 - NIENARUSZONY */
         .grid {             
             flex: 1.5; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 12px;         
+            gap: 10px; padding: 10px;
         }
 
-        /* TILE - STYL NEONOWEJ RAMKI Z OBRAZKA */
+        /* TILE - KSZTAŁT HEKSAGONU ZE ZDJĘCIA */
         .tile {            
-            background: var(--glass); 
-            border: 1px solid rgba(255, 136, 0, 0.2);
-            border-radius: 4px;
-            position: relative; cursor: pointer; transition: 0.2s;
+            background: var(--hex-dark); 
+            border: 2px solid var(--hex-amber);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            position: relative; cursor: pointer; transition: 0.3s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(2px);
+            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.8));
         }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; text-transform: uppercase; }        
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--amber); opacity: 0.8; }
+        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }        
+        .tile .t-bottom { font-size: 11px; font-weight: 700; color: var(--hex-amber); text-transform: uppercase; }
 
-        /* ACTIVE - MAKSYMALNA POŚWIATA */
+        /* ACTIVE - ŻÓŁTE WYPEŁNIENIE JAK NA DOLE ZDJĘCIA */
         .tile.active { 
-            background: rgba(255, 136, 0, 0.15); 
-            border-color: var(--amber);
-            box-shadow: 0 0 25px rgba(255, 136, 0, 0.3), inset 0 0 15px rgba(255, 136, 0, 0.2);
-            transform: scale(1.02);
+            background: var(--hex-amber); 
+            border-color: #fff;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
-        .tile.active .t-top { text-shadow: 0 0 10px #fff; }
+        .tile.active .t-top, .tile.active .t-bottom { color: #000; }
 
         .sidebar {             
             flex: 0.5; display: flex; flex-direction: column;             
             align-items: center; justify-content: space-around;
-            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 136, 0, 0.1);
-            padding: 20px; border-radius: 8px;
+            background: rgba(0,0,0,0.9); border: 2px solid var(--hex-amber);
+            border-radius: 15px; padding: 20px;
         }
 
         .logo-display {            
-            width: 100%; aspect-ratio: 1; border: 2px solid var(--amber); border-radius: 50%;
+            width: 120px; height: 140px; 
+            background: var(--hex-amber);
+            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(255, 136, 0, 0.1) 0%, transparent 80%);
-            box-shadow: 0 0 30px rgba(255, 136, 0, 0.15);
+            color: #000;
         }
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #fff; text-shadow: 0 0 15px var(--amber); }
-        .logo-display p { font-size: 10px; color: var(--amber); letter-spacing: 4px; font-weight: 700; }
+        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 30px; font-weight: 700; }
+        .logo-display p { font-size: 10px; font-weight: 800; letter-spacing: 2px; }
 
-        .controls { display: flex; gap: 20px; align-items: center; }        
-        .c-svg { width: 45px; height: 45px; fill: var(--amber); cursor: pointer; filter: drop-shadow(0 0 5px var(--amber)); transition: 0.2s; }
-        .c-svg:hover { transform: scale(1.1); }
-        .c-play { width: 75px; height: 75px; }
+        .controls { display: flex; gap: 15px; align-items: center; }        
+        .c-svg { width: 45px; height: 45px; fill: var(--hex-amber); cursor: pointer; filter: drop-shadow(2px 2px 2px #000); }
+        .c-play { width: 70px; height: 70px; }
 
-        /* VOLUME - TWOJA LOGIKA AT-MID */
-        .vol-box { width: 100%; }
+        .vol-box { width: 100%; padding: 0 10px; }
         input[type="range"] { 
-            width: 100%; appearance: none; background: #221100; height: 10px; border-radius: 5px; 
-            border: 1px solid rgba(255, 136, 0, 0.3); overflow: hidden;
+            width: 100%; appearance: none; background: #333; height: 12px; border: 1px solid var(--hex-amber);
         }
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 15px; height: 10px; background: var(--amber);
-            box-shadow: -400px 0 0 400px var(--amber); cursor: pointer;
+            appearance: none; width: 20px; height: 20px; background: var(--hex-amber); cursor: pointer;
         }
-        /* Wizualny fix Twojej klasy logicznej */
-        input[type="range"].at-mid::-webkit-slider-thumb { 
-            background: var(--blue-neon); 
-            box-shadow: -400px 0 0 400px var(--blue-neon); 
-        }
+        /* TWOJA LOGIKA AT-MID */
+        input[type="range"].at-mid::-webkit-slider-thumb { background: #00ccff; box-shadow: 0 0 15px #00ccff; }
 
         @media (max-width: 800px) {
             .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { width: 100%; height: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; }
         }
     </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
+<header>    <div class="header-info" id="playing-now">RMF CORE SYSTEM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>ACTIVE SYSTEM</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>HEX-FLOW</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
         <div class="vol-box">            <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
 
 <audio id="player"></audio>
 
 <script>    
-    // TWOJA ORYGINALNA LOGIKA Z GITHUBA
     const STATIONS = [        
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
@@ -152,7 +149,7 @@
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        document.getElementById('playing-now').textContent = "SYSTEM: " + STATIONS[i].n;
         document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];        
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
