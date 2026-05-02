@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - SYNTH HUD V4</title>
+    <title>GEHIRN TREIBER - ULTIMATE SYNTH INTERFACE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
@@ -11,6 +11,7 @@
             --magenta: #ff00e5;
             --bg-black: #010408;
             --panel-border: #1a2a3a;
+            --slot-bg: #000000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,55 +29,53 @@
 
         .synth-container {
             width: 98vw;
-            height: 92vh;
+            height: 94vh;
             display: grid;
             grid-template-columns: 320px 1fr 380px;
             gap: 15px;
             padding: 15px;
         }
 
-        /* LEWY PANEL - OSCILLATORS */
+        /* LEWY PANEL - OSCILLATORS (Zgodnie z image_88cb1f.png) */
         .osc-sidebar {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .osc-module {
             border: 1px solid var(--panel-border);
-            padding: 10px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.01);
             border-radius: 4px;
             cursor: pointer;
-            transition: 0.2s;
+            transition: 0.3s;
         }
 
-        .osc-module:hover, .osc-module.active {
-            border-color: var(--cyan);
-            background: rgba(0, 242, 255, 0.05);
-        }
-
-        .osc-module.active { border-color: var(--magenta); box-shadow: inset 0 0 10px rgba(255, 0, 229, 0.2); }
+        .osc-module:hover { border-color: rgba(0, 242, 255, 0.5); }
+        .osc-module.active { border-color: var(--magenta); box-shadow: inset 0 0 15px rgba(255, 0, 229, 0.1); }
 
         .osc-header {
             font-size: 10px;
             color: var(--cyan);
             letter-spacing: 2px;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             font-family: 'Orbitron';
+            font-weight: 400;
         }
 
         .station-slot {
-            background: #000;
-            height: 50px;
+            background: var(--slot-bg);
+            height: 55px;
             display: flex;
             align-items: center;
-            padding-left: 15px;
+            padding-left: 20px;
             font-family: 'Orbitron';
             font-weight: 700;
-            font-size: 14px;
+            font-size: 15px;
             color: #fff;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.03);
+            text-transform: uppercase;
         }
 
         /* ŚRODEK - MASTER VISUALIZER */
@@ -85,15 +84,17 @@
             display: flex;
             flex-direction: column;
             position: relative;
+            background: radial-gradient(circle at center, #050f1a 0%, #010408 100%);
         }
 
         .display-header {
             text-align: center;
-            font-size: 10px;
-            padding: 10px;
-            letter-spacing: 3px;
+            font-size: 11px;
+            padding: 15px;
+            letter-spacing: 4px;
             color: var(--cyan);
             font-family: 'Orbitron';
+            border-bottom: 1px solid rgba(26, 42, 58, 0.5);
         }
 
         .visualizer-core {
@@ -104,19 +105,19 @@
             position: relative;
         }
 
-        #wave-canvas {
-            width: 100%;
-            height: 300px;
-        }
+        #wave-canvas { width: 100%; height: 100%; }
 
         .station-label {
             position: absolute;
-            bottom: 40px;
+            bottom: 50px;
             font-family: 'Orbitron';
-            font-size: 32px;
-            letter-spacing: 10px;
+            font-size: 36px;
+            font-weight: 700;
+            letter-spacing: 12px;
             text-transform: uppercase;
-            opacity: 0.6;
+            color: #fff;
+            opacity: 0.3;
+            pointer-events: none;
         }
 
         /* PRAWY PANEL - CONTROLS */
@@ -128,89 +129,91 @@
 
         .module-box {
             border: 1px solid var(--panel-border);
-            padding: 15px;
+            padding: 20px;
         }
 
         .envelope-view {
-            height: 200px;
+            height: 220px;
             width: 100%;
-            background: rgba(0,0,0,0.4);
-            margin-bottom: 15px;
+            background: rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            position: relative;
         }
 
         .knob-row {
             display: flex;
             justify-content: space-around;
-            padding: 10px 0;
+            padding: 15px 0;
         }
 
+        .knob-container { text-align: center; }
         .knob {
-            width: 50px; height: 50px;
+            width: 55px; height: 55px;
             border-radius: 50%;
-            border: 2px solid var(--panel-border);
+            border: 3px solid var(--panel-border);
             border-top-color: var(--cyan);
-            position: relative;
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+            margin-bottom: 8px;
         }
 
-        .knob-label { font-size: 9px; text-align: center; margin-top: 5px; opacity: 0.7; }
+        .knob-label { font-size: 10px; font-weight: 700; opacity: 0.8; letter-spacing: 1px; }
 
-        /* RAMKA STEROWANIA Z PRZYCISKAMI I VOLUME */
+        /* PLAYBACK CONTROL FRAME (Zgodnie z Twoją prośbą) */
         .playback-frame {
             border: 1px solid var(--panel-border);
-            padding: 15px;
-            background: rgba(0,0,0,0.2);
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
         }
 
         .btn-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
         .synth-btn {
             background: transparent;
             border: 1px solid var(--cyan);
             color: var(--cyan);
-            padding: 10px;
+            padding: 12px;
             font-family: 'Orbitron';
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .synth-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 15px var(--cyan); }
+        .synth-btn:hover { background: var(--cyan); color: #000; box-shadow: 0 0 20px var(--cyan); }
         .btn-stop { border-color: var(--magenta); color: var(--magenta); }
-        .btn-stop:hover { background: var(--magenta); box-shadow: 0 0 15px var(--magenta); }
+        .btn-stop:hover { background: var(--magenta); box-shadow: 0 0 20px var(--magenta); }
 
-        .volume-section {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
+        .volume-section { display: flex; flex-direction: column; gap: 12px; }
 
         .vol-slider {
             -webkit-appearance: none;
             width: 100%;
-            height: 2px;
+            height: 3px;
             background: var(--panel-border);
             outline: none;
         }
 
         .vol-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px; height: 16px;
+            width: 18px; height: 18px;
             background: var(--cyan);
             border-radius: 50%;
             cursor: pointer;
-            box-shadow: 0 0 10px var(--cyan);
+            box-shadow: 0 0 15px var(--cyan);
         }
 
-        .footer-info {
+        .footer-data {
             margin-top: auto;
-            font-size: 10px;
-            opacity: 0.4;
-            line-height: 1.5;
+            padding: 10px;
+            font-size: 11px;
+            font-family: monospace;
+            opacity: 0.5;
+            border-top: 1px solid var(--panel-border);
         }
 
     </style>
@@ -218,124 +221,131 @@
 <body>
 
 <div class="synth-container">
-    <!-- LEWY PANEL -->
-    <div class="osc-sidebar" id="osc-list"></div>
+    <!-- LEWY PANEL: LISTA STACJI (OSC) -->
+    <div class="osc-sidebar" id="station-list"></div>
 
-    <!-- ŚRODEK -->
+    <!-- ŚRODEK: GENERATOR FALI -->
     <main class="main-display">
         <div class="display-header">MASTER OUTPUT VISUALIZER</div>
         <div class="visualizer-core">
             <canvas id="wave-canvas"></canvas>
-            <div class="station-label" id="current-name">VOID SIGNAL</div>
+            <div class="station-label" id="current-station-name">GEHIRN TRB</div>
         </div>
     </main>
 
-    <!-- PRAWY PANEL -->
+    <!-- PRAWY PANEL: MODULATORY I TRANSPORT -->
     <aside class="control-sidebar">
         <div class="module-box">
             <div class="osc-header">ENVELOPE 1 [AMP]</div>
             <div class="envelope-view">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0,100 L25,20 L50,45 L85,45 L100,100" fill="none" stroke="var(--cyan)" stroke-width="2" />
+                    <path d="M0,100 L20,15 L45,40 L85,40 L100,100" fill="none" stroke="var(--cyan)" stroke-width="3" />
                 </svg>
             </div>
             
             <div class="osc-header">MACRO CONTROLS</div>
             <div class="knob-row">
-                <div><div class="knob"></div><div class="knob-label">DRIVE</div></div>
-                <div><div class="knob" style="border-top-color: var(--magenta);"></div><div class="knob-label">FILTER</div></div>
-                <div><div class="knob"></div><div class="knob-label">REVERB</div></div>
+                <div class="knob-container"><div class="knob"></div><div class="knob-label">DRIVE</div></div>
+                <div class="knob-container"><div class="knob" style="border-top-color: var(--magenta);"></div><div class="knob-label">FILTER</div></div>
+                <div class="knob-container"><div class="knob"></div><div class="knob-label">REVERB</div></div>
             </div>
         </div>
 
         <div class="playback-frame">
-            <div class="osc-header" style="margin-bottom:10px">TRANSPORT</div>
+            <div class="osc-header" style="margin-bottom:15px">TRANSPORT CONTROL</div>
             <div class="btn-grid">
-                <button class="synth-btn" onclick="audio.play()">PLAY</button>
-                <button class="synth-btn btn-stop" onclick="audio.pause()">STOP</button>
+                <button class="synth-btn" onclick="audioPlayer.play()">PLAY</button>
+                <button class="synth-btn btn-stop" onclick="audioPlayer.pause()">STOP</button>
             </div>
             <div class="volume-section">
-                <div style="display:flex; justify-content: space-between; font-size: 10px; opacity: 0.6;">
-                    <span>VOLUME</span>
-                    <span id="vol-val">70%</span>
+                <div style="display:flex; justify-content: space-between; font-size: 11px; font-weight: bold; color: var(--cyan);">
+                    <span>MASTER VOLUME</span>
+                    <span id="vol-display">70%</span>
                 </div>
-                <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
+                <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="changeVolume(this.value)">
             </div>
         </div>
 
-        <div class="footer-info">
-            NODE_LINK: STABLE<br>
-            BITRATE: 320kbps<br>
-            CORE: GEHIRN_v4.2
+        <div class="footer-data">
+            SYSTEM_NODE: STABLE [ID: 88CB1F]<br>
+            SIGNAL_STRENGTH: 98.4%<br>
+            BUFFER_SIZE: 1024_SAMP
         </div>
     </aside>
 </div>
 
-<audio id="main-audio"></audio>
+<audio id="audio-engine"></audio>
 
 <script>
     const STATIONS = [
-        { id: '01', n: 'NEON WAVE', u: 'https://stream.laut.fm/tech88' },
-        { id: '02', n: 'CYBER CORE', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { id: '03', n: 'DATA PULSE', u: 'https://stream.laut.fm/1000techno' },
-        { id: '04', n: 'VOID SIGNAL', u: 'https://stream.laut.fm/best-of-techno' },
-        { id: '05', n: 'SYNTH NODE', u: 'https://stream.laut.fm/chris_burn' },
-        { id: '06', n: 'GEHIRN TRB', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
+        { id: '01', name: 'NEON WAVE', url: 'https://stream.laut.fm/tech88' },
+        { id: '02', name: 'CYBER CORE', url: 'https://stream.laut.fm/hr3_clubnight' },
+        { id: '03', name: 'DATA PULSE', url: 'https://stream.laut.fm/1000techno' },
+        { id: '04', name: 'VOID SIGNAL', url: 'https://stream.laut.fm/best-of-techno' },
+        { id: '05', name: 'SYNTH NODE', url: 'https://stream.laut.fm/chris_burn' },
+        { id: '06', name: 'GEHIRN TRB', url: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    const list = document.getElementById('osc-list');
-    const audio = document.getElementById('main-audio');
-    const nameDisplay = document.getElementById('current-name');
+    const listElement = document.getElementById('station-list');
+    const audioPlayer = document.getElementById('audio-engine');
+    const nameLabel = document.getElementById('current-station-name');
     const canvas = document.getElementById('wave-canvas');
     const ctx = canvas.getContext('2d');
 
-    STATIONS.forEach((s) => {
+    // Budowanie modułów OSC
+    STATIONS.forEach((st) => {
         const mod = document.createElement('div');
         mod.className = 'osc-module';
-        if(s.n === 'VOID SIGNAL') mod.classList.add('active');
+        if(st.name === 'GEHIRN TRB') mod.classList.add('active');
+        
         mod.innerHTML = `
-            <div class="osc-header">OSC ${s.id} // ${s.n}</div>
-            <div class="station-slot">${s.n}</div>
+            <div class="osc-header">OSC ${st.id} // ${st.name}</div>
+            <div class="station-slot">${st.name}</div>
         `;
+        
         mod.onclick = () => {
             document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
             mod.classList.add('active');
-            nameDisplay.textContent = s.n;
-            audio.src = s.u;
-            audio.play();
+            nameLabel.textContent = st.name;
+            audioPlayer.src = st.url;
+            audioPlayer.play();
         };
-        list.appendChild(mod);
+        listElement.appendChild(mod);
     });
 
-    // Generator fali (Oscyloskop)
-    canvas.width = 800;
-    canvas.height = 300;
+    // Generator fali (Oscyloskop / EQ)
+    canvas.width = 1000;
+    canvas.height = 400;
 
-    function drawWave() {
+    function renderWave() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.beginPath();
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.strokeStyle = '#00f2ff';
-        ctx.shadowBlur = 15;
+        ctx.shadowBlur = 20;
         ctx.shadowColor = '#00f2ff';
 
-        const time = Date.now() * 0.005;
-        const amplitude = audio.paused ? 5 : 40;
+        const speed = Date.now() * 0.004;
+        const baseAmp = audioPlayer.paused ? 5 : 60;
 
         for (let x = 0; x < canvas.width; x++) {
-            const y = canvas.height / 2 + Math.sin(x * 0.02 + time) * amplitude 
-                      + Math.sin(x * 0.01 + time * 0.5) * (amplitude/2);
+            // Kombinacja kilku fal dla efektu "generatora syntezy"
+            const y = canvas.height / 2 
+                      + Math.sin(x * 0.015 + speed) * baseAmp 
+                      + Math.sin(x * 0.008 - speed * 0.5) * (baseAmp / 2)
+                      + (Math.random() * (audioPlayer.paused ? 0 : 5)); // Szum sygnału
+
             if (x === 0) ctx.moveTo(x, y);
             else ctx.lineTo(x, y);
         }
         ctx.stroke();
-        requestAnimationFrame(drawWave);
+        requestAnimationFrame(renderWave);
     }
-    drawWave();
+    renderWave();
 
-    function updateVol(v) {
-        audio.volume = v / 100;
-        document.getElementById('vol-val').textContent = v + "%";
+    function changeVolume(v) {
+        audioPlayer.volume = v / 100;
+        document.getElementById('vol-display').textContent = v + "%";
     }
 </script>
 
