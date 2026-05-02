@@ -3,227 +3,231 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEHIRN TREIBER - TRON SYNTH HUD</title>
+    <title>TECHNO_TRANCE_PCB_PRO_V6</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
+
         :root {
-            --cyan: #00f2ff;
-            --magenta: #bc00ff;
-            --bg-black: #05070a;
-            --panel-bg: #0d1117;
-            --panel-border: #1e2633;
-            --slot-bg: #020305;
+            --laminat: #020503;
+            --miedz: #1a3a2a;
+            --neon: #00f2ff;
+            --gold: #b8a033;
+            --chip-body: #111111;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { width: 100%; height: 100%; overflow: hidden; background-color: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; }
-     .synth-container {
-            width: 100%; height: 100%;
-            display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px;
+        body { 
+            background: var(--laminat); 
+            color: var(--neon);
+            font-family: 'JetBrains Mono', monospace;
+            overflow: hidden;
         }
-     .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
-     .track-info-box {
-            border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05);
-            padding: 15px; min-height: 80px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1);
+
+        /* TŁO PCB - GĘSTE ŚCIEŻKI */
+        #pcb-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; opacity: 0.4; pointer-events: none;
         }
-     .stations-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-            overflow-y: auto; padding-right: 5px; flex-grow: 1;
+
+        .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
+
+        /* OBSZAR UKŁADÓW */
+        .motherboard { 
+            flex: 2; position: relative; 
+            background: radial-gradient(circle at 50% 50%, #051008 0%, #020503 100%);
         }
-     .stations-grid::-webkit-scrollbar { width: 4px; }
-     .stations-grid::-webkit-scrollbar-track { background: var(--slot-bg); }
-     .stations-grid::-webkit-scrollbar-thumb { background: var(--magenta); }
-     .category-header {
-            font-family: 'Orbitron'; font-size: 10px; color: var(--cyan);
-            border-bottom: 1px solid var(--panel-border); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px;
+
+        /* REALISTYCZNY UKŁAD SCALONY (IC) */
+        .ic-chip {
+            position: absolute; width: 160px; height: 80px;
+            background: var(--chip-body); border-radius: 2px;
+            cursor: pointer; box-shadow: 10px 15px 30px rgba(0,0,0,0.8);
+            border-top: 1px solid #333; border-left: 1px solid #222;
         }
-     .osc-module {
-            border: 1px solid var(--panel-border); padding: 5px; background: var(--panel-bg);
-            cursor: pointer; transition: 0.2s; position: relative;
+
+        /* Nóżki układu (Pins) - realizm metalu */
+        .ic-chip::before {
+            content: ''; position: absolute; top: -10px; left: 10px; right: 10px; bottom: -10px;
+            background: repeating-linear-gradient(90deg, 
+                #777 0px, #aaa 3px, #777 6px, 
+                transparent 6px, transparent 18px);
+            z-index: -1;
         }
-     .osc-module:hover { border-color: var(--cyan); background: #161c27; }
-     .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); background: #161c27; }
-     .station-slot {
-            background: var(--slot-bg); height: 32px; display: flex; align-items: center;
-            padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0;
+
+        /* Wycięcie techniczne (Notch) */
+        .notch {
+            position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+            width: 12px; height: 20px; background: var(--laminat);
+            border-radius: 0 10px 10px 0; border: 1px solid #222;
         }
-     .osc-module.active.station-slot { color: var(--cyan); }
-     .main-display { border: 1px solid var(--panel-border); background: #010204; position: relative; }
-        #eq-canvas { width: 100%; height: 100%; display: block; }
-     .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
-     .module-box { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-     .env-visual { height: 140px; background: #000; border: 1px solid #111; }
-     .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-     .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-     .synth-btn {
-            background: #1a222d; border: 1px solid var(--panel-border); color: #fff;
-            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; transition: 0.2s;
+
+        .chip-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 100%; pointer-events: none;
         }
-     .synth-btn:hover { border-color: var(--cyan); background: #222c3a; }
-     .synth-btn:active { background: var(--cyan); color: #000; }
-     .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
-     .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
+
+        .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); font-weight: 700; }
+        .chip-spec { font-size: 7px; color: #444; margin-top: 5px; text-transform: uppercase; }
+
+        .ic-chip.active {
+            border-color: var(--neon);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
+        }
+
+        /* PANEL KONTROLNY */
+        .control-tower { 
+            flex: 0.8; background: rgba(0,0,0,0.9); border-left: 3px solid #111;
+            display: flex; flex-direction: column; 
+        }
+
+        .hud-header { padding: 25px; border-bottom: 2px solid #ff0055; font-family: 'Orbitron'; letter-spacing: 2px; }
+        .terminal { 
+            margin: 20px; padding: 15px; background: #000; flex: 1; 
+            border: 1px solid #1a1a1a; font-size: 12px; color: #39ff14; 
+            box-shadow: inset 0 0 10px rgba(57, 255, 20, 0.1);
+        }
+
+        .btn-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
+        .hw-btn {
+            background: #080808; border: 1px solid #222; color: var(--neon);
+            padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px;
+            transition: 0.2s;
+        }
+        .hw-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+
+        .slider-wrap { padding: 30px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: #111; height: 4px; }
+        input[type=range]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 20px; height: 35px; background: #ff0055; cursor: pointer; 
+            border: 1px solid #000; box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
+        }
     </style>
 </head>
 <body>
 
-<div class="synth-container">
-    <div class="osc-sidebar">
-        <div class="track-info-box">
-            <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">CURRENT SIGNAL</div>
-            <div id="track-title" style="font-size: 11px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 5px var(--magenta);">LINK START...</div>
-        </div>
-        <div class="stations-grid">
-            <div><div class="category-header">TECHNO</div><div id="techno-group"></div></div>
-            <div><div class="category-header">HOUSE</div><div id="house-group"></div></div>
-        </div>
+<svg id="pcb-bg"></svg>
+
+<div class="main-interface">
+    <div class="motherboard" id="board">
+        <!-- Generowane przez JS -->
     </div>
-    <main class="main-display"><canvas id="eq-canvas"></canvas></main>
-    <aside class="control-sidebar">
-        <div class="module-box">
-            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 8px;">ENV 1 [VCA]</div>
-            <div class="env-visual"><svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" /></svg></div>
+
+    <aside class="control-tower">
+        <div class="hud-header">SYSTEM_AUDIT: OK</div>
+        <div class="terminal" id="term-out">> LINK_STABLISHED...<br>> WAITING_FOR_IO</div>
+        <div class="btn-matrix">
+            <button class="hw-btn" onclick="skip(-1)">PREV</button>
+            <button class="hw-btn" onclick="toggle()" style="border-color:#ff0055">SYNC</button>
+            <button class="hw-btn" onclick="skip(1)">NEXT</button>
         </div>
-        <div class="playback-frame">
-            <div class="btn-grid">
-                <button class="synth-btn" id="playBtn">BOOT</button>
-                <button class="synth-btn" id="stopBtn" style="color:var(--magenta)">KILL</button>
-            </div>
-            <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
+        <div class="slider-wrap">
+            <input type="range" min="0" max="1" step="0.01" value="0.5" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
 
-<audio id="audio-engine" crossorigin="anonymous" preload="none"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
-    const STATIONS = {
-        techno: [
-            { slug: 'tech88', n: 'TECH 88' },
-            { slug: 'hr3_clubnight', n: 'HR 3 CLUBNIGHT' },
-            { slug: '1000techno', n: '1000 TECHNO' },
-            { slug: 'best-of-techno', n: 'BEST OF TECHNO' },
-            { slug: 'chris_burn', n: 'CHRIS BURN' },
-            { slug: 'retroelectronicmusic', n: 'RETRO ELECTRONIC' },
-            { slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
-        ],
-        house: [
-            { slug: 'deep-house-sounds', n: 'DEEP HOUSE SOUNDS' },
-            { slug: 'housebomb-fn', n: 'HOUSEBOMB FN' },
-            { slug: 'symbiotic-beats', n: 'SYMBIOTIC BEATS' },
-            { slug: 'house', n: 'HOUSE' },
-            { slug: 'faf-records-979', n: 'FAF RECORDS 979' },
-            { slug: 'tornadofm', n: 'TORNADO FM' }
-        ]
-    };
+    const STATIONS = [
+        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 8, y: 12 },
+        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 42, y: 10 },
+        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 12, y: 38 },
+        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 45, y: 45 },
+        { n: 'BEST OF TECHNO', u: 'https://laut.fm/best-of-techno', x: 10, y: 72 },
+        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 50, y: 78 },
+        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 75, y: 10 },
+        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 72, y: 45 },
+        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 75, y: 75 }
+    ];
 
-    const audio = document.getElementById('audio-engine');
-    const trackTitle = document.getElementById('track-title');
-    const canvas = document.getElementById('eq-canvas');
-    const ctx = canvas.getContext('2d');
+    const svg = document.getElementById('pcb-bg');
+    const board = document.getElementById('board');
+    const player = document.getElementById('player');
+    const term = document.getElementById('term-out');
+    let currentIdx = -1;
 
-    const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-
-    let audioCtx, analyser, source, dataArray;
-    let isInitialized = false;
-
-    function setupAudio() {
-        if (!isInitialized &&!audioCtx) {
-            try {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256;
-                analyser.smoothingTimeConstant = 0.8;
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.connect(audioCtx.destination);
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                isInitialized = true;
-                trackTitle.textContent = "EQ READY";
-            } catch (e) {
-                console.error("AudioContext error:", e);
-                trackTitle.textContent = "AUDIO CTX ERROR";
-            }
+    function buildHardware() {
+        // MAKSYMALNE ZAGĘSZCZENIE ŚCIEŻEK (Background Trace)
+        let traceHTML = "";
+        for(let i=0; i<300; i++) {
+            const x1 = Math.random()*100;
+            const y1 = Math.random()*100;
+            const size = Math.random()*10;
+            traceHTML += `<path d="M ${x1} ${y1} L ${x1+2} ${y1+2}" stroke="#0a1a10" stroke-width="0.1" fill="none"/>`;
+            if(i % 5 === 0) traceHTML += `<circle cx="${x1}" cy="${y1}" r="0.2" fill="#11331a"/>`;
         }
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        svg.innerHTML = traceHTML;
+
+        STATIONS.forEach((s, i) => {
+            const ic = document.createElement('div');
+            ic.className = 'ic-chip';
+            ic.style.left = s.x + '%'; ic.style.top = s.y + '%';
+            ic.id = `ic-${i}`;
+            ic.innerHTML = `<div class="notch"></div><div class="chip-label">
+                <span class="chip-id">${s.n}</span>
+                <span class="chip-spec">VOLTAGE_BUS_0${i} / 74HC${100+i}</span>
+            </div>`;
+            ic.onclick = () => mount(i);
+            board.appendChild(ic);
+        });
+        drawActiveTraces();
     }
 
-    async function getMeta(slug) {
-        try {
-            const r = await fetch(`https://api.laut.fm/station/${slug}/current_song`);
-            const d = await r.json();
-            trackTitle.textContent = d.artist.name.toUpperCase() + " - " + d.title.toUpperCase();
-        } catch(e) {
-            trackTitle.textContent = "SIGNAL ACTIVE";
-        }
-    }
+    function drawActiveTraces() {
+        const panelX = window.innerWidth * 0.7;
+        STATIONS.forEach((s, i) => {
+            const el = document.getElementById(`ic-${i}`);
+            const r = el.getBoundingClientRect();
+            const x = r.left + r.width;
+            const y = r.top + r.height/2;
 
-    function initStations() {
-        Object.keys(STATIONS).forEach(cat => {
-            const container = document.getElementById(`${cat}-group`);
-            STATIONS[cat].forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'osc-module';
-                div.innerHTML = `<div class="station-slot">${s.n}</div>`;
-                div.onclick = async () => {
-                    setupAudio();
-                    document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
-                    div.classList.add('active');
-                    trackTitle.textContent = "LOADING...";
-                    audio.src = CORS_PROXY + encodeURIComponent(`https://stream.laut.fm/${s.slug}`);
-                    try {
-                        await audio.play();
-                        getMeta(s.slug);
-                    } catch (e) {
-                        console.log("Stream play error:", e);
-                        trackTitle.textContent = "STREAM ERROR - TRY AGAIN";
-                    }
-                };
-                container.appendChild(div);
-            });
+            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            path.setAttribute("d", `M ${x} ${y} L ${x+40} ${y} L ${x+60} ${y+(i*12-50)} L ${panelX} ${y+(i*12-50)}`);
+            path.setAttribute("stroke", "var(--miedz)");
+            path.setAttribute("stroke-width", "2");
+            path.setAttribute("fill", "none");
+            path.id = `line-${i}`;
+            svg.appendChild(path);
         });
     }
 
-    initStations();
+    function mount(i) {
+        currentIdx = i;
+        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        document.querySelectorAll('path').forEach(p => {
+            if(p.id.startsWith('line-')) {
+                p.setAttribute('stroke', 'var(--miedz)');
+                p.style.filter = 'none';
+            }
+        });
 
-    document.getElementById('playBtn').onclick = () => {
-        setupAudio();
-        if (audio.src) audio.play();
-    };
-    document.getElementById('stopBtn').onclick = () => audio.pause();
-    document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
-    audio.volume = 0.7;
-
-    function draw() {
-        requestAnimationFrame(draw);
-        if (canvas.width!== canvas.clientWidth || canvas.height!== canvas.clientHeight) {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
+        const activeLine = document.getElementById(`line-${i}`);
+        if(activeLine) {
+            activeLine.setAttribute('stroke', 'var(--neon)');
+            activeLine.style.filter = 'drop-shadow(0 0 8px var(--neon))';
         }
-        ctx.fillStyle = '#010204';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (isInitialized &&!audio.paused) {
-            analyser.getByteFrequencyData(dataArray);
-            ctx.lineWidth = 4; ctx.strokeStyle = 'rgba(188, 0, 255, 0.2)'; drawEQLine();
-            ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(0, 242, 255, 0.9)'; drawEQLine();
-        }
+        term.innerHTML = `> ACCESSING_CHIP: 0x${i.toString(16).toUpperCase()}<br>> NAME: ${STATIONS[i].n}<br>> ADDR: ${STATIONS[i].u}<br>> STREAM: CONNECTING...`;
+        
+        // REALNY FIX AUDIO
+        player.pause();
+        player.src = ""; // Clear buffer
+        player.src = STATIONS[i].u;
+        player.load();
+        player.play().then(() => {
+            term.innerHTML += `<br>> STATUS: SYNC_LOCKED`;
+        }).catch(e => {
+            term.innerHTML += `<br>> ERROR: USER_GATING_ACTIVE`;
+        });
     }
 
-    function drawEQLine() {
-        const sliceWidth = canvas.width / dataArray.length;
-        ctx.beginPath();
-        let x = 0;
-        for(let i = 0; i < dataArray.length; i++) {
-            const v = dataArray[i] / 255.0;
-            const y = (1 - v) * canvas.height * 0.8 + canvas.height * 0.1;
-            if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            x += sliceWidth;
-        }
-        ctx.stroke();
-    }
-    draw();
+    function toggle() { if(currentIdx === -1) mount(0); else player.paused ? player.play() : player.pause(); }
+    function skip(dir) { let n = currentIdx + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
+    function setV(v) { player.volume = v; }
+
+    window.onresize = () => { svg.innerHTML = ''; buildHardware(); };
+    buildHardware();
 </script>
 </body>
 </html>
