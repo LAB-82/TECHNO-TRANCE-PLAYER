@@ -1,108 +1,107 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>TECHNO TRANCE PLAYER - HEX EDITION</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON HUD</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
         
         :root {            
-            --hex-amber: #ffb300;            
-            --hex-bg: #121212;
-            --hex-dark: #000000;
+            /* Kolorystyka z image_36594b.jpg */
+            --cyan: #00f2ff;            
+            --bg-dark: #050a0f;
+            --glow: 0 0 15px rgba(0, 242, 255, 0.6);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         body { 
-            height: 100vh; width: 100vw; background: var(--hex-bg); color: #fff; 
+            height: 100vh; width: 100vw; background: var(--bg-dark); color: #fff; 
             font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 2vh;
-            /* Tło - siatka heksagonalna CSS */
-            background-image: 
-                radial-gradient(circle at center, rgba(255, 179, 0, 0.05) 0%, transparent 70%),
-                linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(-30deg, #000 12%, transparent 12.5%, transparent 87%, #000 87.5%, #000),
-                linear-gradient(60deg, #0a0a0a 25%, transparent 25.5%, transparent 75%, #0a0a0a 75%, #0a0a0a), 
-                linear-gradient(60deg, #0a0a0a 25%, transparent 25.5%, transparent 75%, #0a0a0a 75%, #0a0a0a);
-            background-size: 100% 100%, 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px, 80px 140px;
-            background-position: 0 0, 0 0, 0 0, 40px 70px, 40px 70px, 0 0, 40px 70px;
         }
 
         header {             
             height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 3px solid var(--hex-amber); margin-bottom: 2vh;
-            background: rgba(0,0,0,0.8); padding: 0 20px;
+            border-bottom: 2px solid var(--cyan); margin-bottom: 2vh;
+            box-shadow: 0 5px 15px rgba(0, 242, 255, 0.1);
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--hex-amber); text-shadow: 2px 2px 0px #000; }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--hex-amber); font-size: 22px; }
+        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--cyan); text-shadow: var(--glow); }        
+        .clock { font-family: 'Orbitron', sans-serif; color: var(--cyan); font-size: 22px; }
 
-        .app-content { display: flex; flex: 1; gap: 20px; height: calc(100vh - 120px); }
+        .app-content { display: flex; flex: 1; gap: 2vw; height: calc(100vh - 120px); }
 
         .grid {             
             flex: 1.5; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 10px; padding: 10px;
+            gap: 15px;         
         }
 
-        /* TILE - KSZTAŁT HEKSAGONU ZE ZDJĘCIA */
+        /* TILE - STYLIZACJA RAMKI Z PUNKTAMI Z image_36594b.jpg */
         .tile {            
-            background: var(--hex-dark); 
-            border: 2px solid var(--hex-amber);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            background: rgba(0, 242, 255, 0.05); 
+            border: 2px solid var(--cyan);
+            border-radius: 12px;
             position: relative; cursor: pointer; transition: 0.3s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            filter: drop-shadow(5px 5px 10px rgba(0,0,0,0.8));
         }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; }        
-        .tile .t-bottom { font-size: 11px; font-weight: 700; color: var(--hex-amber); text-transform: uppercase; }
+        /* Charakterystyczne punkty (nody) na krawędziach kafelka */
+        .tile::before, .tile::after {
+            content: ''; position: absolute; width: 8px; height: 8px;
+            background: var(--bg-dark); border: 2px solid var(--cyan); border-radius: 50%;
+            z-index: 5; box-shadow: var(--glow);
+        }
+        .tile::before { top: -5px; left: 20%; }
+        .tile::after { bottom: -5px; right: 20%; }
 
-        /* ACTIVE - ŻÓŁTE WYPEŁNIENIE JAK NA DOLE ZDJĘCIA */
+        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; text-shadow: 0 0 5px rgba(255,255,255,0.3); }        
+        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--cyan); text-transform: uppercase; }
+
         .tile.active { 
-            background: var(--hex-amber); 
-            border-color: #fff;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            background: rgba(0, 242, 255, 0.2); 
+            box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.4), var(--glow);
+            transform: translateY(-2px);
         }
-        .tile.active .t-top, .tile.active .t-bottom { color: #000; }
 
         .sidebar {             
             flex: 0.5; display: flex; flex-direction: column;             
             align-items: center; justify-content: space-around;
-            background: rgba(0,0,0,0.9); border: 2px solid var(--hex-amber);
-            border-radius: 15px; padding: 20px;
+            background: rgba(0, 242, 255, 0.02); border: 2px solid var(--cyan);
+            padding: 20px; border-radius: 20px;
         }
 
         .logo-display {            
-            width: 120px; height: 140px; 
-            background: var(--hex-amber);
-            clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+            width: 100%; aspect-ratio: 1; border: 2px solid var(--cyan); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            color: #000;
+            position: relative; box-shadow: var(--glow);
         }
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 30px; font-weight: 700; }
-        .logo-display p { font-size: 10px; font-weight: 800; letter-spacing: 2px; }
+        /* Dodatkowy pierścień neonowy */
+        .logo-display::after {
+            content: ''; position: absolute; inset: 10px; border: 1px dashed var(--cyan); border-radius: 50%; opacity: 0.5;
+        }
+        
+        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: var(--cyan); text-shadow: var(--glow); }
+        .logo-display p { font-size: 10px; color: var(--cyan); letter-spacing: 2px; }
 
-        .controls { display: flex; gap: 15px; align-items: center; }        
-        .c-svg { width: 45px; height: 45px; fill: var(--hex-amber); cursor: pointer; filter: drop-shadow(2px 2px 2px #000); }
+        .controls { display: flex; gap: 20px; align-items: center; }        
+        .c-svg { width: 45px; height: 45px; fill: var(--cyan); cursor: pointer; filter: drop-shadow(0 0 8px var(--cyan)); }
         .c-play { width: 70px; height: 70px; }
 
-        .vol-box { width: 100%; padding: 0 10px; }
+        .vol-box { width: 100%; }
         input[type="range"] { 
-            width: 100%; appearance: none; background: #333; height: 12px; border: 1px solid var(--hex-amber);
+            width: 100%; appearance: none; background: #0a1a25; height: 8px; border-radius: 4px; border: 1px solid var(--cyan);
         }
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 20px; background: var(--hex-amber); cursor: pointer;
+            appearance: none; width: 18px; height: 18px; background: var(--cyan); border-radius: 50%; cursor: pointer; box-shadow: var(--glow);
         }
-        /* TWOJA LOGIKA AT-MID */
-        input[type="range"].at-mid::-webkit-slider-thumb { background: #00ccff; box-shadow: 0 0 15px #00ccff; }
+        /* TWOJA LOGIKA AT-MID - ZMIANA KOLORU NA BIAŁY */
+        input[type="range"].at-mid::-webkit-slider-thumb { background: #fff; box-shadow: 0 0 15px #fff; }
 
         @media (max-width: 800px) {
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; }
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">RMF CORE SYSTEM</div>    <div class="clock" id="timer">00:00</div></header>
+<header>    <div class="header-info" id="playing-now">RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>HEX-FLOW</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>NEON INTERFACE</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
         <div class="vol-box">            <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
 
@@ -149,7 +148,7 @@
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "SYSTEM: " + STATIONS[i].n;
+        document.getElementById('playing-now').textContent = STATIONS[i].n;
         document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];        
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
