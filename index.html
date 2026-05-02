@@ -2,201 +2,93 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - COMMAND CENTER v2.0</title>
+    <title>GEHIRN TREIBER - SIMPLE PRO</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
-        :root { --cyan: #00f2ff; --magenta: #bc00ff; --bg: #05070a; --p-bg: #0d1117; --p-brd: #1e2633; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { width: 100vw; height: 100vh; overflow: hidden; background: var(--bg); color: #fff; font-family: 'Rajdhani', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron&family=Rajdhani:wght@500&display=swap');
+        body { background: #05070a; color: #fff; font-family: 'Rajdhani', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         
-        .synth-container { display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px; height: 100%; }
+        .vst-box { background: #0d1117; border: 2px solid #1e2633; padding: 20px; display: flex; gap: 20px; box-shadow: 0 0 30px #000; }
         
-        /* LEWY PANEL - KOLUMNY */
-        .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
-        .track-info-box { border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05); padding: 15px; min-height: 85px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1); }
-        .stations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; overflow-y: auto; flex-grow: 1; padding-right: 5px; }
-        
-        .category-header { font-family: 'Orbitron'; font-size: 10px; color: var(--cyan); border-bottom: 1px solid var(--p-brd); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px; }
-        .osc-module { border: 1px solid var(--p-brd); padding: 5px; background: var(--p-bg); cursor: pointer; transition: 0.2s; margin-bottom: 5px; }
-        .osc-module:hover { border-color: var(--cyan); }
-        .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); }
-        .station-slot { background: #000; height: 32px; display: flex; align-items: center; padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0; }
-        .active .station-slot { color: var(--cyan); }
+        /* Grid 2 kolumny */
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btn { background: #1a222d; border: 1px solid #333; color: #aaa; padding: 10px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; text-align: center; transition: 0.2s; }
+        .btn:hover { border-color: #00f2ff; color: #fff; }
+        .btn.active { border-color: #00f2ff; box-shadow: 0 0 10px #00f2ff; color: #00f2ff; }
 
-        /* ŚRODEK - EQ */
-        .main-display { border: 1px solid var(--p-brd); background: #000; position: relative; }
-        #eq-canvas { width: 100%; height: 100%; display: block; }
-
-        /* PRAWY PANEL */
-        .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
-        .module-box { border: 1px solid var(--p-brd); padding: 15px; background: var(--p-bg); }
-        .env-visual { height: 140px; background: #000; border: 1px solid #111; }
-        .playback-frame { border: 1px solid var(--p-brd); padding: 15px; background: var(--p-bg); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-        .synth-btn { background: #1a222d; border: 1px solid var(--p-brd); color: #fff; padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer; text-align: center; }
-        .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
-        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
+        .display { background: #000; border: 1px solid #bc00ff; padding: 15px; width: 300px; display: flex; flex-direction: column; justify-content: center; }
+        #track-name { font-family: 'Orbitron'; color: #bc00ff; font-size: 14px; text-shadow: 0 0 5px #bc00ff; }
+        canvas { background: #000; height: 80px; margin-top: 10px; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
 
-<div class="synth-container">
-    <div class="osc-sidebar">
-        <div class="track-info-box">
-            <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">COMMANDER FEEDBACK</div>
-            <div id="track-title" style="font-size: 11px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 5px var(--magenta);">WAITING FOR COMMAND...</div>
-        </div>
-        <div class="stations-grid">
-            <div id="tech-col"><div class="category-header">TECHNO</div><div id="techno-group"></div></div>
-            <div id="house-col"><div class="category-header">HOUSE</div><div id="house-group"></div></div>
-        </div>
+<div class="vst-box">
+    <div class="grid" id="menu"></div>
+    
+    <div class="display">
+        <div style="font-size: 10px; color: #555;">NOW PLAYING</div>
+        <div id="track-name">STANDBY</div>
+        <canvas id="canvas"></canvas>
+        <input type="range" style="width:100%; margin-top:15px;" oninput="audio.volume = this.value/100">
     </div>
-    <main class="main-display"><canvas id="eq-canvas"></canvas></main>
-    <aside class="control-sidebar">
-        <div class="module-box">
-            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 8px;">VCA ENVELOPE</div>
-            <div class="env-visual">
-                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" />
-                </svg>
-            </div>
-        </div>
-        <div class="playback-frame">
-            <div class="btn-grid">
-                <div class="synth-btn" id="playBtn">START</div>
-                <div class="synth-btn" id="stopBtn" style="color:var(--magenta)">KILL</div>
-            </div>
-            <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
-        </div>
-    </aside>
 </div>
 
-<!-- CROSSORIGIN musi być ANONYMOUS dla EQ -->
-<audio id="audio-engine" crossorigin="anonymous"></audio>
+<audio id="audio" crossorigin="anonymous"></audio>
 
 <script>
-    const STATIONS = {
-        techno: [
-            { slug: 'tech88', n: 'TECH 88' }, { slug: 'hr3_clubnight', n: 'HR 3 CLUB' },
-            { slug: '1000techno', n: '1000 TECHNO' }, { slug: 'best-of-techno', n: 'BEST OF' },
-            { slug: 'chris_burn', n: 'CHRIS BURN' }, { slug: 'retroelectronicmusic', n: 'RETRO ELEC' },
-            { slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
-        ],
-        house: [
-            { slug: 'deep-house-sounds', n: 'DEEP HOUSE' }, { slug: 'housebomb-fn', n: 'HOUSEBOMB' },
-            { slug: 'symbiotic-beats', n: 'SYMBIOTIC' }, { slug: 'house', n: 'HOUSE' },
-            { slug: 'faf-records-979', n: 'FAF RECORDS' }, { slug: 'tornadofm', n: 'TORNADO FM' }
-        ]
-    };
-
-    const audio = document.getElementById('audio-engine');
-    const trackTitle = document.getElementById('track-title');
-    const canvas = document.getElementById('eq-canvas');
+    const audio = document.getElementById('audio');
+    const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    
-    let audioCtx, analyser, source, dataArray;
-    let isInitialized = false;
+    const stations = [
+        { n: 'TECH 88', s: 'tech88' }, { n: '1000 TECHNO', s: '1000techno' },
+        { n: 'CHRIS BURN', s: 'chris_burn' }, { n: 'GEHIRN', s: 'gehirn-treiber-beat-radio' },
+        { n: 'DEEP HOUSE', s: 'deep-house-sounds' }, { n: 'TORNADO', s: 'tornadofm' }
+    ];
 
-    // JEDYNA POPRAWNA INICJALIZACJA SILNIKA
-    function bootEngine() {
-        if (isInitialized) {
+    let audioCtx, analyser, dataArray, source;
+
+    stations.forEach(st => {
+        const b = document.createElement('div');
+        b.className = 'btn';
+        b.innerHTML = st.n;
+        b.onclick = () => {
+            // Inicjalizacja wizualizacji tylko przy pierwszym kliknięciu
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.connect(audioCtx.destination);
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                draw();
+            }
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            return;
-        }
-        
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 256;
-            
-            // Podpinamy źródło TYLKO RAZ
-            source = audioCtx.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            isInitialized = true;
-            console.log("Engine Booted Successfully.");
-        } catch(e) {
-            console.error("Engine Boot Failure:", e);
-        }
-    }
 
-    async function fetchMetadata(slug) {
-        try {
-            const r = await fetch(`https://api.laut.fm/station/${slug}/current_song`);
-            const d = await r.json();
-            if(d.artist) trackTitle.textContent = `${d.artist.name.toUpperCase()} - ${d.title.toUpperCase()}`;
-        } catch(e) { trackTitle.textContent = "SIGNAL ACTIVE"; }
-    }
-
-    // Renderowanie list
-    Object.keys(STATIONS).forEach(cat => {
-        const group = document.getElementById(`${cat}-group`);
-        STATIONS[cat].forEach(s => {
-            const div = document.createElement('div');
-            div.className = 'osc-module';
-            div.innerHTML = `<div class="station-slot">${s.n}</div>`;
-            div.onclick = () => {
-                bootEngine(); // Uruchom silnik przy pierwszej interakcji
-                document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
-                div.classList.add('active');
-                
-                audio.src = `https://stream.laut.fm/${s.slug}`;
-                audio.play();
-                fetchMetadata(s.slug);
-            };
-            group.appendChild(div);
-        });
+            document.querySelectorAll('.btn').forEach(x => x.classList.remove('active'));
+            b.classList.add('active');
+            document.getElementById('track-name').innerHTML = st.n;
+            
+            audio.src = "https://stream.laut.fm/" + st.s;
+            audio.play();
+        };
+        document.getElementById('menu').appendChild(b);
     });
 
-    document.getElementById('playBtn').onclick = () => { bootEngine(); audio.play(); };
-    document.getElementById('stopBtn').onclick = () => audio.pause();
-    document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
-
-    function renderLoop() {
-        requestAnimationFrame(renderLoop);
-        if (canvas.width !== canvas.clientWidth) {
-            canvas.width = canvas.clientWidth;
-            canvas.height = canvas.clientHeight;
-        }
-
+    function draw() {
+        requestAnimationFrame(draw);
+        analyser.getByteFrequencyData(dataArray);
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        if (isInitialized && dataArray) {
-            analyser.getByteFrequencyData(dataArray);
-            
-            // Warstwa 1: Cyan Wave
-            ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = '#00f2ff';
-            let slice = canvas.width / dataArray.length;
-            let x = 0;
-            for(let i=0; i<dataArray.length; i++) {
-                let v = dataArray[i] / 128.0;
-                let y = (v * canvas.height / 4) + (canvas.height / 3);
-                if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                x += slice;
-            }
-            ctx.stroke();
-
-            // Warstwa 2: Magenta Glow
-            ctx.beginPath();
-            ctx.strokeStyle = '#bc00ff';
-            ctx.globalAlpha = 0.4;
-            x = 0;
-            for(let i=0; i<dataArray.length; i++) {
-                let v = dataArray[i] / 128.0;
-                let y = (v * canvas.height / 4) + (canvas.height / 3) + 10;
-                if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-                x += slice;
-            }
-            ctx.stroke();
-            ctx.globalAlpha = 1.0;
+        ctx.strokeStyle = '#00f2ff';
+        ctx.beginPath();
+        let x = 0;
+        for(let i=0; i<dataArray.length; i++) {
+            let y = canvas.height - (dataArray[i]/255 * canvas.height);
+            if(i===0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            x += canvas.width / dataArray.length;
         }
+        ctx.stroke();
     }
-    renderLoop();
 </script>
 </body>
 </html>
