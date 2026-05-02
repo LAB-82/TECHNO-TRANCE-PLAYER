@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - AUDIT CORRECTED</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - LOGIC RECOVERY</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
         
         :root {            
@@ -11,57 +11,62 @@
         body { 
             height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
             font-family: 'Montserrat Alternates', sans-serif; overflow: hidden; padding: 2vh;
-            background-image: radial-gradient(circle at 50% 50%, #0a0a00 0%, #000 100%);
+            background-image: radial-gradient(circle at 50% 50%, #0d0d00 0%, #000 100%);
         }
 
         header {             
             height: 50px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 1px solid rgba(252, 227, 0, 0.3); margin-bottom: 2vh;
+            border-bottom: 2px solid var(--yellow); margin-bottom: 2vh;
+            box-shadow: 0 5px 15px rgba(252, 227, 0, 0.2);
         }        
-        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-shadow: 0 0 10px rgba(252, 227, 0, 0.5); }        
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; opacity: 0.8; }
+        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }        
+        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
 
-        /* GRID 5x3 - UKŁAD BEZ ZMIAN */
         .grid {             
             flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 15px;         
+            gap: 12px;         
         }
 
-        /* KAFELEK - STYLIZACJA ZGODNA Z OBRAZKIEM (ZAOKRĄGLENIA + GLOW) */
         .tile {            
-            background: rgba(252, 227, 0, 0.02); 
-            border: 1px solid rgba(252, 227, 0, 0.2);
-            border-radius: 20px;
-            position: relative; cursor: pointer; transition: 0.3s;
+            background: rgba(20, 20, 20, 0.8); 
+            border: 1px solid rgba(252, 227, 0, 0.3);
+            border-radius: 15px; /* Zaokrąglenia z obrazka */
+            position: relative; cursor: pointer; transition: 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            overflow: hidden;
         }
 
-        .tile .t-top { font-size: 20px; font-weight: 700; color: #fff; z-index: 2; }        
-        .tile .t-bottom { font-size: 12px; font-weight: 600; color: var(--yellow); margin-top: 4px; z-index: 2; opacity: 0.7; }
+        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--yellow); z-index: 2; pointer-events: none; }        
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #fff; margin-top: 4px; z-index: 2; pointer-events: none; opacity: 0.8; }
 
-        /* AKTYWNY KAFELEK - MOCNY ŻÓŁTY GLOW */
         .tile.active { 
-            background: rgba(252, 227, 0, 0.08); 
-            border-color: var(--yellow);
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.3), inset 0 0 10px rgba(252, 227, 0, 0.1);
-        }        
-        .tile.active .t-top { color: var(--yellow); text-shadow: 0 0 10px var(--yellow); }
+            border-color: var(--yellow); 
+            box-shadow: 0 0 20px rgba(252, 227, 0, 0.4), inset 0 0 15px rgba(252, 227, 0, 0.2);
+        }
 
-        /* FALE - ORYGINALNY BŁĘKIT */
-        .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }        
-        .tile.active .waves { opacity: 1; }        
-        .wave { 
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%; 
-            animation: ripple 3s infinite ease-out; opacity: 0; 
-            box-shadow: 0 0 15px var(--blue-wave);
+        /* FALE - POWRÓT DO TWOJEJ STRUKTURY I LOGIKI */
+        .waves {            
+            position: absolute; width: 100%; height: 100%;            
+            display: flex; align-items: center; justify-content: center;            
+            pointer-events: none; opacity: 0; z-index: 1;        
         }        
-        @keyframes ripple { 
-            0% { width: 0%; height: 0%; opacity: 0.9; } 
-            100% { width: 250%; height: 250%; opacity: 0; } 
+        .tile.active .waves { opacity: 1; }        
+        .wave {            
+            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;            
+            width: 10px; height: 10px; opacity: 0;            
+            box-shadow: 0 0 15px var(--blue-wave);            
+            animation: ripple 3s infinite linear;        
+        }        
+        .wave:nth-child(2) { animation-delay: 1s; }        
+        .wave:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes ripple {            
+            0% { width: 0; height: 0; opacity: 0.9; }            
+            100% { width: 350%; height: 350%; opacity: 0; }        
         }
 
         .sidebar {             
@@ -70,42 +75,38 @@
             border-left: 1px solid rgba(252, 227, 0, 0.1); padding-left: 3vw;        
         }
 
-        /* LOGO DISPLAY - KOŁO Z OBRAZKA W TWOICH KOLORACH */
         .logo-display {            
-            width: 100%; max-width: 300px; aspect-ratio: 1; 
-            border-radius: 50%; border: 2px solid var(--yellow);
+            width: 100%; max-width: 280px; aspect-ratio: 1; 
+            border: 3px double var(--yellow); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: radial-gradient(circle, rgba(252, 227, 0, 0.1) 0%, transparent 70%);            
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.15);
+            background: radial-gradient(circle, rgba(252, 227, 0, 0.15) 0%, transparent 70%);
+            box-shadow: 0 0 30px rgba(252, 227, 0, 0.1);
         }        
-        .logo-display h2 { font-size: 48px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }        
-        .logo-display p { font-size: 11px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
+        .logo-display h2 { font-size: 42px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
+        .logo-display p { font-size: 12px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
 
         .controls { display: flex; align-items: center; gap: 3vw; }        
         .c-svg { width: 40px; height: 40px; fill: var(--yellow); cursor: pointer; filter: drop-shadow(0 0 8px var(--yellow)); }        
         .c-play { width: 80px; height: 80px; }
 
-        /* VOLUME - STYL PIGUŁKI Z OBRAZKA */
+        /* VOLUME - STYL PIGUŁKI Z OBRAZKA + TWOJA LOGIKA AT-MID */
         .vol-box { width: 100%; max-width: 300px; display: flex; align-items: center; gap: 15px; }        
-        input[type="range"] { 
-            flex: 1; appearance: none; background: #111; height: 10px; border-radius: 5px; outline: none;
-        }        
-        input[type="range"]::-webkit-slider-runnable-track {
-            background: linear-gradient(90deg, var(--yellow), #550);
-            height: 10px; border-radius: 5px;
+        .vol-bar { flex: 1; height: 40px; border-radius: 20px; background: rgba(255,255,255,0.05); border: 1px solid rgba(252,227,0,0.2); display: flex; align-items: center; padding: 0 15px; }
+        
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
+        input[type="range"]::-webkit-slider-runnable-track { background: var(--yellow); height: 2px; }
+        input[type="range"]::-webkit-slider-thumb { 
+            appearance: none; width: 20px; height: 20px; background: #fff; border-radius: 50%; 
+            margin-top: -9px; box-shadow: 0 0 10px #fff; 
         }
-        input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 24px; height: 24px;             
-            background: #fff; border-radius: 50%;             
-            margin-top: -7px; box-shadow: 0 0 15px #fff;
-        }
+        /* Klasa z Twojego JS */
+        input[type="range"].at-mid::-webkit-slider-thumb { background: var(--blue-wave); box-shadow: 0 0 10px var(--blue-wave); }
 
         @media (max-width: 600px) {
             .app-content { flex-direction: column; }
             .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }
-            .sidebar { width: 100%; border-left: none; padding: 20px 0; }
-            .logo-display { width: 120px; height: 120px; }
-            .logo-display h2 { font-size: 24px; }
+            .sidebar { width: 100%; border-left: none; padding: 0; }
+            .logo-display { width: 150px; height: 150px; }
         }
     </style></head><body>
 
@@ -114,11 +115,12 @@
 <div class="app-content">    <div class="grid" id="station-grid"></div>
     <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>Najlepsza muzyka</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
-        <div class="vol-box">            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
+        <div class="vol-box">            <button style="background:none;border:none;color:var(--yellow);font-weight:700;cursor:pointer" onclick="adj(-5)">-</button>            <div class="vol-bar">                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">            </div>            <button style="background:none;border:none;color:var(--yellow);font-weight:700;cursor:pointer" onclick="adj(5)">+</button>        </div>    </aside></div>
 
 <audio id="player"></audio>
 
 <script>    
+    /* PEŁNA LOGIKA Z TWOJEGO ORYGINAŁU */
     const STATIONS = [        
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
@@ -146,12 +148,13 @@
     }    
     setInterval(clock, 1000); clock();
 
+    /* TWOJA LOGIKA GENEROWANIA KAFELKÓW I FAL */
     STATIONS.forEach((s, i) => {        
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
             <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
-            <div class="t-top">RMF</div>            
+            <div class="t-top">RMF FM</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
         grid.appendChild(t);    
@@ -173,6 +176,12 @@
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
-    function setV(v) { player.volume = v / 100; }        
+    
+    /* TWOJA LOGIKA GŁOŚNOŚCI Z KLASĄ AT-MID */
+    function setV(v) {         
+        player.volume = v / 100;        
+        if(parseInt(v) === 50) vRange.classList.add('at-mid');        
+        else vRange.classList.remove('at-mid');    
+    }        
     function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
 </script></body></html>
