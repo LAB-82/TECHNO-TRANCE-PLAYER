@@ -19,8 +19,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body, html { 
-            width: 100vw; 
-            height: 100vh; 
+            width: 100vw; height: 100vh; 
             overflow: hidden; 
             background-color: #080a0f;
             color: #fff;
@@ -28,16 +27,15 @@
         }
 
         .synth-container {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             display: grid;
-            grid-template-columns: 320px 1fr 340px;
+            grid-template-columns: 450px 1fr 340px;
             gap: 12px;
             padding: 12px;
             background: linear-gradient(180deg, #10141d 0%, #080a0f 100%);
         }
 
-        /* LEWY PANEL */
+        /* LEWY PANEL - KOLUMNY */
         .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
         
         .track-info-box {
@@ -45,31 +43,31 @@
             border-left: 4px solid var(--magenta);
             padding: 15px;
             background: var(--panel-bg);
-            margin-bottom: 5px;
             min-height: 85px;
             box-shadow: var(--neon-glow);
         }
 
+        .stations-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        .stations-grid::-webkit-scrollbar { width: 4px; }
+        .stations-grid::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 10px; }
+
         .category-header {
             font-family: 'Orbitron';
-            font-size: 11px;
-            color: #55667a;
-            margin: 10px 0 5px 0;
+            font-size: 10px;
+            color: var(--cyan);
+            margin-bottom: 8px;
             letter-spacing: 2px;
             border-bottom: 1px solid var(--panel-border);
             padding-bottom: 3px;
+            grid-column: span 1;
         }
-
-        #station-list {
-            flex-grow: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            padding-right: 5px;
-        }
-        #station-list::-webkit-scrollbar { width: 4px; }
-        #station-list::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 10px; }
 
         .osc-module {
             border: 1px solid var(--panel-border);
@@ -77,59 +75,48 @@
             background: var(--panel-bg);
             cursor: pointer;
             transition: all 0.2s ease;
+            margin-bottom: 4px;
         }
         .osc-module:hover { border-color: #4a5a71; background: #1c232e; }
-        .osc-module.active { border-color: var(--cyan); background: #1c232e; box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.1); }
+        .osc-module.active { border-color: var(--cyan); background: #1c232e; box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2); }
 
-        .osc-header { font-size: 9px; color: var(--cyan); letter-spacing: 1px; font-family: 'Orbitron'; margin-bottom: 4px; opacity: 0.8; }
         .station-slot {
             background: var(--slot-bg);
-            height: 38px;
+            height: 34px;
             display: flex;
             align-items: center;
-            padding-left: 12px;
+            padding-left: 8px;
             font-family: 'Orbitron';
-            font-size: 10px;
-            border: 1px solid #1a202a;
+            font-size: 9px;
             color: #cbd5e1;
+            border: 1px solid #1a202a;
         }
-        .osc-module.active .station-slot { color: #fff; border-color: rgba(0, 242, 255, 0.3); }
 
-        /* ŚRODEK */
+        /* ŚRODEK - EQ */
         .main-display {
             border: 2px solid var(--panel-border);
-            position: relative;
             background: #05070a;
-            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
         }
         #eq-canvas { width: 100%; height: 100%; display: block; }
 
         /* PRAWY PANEL */
         .control-sidebar { display: flex; flex-direction: column; gap: 12px; }
-        .module-box { border: 2px solid var(--panel-border); padding: 20px; background: var(--panel-bg); }
-        .envelope-view { 
-            height: 180px; width: 100%; 
-            background: #05070a; 
-            border: 1px solid var(--panel-border);
-            position: relative;
-        }
+        .module-box { border: 2px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .envelope-view { height: 160px; background: #05070a; border: 1px solid var(--panel-border); }
 
-        .playback-frame { border: 2px solid var(--panel-border); padding: 20px; background: var(--panel-bg); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .playback-frame { border: 2px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .synth-btn {
             background: #1c232e; border: 1px solid var(--panel-border); color: #fff;
-            padding: 12px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
-            transition: all 0.3s;
+            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
         }
-        .synth-btn:hover { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
-        .btn-stop:hover { border-color: var(--magenta); box-shadow: 0 0 10px rgba(255, 0, 229, 0.2); }
+        .synth-btn:hover { border-color: var(--cyan); }
+        .btn-stop:hover { border-color: var(--magenta); }
 
-        .vol-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #05070a; outline: none; border-radius: 2px; }
-        .vol-slider::-webkit-slider-thumb { 
-            -webkit-appearance: none; width: 14px; height: 14px; 
-            background: var(--cyan); border-radius: 2px; cursor: pointer; 
-            box-shadow: 0 0 8px var(--cyan);
-        }
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #05070a; outline: none; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--cyan); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -137,16 +124,19 @@
 <div class="synth-container">
     <div class="osc-sidebar">
         <div class="track-info-box">
-            <div class="osc-header" style="color: var(--magenta);">CURRENT SIGNAL</div>
-            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta); line-height: 1.4;">READY TO BOOT...</div>
+            <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">CURRENT SIGNAL</div>
+            <div id="track-title" style="font-size: 12px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta);">INITIATING...</div>
         </div>
-        <div id="station-list">
-            <div class="category-header">CORE // TECHNO</div>
-            <!-- Dynamic Techno stations -->
-            <div id="techno-group"></div>
-            <div class="category-header">NODE // HOUSE</div>
-            <!-- Dynamic House stations -->
-            <div id="house-group"></div>
+        
+        <div class="stations-grid">
+            <div id="techno-col">
+                <div class="category-header">TECHNO</div>
+                <div id="techno-group"></div>
+            </div>
+            <div id="house-col">
+                <div class="category-header">HOUSE</div>
+                <div id="house-group"></div>
+            </div>
         </div>
     </div>
 
@@ -156,7 +146,7 @@
 
     <aside class="control-sidebar">
         <div class="module-box">
-            <div class="osc-header">ENVELOPE 1 [AMP]</div>
+            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 10px;">ENVELOPE 1</div>
             <div class="envelope-view">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                     <path d="M0,100 L20,20 L40,50 L80,50 L100,100" fill="none" stroke="var(--cyan)" stroke-width="2" />
@@ -165,12 +155,10 @@
         </div>
 
         <div class="playback-frame">
-            <div class="osc-header" style="margin-bottom:10px">TRANSPORT CONTROL</div>
             <div class="btn-grid">
                 <button class="synth-btn" id="playBtn">START</button>
                 <button class="synth-btn btn-stop" id="stopBtn">KILL</button>
             </div>
-            <div style="font-size: 10px; margin-bottom: 8px; color: var(--cyan); letter-spacing: 1px;">MASTER GAIN</div>
             <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
         </div>
     </aside>
@@ -210,53 +198,51 @@
     async function updateMetadata() {
         if (!currentSlug) return;
         try {
-            const response = await fetch(`https://api.laut.fm/station/${currentSlug}/current_song`);
-            const data = await response.json();
-            if (data && data.artist && data.title) {
+            const res = await fetch(`https://api.laut.fm/station/${currentSlug}/current_song`);
+            const data = await res.json();
+            if (data && data.artist) {
                 trackTitle.textContent = `${data.artist.name.toUpperCase()} - ${data.title.toUpperCase()}`;
             }
-        } catch (e) { trackTitle.textContent = "SIGNAL LOST..."; }
+        } catch (e) { trackTitle.textContent = "SIGNAL DECRYPTING..."; }
     }
-
-    setInterval(updateMetadata, 20000);
 
     function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
             source = audioCtx.createMediaElementSource(audio);
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
-            analyser.fftSize = 512;
             dataArray = new Uint8Array(analyser.frequencyBinCount);
         }
         if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function createStationList() {
+    function buildUI() {
         Object.keys(STATIONS).forEach(cat => {
-            const group = document.getElementById(`${cat}-group`);
-            STATIONS[cat].forEach((s, index) => {
+            const container = document.getElementById(`${cat}-group`);
+            STATIONS[cat].forEach(s => {
                 const mod = document.createElement('div');
                 mod.className = 'osc-module';
-                mod.innerHTML = `<div class="osc-header">${cat.toUpperCase()} 0${index+1}</div><div class="station-slot">${s.n}</div>`;
+                mod.innerHTML = `<div class="station-slot">${s.n}</div>`;
                 mod.onclick = () => {
                     initAudio();
                     document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
                     mod.classList.add('active');
                     currentSlug = s.slug;
                     audio.src = `https://stream.laut.fm/${s.slug}`;
-                    audio.play();
+                    audio.play().catch(console.error);
                     updateMetadata();
                 };
-                group.appendChild(mod);
+                container.appendChild(mod);
             });
         });
     }
 
-    createStationList();
+    buildUI();
 
-    document.getElementById('playBtn').onclick = () => { if(audio.src) { initAudio(); audio.play(); }};
+    document.getElementById('playBtn').onclick = () => { initAudio(); audio.play(); };
     document.getElementById('stopBtn').onclick = () => audio.pause();
     document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
 
@@ -272,27 +258,27 @@
         ctx.fillStyle = '#05070a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-        if (analyser) analyser.getByteFrequencyData(dataArray);
-
-        const layers = 6;
-        for (let l = 0; l < layers; l++) {
-            ctx.beginPath();
-            ctx.lineWidth = l === 0 ? 3 : 1;
-            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.6 - l*0.1})` : `rgba(255, 0, 229, ${0.3 - l*0.05})`;
-            
-            for (let i = 0; i < canvas.width; i += 5) {
-                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length / 2.5 : 1));
-                const val = dataArray ? (dataArray[index] / 255) * canvas.height * 0.45 : 0;
-                const offset = l * 10;
-                const y = (canvas.height / 2) + Math.sin(i * 0.015 + Date.now()*0.0015 + offset) * (val + 2);
+        if (analyser) {
+            analyser.getByteFrequencyData(dataArray);
+            const layers = 5;
+            for (let l = 0; l < layers; l++) {
+                ctx.beginPath();
+                ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.7 - l*0.12})` : `rgba(255, 0, 229, ${0.4 - l*0.06})`;
+                ctx.lineWidth = 2;
                 
-                if (i === 0) ctx.moveTo(i, y);
-                else ctx.lineTo(i, y);
+                for (let i = 0; i < canvas.width; i += 8) {
+                    const idx = Math.floor((i / canvas.width) * dataArray.length);
+                    const val = (dataArray[idx] / 255) * canvas.height * 0.4;
+                    const y = (canvas.height / 2) + Math.sin(i * 0.02 + Date.now() * 0.002 + l) * (val + 2);
+                    if (i === 0) ctx.moveTo(i, y);
+                    else ctx.lineTo(i, y);
+                }
+                ctx.stroke();
             }
-            ctx.stroke();
         }
     }
     draw();
+    setInterval(updateMetadata, 15000);
 </script>
 </body>
 </html>
