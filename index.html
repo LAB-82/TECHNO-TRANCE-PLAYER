@@ -3,121 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TECHNO_TRANCE_PCB_PRO_V6</title>
+    <title>TECHNO_TRANCE_PCB_PRO_V7.1</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
-
         :root {
-            --laminat: #020503;
-            --miedz: #1a3a2a;
-            --neon: #00f2ff;
-            --gold: #b8a033;
-            --chip-body: #111111;
+            --laminat: #020503; --miedz: #1a3a2a; --miedz-active: #39ff14;
+            --neon: #00f2ff; --gold: #b8a033; --chip-body: #111111; --pin-metal: #8c8c8c;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background: var(--laminat); 
-            color: var(--neon);
-            font-family: 'JetBrains Mono', monospace;
-            overflow: hidden;
-        }
-
-        /* TŁO PCB - GĘSTE ŚCIEŻKI */
-        #pcb-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; opacity: 0.4; pointer-events: none;
-        }
-
-        .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
-
-        /* OBSZAR UKŁADÓW */
-        .motherboard { 
-            flex: 2; position: relative; 
-            background: radial-gradient(circle at 50% 50%, #051008 0%, #020503 100%);
-        }
-
-        /* REALISTYCZNY UKŁAD SCALONY (IC) */
-        .ic-chip {
-            position: absolute; width: 160px; height: 80px;
-            background: var(--chip-body); border-radius: 2px;
-            cursor: pointer; box-shadow: 10px 15px 30px rgba(0,0,0,0.8);
-            border-top: 1px solid #333; border-left: 1px solid #222;
-        }
-
-        /* Nóżki układu (Pins) - realizm metalu */
-        .ic-chip::before {
-            content: ''; position: absolute; top: -10px; left: 10px; right: 10px; bottom: -10px;
-            background: repeating-linear-gradient(90deg, 
-                #777 0px, #aaa 3px, #777 6px, 
-                transparent 6px, transparent 18px);
-            z-index: -1;
-        }
-
-        /* Wycięcie techniczne (Notch) */
-        .notch {
-            position: absolute; left: 0; top: 50%; transform: translateY(-50%);
-            width: 12px; height: 20px; background: var(--laminat);
-            border-radius: 0 10px 10px 0; border: 1px solid #222;
-        }
-
-        .chip-label {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; pointer-events: none;
-        }
-
-        .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); font-weight: 700; }
-        .chip-spec { font-size: 7px; color: #444; margin-top: 5px; text-transform: uppercase; }
-
-        .ic-chip.active {
-            border-color: var(--neon);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.4);
-        }
-
-        /* PANEL KONTROLNY */
-        .control-tower { 
-            flex: 0.8; background: rgba(0,0,0,0.9); border-left: 3px solid #111;
-            display: flex; flex-direction: column; 
-        }
-
-        .hud-header { padding: 25px; border-bottom: 2px solid #ff0055; font-family: 'Orbitron'; letter-spacing: 2px; }
-        .terminal { 
-            margin: 20px; padding: 15px; background: #000; flex: 1; 
-            border: 1px solid #1a1a1a; font-size: 12px; color: #39ff14; 
-            box-shadow: inset 0 0 10px rgba(57, 255, 20, 0.1);
-        }
-
-        .btn-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
-        .hw-btn {
-            background: #080808; border: 1px solid #222; color: var(--neon);
-            padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px;
-            transition: 0.2s;
-        }
-        .hw-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
-
-        .slider-wrap { padding: 30px; }
+        body { background: var(--laminat); color: var(--neon); font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+        #pcb-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; pointer-events: none; }
+      .main-interface { display: flex; height: 100vh; position: relative; z-index: 2; }
+      .motherboard { flex: 2; position: relative; background: radial-gradient(circle at 50% 50%, #051008 0%, #020503 100%); }
+      .ic-chip { position: absolute; width: 160px; height: 80px; background: var(--chip-body); border-radius: 2px; cursor: pointer; box-shadow: 10px 15px 30px rgba(0,0,0,0.8); border-top: 1px solid #333; border-left: 1px solid #222; z-index: 3; }
+      .pin-row { position: absolute; width: 100%; height: 10px; display: flex; justify-content: space-around; pointer-events: none; }
+      .pin-row.top { top: -10px; }
+      .pin-row.bottom { bottom: -10px; }
+      .pin { width: 6px; height: 10px; background: linear-gradient(90deg, #555 0%, var(--pin-metal) 50%, #555 100%); border: 1px solid #222; border-radius: 1px; }
+      .ic-chip.active.pin { background: linear-gradient(90deg, #39ff14 0%, #fff 50%, #39ff14 100%); box-shadow: 0 0 8px var(--miedz-active); }
+      .notch { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 12px; height: 20px; background: var(--laminat); border-radius: 0 10px 10px 0; border: 1px solid #222; }
+      .chip-label { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; pointer-events: none; }
+      .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); font-weight: 700; }
+      .chip-spec { font-size: 7px; color: #444; margin-top: 5px; text-transform: uppercase; }
+      .ic-chip.active { border-color: var(--neon); box-shadow: 0 0 30px rgba(0, 242, 255, 0.4); }
+      .trace { stroke: var(--miedz); stroke-width: 2; fill: none; stroke-linecap: round; }
+      .trace.active { stroke: var(--miedz-active); filter: drop-shadow(0 0 6px var(--miedz-active)); stroke-dasharray: 8 12; animation: flow 0.8s linear infinite; }
+        @keyframes flow { to { stroke-dashoffset: -20; } }
+      .control-tower { flex: 0.8; background: rgba(0,0,0,0.9); border-left: 3px solid #111; display: flex; flex-direction: column; z-index: 5; }
+      .hud-header { padding: 25px; border-bottom: 2px solid #ff0055; font-family: 'Orbitron'; letter-spacing: 2px; }
+      .terminal { margin: 20px; padding: 15px; background: #000; flex: 1; border: 1px solid #1a1a; font-size: 12px; color: #39ff14; box-shadow: inset 0 0 10px rgba(57, 255, 20, 0.1); overflow-y: auto; }
+      .btn-matrix { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; padding: 20px; }
+      .hw-btn { background: #080808; border: 1px solid #222; color: var(--neon); padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 11px; transition: 0.2s; }
+      .hw-btn:hover { background: var(--neon); color: #000; box-shadow: 0 0 15px var(--neon); }
+      .hw-btn.power { grid-column: 1 / 4; background: #1a0000; border-color: #ff0055; color: #ff0055; }
+      .hw-btn.power.active { background: #ff0055; color: #000; }
+      .slider-wrap { padding: 30px; }
         input[type=range] { -webkit-appearance: none; width: 100%; background: #111; height: 4px; }
-        input[type=range]::-webkit-slider-thumb { 
-            -webkit-appearance: none; width: 20px; height: 35px; background: #ff0055; cursor: pointer; 
-            border: 1px solid #000; box-shadow: 0 0 10px rgba(255, 0, 85, 0.5);
-        }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 35px; background: #ff0055; cursor: pointer; border: 1px solid #000; box-shadow: 0 0 10px rgba(255, 0, 85, 0.5); }
     </style>
 </head>
 <body>
 
 <svg id="pcb-bg"></svg>
-
 <div class="main-interface">
-    <div class="motherboard" id="board">
-        <!-- Generowane przez JS -->
-    </div>
-
+    <div class="motherboard" id="board"></div>
     <aside class="control-tower">
-        <div class="hud-header">SYSTEM_AUDIT: OK</div>
-        <div class="terminal" id="term-out">> LINK_STABLISHED...<br>> WAITING_FOR_IO</div>
+        <div class="hud-header">POWER_RAIL: 3.3V</div>
+        <div class="terminal" id="term-out">> PCB_TRACER V7.1 ONLINE<br>> CLICK [POWER] TO INIT AUDIO</div>
         <div class="btn-matrix">
+            <button class="hw-btn power" id="powerBtn" onclick="initAudio()">POWER</button>
             <button class="hw-btn" onclick="skip(-1)">PREV</button>
-            <button class="hw-btn" onclick="toggle()" style="border-color:#ff0055">SYNC</button>
+            <button class="hw-btn" onclick="toggle()">SYNC</button>
             <button class="hw-btn" onclick="skip(1)">NEXT</button>
         </div>
         <div class="slider-wrap">
@@ -126,108 +62,153 @@
     </aside>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<!-- WAŻNE: bez crossorigin -->
+<audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 8, y: 12 },
-        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 42, y: 10 },
-        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 12, y: 38 },
-        { n: 'GEHIRN TREIBER', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 45, y: 45 },
-        { n: 'BEST OF TECHNO', u: 'https://laut.fm/best-of-techno', x: 10, y: 72 },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 50, y: 78 },
-        { n: 'DEEP HOUSE', u: 'https://laut.fm/deep-house-sounds', x: 75, y: 10 },
-        { n: 'HOUSEBOMB', u: 'https://laut.fm/housebomb-fn', x: 72, y: 45 },
-        { n: 'SYMBIOTIC', u: 'https://laut.fm/symbiotic-beats', x: 75, y: 75 }
+        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88', x: 8, y: 12 },
+        { n: 'HR3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight', x: 42, y: 10 },
+        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno', x: 12, y: 38 },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio', x: 45, y: 45 },
+        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno', x: 10, y: 72 },
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn', x: 50, y: 78 },
+        { n: 'DEEP HOUSE', u: 'https://stream.laut.fm/deep-house-sounds', x: 75, y: 10 },
+        { n: 'HOUSEBOMB', u: 'https://stream.laut.fm/housebomb-fn', x: 72, y: 45 },
+        { n: 'SYMBIOTIC', u: 'https://stream.laut.fm/symbiotic-beats', x: 75, y: 75 }
     ];
 
+    const PINS_PER_SIDE = 8;
     const svg = document.getElementById('pcb-bg');
     const board = document.getElementById('board');
     const player = document.getElementById('player');
     const term = document.getElementById('term-out');
+    const powerBtn = document.getElementById('powerBtn');
     let currentIdx = -1;
+    let audioUnlocked = false;
+
+    function log(msg) {
+        term.innerHTML += `<br>> ${msg}`;
+        term.scrollTop = term.scrollHeight;
+    }
+
+    // FIX 1: Odblokuj audio dopiero po kliknięciu POWER
+    function initAudio() {
+        if (audioUnlocked) return;
+        player.play().then(() => {
+            player.pause();
+            audioUnlocked = true;
+            powerBtn.classList.add('active');
+            powerBtn.textContent = 'POWER_ON';
+            log('AUDIO_CONTEXT: UNLOCKED');
+            log('READY_FOR_STREAM');
+            mount(0); // Auto-start pierwszej stacji
+        }).catch(e => {
+            log('ERROR: BROWSER_BLOCKED_PLAY');
+            log('TRY_CLICK_AGAIN');
+        });
+    }
 
     function buildHardware() {
-        // MAKSYMALNE ZAGĘSZCZENIE ŚCIEŻEK (Background Trace)
+        board.innerHTML = '';
+        svg.innerHTML = '';
         let traceHTML = "";
-        for(let i=0; i<300; i++) {
+        for(let i=0; i<200; i++) {
             const x1 = Math.random()*100;
             const y1 = Math.random()*100;
-            const size = Math.random()*10;
-            traceHTML += `<path d="M ${x1} ${y1} L ${x1+2} ${y1+2}" stroke="#0a1a10" stroke-width="0.1" fill="none"/>`;
-            if(i % 5 === 0) traceHTML += `<circle cx="${x1}" cy="${y1}" r="0.2" fill="#11331a"/>`;
+            traceHTML += `<path d="M ${x1} ${y1} l ${Math.random()*4-2} ${Math.random()*4-2}" stroke="#0a1a10" stroke-width="0.1"/>`;
         }
         svg.innerHTML = traceHTML;
 
         STATIONS.forEach((s, i) => {
             const ic = document.createElement('div');
             ic.className = 'ic-chip';
-            ic.style.left = s.x + '%'; ic.style.top = s.y + '%';
+            ic.style.left = s.x + '%';
+            ic.style.top = s.y + '%';
             ic.id = `ic-${i}`;
-            ic.innerHTML = `<div class="notch"></div><div class="chip-label">
-                <span class="chip-id">${s.n}</span>
-                <span class="chip-spec">VOLTAGE_BUS_0${i} / 74HC${100+i}</span>
-            </div>`;
+            let pinsHTML = '<div class="pin-row top">';
+            for(let p=0; p<PINS_PER_SIDE; p++) pinsHTML += '<div class="pin"></div>';
+            pinsHTML += '</div><div class="pin-row bottom">';
+            for(let p=0; p<PINS_PER_SIDE; p++) pinsHTML += '<div class="pin"></div>';
+            pinsHTML += '</div>';
+            ic.innerHTML = `${pinsHTML}<div class="notch"></div><div class="chip-label"><span class="chip-id">${s.n}</span><span class="chip-spec">74HC${100+i} / BUS_0${i}</span></div>`;
             ic.onclick = () => mount(i);
             board.appendChild(ic);
         });
-        drawActiveTraces();
+        setTimeout(drawTracesFromPins, 100);
     }
 
-    function drawActiveTraces() {
-        const panelX = window.innerWidth * 0.7;
+    function drawTracesFromPins() {
+        const panelRect = document.querySelector('.control-tower').getBoundingClientRect();
+        const panelX = panelRect.left;
+        const boardRect = board.getBoundingClientRect();
         STATIONS.forEach((s, i) => {
-            const el = document.getElementById(`ic-${i}`);
-            const r = el.getBoundingClientRect();
-            const x = r.left + r.width;
-            const y = r.top + r.height/2;
-
+            const chipEl = document.getElementById(`ic-${i}`);
+            const pins = chipEl.querySelectorAll('.pin-row.bottom.pin');
+            const outputPin = pins[4];
+            const pinRect = outputPin.getBoundingClientRect();
+            const x1 = pinRect.left + pinRect.width/2 - boardRect.left;
+            const y1 = pinRect.top + pinRect.height - boardRect.top;
+            const x4 = panelX - boardRect.left;
+            const y4 = y1 + (i * 8 - 35);
+            const x2 = x1, y2 = y1 + 30, x3 = x4 - 40, y3 = y2;
             const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            path.setAttribute("d", `M ${x} ${y} L ${x+40} ${y} L ${x+60} ${y+(i*12-50)} L ${panelX} ${y+(i*12-50)}`);
-            path.setAttribute("stroke", "var(--miedz)");
-            path.setAttribute("stroke-width", "2");
-            path.setAttribute("fill", "none");
-            path.id = `line-${i}`;
+            path.setAttribute("d", `M ${x1} ${y1} L ${x2} ${y2} L ${x3} ${y3} L ${x4} ${y4}`);
+            path.setAttribute("class", "trace");
+            path.id = `trace-${i}`;
             svg.appendChild(path);
         });
     }
 
     function mount(i) {
+        if (!audioUnlocked) {
+            log('ERROR: POWER_OFF');
+            log('PRESS [POWER] FIRST');
+            return;
+        }
+        if(currentIdx === i &&!player.paused) return;
         currentIdx = i;
         document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        document.querySelectorAll('path').forEach(p => {
-            if(p.id.startsWith('line-')) {
-                p.setAttribute('stroke', 'var(--miedz)');
-                p.style.filter = 'none';
-            }
-        });
+        document.querySelectorAll('.trace').forEach(t => t.classList.remove('active'));
+        const activeTrace = document.getElementById(`trace-${i}`);
+        if(activeTrace) activeTrace.classList.add('active');
 
-        const activeLine = document.getElementById(`line-${i}`);
-        if(activeLine) {
-            activeLine.setAttribute('stroke', 'var(--neon)');
-            activeLine.style.filter = 'drop-shadow(0 0 8px var(--neon))';
-        }
+        term.innerHTML = `> CHIP_SELECT: 0x${i.toString(16).toUpperCase()}`;
+        log(`NAME: ${STATIONS[i].n}`);
+        log(`POWER_ON_PIN: 13`);
+        log(`STREAM: ${STATIONS[i].u}`);
+        log(`CONNECTING...`);
 
-        term.innerHTML = `> ACCESSING_CHIP: 0x${i.toString(16).toUpperCase()}<br>> NAME: ${STATIONS[i].n}<br>> ADDR: ${STATIONS[i].u}<br>> STREAM: CONNECTING...`;
-        
-        // REALNY FIX AUDIO
-        player.pause();
-        player.src = ""; // Clear buffer
         player.src = STATIONS[i].u;
         player.load();
         player.play().then(() => {
-            term.innerHTML += `<br>> STATUS: SYNC_LOCKED`;
+            log(`STATUS: CURRENT_FLOWING`);
+            log(`SYNC: LOCKED @ 44.1kHz`);
         }).catch(e => {
-            term.innerHTML += `<br>> ERROR: USER_GATING_ACTIVE`;
+            log(`ERROR: ${e.name}`);
+            log(`CHECK NETWORK OR CORS`);
+            console.error(e);
         });
     }
 
-    function toggle() { if(currentIdx === -1) mount(0); else player.paused ? player.play() : player.pause(); }
-    function skip(dir) { let n = currentIdx + dir; if(n >= 0 && n < STATIONS.length) mount(n); }
+    function toggle() {
+        if (!audioUnlocked) { initAudio(); return; }
+        if(currentIdx === -1) mount(0);
+        else player.paused? player.play() : player.pause();
+    }
+    function skip(dir) {
+        if (!audioUnlocked) { initAudio(); return; }
+        let n = currentIdx + dir;
+        if(n >= 0 && n < STATIONS.length) mount(n);
+    }
     function setV(v) { player.volume = v; }
 
-    window.onresize = () => { svg.innerHTML = ''; buildHardware(); };
+    window.onresize = buildHardware;
     buildHardware();
+
+    // Logi z playera
+    player.addEventListener('error', () => log(`AUDIO_ERROR: CODE ${player.error.code}`));
+    player.addEventListener('playing', () => log('BUFFER: OK'));
 </script>
 </body>
 </html>
