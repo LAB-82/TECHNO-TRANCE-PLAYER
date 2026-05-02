@@ -1,61 +1,55 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF CORE MAINFRAME</title>    <style>
-        :root { --rmf: #fce300; --danger: #ff4500; --bg: #050505; --panel: #111; }
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON VIBE</title>    <style>
+        :root { --neon: #fce300; --cyan: #00f2ff; --pink: #ff00ff; --bg: #0b021a; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { 
-            background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; padding: 10px;
-            background-image: repeating-linear-gradient(45deg, #111 0, #111 2px, transparent 0, transparent 50%); background-size: 10px 10px;
+            background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; padding: 15px;
+            background-image: radial-gradient(circle at 50% 50%, #1a0b3a 0%, #0b021a 100%);
         }
-        /* Nagłówek w stylu przemysłowym */
         header { 
-            height: 60px; background: #000; border: 2px solid #333; border-top: 4px solid var(--rmf); display: flex; justify-content: space-between; align-items: center; padding: 0 20px; margin-bottom: 10px;
-            box-shadow: inset 0 0 20px rgba(252, 227, 0, 0.1);
+            height: 70px; background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); border-radius: 15px; border: 1px solid rgba(252,227,0,0.3);
+            display: flex; justify-content: space-between; align-items: center; padding: 0 30px; margin-bottom: 15px; box-shadow: 0 0 30px rgba(0,0,0,0.5);
         }
-        .header-info { color: var(--rmf); font-weight: 900; letter-spacing: 2px; }
-        .app-content { display: flex; flex: 1; gap: 10px; overflow: hidden; }
-        /* Siatka stacji jako moduły maszynowe */
-        .grid { flex: 1.5; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 8px; }
+        .header-info { color: var(--neon); text-shadow: 0 0 10px var(--neon); font-size: 20px; font-weight: bold; }
+        .clock { color: var(--cyan); text-shadow: 0 0 10px var(--cyan); font-size: 24px; }
+        .app-content { display: flex; flex: 1; gap: 20px; }
+        .grid { flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; }
         .tile { 
-            background: linear-gradient(145deg, #1a1a1a, #0a0a0a); border: 1px solid #333; position: relative; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.2s; border-left: 3px solid #333;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; backdrop-filter: blur(5px);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s;
         }
-        .tile:hover { border-left-color: var(--rmf); background: #151515; }
-        .tile.active { border: 1px solid var(--rmf); border-left: 5px solid var(--rmf); background: rgba(252, 227, 0, 0.05); box-shadow: 0 0 15px rgba(252, 227, 0, 0.2); }
-        .tile .t-top { color: var(--rmf); font-size: 14px; font-weight: bold; }
-        .tile .t-bottom { color: #666; font-size: 9px; text-transform: uppercase; margin-top: 4px; }
-        /* Sidebar - Panel Kontrolny */
+        .tile:hover { background: rgba(252,227,0,0.1); border-color: var(--neon); transform: translateY(-5px); }
+        .tile.active { background: rgba(252,227,0,0.2); border-color: var(--neon); box-shadow: 0 0 20px var(--neon); }
+        .tile .t-top { color: #fff; font-weight: bold; }
+        .tile .t-bottom { color: var(--cyan); font-size: 10px; margin-top: 5px; }
         .sidebar { 
-            flex: 0.5; background: #0a0a0a; border: 2px solid #222; display: flex; flex-direction: column; align-items: center; padding: 20px;
-            background-image: linear-gradient(rgba(252, 227, 0, 0.03) 1px, transparent 1px); background-size: 100% 3px;
+            flex: 0.6; background: rgba(0,0,0,0.4); border-radius: 20px; border: 1px solid var(--pink); display: flex; flex-direction: column; align-items: center; padding: 30px;
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.1);
         }
         .logo-display { 
-            width: 100%; aspect-ratio: 1; background: #000; border: 1px solid #444; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 20px;
-            box-shadow: inset 0 0 50px rgba(252, 227, 0, 0.05); position: relative;
+            width: 100%; aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle, #2a0a4a 0%, #000 100%);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 30px; border: 2px solid var(--neon);
+            box-shadow: 0 0 30px var(--neon);
         }
-        .logo-display::before { content: "SYSTEM ACTIVE"; position: absolute; top: 10px; left: 10px; font-size: 8px; color: var(--rmf); }
-        .logo-display h2 { font-size: 50px; color: var(--rmf); filter: drop-shadow(0 0 10px var(--rmf)); }
-        .controls { display: flex; gap: 15px; margin-bottom: 20px; }
-        .c-svg { width: 40px; height: 40px; fill: #444; cursor: pointer; }
-        .c-play { fill: var(--rmf); width: 60px; height: 60px; }
-        .vol-box { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-        input[type="range"] { -webkit-appearance: none; background: #222; height: 10px; border: 1px solid #333; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--rmf); cursor: pointer; }
-        /* Animacja fali - teraz to "skok napięcia" */
-        .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; }
-        .tile.active .waves { opacity: 1; }
-        .wave { position: absolute; border: 1px solid var(--rmf); animation: volt 1.5s infinite; }
-        @keyframes volt { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 100%; height: 100%; opacity: 0; } }
+        .logo-display h2 { font-size: 45px; color: var(--neon); text-shadow: 0 0 20px var(--neon); }
+        .controls { display: flex; align-items: center; gap: 20px; }
+        .c-svg { width: 45px; height: 45px; fill: var(--cyan); cursor: pointer; filter: drop-shadow(0 0 8px var(--cyan)); }
+        .c-play { fill: var(--neon); width: 85px; height: 85px; filter: drop-shadow(0 0 15px var(--neon)); }
+        .vol-box { width: 100%; margin-top: 20px; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; background: var(--neon); border-radius: 50%; box-shadow: 0 0 10px var(--neon); }
     </style></head><body>
-<header><div class="header-info" id="playing-now">UNIT: RMF FM</div><div class="clock" id="timer">00:00</div></header>
-<div class="app-content"><div class="grid" id="station-grid"></div><aside class="sidebar"><div class="logo-display"><h2>RMF</h2><p>CORE</p></div><div class="controls"><svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg><svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg><svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div><div class="vol-box"><input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)"></div></aside></div>
+<header><div class="header-info" id="playing-now">NEON: RMF FM</div><div class="clock" id="timer">00:00</div></header>
+<div class="app-content"><div class="grid" id="station-grid"></div><aside class="sidebar"><div class="logo-display"><h2>RMF</h2><p>NEON</p></div><div class="controls"><svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg><svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg><svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div><div class="vol-box"><input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)"></div></aside></div>
 <audio id="player"></audio>
 <script>
+    /* Logika bez zmian */
     const STATIONS = [{n:'RMF FM',s:'RMF FM',u:'rmf_fm'},{n:'RMF MAXXX',s:'Maxxx',u:'RMFMAXXX48'},{n:'RMF 80s',s:'80s',u:'rmf_80s'},{n:'RMF 90s',s:'90s',u:'rmf_90s'},{n:'RMF 2000',s:'2000',u:'rmf_2000'},{n:'RMF CHILLOUT',s:'Chillout',u:'rmf_chillout'},{n:'RMF CLASSIC',s:'Classic',u:'rmf_classic'},{n:'RMF DANCE',s:'Dance',u:'rmf_dance'},{n:'RMF GOLD',s:'Gold',u:'rmf_gold'},{n:'RMF LATINO',s:'Latino',u:'rmf_latino'},{n:'RMF LOVE',s:'Love',u:'rmf_love'},{n:'RMF PARTY',s:'Party',u:'rmf_party'},{n:'RMF POLSKI ROCK',s:'Polski Rock',u:'rmf_polski_rock'},{n:'RMF ROCK',s:'Rock',u:'rmf_rock'},{n:'RMF SMOOTH JAZZ',s:'Smooth Jazz',u:'rmf_smooth_jazz'}];
-    const player=document.getElementById('player'), ico=document.getElementById('p-ico'), grid=document.getElementById('station-grid'), vRange=document.getElementById('v-range');
+    const player=document.getElementById('player'), ico=document.getElementById('p-ico'), grid=document.getElementById('station-grid');
     let current=-1;
     function clock(){ const d=new Date(); document.getElementById('timer').textContent=d.getHours().toString().padStart(2,'0')+":"+d.getMinutes().toString().padStart(2,'0'); }
     setInterval(clock,1000); clock();
-    STATIONS.forEach((s,i)=>{ const t=document.createElement('div'); t.className='tile'; t.innerHTML=`<div class="waves"><div class="wave"></div></div><div class="t-top">RMF</div><div class="t-bottom">${s.s}</div>`; t.onclick=()=>play(i); grid.appendChild(t); });
-    function play(i){ current=i; document.querySelectorAll('.tile').forEach((t,idx)=>t.classList.toggle('active',idx===i)); document.getElementById('playing-now').textContent="UNIT: "+STATIONS[i].n; player.src="https://rs201-krk.rmfstream.pl/"+STATIONS[i].u; player.play(); ico.setAttribute('d','M14,19H18V5H14M6,19H10V5H6V19Z'); }
+    STATIONS.forEach((s,i)=>{ const t=document.createElement('div'); t.className='tile'; t.innerHTML=`<div class="t-top">RMF</div><div class="t-bottom">${s.s}</div>`; t.onclick=()=>play(i); grid.appendChild(t); });
+    function play(i){ current=i; document.querySelectorAll('.tile').forEach((t,idx)=>t.classList.toggle('active',idx===i)); document.getElementById('playing-now').textContent="NEON: "+STATIONS[i].n; player.src="https://rs201-krk.rmfstream.pl/"+STATIONS[i].u; player.play(); ico.setAttribute('d','M14,19H18V5H14M6,19H10V5H6V19Z'); }
     function toggle(){ if(player.paused){player.play(); ico.setAttribute('d','M14,19H18V5H14M6,19H10V5H6V19Z');} else {player.pause(); ico.setAttribute('d','M8,5.14V19.14L19,12.14L8,5.14Z');}}
     function skip(d){ let n=current+d; if(n>=0 && n<STATIONS.length) play(n); }
     function setV(v){ player.volume=v/100; }
