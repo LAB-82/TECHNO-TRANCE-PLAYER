@@ -1,216 +1,272 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - CYBERSTYLE AUDIT</title>    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Rajdhani:wght@500;700&display=swap');
-        
-        :root {            
-            --yellow: #fce300;            
-            --yellow-neon: #fffb00;            
-            --bg: #000;            
-            --tile: #0a0a0a;            
-            --border: #1a1a1a;            
-            --blue-wave: #00ccff; 
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>GEHIRN TREIBER - ULTRA NEON HUD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap');
+
+        :root {
+            --cyan: #00f2ff;
+            --magenta: #ff00e5;
+            --blue: #0044ff;
+            --bg: #020b10;
+            --glass-border: rgba(0, 242, 255, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }                
-        html, body {             
-            height: 100vh; width: 100vw;             
-            background: var(--bg); color: #fff;             
-            font-family: 'Montserrat Alternates', sans-serif;            
-            overflow: hidden;         
-        }
-
-        body { 
-            display: flex; flex-direction: column; padding: 2vh; 
+        body {
+            background-color: var(--bg);
             background-image: 
-                radial-gradient(circle at 50% 50%, #0d0d0d 0%, #000 100%),
-                linear-gradient(rgba(252, 227, 0, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(252, 227, 0, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 40px 40px, 40px 40px;
+                radial-gradient(circle at 20% 30%, rgba(0, 68, 255, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(255, 0, 229, 0.05) 0%, transparent 40%);
+            color: var(--cyan);
+            font-family: 'Orbitron', sans-serif;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
 
-        header {             
-            height: 50px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--yellow); margin-bottom: 2vh; flex-shrink: 0;
-            box-shadow: 0 5px 15px rgba(252, 227, 0, 0.2);
-        }        
-        .header-info { 
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; 
-            text-shadow: 0 0 10px var(--yellow);
-        }        
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
-
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
-
-        .grid {             
-            flex: 1.4; display: grid;             
-            grid-template-columns: repeat(5, 1fr);             
-            grid-template-rows: repeat(3, 1fr);             
-            gap: 12px;         
-        }
-
-        .tile {            
-            background: rgba(10, 10, 10, 0.8); 
-            border: 1px solid var(--border); 
-            border-radius: 4px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            cursor: pointer; position: relative; overflow: visible;
-            transition: all 0.3s ease;
-        }
-
-        .tile::before {
-            content: ''; position: absolute; inset: 0; border: 1px solid transparent;
-            transition: 0.3s; pointer-events: none;
-        }
-
-        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; font-family: 'Rajdhani'; }        
-        .tile .t-bottom { font-size: 12px; font-weight: 600; color: #fff; margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; }
-
-        .tile.active {             
-            border: 2px solid var(--yellow-neon);             
-            background: rgba(252, 227, 0, 0.1);
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.3), inset 0 0 10px rgba(252, 227, 0, 0.2);
-        }        
-        .tile.active .t-top { color: var(--yellow-neon); text-shadow: 0 0 10px var(--yellow-neon); }
-
-        .waves {            
-            position: absolute; width: 100%; height: 100%;            
-            display: flex; align-items: center; justify-content: center;            
-            pointer-events: none; opacity: 0; z-index: 1;        
-        }        
-        .tile.active .waves { opacity: 1; }        
-        .wave {            
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;            
-            width: 10px; height: 10px; opacity: 0;            
-            box-shadow: 0 0 15px var(--blue-wave);            
-            animation: ripple 3s infinite linear;        
-        }        
-        .wave:nth-child(2) { animation-delay: 1s; }        
-        .wave:nth-child(3) { animation-delay: 2s; }
-
-        @keyframes ripple {            
-            0% { width: 0; height: 0; opacity: 0.9; }            
-            100% { width: 320%; height: 320%; opacity: 0; }        
-        }
-
-        .sidebar {             
-            flex: 0.6; display: flex; flex-direction: column;             
-            align-items: center; justify-content: center; gap: 4vh;            
-            border-left: 1px solid var(--border); padding-left: 3vw;        
-        }
-
-        .logo-display {            
-            width: 100%; max-width: 320px; aspect-ratio: 16/10;            
-            border: 2px solid var(--yellow); border-radius: 8px;            
-            display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.15);
+        /* GŁÓWNY PANEL Z EFEKTEM SZKŁA */
+        .main-terminal {
+            width: 96vw;
+            height: 90vh;
+            background: rgba(10, 25, 33, 0.6);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            display: flex;
+            padding: 30px;
+            gap: 40px;
+            box-shadow: 0 0 50px rgba(0,0,0,1);
             position: relative;
-        }        
+        }
+
+        /* SIATKA KAFELKÓW (RMF FM STYLE) */
+        .grid {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        /* KAFELEK - FULL NEON AUDIT */
+        .tile {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,242,255,0.02) 100%);
+            border: 1px solid rgba(0, 242, 255, 0.15);
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+        }
+
+        /* Efekt świecących narożników z obrazka */
+        .tile::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 4px;
+            padding: 1px;
+            background: linear-gradient(45deg, var(--cyan), transparent, var(--blue));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.3;
+        }
+
+        .tile:hover {
+            background: rgba(0, 242, 255, 0.1);
+            filter: drop-shadow(0 0 15px var(--cyan));
+            transform: translateY(-5px);
+        }
+
+        .tile.active {
+            background: rgba(255, 0, 229, 0.15);
+            border-color: var(--magenta);
+            filter: drop-shadow(0 0 20px var(--magenta));
+        }
+
+        .tile .name { font-weight: 900; font-size: 16px; letter-spacing: 2px; }
+        .tile .meta { font-size: 9px; opacity: 0.5; margin-top: 10px; }
+
+        /* PANEL KONTROLNY (SIDEBAR) */
+        .sidebar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* OKRĄGŁY GAUGE Z OBRAZKA */
+        .gauge-wrap {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin: 0 auto;
+            background: radial-gradient(circle, rgba(0,242,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid rgba(0, 242, 255, 0.05);
+        }
+
+        .gauge-value { font-size: 40px; font-weight: 900; color: #fff; text-shadow: 0 0 20px var(--cyan); }
+
+        /* PRZYCISKI - GRADIENT & GLOW */
+        .control-btns { display: flex; gap: 15px; }
         
-        /* Neonowe narożniki ze zdjęcia */
-        .logo-display::after {
-            content: ''; position: absolute; top: -5px; right: -5px; width: 30px; height: 30px;
-            border-top: 3px solid var(--blue-wave); border-right: 3px solid var(--blue-wave);
-        }
-        .logo-display::before {
-            content: ''; position: absolute; bottom: -5px; left: -5px; width: 30px; height: 30px;
-            border-bottom: 3px solid var(--blue-wave); border-left: 3px solid var(--blue-wave);
-        }
-
-        .logo-display h2 { font-family: 'Rajdhani'; font-size: 46px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
-        .logo-display p { font-size: 11px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
-
-        .controls { display: flex; align-items: center; gap: 3vw; }        
-        .c-svg {             
-            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer;             
-            filter: drop-shadow(0 0 8px rgba(252, 227, 0, 0.6));
-        }        
-        .c-play { width: 70px; height: 70px; fill: var(--yellow); filter: drop-shadow(0 0 12px var(--yellow)); }
-
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }        
-        .vol-btn { width: 35px; height: 35px; border: 1.5px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; }        
-        .vol-bar { flex: 1; height: 35px; border: 1.5px solid var(--yellow); padding: 0 12px; display: flex; align-items: center; position: relative; }                
-        
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }        
-        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 2px; }                
-        input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 16px; height: 16px;             
-            background: var(--yellow); border-radius: 0;             
-            margin-top: -7px; box-shadow: 0 0 10px var(--yellow);
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 4px;
+            background: linear-gradient(180deg, #111 0%, #000 100%);
+            color: var(--cyan);
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            border: 1px solid var(--cyan);
+            transition: 0.3s;
+            text-shadow: 0 0 5px var(--cyan);
         }
 
-        @media (max-width: 600px) {
-            .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 50vh; flex: none; }
-            .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border); padding-top: 20px; }
-            .logo-display { width: 95%; height: 80px; }
+        .btn:hover {
+            background: var(--cyan);
+            color: #000;
+            box-shadow: 0 0 30px var(--cyan);
         }
-    </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
+        .btn-stop { border-color: var(--magenta); color: var(--magenta); text-shadow: 0 0 5px var(--magenta); }
+        .btn-stop:hover { background: var(--magenta); box-shadow: 0 0 30px var(--magenta); }
 
-<div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>FUTURE STREAMING</p>        </div>
-        <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
-        <div class="vol-box">            <button class="vol-btn" onclick="adj(-5)">-</button>            <div class="vol-bar">                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            </div>            <button class="vol-btn" onclick="adj(5)">+</button>        </div>    </aside></div>
+        /* PASKI OBJĘTOŚCI (VOLUME) - GRADIENTOWE */
+        .vol-container {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid rgba(0,242,255,0.1);
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 10px;
+            appearance: none;
+            background: #111;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: var(--cyan);
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--cyan);
+        }
+
+        .status-text {
+            font-size: 10px;
+            color: var(--magenta);
+            letter-spacing: 4px;
+            text-align: center;
+            margin-top: auto;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    </style>
+</head>
+<body>
+
+<div class="main-terminal">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="gauge-wrap">
+            <div class="gauge-value" id="signal-percent">88%</div>
+            <!-- Dekoracyjny pierścień -->
+            <div style="position: absolute; width: 100%; height: 100%; border: 1px dashed var(--cyan); border-radius: 50%; animation: rotate 20s linear infinite; opacity: 0.3;"></div>
+        </div>
+
+        <div style="text-align: center;">
+            <div style="font-size: 10px; opacity: 0.5;">DECODING_SIGNAL...</div>
+            <h2 id="now-playing" style="color: #fff; text-shadow: 0 0 15px var(--cyan);">READY</h2>
+        </div>
+
+        <div class="control-btns">
+            <button class="btn" onclick="audio.play()">PLAY</button>
+            <button class="btn btn-stop" onclick="audio.pause()">STOP</button>
+        </div>
+
+        <div class="vol-container">
+            <div style="display:flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px;">
+                <span>OUTPUT_GAIN</span>
+                <span id="vol-val">70%</span>
+            </div>
+            <input type="range" id="volume" min="0" max="100" value="70" oninput="setVolume(this.value)">
+        </div>
+
+        <div class="status-text">CRITICAL_SYSTEM_LINK_ACTIVE</div>
+    </aside>
+</div>
 
 <audio id="player"></audio>
 
-<script>    
-    const STATIONS = [        
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },        
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },        
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },        
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },        
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },        
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },        
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },        
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },        
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },        
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },        
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },        
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },        
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }    
+<script>
+    const STATIONS = [
+        { n: 'NEON CORE', u: 'https://stream.laut.fm/tech88' },
+        { n: 'CYBER DRIVE', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: 'DATA PULSE', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'VOID SIGNAL', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'SYNTH NODE', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'UPLINK 06', u: 'https://stream.laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN TRB', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
+        { n: 'EMPTY_SLOT', u: '' },
+        { n: 'EMPTY_SLOT', u: '' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');    
-    let current = -1;
+    const grid = document.getElementById('station-grid');
+    const audio = document.getElementById('player');
+    const display = document.getElementById('now-playing');
+    const signal = document.getElementById('signal-percent');
 
-    function clock() {        
-        const d = new Date();        
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');    
-    }    
-    setInterval(clock, 1000); clock();
-
-    STATIONS.forEach((s, i) => {        
-        const t = document.createElement('div');        
-        t.className = 'tile';        
-        t.innerHTML = `            
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
-            <div class="t-top">RMF</div>            
-            <div class="t-bottom">${s.s}</div>        `;        
-        t.onclick = () => play(i);        
-        grid.appendChild(t);    
+    STATIONS.forEach((s, i) => {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `<div class="name">${s.n}</div><div class="meta">BANK_0${i} // 44.1kHz</div>`;
+        t.onclick = () => {
+            if(!s.u) return;
+            document.querySelectorAll('.tile').forEach(x => x.classList.remove('active'));
+            t.classList.add('active');
+            display.textContent = s.n;
+            signal.textContent = Math.floor(Math.random() * 20 + 80) + '%';
+            audio.src = s.u;
+            audio.play();
+        };
+        grid.appendChild(t);
     });
 
-    function play(i) {        
-        current = i;        
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
-        const streamBase = "https://rs201-krk.rmfstream.pl/";        
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
-        player.play();        
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');    
+    function setVolume(v) {
+        audio.volume = v / 100;
+        document.getElementById('vol-val').textContent = v + '%';
     }
+</script>
 
-    function toggle() {        
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }        
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }    
-    }
+<style>
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+</style>
 
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
-    function setV(v) { player.volume = v / 100; }        
-    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
-</script></body></html>
+</body>
+</html>
