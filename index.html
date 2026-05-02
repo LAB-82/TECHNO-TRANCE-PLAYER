@@ -3,284 +3,298 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GEHIRN TREIBER - INDUSTRIAL TERMINAL</title>
+    <title>GEHIRN TREIBER - HUD CONTROL CENTER</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
         :root {
-            --green: #00ff41;
-            --dark-green: #003b00;
-            --bg: #050505;
-            --chip-body: #111;
-            --trace-color: #004400;
+            --cyan: #00f2ff;
+            --cyan-glow: rgba(0, 242, 255, 0.5);
+            --red: #ff003c;
+            --bg-dark: #02080a;
+            --module-bg: rgba(0, 20, 30, 0.8);
+            --trace: rgba(0, 242, 255, 0.2);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
         body {
-            background-color: var(--bg);
-            color: var(--green);
-            font-family: 'Share+Tech+Mono', monospace;
+            background-color: var(--bg-dark);
+            color: var(--cyan);
+            font-family: 'Rajdhani', sans-serif;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            /* Efekt CRT Scanlines */
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-            background-size: 100% 4px, 3px 100%;
+            /* Efekt siatki HUD */
+            background-image: 
+                linear-gradient(var(--trace) 1px, transparent 1px),
+                linear-gradient(90deg, var(--trace) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Nakładka CRT/Vignette */
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle, transparent 20%, black 150%);
+            pointer-events: none;
+            z-index: 10;
         }
 
         #pcb-canvas {
             position: fixed;
             top: 0; left: 0;
             z-index: 0;
-            opacity: 0.6;
         }
 
+        /* Nagłówek HUD */
         header {
-            padding: 20px;
-            border-bottom: 2px solid var(--green);
+            height: 60px;
+            border-bottom: 2px solid var(--cyan);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 10;
-            text-shadow: 0 0 10px var(--green);
+            padding: 0 40px;
+            background: rgba(0, 0, 0, 0.9);
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 0 20px var(--cyan-glow);
         }
 
-        .main-title { font-size: 32px; font-weight: bold; letter-spacing: 4px; }
-        .system-status { font-size: 14px; text-align: right; }
+        .system-id { font-family: 'Orbitron', sans-serif; font-size: 20px; letter-spacing: 5px; }
+        .telemetry { font-size: 12px; text-transform: uppercase; text-align: right; line-height: 1.2; }
 
-        .app-container {
-            display: flex;
-            flex: 1;
+        .main-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            height: calc(100vh - 60px);
             padding: 20px;
             gap: 20px;
-            z-index: 5;
-        }
-
-        .grid {
-            flex: 2;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            gap: 40px;
-            padding: 20px;
-        }
-
-        /* UKŁAD SCALONY */
-        .chip {
-            background: var(--chip-body);
-            border: 1px solid var(--dark-green);
-            border-radius: 2px;
             position: relative;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transition: 0.2s;
-            box-shadow: 0 5px 15px rgba(0,0,0,1);
+            z-index: 2;
         }
 
-        /* NÓŻKI UKŁADU */
-        .chip::before, .chip::after {
+        /* MODUŁY / CHIPY */
+        .module-grid {
+            display: grid;
+            grid-template-rows: repeat(7, 1fr);
+            gap: 15px;
+        }
+
+        .chip {
+            background: var(--module-bg);
+            border-left: 4px solid var(--cyan);
+            padding: 10px 20px;
+            position: relative;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* METALOWE NÓŻKI */
+        .chip::before {
             content: '';
             position: absolute;
-            width: 12px;
-            height: 70%;
-            background: repeating-linear-gradient(
-                to bottom,
-                #888, #888 3px,
-                transparent 3px, transparent 10px
-            );
-        }
-        .chip::before { left: -12px; }
-        .chip::after { right: -12px; }
-
-        .chip:hover {
-            border-color: var(--green);
-            box-shadow: 0 0 15px var(--green);
+            left: -12px; height: 60%; width: 8px;
+            background: repeating-linear-gradient(to bottom, #444, #444 2px, transparent 2px, transparent 6px);
         }
 
-        .chip.active {
-            background: var(--dark-green);
-            border-color: var(--green);
+        .chip:hover, .chip.active {
+            background: rgba(0, 242, 255, 0.1);
+            box-shadow: -10px 0 20px var(--cyan-glow);
+            transform: translateX(10px);
         }
 
-        .chip-id { font-size: 10px; color: #555; position: absolute; top: 5px; left: 5px; }
-        .chip-name { font-size: 14px; text-align: center; padding: 0 5px; text-transform: uppercase; }
+        .chip.active { border-left: 4px solid var(--red); color: var(--red); }
 
-        /* SIDEBAR / LOGO DISPLAY */
-        .sidebar {
-            flex: 1;
-            border: 2px solid var(--green);
-            background: rgba(0, 15, 0, 0.2);
-            padding: 20px;
+        .chip-info h3 { font-size: 16px; letter-spacing: 1px; }
+        .chip-info p { font-size: 10px; opacity: 0.7; }
+
+        /* CENTRUM - MAPA / TRACKER */
+        .center-display {
+            border: 1px solid var(--trace);
+            position: relative;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 20px var(--dark-green);
+            overflow: hidden;
         }
 
-        .visualizer {
-            width: 100%;
-            height: 100px;
-            border-bottom: 1px solid var(--green);
-            display: flex;
-            align-items: flex-end;
-            gap: 2px;
+        .map-circle {
+            width: 400px; height: 400px;
+            border: 2px solid var(--cyan);
+            border-radius: 50%;
+            position: relative;
+            animation: rotate 20s linear infinite;
         }
 
-        .bar { flex: 1; background: var(--green); height: 10%; }
-
-        .controls { text-align: center; width: 100%; }
-        .btn {
-            background: none; border: 1px solid var(--green);
-            color: var(--green); padding: 10px 20px; cursor: pointer;
-            font-family: inherit; margin: 10px; text-transform: uppercase;
+        .map-circle::after {
+            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 50%;
+            background: var(--cyan); transform-origin: bottom;
         }
-        .btn:hover { background: var(--green); color: black; }
 
-        .vol-slider { width: 100%; margin: 20px 0; -webkit-appearance: none; background: var(--dark-green); height: 5px; }
-        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; background: var(--green); cursor: pointer; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* PRAWA STRONA - DANE */
+        .data-panel {
+            display: flex; flex-direction: column; gap: 20px;
+        }
+
+        .visualizer-box {
+            height: 150px; border: 1px solid var(--cyan);
+            padding: 10px; display: flex; align-items: flex-end; gap: 2px;
+        }
+
+        .v-bar { flex: 1; background: var(--cyan); height: 10%; transition: 0.1s; }
+
+        .scanline {
+            width: 100%; height: 2px; background: rgba(0, 242, 255, 0.3);
+            position: absolute; top: 0; left: 0;
+            animation: scan 4s linear infinite;
+        }
+
+        @keyframes scan { from { top: 0; } to { top: 100%; } }
 
     </style>
 </head>
 <body>
 
 <canvas id="pcb-canvas"></canvas>
+<div class="scanline"></div>
 
 <header>
-    <div class="main-title">GEHIRN TREIBER</div>
-    <div class="system-status">
-        [ SYSTEM: ONLINE ]<br>
-        [ FREQ: 144.00 MHz ]<br>
-        <span id="clock">00:00:00</span>
+    <div class="system-id">G.T.R COMMAND CENTER v4.0</div>
+    <div class="telemetry">
+        STATUS: <span id="sys-status" style="color:var(--red)">SCANNING...</span><br>
+        COORD: 52.2297° N, 21.0122° E<br>
+        TIME: <span id="clock">00:00:00</span>
     </div>
 </header>
 
-<div class="app-container">
-    <div class="grid" id="chip-grid">
-        <!-- Układy scalone generowane przez JS -->
+<div class="main-layout">
+    <!-- Lewy panel: Wybór stacji (Chipy) -->
+    <div class="module-grid" id="station-list"></div>
+
+    <!-- Centrum: HUD/Tracker -->
+    <div class="center-display">
+        <div class="map-circle"></div>
+        <div style="position:absolute; text-align:center;">
+            <h1 id="active-title" style="font-size:40px; text-shadow: 0 0 20px var(--cyan);">AWAITING LINK</h1>
+            <p id="signal-strength">SIGNAL: 0.00%</p>
+        </div>
     </div>
 
-    <aside class="sidebar">
-        <div style="text-align: center;">
-            <p>CURRENT SOURCE:</p>
-            <h2 id="now-playing" style="margin: 10px 0;">-- STANDBY --</h2>
+    <!-- Prawy panel: Wizualizacja i Sterowanie -->
+    <div class="data-panel">
+        <div class="visualizer-box" id="viz"></div>
+        
+        <div style="border:1px solid var(--red); padding:15px;">
+            <p style="color:var(--red)">[ WARNING: HIGH FREQUENCY ]</p>
+            <input type="range" style="width:100%; margin-top:10px;" oninput="setVol(this.value)">
+            <p style="font-size:10px; margin-top:5px;">GAIN CONTROL / MASTER VOL</p>
         </div>
 
-        <div class="visualizer" id="visualizer">
-            <!-- Bary wizualizera -->
+        <div style="font-size:11px; color:var(--trace); overflow:hidden; height:150px;" id="logs">
+            > INITIALIZING...<br>
+            > LINKING NEURAL INTERFACE...<br>
         </div>
-
-        <div class="controls">
-            <button class="btn" onclick="toggle()">PLAY / STOP</button>
-            <input type="range" class="vol-slider" min="0" max="100" value="50" oninput="setVolume(this.value)">
-            <p>VOLUME</p>
-        </div>
-    </aside>
+    </div>
 </div>
 
-<audio id="audio-engine"></audio>
+<audio id="audio"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
-        { n: 'HR 3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
-        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
-        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
-        { n: 'RETROELECTRONIC', u: 'https://stream.laut.fm/retroelectronicmusic' },
-        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
+        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88', id: 'GT-X1' },
+        { n: 'HR3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight', id: 'GT-X2' },
+        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno', id: 'GT-X3' },
+        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno', id: 'GT-X4' },
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn', id: 'GT-X5' },
+        { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic', id: 'GT-X6' },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio', id: 'GT-MASTER' }
     ];
 
-    const grid = document.getElementById('chip-grid');
-    const audio = document.getElementById('audio-engine');
-    const canvas = document.getElementById('pcb-canvas');
-    const ctx = canvas.getContext('2d');
-    let activeIndex = -1;
+    const list = document.getElementById('station-list');
+    const audio = document.getElementById('audio');
+    const logs = document.getElementById('logs');
 
-    // Inicjalizacja Gridu
+    // Generowanie modułów (Chipów)
     STATIONS.forEach((s, i) => {
-        const chip = document.createElement('div');
-        chip.className = 'chip';
-        chip.innerHTML = `
-            <div class="chip-id">GT-0${i+1}</div>
-            <div class="chip-name">${s.n}</div>
+        const div = document.createElement('div');
+        div.className = 'chip';
+        div.innerHTML = `
+            <div class="chip-info">
+                <h3>${s.n}</h3>
+                <p>SECTOR: ${s.id}</p>
+            </div>
+            <div style="font-size:10px; border:1px solid var(--cyan); padding:2px;">LINK</div>
         `;
-        chip.onclick = () => playStation(i);
-        grid.appendChild(chip);
+        div.onclick = () => connect(i);
+        list.appendChild(div);
     });
 
-    function playStation(i) {
-        activeIndex = i;
+    function connect(i) {
         document.querySelectorAll('.chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        document.getElementById('now-playing').textContent = STATIONS[i].n;
+        document.getElementById('active-title').textContent = STATIONS[i].n;
+        document.getElementById('sys-status').textContent = "CONNECTED";
+        document.getElementById('sys-status').style.color = "var(--cyan)";
+        
         audio.src = STATIONS[i].u;
         audio.play();
-        animateVisualizer();
+        
+        addLog(`ESTABLISHING LINK WITH ${STATIONS[i].id}...`);
+        addLog(`SIGNAL STRENGTH: ${(Math.random() * 20 + 80).toFixed(2)}%`);
     }
 
-    function toggle() {
-        if(audio.paused) audio.play(); else audio.pause();
+    function addLog(msg) {
+        logs.innerHTML = `> ${msg}<br>${logs.innerHTML}`;
     }
 
-    function setVolume(v) {
-        audio.volume = v / 100;
-    }
+    function setVol(v) { audio.volume = v / 100; }
 
-    // Zegar systemowy
+    // Zegar i telemetryka
     setInterval(() => {
-        const d = new Date();
-        document.getElementById('clock').textContent = d.toTimeString().split(' ')[0];
+        document.getElementById('clock').textContent = new Date().toTimeString().split(' ')[0];
+        document.getElementById('signal-strength').textContent = `SIGNAL: ${(Math.random() * 100).toFixed(2)}%`;
     }, 1000);
 
-    // Rysowanie połączeń (PCB Traces)
+    // Wizualizacja
+    const viz = document.getElementById('viz');
+    for(let i=0; i<20; i++) {
+        const b = document.createElement('div');
+        b.className = 'v-bar';
+        viz.appendChild(b);
+    }
+
+    function animate() {
+        document.querySelectorAll('.v-bar').forEach(b => {
+            const h = audio.paused ? 5 : Math.random() * 100;
+            b.style.height = h + '%';
+        });
+        requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Rysowanie połączeń PCB
+    const canvas = document.getElementById('pcb-canvas');
+    const ctx = canvas.getContext('2d');
     function drawPCB() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        ctx.strokeStyle = '#003300';
-        ctx.lineWidth = 2;
-        
-        const chips = document.querySelectorAll('.chip');
-        chips.forEach((chip, i) => {
-            if (i < chips.length - 1) {
-                const r1 = chip.getBoundingClientRect();
-                const r2 = chips[i+1].getBoundingClientRect();
-                ctx.beginPath();
-                ctx.moveTo(r1.left + r1.width/2, r1.top + r1.height/2);
-                ctx.lineTo(r1.left + r1.width/2, r2.top + r2.height/2);
-                ctx.lineTo(r2.left + r2.width/2, r2.top + r2.height/2);
-                ctx.stroke();
-            }
-        });
+        ctx.strokeStyle = "rgba(0, 242, 255, 0.1)";
+        ctx.lineWidth = 1;
+        // Rysowanie kilku losowych ścieżek "technicznych"
+        for(let i=0; i<15; i++) {
+            ctx.beginPath();
+            ctx.moveTo(Math.random()*canvas.width, 0);
+            ctx.lineTo(Math.random()*canvas.width, canvas.height);
+            ctx.stroke();
+        }
     }
-
-    // Prosta animacja wizualizera
-    const viz = document.getElementById('visualizer');
-    for(let i=0; i<30; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'bar';
-        viz.appendChild(bar);
-    }
-
-    function animateVisualizer() {
-        if(audio.paused) return;
-        const bars = document.querySelectorAll('.bar');
-        bars.forEach(b => {
-            const h = Math.random() * 100;
-            b.style.height = h + '%';
-            b.style.opacity = h / 100;
-        });
-        requestAnimationFrame(animateVisualizer);
-    }
-
-    window.addEventListener('resize', drawPCB);
-    setTimeout(drawPCB, 500);
+    window.onresize = drawPCB;
+    drawPCB();
 
 </script>
 </body>
