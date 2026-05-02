@@ -2,88 +2,191 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - VST COMMAND</title>
+    <title>GEHIRN TREIBER - VITAL TRON</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap');
-        :root { --blue: #00d4ff; --bg: #0d0d0d; }
-        body { background: #000; color: #fff; font-family: 'Rajdhani', sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        
-        .vst-container { background: #1a1a1a; padding: 20px; border: 3px solid #333; display: flex; gap: 20px; box-shadow: 0 0 50px rgba(0,0,0,0.9); }
-        
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .vst-btn { 
-            background: linear-gradient(180deg, #333, #222); 
-            border: 1px solid #111; padding: 15px; width: 120px; 
-            text-align: center; cursor: pointer; position: relative;
-        }
-        .vst-btn.active { border-color: var(--blue); box-shadow: 0 0 10px var(--blue); }
-        .vst-btn .led { position: absolute; top: 5px; right: 5px; width: 6px; height: 6px; background: #400; border-radius: 50%; }
-        .vst-btn.active .led { background: #f00; box-shadow: 0 0 5px #f00; }
-        .vst-btn span { font-family: 'Orbitron'; font-size: 10px; display: block; color: #ddd; }
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;600&display=swap');
 
-        .sidebar { background: #222; padding: 20px; border: 1px solid #333; width: 280px; display: flex; flex-direction: column; gap: 15px; }
-        .lcd { background: #001a1f; border: 2px solid #000; padding: 15px; color: var(--blue); font-family: 'Orbitron'; text-shadow: 0 0 5px var(--blue); }
-        .lcd h2 { font-size: 16px; margin: 5px 0; }
-        
-        .vol-range { width: 100%; accent-color: var(--blue); }
-        .ctrl-btn { background: #333; border: 1px solid #444; color: #fff; padding: 10px; cursor: pointer; font-weight: bold; }
+        :root {
+            --neon-cyan: #00f2ff;
+            --neon-mag: #bc00ff;
+            --panel-bg: #0d1117;
+        }
+
+        body {
+            background-color: #05070a;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .vital-container {
+            width: 950px;
+            height: 550px;
+            background: var(--panel-bg);
+            border: 1px solid #1e2633;
+            display: grid;
+            grid-template-columns: 250px 1fr 200px;
+            padding: 10px;
+            gap: 10px;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* LEWA KOLUMNA - OSCILLATORS */
+        .osc-section {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-label {
+            font-family: 'Orbitron';
+            font-size: 10px;
+            color: var(--neon-cyan);
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .station-card {
+            background: #000;
+            border-left: 3px solid #1e2633;
+            padding: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .station-card:hover { background: #161b22; }
+        .station-card.active {
+            border-left-color: var(--neon-cyan);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        .station-card .num { font-size: 9px; color: #555; font-family: 'Orbitron'; }
+        .station-card .name { font-weight: 600; font-size: 14px; display: block; }
+
+        /* ŚRODEK - VISUALIZER AREA */
+        .center-display {
+            background: #000;
+            border: 1px solid #1e2633;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .glitch-text {
+            font-family: 'Orbitron';
+            font-size: 24px;
+            color: var(--neon-mag);
+            text-shadow: 0 0 10px var(--neon-mag);
+        }
+
+        /* PRAWY PANEL - MASTER */
+        .master-section {
+            background: #090c10;
+            border: 1px solid #1e2633;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .v-slider-container {
+            height: 250px;
+            width: 40px;
+            background: #000;
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        input[type="range"].vertical {
+            writing-mode: bt-lr; /* IE */
+            appearance: slider-vertical;
+            width: 8px;
+            height: 220px;
+            padding: 0 15px;
+        }
+
+        .vital-btn {
+            width: 100%;
+            background: #1a222d;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 10px;
+            font-family: 'Orbitron';
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .vital-btn:active { background: var(--neon-mag); }
+
     </style>
 </head>
 <body>
 
-<div class="vst-container">
-    <div class="grid" id="station-grid"></div>
+<div class="vital-container">
+    <!-- Kolumna 1 -->
+    <div class="osc-section">
+        <div class="header-label">OSCILLATORS / BANKS</div>
+        <div id="bank"></div>
+    </div>
 
-    <aside class="sidebar">
-        <div class="lcd">
-            <span style="font-size: 9px; opacity: 0.7;">OSCILLATOR UNIT</span>
-            <h2 id="display">READY</h2>
-            <div style="font-size: 9px;">STATUS: ONLINE</div>
+    <!-- Kolumna 2 -->
+    <div class="center-display">
+        <div style="font-size: 10px; color: var(--neon-cyan); margin-bottom: 20px;">SIGNAL SPECTRUM</div>
+        <div class="glitch-text" id="now-playing">INITIALIZING...</div>
+        <div style="margin-top: 50px; width: 80%; height: 2px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);"></div>
+    </div>
+
+    <!-- Kolumna 3 -->
+    <div class="master-section">
+        <div class="header-label">MASTER VOL</div>
+        <div class="v-slider-container">
+            <input type="range" class="vertical" min="0" max="1" step="0.01" value="0.7" oninput="setVol(this.value)">
         </div>
-
-        <div style="display: flex; gap: 5px;">
-            <button class="ctrl-btn" onclick="playAudio()" style="flex:1; color: #0f0;">PLAY</button>
-            <button class="ctrl-btn" onclick="pauseAudio()" style="flex:1; color: #f00;">STOP</button>
-        </div>
-
-        <input type="range" class="vol-range" min="0" max="1" step="0.01" value="0.7" oninput="setVol(this.value)">
-    </aside>
+        <button class="vital-btn" onclick="player.pause()">KILL SIGNAL</button>
+    </div>
 </div>
 
 <audio id="player"></audio>
 
 <script>
     const player = document.getElementById('player');
-    const display = document.getElementById('display');
+    const display = document.getElementById('now-playing');
     
     const STATIONS = [
         { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
         { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
         { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
-        { n: 'BEST OF', u: 'https://stream.laut.fm/best-of-techno' },
-        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
         { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
-        { n: 'GEHIRN', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' }
     ];
 
-    const grid = document.getElementById('station-grid');
+    const bank = document.getElementById('bank');
 
     STATIONS.forEach((s, i) => {
-        const btn = document.createElement('div');
-        btn.className = 'vst-btn';
-        btn.innerHTML = `<div class="led"></div><span>PRG ${i+1}</span><div style="font-size:11px; font-weight:bold;">${s.n}</div>`;
-        btn.onclick = () => {
-            document.querySelectorAll('.vst-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+        const div = document.createElement('div');
+        div.className = 'station-card';
+        div.innerHTML = `<span class="num">0${i+1}</span><span class="name">${s.n}</span>`;
+        div.onclick = () => {
+            document.querySelectorAll('.station-card').forEach(c => c.classList.remove('active'));
+            div.classList.add('active');
             display.innerText = s.n;
             player.src = s.u;
             player.play();
         };
-        grid.appendChild(btn);
+        bank.appendChild(div);
     });
 
-    function playAudio() { player.play(); }
-    function pauseAudio() { player.pause(); }
     function setVol(v) { player.volume = v; }
 </script>
 
