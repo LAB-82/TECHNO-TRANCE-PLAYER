@@ -1,14 +1,14 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF HUD TERMINAL</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF COMMAND CENTER</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
         
         :root {            
             --yellow: #fce300;            
             --yellow-neon: #fffb00;            
-            --bg: #05050a;            
-            --tile: rgba(26, 26, 35, 0.8);            
-            --border: #2a2a35;            
-            --purple-glow: rgba(180, 0, 255, 0.4);
-            --blue-wave: #00ccff;
+            --bg: #020408; /* Bardzo ciemny granat/czerń z obrazka */
+            --tile: rgba(10, 15, 25, 0.9);            
+            --border: #1a2a44; /* Techniczny błękitny kontur */
+            --blue-wave: #00ccff; 
+            --panel-shadow: 0 0 20px rgba(252, 227, 0, 0.15);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
@@ -19,25 +19,27 @@
             overflow: hidden;         
         }
 
-        /* Tło imitujące strukturę panelu z obrazka */
+        /* Efekt pokoju operacyjnego - lekkie gradienty na krawędziach */
         body { 
             display: flex; flex-direction: column; padding: 2vh; 
-            background: radial-gradient(circle at center, #0e0e1a 0%, #05050a 100%);
-            border: 10px solid #1a1a25;
-            outline: 2px solid var(--purple-glow);
-            outline-offset: -8px;
+            background-image: 
+                radial-gradient(circle at 50% -20%, #1a2a44 0%, transparent 50%),
+                linear-gradient(180deg, #020408 0%, #050a15 100%);
+            border: 4px solid #0a1425;
         }
 
         header {             
             height: 50px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--yellow); margin-bottom: 2vh; flex-shrink: 0;
-            padding: 0 10px; background: rgba(252, 227, 0, 0.05);
-            box-shadow: 0 10px 20px -10px var(--purple-glow);
+            border-bottom: 3px solid var(--yellow); margin-bottom: 2vh; flex-shrink: 0;
+            box-shadow: 0 5px 15px rgba(252, 227, 0, 0.2);
+            padding: 0 15px;
+            background: rgba(0,0,0,0.4);
         }        
-        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; text-shadow: 0 0 10px var(--yellow); }        
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px var(--yellow); }
+        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }        
+        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
+        
         .grid {             
             flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
@@ -45,35 +47,31 @@
             gap: 12px;         
         }
 
-        /* TILE - STYL HUD Z OBRAZKA */
+        /* TILE - STYL MODULARNEGO PANELU Z image_15e5a2.jpg */
         .tile {            
             background: var(--tile); 
             border: 1px solid var(--border); 
-            border-radius: 4px; /* Bardziej kanciaste jak w HUD */
+            border-left: 4px solid var(--border); /* Akcent boczny typowy dla HUD */
+            border-radius: 2px;            
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
             cursor: pointer; position: relative; overflow: visible;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
-            transition: 0.2s;
-        }
-        
-        /* Kryształowe narożniki jak na krawędziach obrazka */
-        .tile::before {
-            content: ''; position: absolute; inset: -2px;
-            border: 1px solid var(--purple-glow);
-            pointer-events: none; opacity: 0.3;
+            transition: all 0.2s ease;
         }
 
-        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; }        
-        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #888; margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; }
+        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--yellow); line-height: 1; z-index: 2; opacity: 0.8; }        
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #4e6a8e; margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; }
 
+        /* AKTYWNY PANEL - ROZŚWIETLENIE CENTER-COMMAND */
         .tile.active {             
-            border: 2px solid var(--yellow-neon);             
-            background: rgba(252, 227, 0, 0.15);
-            box-shadow: 0 0 20px var(--yellow), inset 0 0 15px var(--yellow);
+            border-color: var(--yellow-neon);
+            border-left-color: var(--yellow-neon);
+            background: rgba(252, 227, 0, 0.08);
+            box-shadow: 0 0 25px rgba(252, 227, 0, 0.3), inset 0 0 10px rgba(252, 227, 0, 0.1);
+            transform: scale(1.02);
         }        
-        .tile.active .t-top, .tile.active .t-bottom { color: #fff; text-shadow: 0 0 5px #000; }
+        .tile.active .t-top, .tile.active .t-bottom { color: var(--yellow-neon); opacity: 1; text-shadow: 0 0 8px var(--yellow); }
 
-        /* TWOJE FALE BŁĘKITNE */
+        /* FALE BŁĘKITNE - ZACHOWANA LOGIKA I KOLOR */
         .waves {            
             position: absolute; width: 100%; height: 100%;            
             display: flex; align-items: center; justify-content: center;            
@@ -81,7 +79,7 @@
         }        
         .tile.active .waves { opacity: 1; }        
         .wave {            
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;            
+            position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%;            
             width: 10px; height: 10px; opacity: 0;            
             box-shadow: 0 0 15px var(--blue-wave);            
             animation: ripple 3s infinite linear;        
@@ -91,63 +89,62 @@
 
         @keyframes ripple {            
             0% { width: 0; height: 0; opacity: 0.9; }            
-            100% { width: 320%; height: 320%; opacity: 0; }        
+            100% { width: 300%; height: 300%; opacity: 0; }        
         }
 
         .sidebar {             
             flex: 0.6; display: flex; flex-direction: column;             
             align-items: center; justify-content: center; gap: 4vh;            
-            border-left: 2px solid var(--border); padding-left: 3vw;
-            background: rgba(10, 10, 20, 0.4);
+            border: 1px solid var(--border); 
+            background: rgba(5, 10, 20, 0.8);
+            padding: 20px;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.5);
         }
 
+        /* LOGO DISPLAY - STYL MONITORA Z OBRAZKA */
         .logo-display {            
             width: 100%; max-width: 320px; aspect-ratio: 16/10;            
-            border: 3px solid var(--yellow); 
-            clip-path: polygon(10% 0, 90% 0, 100% 15%, 100% 85%, 90% 100%, 10% 100%, 0 85%, 0 15%);
+            border: 2px solid var(--border); 
+            border-top: 4px solid var(--yellow);
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: rgba(252, 227, 0, 0.05);            
-            box-shadow: 0 0 30px var(--purple-glow);
+            background: #000;            
+            position: relative;
+            box-shadow: var(--panel-shadow);
         }        
-        .logo-display h2 { font-size: 42px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
-        .logo-display p { font-size: 11px; color: var(--yellow); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        .logo-display h2 { font-size: 40px; color: var(--yellow); text-shadow: 0 0 15px var(--yellow); }        
+        .logo-display p { font-size: 11px; color: #4e6a8e; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
 
         .controls { display: flex; align-items: center; gap: 3vw; }        
         .c-svg {             
-            width: 40px; height: 40px; fill: var(--yellow); cursor: pointer;             
-            filter: drop-shadow(0 0 8px var(--yellow));
+            width: 35px; height: 35px; fill: var(--yellow); cursor: pointer;             
+            filter: drop-shadow(0 0 5px var(--yellow)); 
         }        
-        .c-play { width: 80px; height: 80px; fill: var(--yellow); filter: drop-shadow(0 0 15px var(--yellow)); }
+        .c-play { width: 75px; height: 75px; filter: drop-shadow(0 0 15px var(--yellow)); }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }        
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; }        
         .vol-btn { 
-            width: 35px; height: 35px; border: 2px solid var(--yellow); border-radius: 0; 
-            background: none; color: var(--yellow); cursor: pointer; font-weight: bold; 
-            clip-path: polygon(20% 0, 100% 0, 100% 80%, 80% 100%, 0 100%, 0 20%);
+            width: 40px; height: 40px; border: 1px solid var(--border); 
+            background: var(--tile); color: var(--yellow); cursor: pointer; 
+            font-size: 18px; font-weight: bold;
         }        
         .vol-bar { 
-            flex: 1; height: 35px; border: 1px solid var(--border); 
-            background: rgba(0,0,0,0.5); padding: 0 12px; display: flex; align-items: center; 
+            flex: 1; height: 40px; border: 1px solid var(--border); 
+            background: #000; display: flex; align-items: center; padding: 0 10px;
         }                
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }        
-        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 4px; border-radius: 2px; }                
+        input[type="range"] { flex: 1; appearance: none; background: #1a2a44; height: 4px; outline: none; }        
         input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 16px; height: 24px;             
-            background: var(--yellow); border-radius: 2px;             
-            margin-top: -10px; border: 1px solid #000;
-            box-shadow: 0 0 10px var(--yellow);
+            appearance: none; width: 12px; height: 24px;             
+            background: var(--yellow); border-radius: 0;             
+            cursor: pointer; box-shadow: 0 0 10px var(--yellow);
         }        
         input[type="range"].at-mid::-webkit-slider-thumb {            
-            background: var(--yellow-neon);
-            box-shadow: 0 0 20px var(--yellow-neon);
-            transform: scale(1.2);
+            background: #fff; box-shadow: 0 0 20px #fff;
         }
 
         @media (max-width: 600px) {            
-            .header-info, .clock { font-size: 20px; }            
             .app-content { flex-direction: column; }            
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }            
-            .sidebar { width: 100%; border-left: none; border-top: 2px solid var(--border); padding: 20px 0; }        
+            .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; flex: none; }            
+            .sidebar { width: 100%; padding: 10px; gap: 20px; }        
         }
     </style></head><body>
 
@@ -240,5 +237,4 @@
         if(parseInt(v) === 50) vRange.classList.add('at-mid');        
         else vRange.classList.remove('at-mid');    
     }        
-    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
-</script></body></html>
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }</script></body></html>
