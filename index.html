@@ -2,16 +2,18 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - AUDIO SYNTH PRO V6</title>
+    <title>GEHIRN TREIBER - TRON SYNTH HUD</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
         :root {
             --cyan: #00f2ff;
             --magenta: #ff00e5;
-            --bg-black: #010408;
-            --panel-border: #1a2a3a;
-            --slot-bg: #000000;
+            --bg-black: #0b0e14;
+            --panel-bg: #151a24;
+            --panel-border: #2a3441;
+            --slot-bg: #05070a;
+            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -20,7 +22,7 @@
             width: 100vw; 
             height: 100vh; 
             overflow: hidden; 
-            background-color: var(--bg-black);
+            background-color: #080a0f;
             color: #fff;
             font-family: 'Rajdhani', sans-serif;
         }
@@ -29,20 +31,33 @@
             width: 100%;
             height: 100%;
             display: grid;
-            grid-template-columns: 300px 1fr 340px;
-            gap: 10px;
-            padding: 10px;
+            grid-template-columns: 320px 1fr 340px;
+            gap: 12px;
+            padding: 12px;
+            background: linear-gradient(180deg, #10141d 0%, #080a0f 100%);
         }
 
         /* LEWY PANEL */
         .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
         
         .track-info-box {
-            border: 1px solid var(--magenta);
-            padding: 12px;
-            background: rgba(255, 0, 229, 0.05);
+            border: 2px solid var(--panel-border);
+            border-left: 4px solid var(--magenta);
+            padding: 15px;
+            background: var(--panel-bg);
             margin-bottom: 5px;
-            min-height: 70px;
+            min-height: 85px;
+            box-shadow: var(--neon-glow);
+        }
+
+        .category-header {
+            font-family: 'Orbitron';
+            font-size: 11px;
+            color: #55667a;
+            margin: 10px 0 5px 0;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--panel-border);
+            padding-bottom: 3px;
         }
 
         #station-list {
@@ -50,57 +65,70 @@
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 6px;
+            padding-right: 5px;
         }
-        #station-list::-webkit-scrollbar { width: 0; }
+        #station-list::-webkit-scrollbar { width: 4px; }
+        #station-list::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 10px; }
 
         .osc-module {
             border: 1px solid var(--panel-border);
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.01);
+            padding: 6px;
+            background: var(--panel-bg);
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s ease;
         }
-        .osc-module.active { border-color: var(--cyan); background: rgba(0, 242, 255, 0.05); }
+        .osc-module:hover { border-color: #4a5a71; background: #1c232e; }
+        .osc-module.active { border-color: var(--cyan); background: #1c232e; box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.1); }
 
-        .osc-header { font-size: 9px; color: var(--cyan); letter-spacing: 1px; font-family: 'Orbitron'; margin-bottom: 4px; }
+        .osc-header { font-size: 9px; color: var(--cyan); letter-spacing: 1px; font-family: 'Orbitron'; margin-bottom: 4px; opacity: 0.8; }
         .station-slot {
             background: var(--slot-bg);
-            height: 42px;
+            height: 38px;
             display: flex;
             align-items: center;
             padding-left: 12px;
             font-family: 'Orbitron';
-            font-size: 11px;
-            border: 1px solid rgba(255,255,255,0.05);
+            font-size: 10px;
+            border: 1px solid #1a202a;
+            color: #cbd5e1;
         }
+        .osc-module.active .station-slot { color: #fff; border-color: rgba(0, 242, 255, 0.3); }
 
         /* ŚRODEK */
         .main-display {
-            border: 1px solid var(--panel-border);
+            border: 2px solid var(--panel-border);
             position: relative;
-            background: radial-gradient(circle at center, #0a1018 0%, #010408 100%);
+            background: #05070a;
+            box-shadow: inset 0 0 50px rgba(0,0,0,0.5);
         }
         #eq-canvas { width: 100%; height: 100%; display: block; }
 
         /* PRAWY PANEL */
-        .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
-        .module-box { border: 1px solid var(--panel-border); padding: 20px; }
-        .envelope-view { height: 160px; width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #111; }
-
-        .playback-frame { border: 1px solid var(--panel-border); padding: 20px; background: rgba(0,0,0,0.3); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .synth-btn {
-            background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
-            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
+        .control-sidebar { display: flex; flex-direction: column; gap: 12px; }
+        .module-box { border: 2px solid var(--panel-border); padding: 20px; background: var(--panel-bg); }
+        .envelope-view { 
+            height: 180px; width: 100%; 
+            background: #05070a; 
+            border: 1px solid var(--panel-border);
+            position: relative;
         }
-        .btn-stop { border-color: var(--magenta); color: var(--magenta); }
 
-        .vol-slider { -webkit-appearance: none; width: 100%; height: 2px; background: var(--panel-border); outline: none; }
+        .playback-frame { border: 2px solid var(--panel-border); padding: 20px; background: var(--panel-bg); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        .synth-btn {
+            background: #1c232e; border: 1px solid var(--panel-border); color: #fff;
+            padding: 12px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .synth-btn:hover { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        .btn-stop:hover { border-color: var(--magenta); box-shadow: 0 0 10px rgba(255, 0, 229, 0.2); }
+
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #05070a; outline: none; border-radius: 2px; }
         .vol-slider::-webkit-slider-thumb { 
-            -webkit-appearance: none; width: 16px; height: 16px; 
-            background: var(--cyan); border-radius: 50%; cursor: pointer; 
-            box-shadow: 0 0 10px var(--cyan);
+            -webkit-appearance: none; width: 14px; height: 14px; 
+            background: var(--cyan); border-radius: 2px; cursor: pointer; 
+            box-shadow: 0 0 8px var(--cyan);
         }
     </style>
 </head>
@@ -110,9 +138,16 @@
     <div class="osc-sidebar">
         <div class="track-info-box">
             <div class="osc-header" style="color: var(--magenta);">CURRENT SIGNAL</div>
-            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta); line-height: 1.4;">IDLE...</div>
+            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta); line-height: 1.4;">READY TO BOOT...</div>
         </div>
-        <div id="station-list"></div>
+        <div id="station-list">
+            <div class="category-header">CORE // TECHNO</div>
+            <!-- Dynamic Techno stations -->
+            <div id="techno-group"></div>
+            <div class="category-header">NODE // HOUSE</div>
+            <!-- Dynamic House stations -->
+            <div id="house-group"></div>
+        </div>
     </div>
 
     <main class="main-display">
@@ -132,10 +167,10 @@
         <div class="playback-frame">
             <div class="osc-header" style="margin-bottom:10px">TRANSPORT CONTROL</div>
             <div class="btn-grid">
-                <button class="synth-btn" id="playBtn">PLAY</button>
-                <button class="synth-btn btn-stop" id="stopBtn">STOP</button>
+                <button class="synth-btn" id="playBtn">START</button>
+                <button class="synth-btn btn-stop" id="stopBtn">KILL</button>
             </div>
-            <div style="font-size: 10px; margin-bottom: 8px; color: var(--cyan); letter-spacing: 1px;">MASTER VOLUME</div>
+            <div style="font-size: 10px; margin-bottom: 8px; color: var(--cyan); letter-spacing: 1px;">MASTER GAIN</div>
             <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
         </div>
     </aside>
@@ -144,14 +179,25 @@
 <audio id="audio-engine" crossorigin="anonymous"></audio>
 
 <script>
-    const STATIONS = [
-        { id: '01', slug: 'tech88', n: 'TECHNO-RADIO.pl' },
-        { id: '02', slug: 'hr3_clubnight', n: 'CLUB-NIGHT' },
-        { id: '03', slug: '1000techno', n: '1000 TECHNOHITS' },
-        { id: '04', slug: 'best-of-techno', n: 'BEST OF TECHNO' },
-        { id: '05', slug: 'chris_burn', n: 'CHRIS BURN' },
-        { id: '06', slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
-    ];
+    const STATIONS = {
+        techno: [
+            { slug: 'tech88', n: 'TECH 88' },
+            { slug: 'hr3_clubnight', n: 'HR 3 CLUBNIGHT' },
+            { slug: '1000techno', n: '1000 TECHNO' },
+            { slug: 'best-of-techno', n: 'BEST OF TECHNO' },
+            { slug: 'chris_burn', n: 'CHRIS BURN' },
+            { slug: 'retroelectronicmusic', n: 'RETRO ELECTRONIC' },
+            { slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
+        ],
+        house: [
+            { slug: 'deep-house-sounds', n: 'DEEP HOUSE SOUNDS' },
+            { slug: 'housebomb-fn', n: 'HOUSEBOMB FN' },
+            { slug: 'symbiotic-beats', n: 'SYMBIOTIC BEATS' },
+            { slug: 'house', n: 'HOUSE' },
+            { slug: 'faf-records-979', n: 'FAF RECORDS 979' },
+            { slug: 'tornadofm', n: 'TORNADO FM' }
+        ]
+    };
 
     const audio = document.getElementById('audio-engine');
     const trackTitle = document.getElementById('track-title');
@@ -161,7 +207,6 @@
     let audioCtx, analyser, source, dataArray;
     let currentSlug = "";
 
-    // Funkcja pobierająca metadane (Aktualny utwór)
     async function updateMetadata() {
         if (!currentSlug) return;
         try {
@@ -169,16 +214,11 @@
             const data = await response.json();
             if (data && data.artist && data.title) {
                 trackTitle.textContent = `${data.artist.name.toUpperCase()} - ${data.title.toUpperCase()}`;
-            } else {
-                trackTitle.textContent = "SIGNAL RECOVERING...";
             }
-        } catch (e) {
-            trackTitle.textContent = "METADATA ERROR";
-        }
+        } catch (e) { trackTitle.textContent = "SIGNAL LOST..."; }
     }
 
-    // Interwał sprawdzania utworu co 30 sekund
-    setInterval(updateMetadata, 30000);
+    setInterval(updateMetadata, 20000);
 
     function initAudio() {
         if (!audioCtx) {
@@ -193,22 +233,28 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    STATIONS.forEach((s) => {
-        const mod = document.createElement('div');
-        mod.className = 'osc-module';
-        mod.innerHTML = `<div class="osc-header">OSC ${s.id}</div><div class="station-slot">${s.n}</div>`;
-        mod.onclick = () => {
-            initAudio();
-            document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
-            mod.classList.add('active');
-            
-            currentSlug = s.slug;
-            audio.src = `https://stream.laut.fm/${s.slug}`;
-            audio.play();
-            updateMetadata(); // Natychmiastowe pobranie tytułu
-        };
-        document.getElementById('station-list').appendChild(mod);
-    });
+    function createStationList() {
+        Object.keys(STATIONS).forEach(cat => {
+            const group = document.getElementById(`${cat}-group`);
+            STATIONS[cat].forEach((s, index) => {
+                const mod = document.createElement('div');
+                mod.className = 'osc-module';
+                mod.innerHTML = `<div class="osc-header">${cat.toUpperCase()} 0${index+1}</div><div class="station-slot">${s.n}</div>`;
+                mod.onclick = () => {
+                    initAudio();
+                    document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
+                    mod.classList.add('active');
+                    currentSlug = s.slug;
+                    audio.src = `https://stream.laut.fm/${s.slug}`;
+                    audio.play();
+                    updateMetadata();
+                };
+                group.appendChild(mod);
+            });
+        });
+    }
+
+    createStationList();
 
     document.getElementById('playBtn').onclick = () => { if(audio.src) { initAudio(); audio.play(); }};
     document.getElementById('stopBtn').onclick = () => audio.pause();
@@ -223,22 +269,22 @@
 
     function draw() {
         requestAnimationFrame(draw);
-        ctx.fillStyle = 'rgba(1, 4, 8, 0.2)';
+        ctx.fillStyle = '#05070a';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (analyser) analyser.getByteFrequencyData(dataArray);
 
-        const layers = 5;
+        const layers = 6;
         for (let l = 0; l < layers; l++) {
             ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.7 - l*0.1})` : `rgba(255, 0, 229, ${0.4 - l*0.05})`;
+            ctx.lineWidth = l === 0 ? 3 : 1;
+            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.6 - l*0.1})` : `rgba(255, 0, 229, ${0.3 - l*0.05})`;
             
             for (let i = 0; i < canvas.width; i += 5) {
-                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length / 2 : 1));
-                const val = dataArray ? (dataArray[index] / 255) * canvas.height * 0.4 : 0;
-                const offset = l * 15;
-                const y = (canvas.height / 2) + Math.sin(i * 0.01 + Date.now()*0.002 + offset) * (val + 5);
+                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length / 2.5 : 1));
+                const val = dataArray ? (dataArray[index] / 255) * canvas.height * 0.45 : 0;
+                const offset = l * 10;
+                const y = (canvas.height / 2) + Math.sin(i * 0.015 + Date.now()*0.0015 + offset) * (val + 2);
                 
                 if (i === 0) ctx.moveTo(i, y);
                 else ctx.lineTo(i, y);
