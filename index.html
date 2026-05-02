@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - AUDIO SYNTH PRO</title>
+    <title>GEHIRN TREIBER - AUDIO SYNTH PRO V6</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
@@ -14,10 +14,11 @@
             --slot-bg: #000000;
         }
 
-        /* Fix dla braku pasków przewijania */
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body, html { 
-            width: 100%; height: 100%; 
+            width: 100vw; 
+            height: 100vh; 
             overflow: hidden; 
             background-color: var(--bg-black);
             color: #fff;
@@ -25,8 +26,8 @@
         }
 
         .synth-container {
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             display: grid;
             grid-template-columns: 300px 1fr 340px;
             gap: 10px;
@@ -34,63 +35,73 @@
         }
 
         /* LEWY PANEL */
-        .osc-sidebar { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
-        .osc-sidebar::-webkit-scrollbar { width: 0; }
-
-        /* Pole Tytułu Utworu (z oryginału) */
+        .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+        
         .track-info-box {
             border: 1px solid var(--magenta);
-            padding: 10px;
-            margin-bottom: 5px;
+            padding: 12px;
             background: rgba(255, 0, 229, 0.05);
+            margin-bottom: 5px;
+            min-height: 70px;
         }
+
+        #station-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        #station-list::-webkit-scrollbar { width: 0; }
 
         .osc-module {
             border: 1px solid var(--panel-border);
             padding: 8px;
             background: rgba(255, 255, 255, 0.01);
-            border-radius: 2px;
             cursor: pointer;
+            transition: 0.2s;
         }
-        .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
+        .osc-module.active { border-color: var(--cyan); background: rgba(0, 242, 255, 0.05); }
 
         .osc-header { font-size: 9px; color: var(--cyan); letter-spacing: 1px; font-family: 'Orbitron'; margin-bottom: 4px; }
         .station-slot {
             background: var(--slot-bg);
-            height: 40px;
+            height: 42px;
             display: flex;
             align-items: center;
-            padding-left: 10px;
+            padding-left: 12px;
             font-family: 'Orbitron';
-            font-size: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
+            font-size: 11px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         /* ŚRODEK */
         .main-display {
             border: 1px solid var(--panel-border);
-            display: flex;
-            flex-direction: column;
-            background: radial-gradient(circle at center, #0a0a1a 0%, #010408 100%);
+            position: relative;
+            background: radial-gradient(circle at center, #0a1018 0%, #010408 100%);
         }
-
-        .visualizer-core { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; }
-        #eq-canvas { width: 100%; height: 100%; }
+        #eq-canvas { width: 100%; height: 100%; display: block; }
 
         /* PRAWY PANEL */
         .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
-        .module-box { border: 1px solid var(--panel-border); padding: 15px; }
-        .envelope-view { height: 150px; width: 100%; background: rgba(0,0,0,0.5); }
+        .module-box { border: 1px solid var(--panel-border); padding: 20px; }
+        .envelope-view { height: 160px; width: 100%; background: rgba(0,0,0,0.5); border: 1px solid #111; }
 
-        .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: rgba(0,0,0,0.3); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
+        .playback-frame { border: 1px solid var(--panel-border); padding: 20px; background: rgba(0,0,0,0.3); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
         .synth-btn {
             background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
-            padding: 8px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
+            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
         }
         .btn-stop { border-color: var(--magenta); color: var(--magenta); }
-        .vol-slider { -webkit-appearance: none; width: 100%; height: 2px; background: var(--panel-border); }
-        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--cyan); border-radius: 50%; }
+
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 2px; background: var(--panel-border); outline: none; }
+        .vol-slider::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 16px; height: 16px; 
+            background: var(--cyan); border-radius: 50%; cursor: pointer; 
+            box-shadow: 0 0 10px var(--cyan);
+        }
     </style>
 </head>
 <body>
@@ -98,16 +109,14 @@
 <div class="synth-container">
     <div class="osc-sidebar">
         <div class="track-info-box">
-            <div class="osc-header" style="color: var(--magenta);">CURRENT TRACK</div>
-            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; overflow: hidden; white-space: nowrap;">WAITING FOR SIGNAL...</div>
+            <div class="osc-header" style="color: var(--magenta);">CURRENT SIGNAL</div>
+            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta); line-height: 1.4;">IDLE...</div>
         </div>
         <div id="station-list"></div>
     </div>
 
     <main class="main-display">
-        <div class="visualizer-core">
-            <canvas id="eq-canvas"></canvas>
-        </div>
+        <canvas id="eq-canvas"></canvas>
     </main>
 
     <aside class="control-sidebar">
@@ -121,12 +130,12 @@
         </div>
 
         <div class="playback-frame">
-            <div class="osc-header">TRANSPORT</div>
+            <div class="osc-header" style="margin-bottom:10px">TRANSPORT CONTROL</div>
             <div class="btn-grid">
                 <button class="synth-btn" id="playBtn">PLAY</button>
                 <button class="synth-btn btn-stop" id="stopBtn">STOP</button>
             </div>
-            <div style="font-size: 10px; margin-bottom: 5px; color: var(--cyan);">MASTER VOLUME</div>
+            <div style="font-size: 10px; margin-bottom: 8px; color: var(--cyan); letter-spacing: 1px;">MASTER VOLUME</div>
             <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
         </div>
     </aside>
@@ -136,12 +145,12 @@
 
 <script>
     const STATIONS = [
-        { id: '01', n: 'TECHNO-RADIO.pl', u: 'https://stream.laut.fm/tech88' },
-        { id: '02', n: 'CLUB-NIGHT', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { id: '03', n: '1000 TECHNOHITS', u: 'https://stream.laut.fm/1000techno' },
-        { id: '04', n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
-        { id: '05', n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
-        { id: '06', n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
+        { id: '01', slug: 'tech88', n: 'TECHNO-RADIO.pl' },
+        { id: '02', slug: 'hr3_clubnight', n: 'CLUB-NIGHT' },
+        { id: '03', slug: '1000techno', n: '1000 TECHNOHITS' },
+        { id: '04', slug: 'best-of-techno', n: 'BEST OF TECHNO' },
+        { id: '05', slug: 'chris_burn', n: 'CHRIS BURN' },
+        { id: '06', slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
     ];
 
     const audio = document.getElementById('audio-engine');
@@ -149,19 +158,39 @@
     const canvas = document.getElementById('eq-canvas');
     const ctx = canvas.getContext('2d');
     
-    let audioCtx, analyser, dataArray;
+    let audioCtx, analyser, source, dataArray;
+    let currentSlug = "";
 
-    // Inicjalizacja Audio API dla precyzyjnego EQ
+    // Funkcja pobierająca metadane (Aktualny utwór)
+    async function updateMetadata() {
+        if (!currentSlug) return;
+        try {
+            const response = await fetch(`https://api.laut.fm/station/${currentSlug}/current_song`);
+            const data = await response.json();
+            if (data && data.artist && data.title) {
+                trackTitle.textContent = `${data.artist.name.toUpperCase()} - ${data.title.toUpperCase()}`;
+            } else {
+                trackTitle.textContent = "SIGNAL RECOVERING...";
+            }
+        } catch (e) {
+            trackTitle.textContent = "METADATA ERROR";
+        }
+    }
+
+    // Interwał sprawdzania utworu co 30 sekund
+    setInterval(updateMetadata, 30000);
+
     function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
-            const source = audioCtx.createMediaElementSource(audio);
+            source = audioCtx.createMediaElementSource(audio);
             source.connect(analyser);
             analyser.connect(audioCtx.destination);
-            analyser.fftSize = 256;
+            analyser.fftSize = 512;
             dataArray = new Uint8Array(analyser.frequencyBinCount);
         }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     STATIONS.forEach((s) => {
@@ -172,41 +201,50 @@
             initAudio();
             document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
             mod.classList.add('active');
-            trackTitle.textContent = s.n;
-            audio.src = s.u;
+            
+            currentSlug = s.slug;
+            audio.src = `https://stream.laut.fm/${s.slug}`;
             audio.play();
+            updateMetadata(); // Natychmiastowe pobranie tytułu
         };
         document.getElementById('station-list').appendChild(mod);
     });
 
-    document.getElementById('playBtn').onclick = () => { initAudio(); audio.play(); };
+    document.getElementById('playBtn').onclick = () => { if(audio.src) { initAudio(); audio.play(); }};
     document.getElementById('stopBtn').onclick = () => audio.pause();
     document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
 
-    canvas.width = 1200; canvas.height = 600;
+    function resize() {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+    }
+    window.onresize = resize;
+    resize();
 
     function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        requestAnimationFrame(draw);
+        ctx.fillStyle = 'rgba(1, 4, 8, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
         if (analyser) analyser.getByteFrequencyData(dataArray);
-        
-        const layers = 6;
+
+        const layers = 5;
         for (let l = 0; l < layers; l++) {
             ctx.beginPath();
-            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.8 - l*0.1})` : `rgba(255, 0, 229, ${0.4 - l*0.05})`;
             ctx.lineWidth = 2;
+            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.7 - l*0.1})` : `rgba(255, 0, 229, ${0.4 - l*0.05})`;
             
             for (let i = 0; i < canvas.width; i += 5) {
-                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length : 1));
-                const val = dataArray ? dataArray[index] : 10;
-                const phase = l * 15;
-                const y = (canvas.height / 2) + Math.sin(i * 0.01 + phase) * (val * 0.8);
+                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length / 2 : 1));
+                const val = dataArray ? (dataArray[index] / 255) * canvas.height * 0.4 : 0;
+                const offset = l * 15;
+                const y = (canvas.height / 2) + Math.sin(i * 0.01 + Date.now()*0.002 + offset) * (val + 5);
                 
                 if (i === 0) ctx.moveTo(i, y);
                 else ctx.lineTo(i, y);
             }
             ctx.stroke();
         }
-        requestAnimationFrame(draw);
     }
     draw();
 </script>
