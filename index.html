@@ -2,163 +2,206 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>TECHNO_PCB_AUDIT_FIX_V11</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TECHNO-TRANCE-PLAYER - Modified Edition</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=JetBrains+Mono:wght@300;600&display=swap');
-        :root {
-            --laminat: #010a05; --miedz: #1a3a2a; --neon: #00f2ff; --gold: #b8a033;
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0a0a0a;
+            color: #00ff00;
+            font-family: 'Courier New', Courier, monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--laminat); color: var(--neon); font-family: 'JetBrains Mono', monospace; overflow: hidden; height: 100vh; }
 
-        /* TŁO PCB */
-        #pcb-svg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
-
-        .interface { display: flex; width: 100%; height: 100vh; position: relative; z-index: 10; }
-        .board { flex: 2; position: relative; }
-
-        /* UKŁAD SCALONY - TWOJA ZAMROŻONA ESTETYKA + PINY */
-        .ic-chip {
-            position: absolute; width: 160px; height: 85px;
-            background: #111; border: 1px solid #222; border-radius: 2px;
-            cursor: pointer; z-index: 20; transition: 0.3s;
-            box-shadow: 5px 5px 20px rgba(0,0,0,0.7);
+        /* Warstwa tła dla połączeń (ścieżek) */
+        #pcb-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
         }
-        
-        /* PINY (NÓŻKI) - GĘSTOŚĆ JAK NA ZDJĘCIU */
-        .ic-chip::before {
-            content: ''; position: absolute; top: -10px; left: 10px; right: 10px; bottom: -10px;
-            background: repeating-linear-gradient(90deg, #555 0px, #888 2px, #555 4px, transparent 4px, transparent 10px);
+
+        #container {
+            position: relative;
+            z-index: 1;
+            width: 80vw;
+            height: 80vh;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        /* Wygląd układu scalonego - USUNIĘTO PASKI */
+        .chip {
+            width: 100px;
+            height: 60px;
+            background-color: #121212; /* Jednolity ciemny kolor */
+            border-radius: 3px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 5px rgba(255,255,255,0.1);
+            border: 1px solid #333;
+            cursor: pointer;
+            transition: transform 0.2s;
+            user-select: none;
+        }
+
+        .chip:hover {
+            transform: scale(1.05);
+            border-color: #00ff00;
+        }
+
+        .chip-label {
+            font-size: 10px;
+            color: #555;
+            text-transform: uppercase;
+            pointer-events: none;
+        }
+
+        /* NÓŻKI UKŁADU SCALONEGO */
+        .chip::before, .chip::after {
+            content: '';
+            position: absolute;
+            width: 110%; /* Wystają poza obudowę */
+            height: 80%;
+            /* Generator pinów */
+            background: repeating-linear-gradient(
+                to bottom,
+                #777, /* Kolor cyny/metalu */
+                #777 3px,
+                transparent 3px,
+                transparent 8px
+            );
             z-index: -1;
         }
 
-        .ic-chip.active { border-color: var(--neon); box-shadow: 0 0 25px var(--neon); }
+        .chip::before { left: -5%; }
+        .chip::after { right: -5%; }
 
-        .chip-label { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; pointer-events: none; }
-        .chip-id { font-family: 'Orbitron'; font-size: 11px; color: var(--gold); }
-
-        /* ŚCIEŻKI I PRZEPŁYW */
-        .trace { fill: none; stroke: var(--miedz); stroke-width: 2; opacity: 0.3; }
-        .trace-active { stroke: var(--neon); opacity: 1; filter: drop-shadow(0 0 5px var(--neon)); }
-        
-        .flow-dot {
-            fill: #fff; filter: drop-shadow(0 0 8px var(--neon));
+        .status-led {
+            width: 6px;
+            height: 6px;
+            background-color: #300;
+            border-radius: 50%;
+            margin-top: 5px;
         }
 
-        /* PANEL KONTROLNY */
-        .sidebar { flex: 0.7; background: rgba(0,0,0,0.9); border-left: 2px solid #111; display: flex; flex-direction: column; }
-        .terminal { flex: 1; padding: 20px; font-size: 11px; color: #39ff14; overflow-y: auto; background: #000; margin: 10px; border: 1px solid #1a1a1a; }
-        .controls { padding: 20px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 5px; }
-        .btn { background: #080808; border: 1px solid #333; color: var(--neon); padding: 15px; cursor: pointer; font-family: 'Orbitron'; font-size: 10px; }
-        .btn:hover { background: var(--neon); color: #000; }
+        .active .status-led {
+            background-color: #0f0;
+            box-shadow: 0 0 10px #0f0;
+        }
     </style>
 </head>
 <body>
 
-<svg id="pcb-svg">
-    <!-- Tu generujemy ścieżki i animowane punkty -->
-    <circle id="pulse-dot" r="4" class="flow-dot" style="visibility: hidden;">
-        <animateMotion id="pulse-anim" dur="1.5s" repeatCount="indefinite" begin="indefinite" />
-    </circle>
-</svg>
+    <canvas id="pcb-canvas"></canvas>
 
-<div class="interface">
-    <div class="board" id="main-board"></div>
-    <aside class="sidebar">
-        <div style="padding:20px; font-weight:bold; border-bottom:1px solid #222;">PCB_AUDIT_V11</div>
-        <div class="terminal" id="out">> SYSTEM READY...<br>> CLICK ANY CHIP TO START</div>
-        <div class="controls">
-            <button class="btn" onclick="skip(-1)">PREV</button>
-            <button class="btn" onclick="toggle()">SYNC</button>
-            <button class="btn" onclick="skip(1)">NEXT</button>
-        </div>
-    </aside>
-</div>
+    <div id="container">
+        <!-- Układy zostaną wygenerowane przez JS -->
+    </div>
 
-<audio id="core-audio" crossorigin="anonymous"></audio>
+    <script>
+        const container = document.getElementById('container');
+        const canvas = document.getElementById('pcb-canvas');
+        const ctx = canvas.getContext('2d');
+        const chipCount = 12;
+        const chips = [];
 
-<script>
-    const STATIONS = [
-        { n: 'TECH 88', u: 'https://laut.fm/tech88', x: 10, y: 15 },
-        { n: 'HR3 CLUB', u: 'https://laut.fm/hr3_clubnight', x: 45, y: 10 },
-        { n: '1000 TECHNO', u: 'https://laut.fm/1000techno', x: 15, y: 40 },
-        { n: 'GEHIRN', u: 'https://laut.fm/gehirn-treiber-beat-radio', x: 50, y: 45 },
-        { n: 'B.O. TECHNO', u: 'https://laut.fm/best-of-techno', x: 12, y: 75 },
-        { n: 'CHRIS BURN', u: 'https://laut.fm/chris_burn', x: 55, y: 80 }
-    ];
+        // Inicjalizacja Canvas
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            drawConnections();
+        }
 
-    const board = document.getElementById('main-board');
-    const out = document.getElementById('out');
-    const audio = document.getElementById('core-audio');
-    const svg = document.getElementById('pcb-svg');
-    let currentIdx = -1;
-
-    function init() {
-        STATIONS.forEach((s, i) => {
+        // Tworzenie układów scalonych
+        for (let i = 0; i < chipCount; i++) {
             const chip = document.createElement('div');
-            chip.className = 'ic-chip';
-            chip.style.left = s.x + '%'; chip.style.top = s.y + '%';
-            chip.id = 'chip-' + i;
-            chip.innerHTML = `<div class="chip-label"><span class="chip-id">${s.n}</span></div>`;
-            chip.onclick = () => mount(i);
-            board.appendChild(chip);
-        });
-    }
+            chip.className = 'chip';
+            chip.innerHTML = `
+                <div class="chip-label">IC-${1024 + i}</div>
+                <div class="status-led"></div>
+            `;
+            
+            chip.onclick = () => {
+                chip.classList.toggle('active');
+                playTone(i);
+            };
 
-    function mount(i) {
-        currentIdx = i;
-        document.querySelectorAll('.ic-chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        
-        // 1. Czyścimy stare ścieżki i tworzymy nową
-        const panelX = window.innerWidth * 0.75;
-        const chipEl = document.getElementById('chip-' + i);
-        const r = chipEl.getBoundingClientRect();
-        const startX = r.left + r.width;
-        const startY = r.top + r.height / 2;
-        const targetY = (window.innerHeight / STATIONS.length) * i + 100;
-
-        const pathD = `M ${startX} ${startY} L ${startX + 50} ${startY} L ${startX + 100} ${targetY} L ${panelX} ${targetY}`;
-        
-        // Aktualizacja ścieżki wizualnej
-        let trace = document.getElementById('active-trace-path');
-        if(!trace) {
-            trace = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            trace.id = 'active-trace-path';
-            svg.appendChild(trace);
+            container.appendChild(chip);
+            chips.push(chip);
         }
-        trace.setAttribute('d', pathD);
-        trace.setAttribute('class', 'trace trace-active');
 
-        // 2. Animacja "przepływu prądu" (Światełko)
-        const pulse = document.getElementById('pulse-dot');
-        const anim = document.getElementById('pulse-anim');
-        pulse.style.visibility = 'visible';
-        anim.setAttribute('path', pathD);
-        anim.beginElement();
+        // Funkcja rysująca połączenia między układami
+        function drawConnections() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.strokeStyle = '#1a3a1a'; // Ciemnozielone ścieżki
+            ctx.lineWidth = 2;
 
-        // 3. Audio Engine Fix
-        out.innerHTML += `<br>> CONNECTING: ${STATIONS[i].n}...`;
-        audio.pause();
-        audio.src = STATIONS[i].u;
-        audio.load();
-        
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.then(() => {
-                out.innerHTML += `<br>> SYNC_LOCKED.`;
-            }).catch(error => {
-                out.innerHTML += `<br><span style="color:red">> ERROR: CLICK SYNC TO UNMUTE</span>`;
-            });
+            for (let i = 0; i < chips.length; i++) {
+                const rectA = chips[i].getBoundingClientRect();
+                
+                // Połącz z następnym układem w tablicy
+                if (chips[i+1]) {
+                    const rectB = chips[i+1].getBoundingClientRect();
+                    
+                    const x1 = rectA.left + rectA.width / 2;
+                    const y1 = rectA.top + rectA.height / 2;
+                    const x2 = rectB.left + rectB.width / 2;
+                    const y2 = rectB.top + rectB.height / 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x1, y1);
+                    // Styl prowadzenia ścieżek "pod kątem prostym"
+                    ctx.lineTo(x1, y2);
+                    ctx.lineTo(x2, y2);
+                    ctx.stroke();
+
+                    // Dodanie małych "punktów lutowniczych"
+                    ctx.fillStyle = '#2d5a2d';
+                    ctx.beginPath();
+                    ctx.arc(x1, y1, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
         }
-    }
 
-    function toggle() { audio.paused ? audio.play() : audio.pause(); }
-    function skip(dir) { 
-        let n = currentIdx + dir;
-        if(n >= 0 && n < STATIONS.length) mount(n);
-    }
+        // Prosty silnik audio (Techno-Trance vibe)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playTone(index) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = index % 2 === 0 ? 'sawtooth' : 'square';
+            osc.frequency.setValueAtTime(110 * (index % 4 + 1), audioCtx.currentTime);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.5);
+        }
 
-    window.onload = init;
-</script>
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Opóźnienie rysowania, aby boundingBoxy były gotowe
+        setTimeout(resizeCanvas, 100);
+
+    </script>
 </body>
 </html>
