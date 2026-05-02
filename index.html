@@ -2,208 +2,284 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF ULTRA HUD</title>
+    <title>GEHIRN TREIBER - ULTIMATE SCI-FI HUD</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap');
 
-        :root {            
-            --rmf-gold: #fce300;            
-            --white: #ffffff;
-            --bg-black: #050505;
-            --border-alpha: rgba(252, 227, 0, 0.2);
+        :root {
+            --cyan: #00f2ff;
+            --magenta: #ff00e5;
+            --blue: #0044ff;
+            --dark-blue: #001a2e;
+            --bg: #010408;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; overflow: hidden; }                
-        
-        body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg-black); 
-            color: var(--white); 
-            font-family: 'Chakra Petch', sans-serif;
-            display: flex; flex-direction: column; padding: 15px;
-            /* Subtelna siatka techniczna */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--cyan);
+            font-family: 'Rajdhani', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            /* Siatka tła z nowej grafiki */
             background-image: 
-                linear-gradient(rgba(252, 227, 0, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(252, 227, 0, 0.02) 1px, transparent 1px);
-            background-size: 40px 40px;
+                radial-gradient(circle at center, #0a1f35 0%, #010408 100%),
+                linear-gradient(rgba(0, 242, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 25px 25px, 25px 25px;
         }
 
-        header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center; 
-            padding: 0 30px; margin-bottom: 15px;
-            border-bottom: 2px solid var(--rmf-gold);
-            background: linear-gradient(90deg, rgba(252, 227, 0, 0.1), transparent);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        .hud-container {
+            width: 98vw;
+            height: 95vh;
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            grid-template-rows: 1fr 250px;
+            gap: 20px;
+            padding: 20px;
+            position: relative;
         }
 
-        #playing-now { font-size: 20px; font-weight: 700; color: var(--rmf-gold); text-shadow: 0 0 10px var(--rmf-gold); }
-        .clock { font-size: 24px; font-weight: 700; color: var(--white); letter-spacing: 1px; }
-
-        .app-content { display: flex; flex: 1; gap: 15px; min-height: 0; }
-        
-        /* GRID DOPASOWANY - ZERO SCROLLA */
-        .grid { 
-            flex: 2; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 10px; 
+        /* CENTRALNY RADAR / VISUALIZER */
+        .central-core {
+            grid-column: 2;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        .tile { 
-            background: rgba(255, 255, 255, 0.03); 
-            border: 1px solid var(--border-alpha); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            cursor: pointer; position: relative; transition: 0.2s;
-            border-radius: 4px;
+        .radar-ring {
+            position: absolute;
+            border: 1px solid var(--cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            box-shadow: 0 0 15px var(--blue);
         }
 
-        .tile:hover { background: rgba(252, 227, 0, 0.08); border-color: var(--rmf-gold); }
-        .tile.active { 
-            border-color: var(--rmf-gold); 
-            background: rgba(252, 227, 0, 0.15); 
-            box-shadow: inset 0 0 15px rgba(252, 227, 0, 0.2); 
+        .radar-ring.outer { width: 450px; height: 450px; border-style: dashed; animation: rotate 30s linear infinite; }
+        .radar-ring.mid { width: 300px; height: 300px; border-width: 4px; border-color: rgba(0, 242, 255, 0.1); }
+        .radar-ring.inner { 
+            width: 150px; height: 150px; 
+            background: radial-gradient(circle, var(--dark-blue) 0%, transparent 80%);
+            border: 2px solid var(--cyan);
+            box-shadow: 0 0 30px var(--cyan);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse 2s ease-in-out infinite;
         }
 
-        .tile .t-top { font-size: 14px; font-weight: 700; color: var(--rmf-gold); margin-bottom: 4px; }
-        .tile .t-bottom { font-size: 10px; color: var(--white); text-align: center; }
-
-        /* POTRÓJNE ZŁOTE FALE */
-        .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
-        .tile.active .waves { opacity: 1; }
-        .wave { position: absolute; border: 1px solid var(--rmf-gold); border-radius: 50%; animation: ripple 2s infinite linear; opacity: 0; }
-        .wave:nth-child(2) { animation-delay: 0.6s; }
-        .wave:nth-child(3) { animation-delay: 1.2s; }
-
-        @keyframes ripple { 
-            0% { width: 0; height: 0; opacity: 1; } 
-            100% { width: 150%; height: 150%; opacity: 0; } 
+        /* LEWY PANEL - LISTA STACJI (Styl kapsuły) */
+        .station-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-left: 1px solid var(--cyan);
+            padding-left: 15px;
         }
 
-        .sidebar { 
-            flex: 0.8; display: flex; flex-direction: column; 
-            background: rgba(15, 15, 15, 0.9); border: 1px solid var(--border-alpha); 
-            border-radius: 12px; padding: 20px; justify-content: space-around; align-items: center;
-            box-shadow: inset 0 0 30px rgba(0,0,0,0.8);
+        .node-capsule {
+            height: 45px;
+            background: rgba(0, 242, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 0 25px 25px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            transition: 0.3s;
+            position: relative;
         }
 
-        /* DUŻY PULSUJĄCY PIERŚCIEŃ */
-        .logo-display { 
-            width: 180px; height: 180px; border: 2px solid var(--rmf-gold); border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; 
-            animation: pulse-ring 2s infinite ease-in-out;
-        }
-        
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(252, 227, 0, 0.4); }
-            70% { box-shadow: 0 0 0 25px rgba(252, 227, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(252, 227, 0, 0); }
+        .node-capsule::before {
+            content: ''; position: absolute; left: -2px; width: 4px; height: 100%; background: var(--cyan);
         }
 
-        .logo-display h2 { font-size: 40px; color: var(--rmf-gold); text-shadow: 0 0 20px var(--rmf-gold); }
-        .logo-display p { font-size: 14px; font-weight: bold; color: var(--white); letter-spacing: 2px; }
+        .node-capsule:hover, .node-capsule.active {
+            background: rgba(0, 242, 255, 0.15);
+            border-color: var(--cyan);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            transform: translateX(10px);
+        }
 
-        .controls { display: flex; gap: 20px; align-items: center; }
-        .c-svg { width: 45px; height: 45px; fill: var(--white); cursor: pointer; transition: 0.2s; opacity: 0.8; }
-        .c-svg:hover { fill: var(--rmf-gold); opacity: 1; transform: scale(1.1); }
-        .c-play { width: 80px; height: 80px; fill: var(--rmf-gold); opacity: 1; }
+        .node-capsule.active { border-color: var(--magenta); color: var(--magenta); }
 
-        .vol-box { width: 100%; display: flex; align-items: center; }
-        input[type="range"] { 
-            appearance: none; width: 100%; background: rgba(255, 255, 255, 0.1); height: 6px; border-radius: 3px; 
+        /* DOLNY PANEL - ANALITYKA DANYCH */
+        .data-footer {
+            grid-column: 1 / 4;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(0, 242, 255, 0.1);
+            padding: 20px;
+        }
+
+        .graph-box {
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            position: relative;
+            padding: 10px;
+            overflow: hidden;
+        }
+
+        .bar-visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 50px;
+        }
+
+        .bar { width: 4px; background: var(--cyan); box-shadow: 0 0 5px var(--cyan); }
+
+        /* KONTROLER VOLUME - STYL SUWAKA Z GRAFIKI */
+        .sidebar-right {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            border-right: 1px solid var(--cyan);
+            padding-right: 15px;
+            text-align: right;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            background: var(--dark-blue);
             outline: none;
         }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 20px; height: 20px; background: var(--rmf-gold); 
-            border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--rmf-gold);
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px; height: 30px;
+            background: var(--cyan);
+            border: 1px solid white;
+            box-shadow: 0 0 15px var(--cyan);
+            cursor: pointer;
         }
+
+        .label-micro { font-size: 9px; letter-spacing: 2px; opacity: 0.5; text-transform: uppercase; }
+
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.05); opacity: 1; } }
 
     </style>
 </head>
 <body>
 
-<header>    
-    <div id="playing-now">GRA: RMF FM</div>    
-    <div class="clock" id="timer">00:00</div>
-</header>
+<div class="hud-container">
+    <!-- LEWY PANEL -->
+    <div class="station-list">
+        <div class="label-micro">Station_Uplink_Node</div>
+        <div id="nodes"></div>
+    </div>
 
-<div class="app-content">    
-    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        
-        <div class="logo-display">            
-            <h2>RMF FM</h2>            
-            <p>ACTIVE</p>        
+    <!-- CENTRUM -->
+    <div class="central-core">
+        <div class="radar-ring outer"></div>
+        <div class="radar-ring mid"></div>
+        <div class="radar-ring inner">
+            <div id="core-text" style="font-family: 'Orbitron'; font-weight: 900;">IDLE</div>
         </div>
-        <div class="controls">            
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        
+        <div style="margin-top: 300px; text-align: center;">
+            <h1 style="font-family: 'Orbitron'; letter-spacing: 10px; font-size: 24px;">GEHIRN TREIBER</h1>
+            <div class="label-micro" style="margin-top: 5px;">Frequency_Modulation_System</div>
         </div>
-        <div class="vol-box">            
-            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            
-        </div>    
-    </aside>
+    </div>
+
+    <!-- PRAWY PANEL -->
+    <div class="sidebar-right">
+        <div class="label-micro">System_Master_Volume</div>
+        <input type="range" id="vol" min="0" max="100" value="70" oninput="updateVol(this.value)">
+        
+        <div style="margin-top: 20px;">
+            <div class="label-micro">Playback_Control</div>
+            <div style="display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end;">
+                <button onclick="audio.play()" style="background: none; border: 1px solid var(--cyan); color: var(--cyan); padding: 5px 15px; cursor: pointer; font-family: 'Orbitron';">PLAY</button>
+                <button onclick="audio.pause()" style="background: none; border: 1px solid var(--magenta); color: var(--magenta); padding: 5px 15px; cursor: pointer; font-family: 'Orbitron';">STOP</button>
+            </div>
+        </div>
+
+        <div style="margin-top: auto;">
+            <div class="label-micro">Signal_Stability</div>
+            <div id="signal-txt" style="font-size: 24px; font-family: 'Orbitron';">88.4%</div>
+        </div>
+    </div>
+
+    <!-- FOOTER ANALITYCZNY -->
+    <footer class="data-footer">
+        <div class="graph-box">
+            <div class="label-micro">Audio_Spectrum</div>
+            <div class="bar-visualizer" id="bars"></div>
+        </div>
+        <div class="graph-box" style="display: flex; justify-content: center; align-items: center;">
+            <svg width="100%" height="60">
+                <path d="M0,30 Q50,0 100,30 T200,30 T300,30 T400,30" fill="none" stroke="var(--cyan)" stroke-width="1" />
+                <path d="M0,35 Q50,5 100,35 T200,35 T300,35 T400,35" fill="none" stroke="var(--magenta)" stroke-width="1" opacity="0.3" />
+            </svg>
+        </div>
+        <div class="graph-box">
+            <div class="label-micro">Gehirn_Data_Log</div>
+            <div style="font-size: 10px; opacity: 0.6; line-height: 1.2;">
+                > TRACE_SIGNAL_FOUND...<br>
+                > DECRYPTING_GEHIRN_STREAM...<br>
+                > BUFFER_STATUS_OPTIMAL
+            </div>
+        </div>
+    </footer>
 </div>
 
 <audio id="player"></audio>
 
-<script>    
-    const STATIONS = [        
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },        
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },        
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },        
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },        
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },        
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },        
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },        
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },        
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },        
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },        
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },        
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },        
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }    
+<script>
+    const STATIONS = [
+        { n: 'NEON WAVE', u: 'https://stream.laut.fm/tech88' },
+        { n: 'CYBER CORE', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: 'DATA PULSE', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'VOID SIGNAL', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'SYNTH NODE', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'GEHIRN TRB', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');    
-    let current = -1;
+    const nodes = document.getElementById('nodes');
+    const audio = document.getElementById('player');
+    const coreText = document.getElementById('core-text');
 
-    function clock() {        
-        const d = new Date();        
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');    
-    }    
-    setInterval(clock, 1000); clock();
-
-    STATIONS.forEach((s, i) => {        
-        const t = document.createElement('div');        
-        t.className = 'tile';        
-        t.innerHTML = `            
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
-            <div class="t-top">RMF</div>            
-            <div class="t-bottom">${s.s}</div>        `;        
-        t.onclick = () => play(i);        
-        grid.appendChild(t);    
+    STATIONS.forEach(s => {
+        const div = document.createElement('div');
+        div.className = 'node-capsule';
+        div.innerHTML = `<span style="font-size: 11px; font-weight: bold;">${s.n}</span>`;
+        div.onclick = () => {
+            document.querySelectorAll('.node-capsule').forEach(el => el.classList.remove('active'));
+            div.classList.add('active');
+            coreText.textContent = 'LINKED';
+            audio.src = s.u;
+            audio.play();
+        };
+        nodes.appendChild(div);
     });
 
-    function play(i) {        
-        current = i;        
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
-        const streamBase = "https://rs201-krk.rmfstream.pl/";        
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
-        player.play();        
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');    
+    // Prosty wizualizator barowy
+    const barsContainer = document.getElementById('bars');
+    for(let i=0; i<30; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        bar.style.height = Math.random() * 40 + 10 + 'px';
+        barsContainer.appendChild(bar);
     }
 
-    function toggle() {        
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }        
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }    
-    }
-
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
-    function setV(v) { player.volume = v / 100; }        
+    function updateVol(v) { audio.volume = v / 100; }
+    setInterval(() => {
+        document.getElementById('signal-txt').textContent = (80 + Math.random() * 19).toFixed(1) + '%';
+        document.querySelectorAll('.bar').forEach(b => b.style.height = Math.random() * 40 + 10 + 'px');
+    }, 150);
 </script>
+
 </body>
 </html>
