@@ -2,141 +2,151 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - PCB EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEHIRN TREIBER - INDUSTRIAL TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
         :root {
-            --yellow: #fce300;
-            --yellow-neon: #fffb00;
+            --green: #00ff41;
+            --dark-green: #003b00;
             --bg: #050505;
-            --tile: #121212;
-            --border: #222;
-            --blue-wave: #00ccff;
-            --trace: #1a3a1a; /* Kolor ścieżek na PCB */
+            --chip-body: #111;
+            --trace-color: #004400;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg); color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden; 
+        
+        body {
+            background-color: var(--bg);
+            color: var(--green);
+            font-family: 'Share+Tech+Mono', monospace;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            /* Efekt CRT Scanlines */
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
         }
 
-        body { display: flex; flex-direction: column; padding: 2vh; }
-
-        /* Tło dla połączeń */
         #pcb-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
+            top: 0; left: 0;
             z-index: 0;
-            pointer-events: none;
+            opacity: 0.6;
         }
 
-        header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid var(--border); margin-bottom: 2vh; flex-shrink: 0;
-            position: relative; z-index: 2;
-        }
-        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-transform: uppercase; }
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; }
-
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; position: relative; z-index: 1; }
-        
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 25px; /* Większy odstęp na nóżki i ścieżki */
-            padding: 10px;
+        header {
+            padding: 20px;
+            border-bottom: 2px solid var(--green);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            text-shadow: 0 0 10px var(--green);
         }
 
-        /* UKŁAD SCALONY - MODYFIKACJA */
-        .tile {
-            background: var(--tile); 
-            border: 1px solid #333; 
-            border-radius: 4px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            box-shadow: 2px 4px 10px rgba(0,0,0,0.8);
-            transition: transform 0.2s;
+        .main-title { font-size: 32px; font-weight: bold; letter-spacing: 4px; }
+        .system-status { font-size: 14px; text-align: right; }
+
+        .app-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            z-index: 5;
         }
 
-        /* NÓŻKI (PINY) UKŁADU */
-        .tile::before, .tile::after {
+        .grid {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 40px;
+            padding: 20px;
+        }
+
+        /* UKŁAD SCALONY */
+        .chip {
+            background: var(--chip-body);
+            border: 1px solid var(--dark-green);
+            border-radius: 2px;
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 0.2s;
+            box-shadow: 0 5px 15px rgba(0,0,0,1);
+        }
+
+        /* NÓŻKI UKŁADU */
+        .chip::before, .chip::after {
             content: '';
             position: absolute;
-            width: 10px;
-            height: 80%;
-            top: 10%;
+            width: 12px;
+            height: 70%;
             background: repeating-linear-gradient(
                 to bottom,
-                #666, #666 4px,
-                transparent 4px, transparent 10px
+                #888, #888 3px,
+                transparent 3px, transparent 10px
             );
         }
-        .tile::before { left: -10px; border-radius: 2px 0 0 2px; }
-        .tile::after { right: -10px; border-radius: 0 2px 2px 0; }
+        .chip::before { left: -12px; }
+        .chip::after { right: -12px; }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: var(--yellow); z-index: 2; }
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: #666; margin-top: 4px; text-align: center; z-index: 2; }
-
-        .tile.active { 
-            border: 1px solid var(--yellow-neon); 
-            background: #1a1a00;
-            box-shadow: 0 0 20px rgba(255, 251, 0, 0.2);
-        }
-        .tile.active .t-bottom { color: var(--yellow); }
-
-        /* FALE */
-        .waves {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; z-index: 1;
-        }
-        .tile.active .waves { opacity: 1; }
-        .wave {
-            position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%;
-            width: 10px; height: 10px; opacity: 0;
-            animation: ripple 3s infinite linear;
-        }
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 250%; height: 250%; opacity: 0; }
+        .chip:hover {
+            border-color: var(--green);
+            box-shadow: 0 0 15px var(--green);
         }
 
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 4vh;
-            border-left: 1px solid var(--border); padding-left: 3vw;
+        .chip.active {
+            background: var(--dark-green);
+            border-color: var(--green);
         }
 
-        .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/10;
-            border: 2px solid var(--yellow); border-radius: 20px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: rgba(0, 0, 0, 0.8);
+        .chip-id { font-size: 10px; color: #555; position: absolute; top: 5px; left: 5px; }
+        .chip-name { font-size: 14px; text-align: center; padding: 0 5px; text-transform: uppercase; }
+
+        /* SIDEBAR / LOGO DISPLAY */
+        .sidebar {
+            flex: 1;
+            border: 2px solid var(--green);
+            background: rgba(0, 15, 0, 0.2);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: inset 0 0 20px var(--dark-green);
         }
-        .logo-display h2 { font-size: 40px; color: var(--yellow); }
-        .logo-display p { font-size: 10px; color: var(--yellow); text-transform: uppercase; }
 
-        .controls { display: flex; align-items: center; gap: 3vw; }
-        .c-svg { width: 35px; height: 35px; fill: var(--yellow); cursor: pointer; }
-        .c-play { width: 70px; height: 70px; }
-
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
-        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; }
-        .vol-bar { flex: 1; height: 35px; border: 1px solid var(--yellow); display: flex; align-items: center; padding: 0 10px; }
-        input[type="range"] { flex: 1; appearance: none; background: var(--yellow); height: 2px; }
-
-        @media (max-width: 600px) {
-            .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; }
-            .sidebar { border-left: none; border-top: 1px solid var(--border); padding: 10px 0; }
+        .visualizer {
+            width: 100%;
+            height: 100px;
+            border-bottom: 1px solid var(--green);
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
         }
+
+        .bar { flex: 1; background: var(--green); height: 10%; }
+
+        .controls { text-align: center; width: 100%; }
+        .btn {
+            background: none; border: 1px solid var(--green);
+            color: var(--green); padding: 10px 20px; cursor: pointer;
+            font-family: inherit; margin: 10px; text-transform: uppercase;
+        }
+        .btn:hover { background: var(--green); color: black; }
+
+        .vol-slider { width: 100%; margin: 20px 0; -webkit-appearance: none; background: var(--dark-green); height: 5px; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 15px; height: 15px; background: var(--green); cursor: pointer; }
+
     </style>
 </head>
 <body>
@@ -144,140 +154,134 @@
 <canvas id="pcb-canvas"></canvas>
 
 <header>
-    <div class="header-info" id="playing-now">SYSTEM READY</div>
-    <div class="clock" id="timer">00:00</div>
+    <div class="main-title">GEHIRN TREIBER</div>
+    <div class="system-status">
+        [ SYSTEM: ONLINE ]<br>
+        [ FREQ: 144.00 MHz ]<br>
+        <span id="clock">00:00:00</span>
+    </div>
 </header>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
+<div class="app-container">
+    <div class="grid" id="chip-grid">
+        <!-- Układy scalone generowane przez JS -->
+    </div>
+
     <aside class="sidebar">
-        <div class="logo-display">
-            <h2 id="display-name">RMF FM</h2>
-            <p id="display-slogan">Najlepsza muzyka</p>
+        <div style="text-align: center;">
+            <p>CURRENT SOURCE:</p>
+            <h2 id="now-playing" style="margin: 10px 0;">-- STANDBY --</h2>
         </div>
+
+        <div class="visualizer" id="visualizer">
+            <!-- Bary wizualizera -->
+        </div>
+
         <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-        </div>
-        <div class="vol-box">
-            <button class="vol-btn" onclick="adj(-5)">-</button>
-            <div class="vol-bar"><input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)"></div>
-            <button class="vol-btn" onclick="adj(5)">+</button>
+            <button class="btn" onclick="toggle()">PLAY / STOP</button>
+            <input type="range" class="vol-slider" min="0" max="100" value="50" oninput="setVolume(this.value)">
+            <p>VOLUME</p>
         </div>
     </aside>
 </div>
 
-<audio id="player"></audio>
+<audio id="audio-engine"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'Ogólnopolskie', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' },
-        { n: 'RMF 80s', s: 'Lata 80', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: 'Lata 90', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: 'Lata 2000', u: 'rmf_2000' },
-        { n: 'RMF CHILL', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
+        { n: 'HR 3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
+        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
+        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
+        { n: 'RETROELECTRONIC', u: 'https://stream.laut.fm/retroelectronicmusic' },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    const player = document.getElementById('player'), 
-          ico = document.getElementById('p-ico'), 
-          grid = document.getElementById('station-grid'), 
-          canvas = document.getElementById('pcb-canvas'),
-          ctx = canvas.getContext('2d');
-    
-    let current = -1;
+    const grid = document.getElementById('chip-grid');
+    const audio = document.getElementById('audio-engine');
+    const canvas = document.getElementById('pcb-canvas');
+    const ctx = canvas.getContext('2d');
+    let activeIndex = -1;
 
-    function clock() {
+    // Inicjalizacja Gridu
+    STATIONS.forEach((s, i) => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.innerHTML = `
+            <div class="chip-id">GT-0${i+1}</div>
+            <div class="chip-name">${s.n}</div>
+        `;
+        chip.onclick = () => playStation(i);
+        grid.appendChild(chip);
+    });
+
+    function playStation(i) {
+        activeIndex = i;
+        document.querySelectorAll('.chip').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        document.getElementById('now-playing').textContent = STATIONS[i].n;
+        audio.src = STATIONS[i].u;
+        audio.play();
+        animateVisualizer();
+    }
+
+    function toggle() {
+        if(audio.paused) audio.play(); else audio.pause();
+    }
+
+    function setVolume(v) {
+        audio.volume = v / 100;
+    }
+
+    // Zegar systemowy
+    setInterval(() => {
         const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
+        document.getElementById('clock').textContent = d.toTimeString().split(' ')[0];
+    }, 1000);
 
-    function initGrid() {
-        grid.innerHTML = '';
-        STATIONS.forEach((s, i) => {
-            const t = document.createElement('div');
-            t.className = 'tile';
-            t.innerHTML = `
-                <div class="waves"><div class="wave"></div><div class="wave"></div></div>
-                <div class="t-top">IC-${i+100}</div>
-                <div class="t-bottom">${s.n}</div>
-            `;
-            t.onclick = () => play(i);
-            grid.appendChild(t);
-        });
-        setTimeout(drawTraces, 100);
-    }
-
-    function drawTraces() {
+    // Rysowanie połączeń (PCB Traces)
+    function drawPCB() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = '#1a3a1a';
+        ctx.strokeStyle = '#003300';
         ctx.lineWidth = 2;
-
-        const tiles = document.querySelectorAll('.tile');
-        tiles.forEach((tile, i) => {
-            if (i < tiles.length - 1) {
-                const r1 = tile.getBoundingClientRect();
-                const r2 = tiles[i+1].getBoundingClientRect();
-                
+        
+        const chips = document.querySelectorAll('.chip');
+        chips.forEach((chip, i) => {
+            if (i < chips.length - 1) {
+                const r1 = chip.getBoundingClientRect();
+                const r2 = chips[i+1].getBoundingClientRect();
                 ctx.beginPath();
                 ctx.moveTo(r1.left + r1.width/2, r1.top + r1.height/2);
                 ctx.lineTo(r1.left + r1.width/2, r2.top + r2.height/2);
                 ctx.lineTo(r2.left + r2.width/2, r2.top + r2.height/2);
                 ctx.stroke();
-
-                // Małe punkty lutownicze
-                ctx.fillStyle = '#2d5a2d';
-                ctx.beginPath();
-                ctx.arc(r1.left + r1.width/2, r1.top + r1.height/2, 3, 0, Math.PI*2);
-                ctx.fill();
             }
         });
     }
 
-    function play(i) {
-        current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "LINK: " + STATIONS[i].n;
-        document.getElementById('display-name').textContent = STATIONS[i].n;
-        document.getElementById('display-slogan').textContent = STATIONS[i].s;
-        
-        player.src = STATIONS[i].u.includes('http') ? STATIONS[i].u : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
-        player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+    // Prosta animacja wizualizera
+    const viz = document.getElementById('visualizer');
+    for(let i=0; i<30; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        viz.appendChild(bar);
     }
 
-    function toggle() {
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+    function animateVisualizer() {
+        if(audio.paused) return;
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach(b => {
+            const h = Math.random() * 100;
+            b.style.height = h + '%';
+            b.style.opacity = h / 100;
+        });
+        requestAnimationFrame(animateVisualizer);
     }
 
-    function skip(d) { 
-        let n = current + d; 
-        if(n >= 0 && n < STATIONS.length) play(n); 
-    }
+    window.addEventListener('resize', drawPCB);
+    setTimeout(drawPCB, 500);
 
-    function setV(v) { player.volume = v / 100; }
-    function adj(d) { 
-        const v = document.getElementById('v-range');
-        v.value = parseInt(v.value) + d; 
-        setV(v.value); 
-    }
-
-    window.onresize = drawTraces;
-    initGrid();
 </script>
 </body>
 </html>
