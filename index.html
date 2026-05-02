@@ -1,123 +1,118 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON TERMINAL</title>    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600&display=swap');
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - AUDIT CORRECTED</title>    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
         
         :root {            
-            --neon-blue: #00d2ff;            
-            --neon-purple: #9d50bb;            
             --yellow: #fce300;            
-            --bg: #000205;
+            --blue-wave: #00ccff;            
+            --bg: #000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         body { 
             height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
-            font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 20px;
-            background-image: radial-gradient(circle at center, #001a2e 0%, #000 100%);
+            font-family: 'Montserrat Alternates', sans-serif; overflow: hidden; padding: 2vh;
+            background-image: radial-gradient(circle at 50% 50%, #0a0a00 0%, #000 100%);
         }
 
         header {             
-            height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 1px solid rgba(0, 210, 255, 0.3); margin-bottom: 20px;
+            height: 50px; display: flex; justify-content: space-between; align-items: center;            
+            border-bottom: 1px solid rgba(252, 227, 0, 0.3); margin-bottom: 2vh;
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); text-transform: uppercase; }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--neon-purple); font-size: 22px; text-shadow: 0 0 10px var(--neon-purple); }
+        .header-info { font-size: 24px; font-weight: 700; color: var(--yellow); text-shadow: 0 0 10px rgba(252, 227, 0, 0.5); }        
+        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; opacity: 0.8; }
 
-        .app-content { display: flex; flex: 1; gap: 30px; height: calc(100vh - 120px); }
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
 
-        /* GRID 5x3 */
+        /* GRID 5x3 - UKŁAD BEZ ZMIAN */
         .grid {             
-            flex: 1.5; display: grid;             
+            flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
             gap: 15px;         
         }
 
-        /* KAFELEK - STYLIZACJA Z OBRAZKA (Zaokrąglone, Neonowe) */
+        /* KAFELEK - STYLIZACJA ZGODNA Z OBRAZKIEM (ZAOKRĄGLENIA + GLOW) */
         .tile {            
-            background: rgba(0, 210, 255, 0.03); 
-            border: 1px solid rgba(0, 210, 255, 0.2);
-            border-radius: 15px;
+            background: rgba(252, 227, 0, 0.02); 
+            border: 1px solid rgba(252, 227, 0, 0.2);
+            border-radius: 20px;
             position: relative; cursor: pointer; transition: 0.3s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        .tile::before {
-            content: ''; position: absolute; inset: -1px; border-radius: 15px;
-            padding: 1px; background: linear-gradient(180deg, var(--neon-blue), transparent, var(--neon-purple));
-            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor; mask-composite: exclude;
-            opacity: 0.2;
-        }
+        .tile .t-top { font-size: 20px; font-weight: 700; color: #fff; z-index: 2; }        
+        .tile .t-bottom { font-size: 12px; font-weight: 600; color: var(--yellow); margin-top: 4px; z-index: 2; opacity: 0.7; }
 
-        .tile .t-top { font-size: 20px; font-weight: 700; color: #fff; z-index: 2; letter-spacing: 1px; }        
-        .tile .t-bottom { font-size: 12px; color: var(--neon-blue); text-transform: uppercase; opacity: 0.8; z-index: 2; }
-
-        /* ACTIVE STATE */
+        /* AKTYWNY KAFELEK - MOCNY ŻÓŁTY GLOW */
         .tile.active { 
-            background: rgba(0, 210, 255, 0.1); 
-            box-shadow: 0 0 20px rgba(0, 210, 255, 0.2), inset 0 0 15px rgba(0, 210, 255, 0.1);
-            border-color: var(--neon-blue);
-        }
-        .tile.active .t-top { color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); }
+            background: rgba(252, 227, 0, 0.08); 
+            border-color: var(--yellow);
+            box-shadow: 0 0 20px rgba(252, 227, 0, 0.3), inset 0 0 10px rgba(252, 227, 0, 0.1);
+        }        
+        .tile.active .t-top { color: var(--yellow); text-shadow: 0 0 10px var(--yellow); }
 
-        /* FALE (WAVE) Z OBRAZKA */
+        /* FALE - ORYGINALNY BŁĘKIT */
         .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }        
         .tile.active .waves { opacity: 1; }        
         .wave { 
-            position: absolute; border: 2px solid var(--neon-blue); border-radius: 50%; 
+            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%; 
             animation: ripple 3s infinite ease-out; opacity: 0; 
-            filter: blur(1px);
+            box-shadow: 0 0 15px var(--blue-wave);
         }        
         @keyframes ripple { 
-            0% { width: 0%; height: 0%; opacity: 0.8; } 
-            100% { width: 200%; height: 200%; opacity: 0; } 
+            0% { width: 0%; height: 0%; opacity: 0.9; } 
+            100% { width: 250%; height: 250%; opacity: 0; } 
         }
 
-        .sidebar { flex: 0.5; display: flex; flex-direction: column; gap: 20px; }
+        .sidebar {             
+            flex: 0.6; display: flex; flex-direction: column;             
+            align-items: center; justify-content: center; gap: 4vh;            
+            border-left: 1px solid rgba(252, 227, 0, 0.1); padding-left: 3vw;        
+        }
 
-        /* CIRCLE LOGO - Z góry obrazka */
+        /* LOGO DISPLAY - KOŁO Z OBRAZKA W TWOICH KOLORACH */
         .logo-display {            
-            width: 100%; aspect-ratio: 1; border-radius: 50%;
-            border: 4px double var(--neon-blue);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(0, 210, 255, 0.1) 0%, transparent 70%);
-            box-shadow: 0 0 30px rgba(0, 210, 255, 0.2);
-            position: relative;
-        }
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 36px; color: #fff; text-shadow: 0 0 15px var(--neon-blue); }
-        .logo-display p { font-size: 14px; color: var(--neon-purple); letter-spacing: 3px; }
+            width: 100%; max-width: 300px; aspect-ratio: 1; 
+            border-radius: 50%; border: 2px solid var(--yellow);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;            
+            background: radial-gradient(circle, rgba(252, 227, 0, 0.1) 0%, transparent 70%);            
+            box-shadow: 0 0 40px rgba(252, 227, 0, 0.15);
+        }        
+        .logo-display h2 { font-size: 48px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }        
+        .logo-display p { font-size: 11px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 3px; }
 
-        .controls { display: flex; justify-content: center; align-items: center; gap: 20px; }        
-        .c-svg { width: 40px; height: 40px; fill: var(--neon-blue); cursor: pointer; filter: drop-shadow(0 0 5px var(--neon-blue)); transition: 0.2s; }
-        .c-svg:hover { transform: scale(1.1); fill: #fff; }
-        .c-play { width: 70px; height: 70px; }
+        .controls { display: flex; align-items: center; gap: 3vw; }        
+        .c-svg { width: 40px; height: 40px; fill: var(--yellow); cursor: pointer; filter: drop-shadow(0 0 8px var(--yellow)); }        
+        .c-play { width: 80px; height: 80px; }
 
-        /* VOLUME SLIDER - Styl "Pigułka" z obrazka */
-        .vol-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); }
+        /* VOLUME - STYL PIGUŁKI Z OBRAZKA */
+        .vol-box { width: 100%; max-width: 300px; display: flex; align-items: center; gap: 15px; }        
         input[type="range"] { 
-            width: 100%; appearance: none; background: #111; height: 8px; border-radius: 4px; outline: none;
-        }
+            flex: 1; appearance: none; background: #111; height: 10px; border-radius: 5px; outline: none;
+        }        
         input[type="range"]::-webkit-slider-runnable-track {
-            background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
-            height: 8px; border-radius: 4px;
+            background: linear-gradient(90deg, var(--yellow), #550);
+            height: 10px; border-radius: 5px;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 20px; background: #fff; 
-            border-radius: 50%; cursor: pointer; margin-top: -6px;
-            box-shadow: 0 0 10px #fff;
+        input[type="range"]::-webkit-slider-thumb {             
+            appearance: none; width: 24px; height: 24px;             
+            background: #fff; border-radius: 50%;             
+            margin-top: -7px; box-shadow: 0 0 15px #fff;
         }
 
-        @media (max-width: 800px) {
-            .grid { grid-template-columns: repeat(3, 1fr); }
-            .sidebar { display: none; }
+        @media (max-width: 600px) {
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }
+            .sidebar { width: 100%; border-left: none; padding: 20px 0; }
+            .logo-display { width: 120px; height: 120px; }
+            .logo-display h2 { font-size: 24px; }
         }
     </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">INFOGRAPHIC TERMINAL</div>    <div class="clock" id="timer">00:00</div></header>
+<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>ACTIVE</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>Najlepsza muzyka</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
         <div class="vol-box">            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
 
@@ -155,7 +150,7 @@
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
-            <div class="waves"><div class="wave"></div><div class="wave"></div></div>            
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
             <div class="t-top">RMF</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
@@ -165,8 +160,7 @@
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = STATIONS[i].n;
-        document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
         player.play();        
