@@ -2,193 +2,232 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - VITAL TRON</title>
+    <title>GEHIRN TREIBER - TRON SYNTH HUD</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
         :root {
-            --neon-cyan: #00f2ff;
-            --neon-mag: #bc00ff;
+            --cyan: #00f2ff;
+            --magenta: #bc00ff;
+            --bg-black: #05070a;
             --panel-bg: #0d1117;
+            --panel-border: #1e2633;
+            --slot-bg: #020305;
         }
 
-        body {
-            background-color: #05070a;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            overflow: hidden;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; }
+
+        .synth-container {
+            width: 100%; height: 100%;
+            display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px;
         }
 
-        .vital-container {
-            width: 950px;
-            height: 550px;
-            background: var(--panel-bg);
-            border: 1px solid #1e2633;
-            display: grid;
-            grid-template-columns: 250px 1fr 200px;
-            padding: 10px;
-            gap: 10px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        /* LEWY PANEL */
+        .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
+        .track-info-box {
+            border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05);
+            padding: 15px; min-height: 80px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1);
         }
 
-        /* LEWA KOLUMNA - OSCILLATORS */
-        .osc-section {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+        .stations-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            overflow-y: auto; padding-right: 5px; flex-grow: 1;
+        }
+        .category-header {
+            font-family: 'Orbitron'; font-size: 10px; color: var(--cyan);
+            border-bottom: 1px solid var(--panel-border); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px;
         }
 
-        .header-label {
-            font-family: 'Orbitron';
-            font-size: 10px;
-            color: var(--neon-cyan);
-            letter-spacing: 2px;
-            margin-bottom: 5px;
+        .osc-module {
+            border: 1px solid var(--panel-border); padding: 5px; background: var(--panel-bg);
+            cursor: pointer; transition: 0.2s; position: relative;
         }
+        .osc-module:hover { border-color: var(--cyan); background: #161c27; }
+        .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); background: #161c27; }
 
-        .station-card {
-            background: #000;
-            border-left: 3px solid #1e2633;
-            padding: 12px;
-            cursor: pointer;
-            transition: 0.2s;
+        .station-slot {
+            background: var(--slot-bg); height: 32px; display: flex; align-items: center;
+            padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0;
         }
+        .osc-module.active .station-slot { color: var(--cyan); }
 
-        .station-card:hover { background: #161b22; }
-        .station-card.active {
-            border-left-color: var(--neon-cyan);
-            background: rgba(0, 242, 255, 0.05);
+        /* ŚRODEK */
+        .main-display { border: 1px solid var(--panel-border); background: #010204; position: relative; }
+        #eq-canvas { width: 100%; height: 100%; display: block; }
+
+        /* PRAWY PANEL */
+        .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .module-box { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .env-visual { height: 140px; background: #000; border: 1px solid #111; }
+
+        .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+        .synth-btn {
+            background: #1a222d; border: 1px solid var(--panel-border); color: #fff;
+            padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
         }
-
-        .station-card .num { font-size: 9px; color: #555; font-family: 'Orbitron'; }
-        .station-card .name { font-weight: 600; font-size: 14px; display: block; }
-
-        /* ŚRODEK - VISUALIZER AREA */
-        .center-display {
-            background: #000;
-            border: 1px solid #1e2633;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .glitch-text {
-            font-family: 'Orbitron';
-            font-size: 24px;
-            color: var(--neon-mag);
-            text-shadow: 0 0 10px var(--neon-mag);
-        }
-
-        /* PRAWY PANEL - MASTER */
-        .master-section {
-            background: #090c10;
-            border: 1px solid #1e2633;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .v-slider-container {
-            height: 250px;
-            width: 40px;
-            background: #000;
-            border-radius: 20px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-        }
-
-        input[type="range"].vertical {
-            writing-mode: bt-lr; /* IE */
-            appearance: slider-vertical;
-            width: 8px;
-            height: 220px;
-            padding: 0 15px;
-        }
-
-        .vital-btn {
-            width: 100%;
-            background: #1a222d;
-            border: 1px solid #333;
-            color: #fff;
-            padding: 10px;
-            font-family: 'Orbitron';
-            font-size: 10px;
-            cursor: pointer;
-        }
-
-        .vital-btn:active { background: var(--neon-mag); }
-
+        .synth-btn:hover { border-color: var(--cyan); }
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
     </style>
 </head>
 <body>
 
-<div class="vital-container">
-    <!-- Kolumna 1 -->
-    <div class="osc-section">
-        <div class="header-label">OSCILLATORS / BANKS</div>
-        <div id="bank"></div>
-    </div>
-
-    <!-- Kolumna 2 -->
-    <div class="center-display">
-        <div style="font-size: 10px; color: var(--neon-cyan); margin-bottom: 20px;">SIGNAL SPECTRUM</div>
-        <div class="glitch-text" id="now-playing">INITIALIZING...</div>
-        <div style="margin-top: 50px; width: 80%; height: 2px; background: linear-gradient(90deg, transparent, var(--neon-cyan), transparent);"></div>
-    </div>
-
-    <!-- Kolumna 3 -->
-    <div class="master-section">
-        <div class="header-label">MASTER VOL</div>
-        <div class="v-slider-container">
-            <input type="range" class="vertical" min="0" max="1" step="0.01" value="0.7" oninput="setVol(this.value)">
+<div class="synth-container">
+    <div class="osc-sidebar">
+        <div class="track-info-box">
+            <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">CURRENT SIGNAL</div>
+            <div id="track-title" style="font-size: 11px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 5px var(--magenta);">LINK START...</div>
         </div>
-        <button class="vital-btn" onclick="player.pause()">KILL SIGNAL</button>
+        
+        <div class="stations-grid">
+            <div>
+                <div class="category-header">TECHNO</div>
+                <div id="techno-group"></div>
+            </div>
+            <div>
+                <div class="category-header">HOUSE</div>
+                <div id="house-group"></div>
+            </div>
+        </div>
     </div>
+
+    <main class="main-display">
+        <canvas id="eq-canvas"></canvas>
+    </main>
+
+    <aside class="control-sidebar">
+        <div class="module-box">
+            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 8px;">ENV 1 [VCA]</div>
+            <div class="env-visual">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+                    <path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" />
+                </svg>
+            </div>
+        </div>
+        <div class="playback-frame">
+            <div class="btn-grid">
+                <button class="synth-btn" id="playBtn">BOOT</button>
+                <button class="synth-btn" id="stopBtn" style="color:var(--magenta)">KILL</button>
+            </div>
+            <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
+        </div>
+    </aside>
 </div>
 
-<audio id="player"></audio>
+<!-- CROSSORIGIN="ANONYMOUS" JEST KLUCZOWE ABY DŹWIĘK NIE ZOSTAŁ ZABLOKOWANY PRZEZ BŁĄD CORS -->
+<audio id="audio-engine" crossorigin="anonymous"></audio>
 
 <script>
-    const player = document.getElementById('player');
-    const display = document.getElementById('now-playing');
+    const STATIONS = {
+        techno: [
+            { slug: 'tech88', n: 'TECH 88' },
+            { slug: 'hr3_clubnight', n: 'HR 3 CLUBNIGHT' },
+            { slug: '1000techno', n: '1000 TECHNO' },
+            { slug: 'best-of-techno', n: 'BEST OF TECHNO' },
+            { slug: 'chris_burn', n: 'CHRIS BURN' },
+            { slug: 'retroelectronicmusic', n: 'RETRO ELECTRONIC' },
+            { slug: 'gehirn-treiber-beat-radio', n: 'GEHIRN TREIBER' }
+        ],
+        house: [
+            { slug: 'deep-house-sounds', n: 'DEEP HOUSE SOUNDS' },
+            { slug: 'housebomb-fn', n: 'HOUSEBOMB FN' },
+            { slug: 'symbiotic-beats', n: 'SYMBIOTIC BEATS' },
+            { slug: 'house', n: 'HOUSE' },
+            { slug: 'faf-records-979', n: 'FAF RECORDS 979' },
+            { slug: 'tornadofm', n: 'TORNADO FM' }
+        ]
+    };
+
+    const audio = document.getElementById('audio-engine');
+    const trackTitle = document.getElementById('track-title');
+    const canvas = document.getElementById('eq-canvas');
+    const ctx = canvas.getContext('2d');
     
-    const STATIONS = [
-        { n: 'TECH 88', u: 'https://stream.laut.fm/tech88' },
-        { n: 'HR 3 CLUB', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { n: '1000 TECHNO', u: 'https://stream.laut.fm/1000techno' },
-        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' },
-        { n: 'RETRO ELEC', u: 'https://stream.laut.fm/retroelectronicmusic' },
-        { n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' }
-    ];
+    let audioCtx, analyser, source, dataArray;
+    let isInitialized = false; // Zabezpieczenie przed błędem "Source already connected"
 
-    const bank = document.getElementById('bank');
+    function setupAudio() {
+        if (!isInitialized) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 256;
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+            isInitialized = true;
+        }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
 
-    STATIONS.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'station-card';
-        div.innerHTML = `<span class="num">0${i+1}</span><span class="name">${s.n}</span>`;
-        div.onclick = () => {
-            document.querySelectorAll('.station-card').forEach(c => c.classList.remove('active'));
-            div.classList.add('active');
-            display.innerText = s.n;
-            player.src = s.u;
-            player.play();
-        };
-        bank.appendChild(div);
-    });
+    async function getMeta(slug) {
+        try {
+            const r = await fetch(`https://api.laut.fm/station/${slug}/current_song`);
+            const d = await r.json();
+            trackTitle.textContent = d.artist.name.toUpperCase() + " - " + d.title.toUpperCase();
+        } catch(e) { trackTitle.textContent = "SIGNAL ACTIVE"; }
+    }
 
-    function setVol(v) { player.volume = v; }
+    function initStations() {
+        Object.keys(STATIONS).forEach(cat => {
+            const container = document.getElementById(`${cat}-group`);
+            STATIONS[cat].forEach(s => {
+                const div = document.createElement('div');
+                div.className = 'osc-module';
+                div.innerHTML = `<div class="station-slot">${s.n}</div>`;
+                div.onclick = () => {
+                    setupAudio();
+                    document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
+                    div.classList.add('active');
+                    audio.src = `https://stream.laut.fm/${s.slug}`;
+                    audio.play();
+                    getMeta(s.slug);
+                };
+                container.appendChild(div);
+            });
+        });
+    }
+
+    initStations();
+
+    document.getElementById('playBtn').onclick = () => { setupAudio(); audio.play(); };
+    document.getElementById('stopBtn').onclick = () => audio.pause();
+    document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
+
+    function draw() {
+        requestAnimationFrame(draw);
+        if (canvas.width !== canvas.clientWidth || canvas.height !== canvas.clientHeight) {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+        }
+
+        ctx.fillStyle = '#010204';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        if (isInitialized) {
+            analyser.getByteFrequencyData(dataArray);
+            const sliceWidth = canvas.width / dataArray.length;
+            
+            // Renderujemy dwie warstwy dla efektu "Glow"
+            for(let j = 0; j < 2; j++) {
+                ctx.beginPath();
+                ctx.lineWidth = j === 0 ? 4 : 2;
+                ctx.strokeStyle = j === 0 ? 'rgba(188, 0, 255, 0.2)' : 'rgba(0, 242, 255, 0.8)';
+                
+                let x = 0;
+                for(let i = 0; i < dataArray.length; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = (v * canvas.height / 4) + (canvas.height / 3);
+                    if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                    x += sliceWidth;
+                }
+                ctx.stroke();
+            }
+        }
+    }
+    draw();
 </script>
-
 </body>
 </html>
