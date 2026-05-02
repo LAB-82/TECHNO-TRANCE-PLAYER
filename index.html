@@ -1,127 +1,129 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON WORKSPACE</title>    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF MAINFRAME TERMINAL</title>    <style>
+        /* [START] --- STYL MAINFRAME TERMINAL (Inspiracja image_96633d.jpg) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
         
         :root {            
             --rmf-yellow: #fce300;            
-            --neon-glow: #fffb00;            
-            --bg-deep: #0b021a; /* Kolor z image_95e75c.jpg */
-            --neon-cyan: #00ffff;
-            --neon-magenta: #ff00ff;
-            --glass: rgba(20, 10, 40, 0.8);
+            --terminal-green: rgba(0, 242, 255, 0.4); /* Neon błękitny */
+            --bg-color: #010810; /* Mroczny błękit/czarny */
+            --tile-bg: rgba(0, 15, 30, 0.8);
+            --border-tech: #004a7c;
+            --accent-glow: 0 0 15px rgba(252, 227, 0, 0.3);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         html, body {             
             height: 100vh; width: 100vw;             
-            background: var(--bg-deep); color: #fff;             
-            font-family: 'Montserrat Alternates', sans-serif;            
+            background: var(--bg-color); color: #fff;             
+            font-family: 'Share Tech Mono', monospace; /* Techniczna czcionka */
             overflow: hidden;         
         }
 
-        /* Tło z efektem poświaty */
+        /* Tło imitujące płytę mainframe */
         body { 
             display: flex; flex-direction: column; padding: 2vh; 
             background-image: 
-                radial-gradient(circle at 50% 50%, #1a0b3a 0%, #0b021a 100%);
+                linear-gradient(rgba(0, 74, 124, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 74, 124, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
             position: relative;
         }
 
-        /* Dekoracyjna "ramka monitora" jak w image_95e75c.jpg */
-        body::after {
-            content: ""; position: absolute; inset: 10px;
-            border: 2px solid rgba(255, 0, 255, 0.1);
-            pointer-events: none; border-radius: 15px;
-        }
-
         header {             
-            height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            background: var(--glass);
-            border: 2px solid var(--neon-cyan);
-            box-shadow: 0 0 15px var(--neon-cyan);
+            height: 50px; display: flex; justify-content: space-between; align-items: center;            
+            border: 2px solid var(--border-tech); border-left: 5px solid var(--rmf-yellow);
             margin-bottom: 2vh; flex-shrink: 0;
-            padding: 0 25px; border-radius: 10px;
-        }        
-        .header-info { 
-            font-size: 22px; font-weight: 700; color: var(--rmf-yellow); 
-            text-shadow: 0 0 10px var(--rmf-yellow);
+            padding: 0 15px; background: rgba(0, 0, 0, 0.9);
+            box-shadow: -10px 0 20px rgba(0, 242, 255, 0.1);
             text-transform: uppercase;
         }        
-        .clock { color: var(--neon-magenta); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px var(--neon-magenta); }
+        .header-info { font-size: 20px; font-weight: bold; color: var(--rmf-yellow); text-shadow: 0 0 10px var(--rmf-yellow); }        
+        .clock { color: var(--terminal-green); font-size: 24px; text-shadow: 0 0 10px var(--terminal-green); }
 
-        .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
+        .app-content { display: flex; flex: 1; gap: 2vw; min-height: 0; }
         
         .grid {             
             flex: 1.4; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 12px;         
+            gap: 10px;         
         }
 
-        /* TILE - STYL NEONOWYCH OKIEN */
+        /* TILE - STYL MODUŁU SYSTEMOWEGO */
         .tile {            
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid var(--neon-cyan);
-            border-radius: 6px;            
+            background: var(--tile-bg); 
+            border: 1px solid var(--border-tech); 
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            cursor: pointer; transition: 0.3s;
-            position: relative;
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: 0.15s;
         }
 
-        .tile .t-top { font-size: 16px; font-weight: 700; color: #fff; z-index: 2; }        
-        .tile .t-bottom { font-size: 11px; color: var(--neon-cyan); margin-top: 5px; font-weight: 600; z-index: 2; }
+        .tile .t-top { font-size: 16px; font-weight: bold; color: var(--rmf-yellow); z-index: 2; }        
+        .tile .t-bottom { font-size: 10px; color: #fff; margin-top: 5px; text-align: center; z-index: 2; opacity: 0.7; }
 
-        /* AKTYWNA STACJA - MAGENTA GLOW */
+        /* AKTYWNA STACJA - PRZECIĄŻENIE SYSTEMU */
         .tile.active {             
-            border-color: var(--neon-magenta);
-            box-shadow: 0 0 20px var(--neon-magenta), inset 0 0 10px var(--neon-magenta);
-            background: rgba(255, 0, 255, 0.1);
+            border-color: var(--rmf-yellow);
+            background: rgba(252, 227, 0, 0.15);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.3);
+            transform: scale(1.02);
         }        
-        .tile.active .t-top { color: var(--rmf-yellow); text-shadow: 0 0 5px var(--rmf-yellow); }
 
-        /* Sidebar jako boczny panel sterowania */
+        /* FALE - ZACHOWANA LOGIKA, KOLOR TERM. GREEN */
+        .waves {            
+            position: absolute; width: 100%; height: 100%;            
+            display: flex; align-items: center; justify-content: center;            
+            pointer-events: none; opacity: 0; z-index: 1;        
+        }        
+        .tile.active .waves { opacity: 1; }        
+        .wave {            
+            position: absolute; border: 1px solid var(--terminal-green); border-radius: 50%;            
+            width: 10px; height: 10px; opacity: 0;            
+            box-shadow: 0 0 15px var(--terminal-green);            
+            animation: ripple 2s infinite linear;        
+        }        
+        .wave:nth-child(2) { animation-delay: 0.6s; }        
+        .wave:nth-child(3) { animation-delay: 1.2s; }
+
+        @keyframes ripple {            
+            0% { width: 0; height: 0; opacity: 1; }            
+            100% { width: 250%; height: 250%; opacity: 0; }        
+        }
+
         .sidebar {             
             flex: 0.6; display: flex; flex-direction: column;             
-            align-items: center; justify-content: space-around; 
-            padding: 30px; border-radius: 12px;
-            background: var(--glass);
-            border: 2px solid var(--neon-magenta);
-            box-shadow: 0 0 20px var(--neon-magenta);
+            align-items: center; justify-content: space-around; gap: 3vh;            
+            border: 2px solid var(--border-tech); background: rgba(0, 5, 10, 0.95); padding: 20px;
         }
 
+        /* DISPLAY - STYL PROCESORA */
         .logo-display {            
             width: 100%; aspect-ratio: 1/1;            
-            border: 3px solid var(--rmf-yellow);
+            border: 2px solid var(--terminal-green);
             border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: #000;
-            box-shadow: 0 0 30px var(--rmf-yellow);
+            background: radial-gradient(circle, #001122 0%, #000 100%);            
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.2), inset 0 0 20px rgba(0, 242, 255, 0.1);
         }        
-        .logo-display h2 { font-size: 48px; color: var(--rmf-yellow); text-shadow: 0 0 15px var(--rmf-yellow); }        
+        .logo-display h2 { font-size: 36px; color: var(--rmf-yellow); text-shadow: 0 0 15px var(--rmf-yellow); }        
+        .logo-display p { font-size: 10px; color: var(--terminal-green); font-weight: bold; text-transform: uppercase; letter-spacing: 4px; }
 
-        .controls { display: flex; align-items: center; gap: 20px; }        
-        .c-svg { width: 40px; height: 40px; fill: var(--neon-cyan); cursor: pointer; filter: drop-shadow(0 0 5px var(--neon-cyan)); }        
-        .c-play { width: 80px; height: 80px; fill: var(--rmf-yellow); filter: drop-shadow(0 0 10px var(--rmf-yellow)); }
+        .controls { display: flex; align-items: center; gap: 2vw; }        
+        .c-svg { width: 35px; height: 35px; fill: var(--terminal-green); cursor: pointer; filter: drop-shadow(0 0 5px var(--terminal-green)); }        
+        .c-play { width: 70px; height: 70px; fill: var(--rmf-yellow); filter: drop-shadow(0 0 10px var(--rmf-yellow)); }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 100%; }        
-        .vol-bar { 
-            flex: 1; height: 15px; background: #222; border-radius: 10px;
-            border: 1px solid var(--neon-cyan); overflow: hidden; position: relative;
-        }                
-        input[type="range"] { width: 100%; appearance: none; background: transparent; cursor: pointer; }        
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 20px; height: 20px; background: var(--rmf-yellow); box-shadow: 0 0 10px var(--rmf-yellow);
-        }
-
-        /* OKRĄGŁE FALE - TYM RAZEM JAKO SUBTELNY DODATEK */
-        .waves { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
-        .tile.active .waves { opacity: 1; }
-        .wave { position: absolute; border: 1px solid var(--rmf-yellow); border-radius: 50%; animation: ripple 2s infinite linear; }
-        @keyframes ripple { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 200%; height: 200%; opacity: 0; } }
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; }        
+        .vol-btn { width: 35px; height: 35px; border: 1px solid var(--border-tech); background: none; color: var(--border-tech); cursor: pointer; font-family: inherit; font-size: 16px; }        
+        .vol-btn:hover { border-color: var(--rmf-yellow); color: var(--rmf-yellow); }
+        .vol-bar { flex: 1; height: 30px; border: 1px solid var(--border-tech); background: #000; display: flex; align-items: center; padding: 0 5px; }                
+        input[type="range"] { flex: 1; appearance: none; background: #001122; height: 8px; outline: none; }        
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 15px; height: 15px; background: var(--rmf-yellow); cursor: pointer; box-shadow: 0 0 10px var(--rmf-yellow); }
 
         @media (max-width: 600px) {            
-            .grid { grid-template-columns: repeat(3, 1fr); flex: none; height: 50vh; }            
-            .sidebar { width: 100%; }        
+            .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; flex: none; }            
+            .sidebar { width: 100%; border-top: 2px solid var(--rmf-yellow); }        
         }
+        /* [END] --- STYL MAINFRAME TERMINAL --- */
     </style></head><body>
 
 <header>    
@@ -134,7 +136,7 @@
     <aside class="sidebar">        
         <div class="logo-display">            
             <h2>RMF</h2>            
-            <p style="color:var(--neon-cyan); letter-spacing: 5px;">NEON</p>        
+            <p>MAINFRAME Active</p>        
         </div>
         <div class="controls">            
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            
@@ -142,9 +144,11 @@
             <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        
         </div>
         <div class="vol-box">            
+            <button class="vol-btn" onclick="adj(-5)">-</button>            
             <div class="vol-bar">                
-                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            
+                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">            
             </div>            
+            <button class="vol-btn" onclick="adj(5)">+</button>        
         </div>    
     </aside>
 </div>
@@ -152,6 +156,7 @@
 <audio id="player"></audio>
 
 <script>    
+    /* [LOGIKA BEZ ZMIAN] */
     const STATIONS = [        
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
@@ -183,7 +188,7 @@
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
-            <div class="waves"><div class="wave"></div></div>            
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
             <div class="t-top">RMF</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
@@ -206,5 +211,9 @@
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
-    function setV(v) { player.volume = v / 100; }        
-</script></body></html>
+    function setV(v) {         
+        player.volume = v / 100;        
+        if(parseInt(v) === 50) vRange.classList.add('at-mid');        
+        else vRange.classList.remove('at-mid');    
+    }        
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }</script></body></html>
