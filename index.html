@@ -8,115 +8,68 @@
 
         :root {
             --cyan: #00f2ff;
-            --magenta: #ff00e5;
-            --bg-black: #0b0e14;
-            --panel-bg: #151a24;
-            --panel-border: #2a3441;
-            --slot-bg: #05070a;
-            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.4);
+            --magenta: #bc00ff;
+            --bg-black: #05070a;
+            --panel-bg: #0d1117;
+            --panel-border: #1e2633;
+            --slot-bg: #020305;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body, html { 
-            width: 100vw; height: 100vh; 
-            overflow: hidden; 
-            background-color: #080a0f;
-            color: #fff;
-            font-family: 'Rajdhani', sans-serif;
-        }
+        body, html { width: 100vw; height: 100vh; overflow: hidden; background-color: var(--bg-black); color: #fff; font-family: 'Rajdhani', sans-serif; }
 
         .synth-container {
             width: 100%; height: 100%;
-            display: grid;
-            grid-template-columns: 450px 1fr 340px;
-            gap: 12px;
-            padding: 12px;
-            background: linear-gradient(180deg, #10141d 0%, #080a0f 100%);
+            display: grid; grid-template-columns: 480px 1fr 320px; gap: 10px; padding: 10px;
         }
 
-        /* LEWY PANEL - KOLUMNY */
+        /* LEWY PANEL */
         .osc-sidebar { display: flex; flex-direction: column; gap: 8px; height: 100%; }
-        
         .track-info-box {
-            border: 2px solid var(--panel-border);
-            border-left: 4px solid var(--magenta);
-            padding: 15px;
-            background: var(--panel-bg);
-            min-height: 85px;
-            box-shadow: var(--neon-glow);
+            border: 1px solid var(--magenta); background: rgba(188, 0, 255, 0.05);
+            padding: 15px; min-height: 80px; box-shadow: inset 0 0 15px rgba(188, 0, 255, 0.1);
         }
 
         .stations-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            flex-grow: 1;
-            overflow-y: auto;
-            padding-right: 5px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+            overflow-y: auto; padding-right: 5px; flex-grow: 1;
         }
-        .stations-grid::-webkit-scrollbar { width: 4px; }
-        .stations-grid::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 10px; }
-
         .category-header {
-            font-family: 'Orbitron';
-            font-size: 10px;
-            color: var(--cyan);
-            margin-bottom: 8px;
-            letter-spacing: 2px;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 3px;
-            grid-column: span 1;
+            font-family: 'Orbitron'; font-size: 10px; color: var(--cyan);
+            border-bottom: 1px solid var(--panel-border); padding: 5px 0; margin-bottom: 8px; letter-spacing: 2px;
         }
 
         .osc-module {
-            border: 1px solid var(--panel-border);
-            padding: 6px;
-            background: var(--panel-bg);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            margin-bottom: 4px;
+            border: 1px solid var(--panel-border); padding: 5px; background: var(--panel-bg);
+            cursor: pointer; transition: 0.2s; position: relative;
         }
-        .osc-module:hover { border-color: #4a5a71; background: #1c232e; }
-        .osc-module.active { border-color: var(--cyan); background: #1c232e; box-shadow: inset 0 0 10px rgba(0, 242, 255, 0.2); }
+        .osc-module:hover { border-color: var(--cyan); background: #161c27; }
+        .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.3); background: #161c27; }
 
         .station-slot {
-            background: var(--slot-bg);
-            height: 34px;
-            display: flex;
-            align-items: center;
-            padding-left: 8px;
-            font-family: 'Orbitron';
-            font-size: 9px;
-            color: #cbd5e1;
-            border: 1px solid #1a202a;
+            background: var(--slot-bg); height: 32px; display: flex; align-items: center;
+            padding: 0 10px; font-family: 'Orbitron'; font-size: 9px; color: #a0aec0;
         }
+        .osc-module.active .station-slot { color: var(--cyan); }
 
-        /* ŚRODEK - EQ */
-        .main-display {
-            border: 2px solid var(--panel-border);
-            background: #05070a;
-            position: relative;
-            overflow: hidden;
-        }
+        /* ŚRODEK */
+        .main-display { border: 1px solid var(--panel-border); background: #010204; position: relative; }
         #eq-canvas { width: 100%; height: 100%; display: block; }
 
         /* PRAWY PANEL */
-        .control-sidebar { display: flex; flex-direction: column; gap: 12px; }
-        .module-box { border: 2px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-        .envelope-view { height: 160px; background: #05070a; border: 1px solid var(--panel-border); }
+        .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .module-box { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .env-visual { height: 140px; background: #000; border: 1px solid #111; }
 
-        .playback-frame { border: 2px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
-        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: var(--panel-bg); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
         .synth-btn {
-            background: #1c232e; border: 1px solid var(--panel-border); color: #fff;
+            background: #1a222d; border: 1px solid var(--panel-border); color: #fff;
             padding: 10px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
         }
         .synth-btn:hover { border-color: var(--cyan); }
-        .btn-stop:hover { border-color: var(--magenta); }
-
-        .vol-slider { -webkit-appearance: none; width: 100%; height: 4px; background: #05070a; outline: none; }
-        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--cyan); cursor: pointer; }
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 3px; background: #000; outline: none; }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; background: var(--cyan); cursor: pointer; }
     </style>
 </head>
 <body>
@@ -125,15 +78,15 @@
     <div class="osc-sidebar">
         <div class="track-info-box">
             <div style="font-size: 9px; color: var(--magenta); font-family: 'Orbitron'; margin-bottom: 5px;">CURRENT SIGNAL</div>
-            <div id="track-title" style="font-size: 12px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 8px var(--magenta);">INITIATING...</div>
+            <div id="track-title" style="font-size: 11px; font-family: 'Orbitron'; color: #fff; text-shadow: 0 0 5px var(--magenta);">LINK START...</div>
         </div>
         
         <div class="stations-grid">
-            <div id="techno-col">
+            <div>
                 <div class="category-header">TECHNO</div>
                 <div id="techno-group"></div>
             </div>
-            <div id="house-col">
+            <div>
                 <div class="category-header">HOUSE</div>
                 <div id="house-group"></div>
             </div>
@@ -146,18 +99,17 @@
 
     <aside class="control-sidebar">
         <div class="module-box">
-            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 10px;">ENVELOPE 1</div>
-            <div class="envelope-view">
+            <div style="font-size: 9px; color: var(--cyan); font-family: 'Orbitron'; margin-bottom: 8px;">ENV 1 [VCA]</div>
+            <div class="env-visual">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0,100 L20,20 L40,50 L80,50 L100,100" fill="none" stroke="var(--cyan)" stroke-width="2" />
+                    <path d="M0,100 L20,10 L50,40 L80,40 L100,100" fill="none" stroke="var(--magenta)" stroke-width="2" />
                 </svg>
             </div>
         </div>
-
         <div class="playback-frame">
             <div class="btn-grid">
-                <button class="synth-btn" id="playBtn">START</button>
-                <button class="synth-btn btn-stop" id="stopBtn">KILL</button>
+                <button class="synth-btn" id="playBtn">BOOT</button>
+                <button class="synth-btn" id="stopBtn" style="color:var(--magenta)">KILL</button>
             </div>
             <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
         </div>
@@ -193,20 +145,8 @@
     const ctx = canvas.getContext('2d');
     
     let audioCtx, analyser, source, dataArray;
-    let currentSlug = "";
 
-    async function updateMetadata() {
-        if (!currentSlug) return;
-        try {
-            const res = await fetch(`https://api.laut.fm/station/${currentSlug}/current_song`);
-            const data = await res.json();
-            if (data && data.artist) {
-                trackTitle.textContent = `${data.artist.name.toUpperCase()} - ${data.title.toUpperCase()}`;
-            }
-        } catch (e) { trackTitle.textContent = "SIGNAL DECRYPTING..."; }
-    }
-
-    function initAudio() {
+    function setupAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             analyser = audioCtx.createAnalyser();
@@ -219,66 +159,74 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function buildUI() {
+    async function getMeta(slug) {
+        try {
+            const r = await fetch(`https://api.laut.fm/station/${slug}/current_song`);
+            const d = await r.json();
+            trackTitle.textContent = d.artist.name.toUpperCase() + " - " + d.title.toUpperCase();
+        } catch(e) { trackTitle.textContent = "SIGNAL ACTIVE"; }
+    }
+
+    function initStations() {
         Object.keys(STATIONS).forEach(cat => {
             const container = document.getElementById(`${cat}-group`);
             STATIONS[cat].forEach(s => {
-                const mod = document.createElement('div');
-                mod.className = 'osc-module';
-                mod.innerHTML = `<div class="station-slot">${s.n}</div>`;
-                mod.onclick = () => {
-                    initAudio();
+                const div = document.createElement('div');
+                div.className = 'osc-module';
+                div.innerHTML = `<div class="station-slot">${s.n}</div>`;
+                div.onclick = () => {
+                    setupAudio();
                     document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
-                    mod.classList.add('active');
-                    currentSlug = s.slug;
-                    audio.src = `https://stream.laut.fm/${s.slug}`;
-                    audio.play().catch(console.error);
-                    updateMetadata();
+                    div.classList.add('active');
+                    // Cache busting + Load
+                    audio.src = `https://stream.laut.fm/${s.slug}?nocache=${Date.now()}`;
+                    audio.load(); 
+                    audio.play();
+                    getMeta(s.slug);
                 };
-                container.appendChild(mod);
+                container.appendChild(div);
             });
         });
     }
 
-    buildUI();
+    initStations();
 
-    document.getElementById('playBtn').onclick = () => { initAudio(); audio.play(); };
+    document.getElementById('playBtn').onclick = () => { setupAudio(); audio.play(); };
     document.getElementById('stopBtn').onclick = () => audio.pause();
     document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
 
-    function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-    window.onresize = resize;
-    resize();
-
     function draw() {
         requestAnimationFrame(draw);
-        ctx.fillStyle = '#05070a';
+        if (!canvas.width || canvas.width !== canvas.clientWidth) {
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
+        }
+
+        ctx.fillStyle = '#010204';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         if (analyser) {
             analyser.getByteFrequencyData(dataArray);
-            const layers = 5;
-            for (let l = 0; l < layers; l++) {
+            const sliceWidth = canvas.width / dataArray.length;
+            
+            // Neon Layers
+            for(let j = 0; j < 3; j++) {
                 ctx.beginPath();
-                ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.7 - l*0.12})` : `rgba(255, 0, 229, ${0.4 - l*0.06})`;
-                ctx.lineWidth = 2;
+                ctx.lineWidth = j === 0 ? 3 : 1;
+                ctx.strokeStyle = j === 1 ? 'rgba(0, 242, 255, 0.8)' : 'rgba(188, 0, 255, 0.5)';
                 
-                for (let i = 0; i < canvas.width; i += 8) {
-                    const idx = Math.floor((i / canvas.width) * dataArray.length);
-                    const val = (dataArray[idx] / 255) * canvas.height * 0.4;
-                    const y = (canvas.height / 2) + Math.sin(i * 0.02 + Date.now() * 0.002 + l) * (val + 2);
-                    if (i === 0) ctx.moveTo(i, y);
-                    else ctx.lineTo(i, y);
+                let x = 0;
+                for(let i = 0; i < dataArray.length; i++) {
+                    const v = dataArray[i] / 128.0;
+                    const y = (v * canvas.height / 3) + (canvas.height / 3) + Math.sin(i*0.1 + Date.now()*0.002)*10;
+                    if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                    x += sliceWidth;
                 }
                 ctx.stroke();
             }
         }
     }
     draw();
-    setInterval(updateMetadata, 15000);
 </script>
 </body>
 </html>
