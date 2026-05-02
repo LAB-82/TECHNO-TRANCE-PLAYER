@@ -1,122 +1,117 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF MILITARY HUD</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>TECHNO TRANCE PLAYER - AUDIT FINAL</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
         
         :root {            
-            /* Kolorystyka z image_a24026.jpg - Tactical Green/Lime */
-            --lime: #c2d94c;            
-            --bg: #0d1117;
-            --hud-dark: rgba(194, 217, 76, 0.05);
-            --glow: 0 0 12px rgba(194, 217, 76, 0.4);
+            --amber: #ff8800;            
+            --blue-neon: #00ccff;            
+            --bg-deep: #0a0500;
+            --glass: rgba(255, 136, 0, 0.05);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         body { 
-            height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
+            height: 100vh; width: 100vw; background: var(--bg-deep); color: #fff; 
             font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 2vh;
-            /* Tło z siatką i liniami HUD */
             background-image: 
-                radial-gradient(circle at center, #1a1f26 0%, #0d1117 100%),
-                linear-gradient(rgba(194, 217, 76, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(194, 217, 76, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 30px 30px, 30px 30px;
+                radial-gradient(circle at center, #1a0d00 0%, #000 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 136, 0, 0.03) 2px, rgba(255, 136, 0, 0.03) 4px);
         }
 
         header {             
             height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border: 1px solid var(--lime); margin-bottom: 2vh; padding: 0 20px;
-            background: var(--hud-dark); clip-path: polygon(0 0, 98% 0, 100% 30%, 100% 100%, 2% 100%, 0 70%);
+            border-bottom: 2px solid var(--amber); margin-bottom: 2vh;
+            box-shadow: 0 0 20px rgba(255, 136, 0, 0.2);
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--lime); text-shadow: var(--glow); letter-spacing: 2px; }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--lime); font-size: 20px; }
+        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--amber); text-shadow: 0 0 10px var(--amber); }        
+        .clock { font-family: 'Orbitron', sans-serif; color: var(--amber); font-size: 22px; }
 
-        .app-content { display: flex; flex: 1; gap: 2vw; height: calc(100vh - 120px); }
+        .app-content { display: flex; flex: 1; gap: 20px; height: calc(100vh - 120px); }
 
+        /* GRID 5x3 - NIENARUSZONY */
         .grid {             
             flex: 1.5; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 15px;         
+            gap: 12px;         
         }
 
-        /* KAFELEK - STYLIZACJA Z OBRAZKA */
+        /* TILE - STYL NEONOWEJ RAMKI Z OBRAZKA */
         .tile {            
-            background: var(--hud-dark); 
-            border: 1px solid rgba(194, 217, 76, 0.2);
+            background: var(--glass); 
+            border: 1px solid rgba(255, 136, 0, 0.2);
+            border-radius: 4px;
             position: relative; cursor: pointer; transition: 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
         }
 
-        /* Narożniki HUD na kafelkach */
-        .tile::after {
-            content: ''; position: absolute; inset: 0;
-            background: 
-                linear-gradient(to right, var(--lime) 2px, transparent 2px) 0 0 / 10px 2px no-repeat,
-                linear-gradient(to bottom, var(--lime) 2px, transparent 2px) 0 0 / 2px 10px no-repeat,
-                linear-gradient(to left, var(--lime) 2px, transparent 2px) 100% 100% / 10px 2px no-repeat,
-                linear-gradient(to top, var(--lime) 2px, transparent 2px) 100% 100% / 2px 10px no-repeat;
-            opacity: 0.3;
-        }
+        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; text-transform: uppercase; }        
+        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--amber); opacity: 0.8; }
 
-        .tile .t-top { font-size: 16px; font-weight: 700; color: #fff; z-index: 2; }        
-        .tile .t-bottom { font-size: 10px; color: var(--lime); text-transform: uppercase; z-index: 2; letter-spacing: 1px; }
-
+        /* ACTIVE - MAKSYMALNA POŚWIATA */
         .tile.active { 
-            background: rgba(194, 217, 76, 0.15); 
-            border-color: var(--lime);
-            box-shadow: inset 0 0 15px rgba(194, 217, 76, 0.2);
+            background: rgba(255, 136, 0, 0.15); 
+            border-color: var(--amber);
+            box-shadow: 0 0 25px rgba(255, 136, 0, 0.3), inset 0 0 15px rgba(255, 136, 0, 0.2);
+            transform: scale(1.02);
         }
-        .tile.active::after { opacity: 1; }
+        .tile.active .t-top { text-shadow: 0 0 10px #fff; }
 
         .sidebar {             
             flex: 0.5; display: flex; flex-direction: column;             
             align-items: center; justify-content: space-around;
-            border: 1px solid rgba(194, 217, 76, 0.1); background: rgba(0, 0, 0, 0.3);
-            padding: 20px; position: relative;
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 136, 0, 0.1);
+            padding: 20px; border-radius: 8px;
         }
 
-        /* LOGO - OKRĄGŁY RADAR Z image_a24026.jpg */
         .logo-display {            
-            width: 100%; aspect-ratio: 1; border: 2px solid var(--lime); border-radius: 50%;
+            width: 100%; aspect-ratio: 1; border: 2px solid var(--amber); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: 
-                radial-gradient(circle, transparent 40%, rgba(194, 217, 76, 0.05) 41%, rgba(194, 217, 76, 0.05) 42%, transparent 43%),
-                radial-gradient(circle, var(--hud-dark) 0%, transparent 80%);
-            box-shadow: 0 0 20px rgba(194, 217, 76, 0.1);
+            background: radial-gradient(circle, rgba(255, 136, 0, 0.1) 0%, transparent 80%);
+            box-shadow: 0 0 30px rgba(255, 136, 0, 0.15);
         }
-        
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 24px; color: var(--lime); text-shadow: var(--glow); }
-        .logo-display p { font-size: 9px; color: var(--lime); letter-spacing: 2px; opacity: 0.7; }
+        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 32px; color: #fff; text-shadow: 0 0 15px var(--amber); }
+        .logo-display p { font-size: 10px; color: var(--amber); letter-spacing: 4px; font-weight: 700; }
 
-        .controls { display: flex; gap: 15px; align-items: center; }        
-        .c-svg { width: 40px; height: 40px; fill: var(--lime); cursor: pointer; filter: drop-shadow(0 0 3px var(--lime)); }
-        .c-play { width: 60px; height: 60px; }
+        .controls { display: flex; gap: 20px; align-items: center; }        
+        .c-svg { width: 45px; height: 45px; fill: var(--amber); cursor: pointer; filter: drop-shadow(0 0 5px var(--amber)); transition: 0.2s; }
+        .c-svg:hover { transform: scale(1.1); }
+        .c-play { width: 75px; height: 75px; }
 
+        /* VOLUME - TWOJA LOGIKA AT-MID */
         .vol-box { width: 100%; }
         input[type="range"] { 
-            width: 100%; appearance: none; background: #1a1f26; height: 10px; border: 1px solid rgba(194, 217, 76, 0.3);
+            width: 100%; appearance: none; background: #221100; height: 10px; border-radius: 5px; 
+            border: 1px solid rgba(255, 136, 0, 0.3); overflow: hidden;
         }
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 12px; height: 18px; background: var(--lime); cursor: pointer;
+            appearance: none; width: 15px; height: 10px; background: var(--amber);
+            box-shadow: -400px 0 0 400px var(--amber); cursor: pointer;
         }
-        /* KLASA AT-MID Z TWOJEJ LOGIKI */
-        input[type="range"].at-mid::-webkit-slider-thumb { box-shadow: 0 0 15px var(--lime); background: #fff; }
+        /* Wizualny fix Twojej klasy logicznej */
+        input[type="range"].at-mid::-webkit-slider-thumb { 
+            background: var(--blue-neon); 
+            box-shadow: -400px 0 0 400px var(--blue-neon); 
+        }
 
         @media (max-width: 800px) {
-            .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); }
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
+            .sidebar { width: 100%; height: auto; }
         }
     </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
+<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>TACTICAL AUDIO</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>ACTIVE SYSTEM</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
         <div class="vol-box">            <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
 
 <audio id="player"></audio>
 
 <script>    
+    // TWOJA ORYGINALNA LOGIKA Z GITHUBA
     const STATIONS = [        
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
@@ -148,7 +143,7 @@
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
-            <div class="t-top">RMF FM</div>            
+            <div class="t-top">RMF</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
         grid.appendChild(t);    
@@ -157,8 +152,8 @@
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = STATIONS[i].n;        
-        document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];        
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
         player.play();        
