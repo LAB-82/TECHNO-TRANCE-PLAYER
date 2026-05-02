@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>GEHIRN TREIBER - SYNTH HUD V5</title>
+    <title>GEHIRN TREIBER - AUDIO SYNTH PRO</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
 
@@ -14,168 +14,99 @@
             --slot-bg: #000000;
         }
 
+        /* Fix dla braku pasków przewijania */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
+        body, html { 
+            width: 100%; height: 100%; 
+            overflow: hidden; 
             background-color: var(--bg-black);
             color: #fff;
             font-family: 'Rajdhani', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
         }
 
         .synth-container {
-            width: 98vw;
-            height: 94vh;
+            width: 100vw;
+            height: 100vh;
             display: grid;
-            grid-template-columns: 320px 1fr 380px;
-            gap: 15px;
-            padding: 15px;
+            grid-template-columns: 300px 1fr 340px;
+            gap: 10px;
+            padding: 10px;
         }
 
-        /* LEWY PANEL - OSCILLATORS */
-        .osc-sidebar { display: flex; flex-direction: column; gap: 12px; }
+        /* LEWY PANEL */
+        .osc-sidebar { display: flex; flex-direction: column; gap: 8px; overflow-y: auto; }
+        .osc-sidebar::-webkit-scrollbar { width: 0; }
+
+        /* Pole Tytułu Utworu (z oryginału) */
+        .track-info-box {
+            border: 1px solid var(--magenta);
+            padding: 10px;
+            margin-bottom: 5px;
+            background: rgba(255, 0, 229, 0.05);
+        }
 
         .osc-module {
             border: 1px solid var(--panel-border);
-            padding: 12px;
+            padding: 8px;
             background: rgba(255, 255, 255, 0.01);
-            border-radius: 4px;
+            border-radius: 2px;
             cursor: pointer;
-            transition: 0.3s;
         }
+        .osc-module.active { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); }
 
-        .osc-module.active { border-color: var(--magenta); box-shadow: inset 0 0 15px rgba(255, 0, 229, 0.1); }
-
-        .osc-header {
-            font-size: 10px;
-            color: var(--cyan);
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            font-family: 'Orbitron';
-        }
-
+        .osc-header { font-size: 9px; color: var(--cyan); letter-spacing: 1px; font-family: 'Orbitron'; margin-bottom: 4px; }
         .station-slot {
             background: var(--slot-bg);
-            height: 55px;
+            height: 40px;
             display: flex;
             align-items: center;
-            padding-left: 20px;
+            padding-left: 10px;
             font-family: 'Orbitron';
-            font-weight: 700;
-            font-size: 15px;
+            font-size: 12px;
             border: 1px solid rgba(255,255,255,0.03);
-            text-transform: uppercase;
         }
 
-        /* ŚRODEK - MASTER EQ VISUALIZER (Inspirowany image_782f9d.png) */
+        /* ŚRODEK */
         .main-display {
             border: 1px solid var(--panel-border);
             display: flex;
             flex-direction: column;
-            position: relative;
             background: radial-gradient(circle at center, #0a0a1a 0%, #010408 100%);
         }
 
-        .display-header {
-            text-align: center;
-            font-size: 11px;
-            padding: 15px;
-            letter-spacing: 4px;
-            color: var(--cyan);
-            font-family: 'Orbitron';
-        }
-
-        .visualizer-core {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
+        .visualizer-core { flex: 1; position: relative; display: flex; justify-content: center; align-items: center; }
         #eq-canvas { width: 100%; height: 100%; }
 
-        .station-label {
-            position: absolute;
-            bottom: 40px;
-            font-family: 'Orbitron';
-            font-size: 32px;
-            letter-spacing: 12px;
-            opacity: 0.2;
-            pointer-events: none;
-        }
+        /* PRAWY PANEL */
+        .control-sidebar { display: flex; flex-direction: column; gap: 10px; }
+        .module-box { border: 1px solid var(--panel-border); padding: 15px; }
+        .envelope-view { height: 150px; width: 100%; background: rgba(0,0,0,0.5); }
 
-        /* PRAWY PANEL - TRANSPORT & VOLUME (Zgodnie z image_88cb1f.png) */
-        .control-sidebar { display: flex; flex-direction: column; gap: 15px; }
-
-        .module-box { border: 1px solid var(--panel-border); padding: 20px; }
-
-        .envelope-view { height: 220px; width: 100%; background: rgba(0,0,0,0.5); margin-bottom: 20px; }
-
-        .knob-row { display: flex; justify-content: space-around; padding: 15px 0; }
-
-        .knob {
-            width: 55px; height: 55px;
-            border-radius: 50%;
-            border: 3px solid var(--panel-border);
-            border-top-color: var(--cyan);
-            margin-bottom: 8px;
-        }
-
-        .playback-frame {
-            border: 1px solid var(--panel-border);
-            padding: 20px;
-            background: rgba(0,0,0,0.3);
-        }
-
-        .btn-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
-
+        .playback-frame { border: 1px solid var(--panel-border); padding: 15px; background: rgba(0,0,0,0.3); }
+        .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; }
         .synth-btn {
-            background: transparent;
-            border: 1px solid var(--cyan);
-            color: var(--cyan);
-            padding: 12px;
-            font-family: 'Orbitron';
-            cursor: pointer;
+            background: transparent; border: 1px solid var(--cyan); color: var(--cyan);
+            padding: 8px; font-family: 'Orbitron'; font-size: 10px; cursor: pointer;
         }
-
-        .synth-btn:hover { background: var(--cyan); color: #000; }
         .btn-stop { border-color: var(--magenta); color: var(--magenta); }
-
-        .vol-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 3px;
-            background: var(--panel-border);
-            outline: none;
-        }
-
-        .vol-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 18px; height: 18px;
-            background: var(--cyan);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 15px var(--cyan);
-        }
-
+        .vol-slider { -webkit-appearance: none; width: 100%; height: 2px; background: var(--panel-border); }
+        .vol-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--cyan); border-radius: 50%; }
     </style>
 </head>
 <body>
 
 <div class="synth-container">
-    <div class="osc-sidebar" id="station-list"></div>
+    <div class="osc-sidebar">
+        <div class="track-info-box">
+            <div class="osc-header" style="color: var(--magenta);">CURRENT TRACK</div>
+            <div id="track-title" style="font-size: 13px; font-family: 'Orbitron'; overflow: hidden; white-space: nowrap;">WAITING FOR SIGNAL...</div>
+        </div>
+        <div id="station-list"></div>
+    </div>
 
     <main class="main-display">
-        <div class="display-header">MASTER OUTPUT VISUALIZER [MULTI-PHASE EQ]</div>
         <div class="visualizer-core">
             <canvas id="eq-canvas"></canvas>
-            <div class="station-label" id="current-name">VOID SIGNAL</div>
         </div>
     </main>
 
@@ -184,130 +115,100 @@
             <div class="osc-header">ENVELOPE 1 [AMP]</div>
             <div class="envelope-view">
                 <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-                    <path d="M0,100 L20,15 L45,40 L85,40 L100,100" fill="none" stroke="var(--cyan)" stroke-width="3" />
+                    <path d="M0,100 L20,20 L40,50 L80,50 L100,100" fill="none" stroke="var(--cyan)" stroke-width="2" />
                 </svg>
-            </div>
-            <div class="knob-row">
-                <div style="text-align:center"><div class="knob"></div><div style="font-size:10px">DRIVE</div></div>
-                <div style="text-align:center"><div class="knob" style="border-top-color: var(--magenta);"></div><div style="font-size:10px">FILTER</div></div>
-                <div style="text-align:center"><div class="knob"></div><div style="font-size:10px">REVERB</div></div>
             </div>
         </div>
 
         <div class="playback-frame">
-            <div class="osc-header" style="margin-bottom:15px">TRANSPORT CONTROL</div>
+            <div class="osc-header">TRANSPORT</div>
             <div class="btn-grid">
-                <button class="synth-btn" onclick="audio.play()">PLAY</button>
-                <button class="synth-btn btn-stop" onclick="audio.pause()">STOP</button>
+                <button class="synth-btn" id="playBtn">PLAY</button>
+                <button class="synth-btn btn-stop" id="stopBtn">STOP</button>
             </div>
-            <div class="volume-section">
-                <div style="display:flex; justify-content: space-between; font-size: 11px; margin-bottom:10px">
-                    <span>MASTER VOLUME</span>
-                    <span id="vol-display">70%</span>
-                </div>
-                <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="updateVol(this.value)">
-            </div>
+            <div style="font-size: 10px; margin-bottom: 5px; color: var(--cyan);">MASTER VOLUME</div>
+            <input type="range" class="vol-slider" min="0" max="100" value="70" id="volRange">
         </div>
     </aside>
 </div>
 
-<audio id="audio-engine"></audio>
+<audio id="audio-engine" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = [
-        { id: '01', n: 'NEON WAVE', u: 'https://stream.laut.fm/tech88' },
-        { id: '02', n: 'CYBER CORE', u: 'https://stream.laut.fm/hr3_clubnight' },
-        { id: '03', n: 'DATA PULSE', u: 'https://stream.laut.fm/1000techno' },
-        { id: '04', n: 'VOID SIGNAL', u: 'https://stream.laut.fm/best-of-techno' },
-        { id: '05', n: 'SYNTH NODE', u: 'https://stream.laut.fm/chris_burn' },
-        { id: '06', n: 'GEHIRN TRB', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
+        { id: '01', n: 'TECHNO-RADIO.pl', u: 'https://stream.laut.fm/tech88' },
+        { id: '02', n: 'CLUB-NIGHT', u: 'https://stream.laut.fm/hr3_clubnight' },
+        { id: '03', n: '1000 TECHNOHITS', u: 'https://stream.laut.fm/1000techno' },
+        { id: '04', n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno' },
+        { id: '05', n: 'CHRIS BURN', u: 'https://stream.laut.fm/chris_burn' },
+        { id: '06', n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio' }
     ];
 
-    const list = document.getElementById('station-list');
     const audio = document.getElementById('audio-engine');
-    const nameLabel = document.getElementById('current-name');
+    const trackTitle = document.getElementById('track-title');
     const canvas = document.getElementById('eq-canvas');
     const ctx = canvas.getContext('2d');
+    
+    let audioCtx, analyser, dataArray;
+
+    // Inicjalizacja Audio API dla precyzyjnego EQ
+    function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            const source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+    }
 
     STATIONS.forEach((s) => {
         const mod = document.createElement('div');
         mod.className = 'osc-module';
-        if(s.n === 'VOID SIGNAL') mod.classList.add('active');
-        mod.innerHTML = `<div class="osc-header">OSC ${s.id} // ${s.n}</div><div class="station-slot">${s.n}</div>`;
+        mod.innerHTML = `<div class="osc-header">OSC ${s.id}</div><div class="station-slot">${s.n}</div>`;
         mod.onclick = () => {
+            initAudio();
             document.querySelectorAll('.osc-module').forEach(m => m.classList.remove('active'));
             mod.classList.add('active');
-            nameLabel.textContent = s.n;
+            trackTitle.textContent = s.n;
             audio.src = s.u;
             audio.play();
         };
-        list.appendChild(mod);
+        document.getElementById('station-list').appendChild(mod);
     });
 
-    // WIZUALIZATOR MULTI-PHASE EQ (Inspirowany image_782f9d.png)
-    canvas.width = 1000;
-    canvas.height = 400;
+    document.getElementById('playBtn').onclick = () => { initAudio(); audio.play(); };
+    document.getElementById('stopBtn').onclick = () => audio.pause();
+    document.getElementById('volRange').oninput = (e) => audio.volume = e.target.value / 100;
 
-    function drawEQ() {
+    canvas.width = 1200; canvas.height = 600;
+
+    function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (analyser) analyser.getByteFrequencyData(dataArray);
         
-        const time = Date.now() * 0.003;
-        const layers = 8; // Liczba nałożonych fal dla efektu głębi
-        const amplitude = audio.paused ? 5 : 70;
-
-        // Środkowa linia bazowa (najjaśniejsza)
-        ctx.shadowBlur = 20;
-        ctx.shadowColor = 'white';
-        ctx.strokeStyle = 'white';
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.moveTo(0, canvas.height/2);
-        ctx.lineTo(canvas.width, canvas.height/2);
-        ctx.stroke();
-        ctx.shadowBlur = 0;
-
-        // Rysowanie warstw EQ
+        const layers = 6;
         for (let l = 0; l < layers; l++) {
             ctx.beginPath();
-            ctx.lineWidth = 1;
-            // Kolorystyka przechodząca od cyjanu do magenty jak na obrazku
-            const alpha = 1 - (l / layers);
-            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${alpha * 0.5})` : `rgba(255, 0, 229, ${alpha * 0.3})`;
+            ctx.strokeStyle = l % 2 === 0 ? `rgba(0, 242, 255, ${0.8 - l*0.1})` : `rgba(255, 0, 229, ${0.4 - l*0.05})`;
+            ctx.lineWidth = 2;
             
-            for (let x = 0; x < canvas.width; x += 2) {
-                // Skomplikowane nakładanie fal dla efektu "pików" EQ
-                const phase = l * 0.2;
-                const freq1 = 0.01;
-                const freq2 = 0.02;
+            for (let i = 0; i < canvas.width; i += 5) {
+                const index = Math.floor((i / canvas.width) * (dataArray ? dataArray.length : 1));
+                const val = dataArray ? dataArray[index] : 10;
+                const phase = l * 15;
+                const y = (canvas.height / 2) + Math.sin(i * 0.01 + phase) * (val * 0.8);
                 
-                const y = canvas.height / 2 + 
-                          Math.sin(x * freq1 + time + phase) * amplitude * Math.cos(x * 0.002) +
-                          Math.sin(x * freq2 - time) * (amplitude / 2);
-
-                if (x === 0) ctx.moveTo(x, y);
-                else ctx.lineTo(x, y);
+                if (i === 0) ctx.moveTo(i, y);
+                else ctx.lineTo(i, y);
             }
             ctx.stroke();
         }
-
-        // Dodanie neonowych punktów (błysków)
-        if(!audio.paused) {
-            for(let i=0; i<3; i++) {
-                ctx.fillStyle = i === 1 ? varColor('--magenta') : varColor('--cyan');
-                ctx.beginPath();
-                ctx.arc(250 + i*250, canvas.height/2, 4, 0, Math.PI*2);
-                ctx.fill();
-            }
-        }
-
-        requestAnimationFrame(drawEQ);
+        requestAnimationFrame(draw);
     }
-
-    function varColor(name) { return getComputedStyle(document.documentElement).getPropertyValue(name); }
-    function updateVol(v) { audio.volume = v/100; document.getElementById('vol-display').textContent = v + "%"; }
-
-    drawEQ();
+    draw();
 </script>
-
 </body>
 </html>
