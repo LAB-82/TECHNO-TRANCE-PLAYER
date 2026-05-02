@@ -1,291 +1,216 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - CYBER TECH EDITION</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Orbitron:wght@400;700&display=swap');
-
-        :root {
-            --yellow: #fce300;
-            --yellow-neon: #fffb00;
-            --bg: #050505;
-            --tile: #0a0a0a;
-            --border: #1a1a1a;
-            --blue-wave: #00ccff;
-            --pink-neon: #ff00ff; /* Dodatek akcentu ze zdjęcia */
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - CYBERSTYLE</title>    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Rajdhani:wght@500;700&display=swap');
         
-        html, body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg); color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden;
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 204, 255, 0.05) 0%, transparent 70%),
-                linear-gradient(rgba(26, 26, 26, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(26, 26, 26, 0.1) 1px, transparent 1px);
-            background-size: 100% 100%, 30px 30px, 30px 30px;
+        :root {            
+            --yellow: #fce300;            
+            --yellow-neon: #fffb00;            
+            --bg: #000;            
+            --tile: #0a0a0a;            
+            --border: #1a1a1a;            
+            --blue-wave: #00ccff; 
+            --neon-pink: #ff00ff;
+            --neon-blue: #00d4ff;
         }
 
-        body { display: flex; flex-direction: column; padding: 2vh; }
-
-        header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 2px solid var(--blue-wave); margin-bottom: 2vh; flex-shrink: 0;
-            box-shadow: 0 5px 15px rgba(0, 204, 255, 0.2);
-            padding: 0 10px;
+        * { margin: 0; padding: 0; box-sizing: border-box; }                
+        html, body {             
+            height: 100vh; width: 100vw;             
+            background: var(--bg); color: #fff;             
+            font-family: 'Montserrat Alternates', sans-serif;            
+            overflow: hidden;         
         }
-        
+
+        body { 
+            display: flex; flex-direction: column; padding: 2vh; 
+            background-image: radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
+        }
+
+        header {             
+            height: 50px; display: flex; justify-content: space-between; align-items: center;            
+            border-bottom: 2px solid var(--neon-blue); margin-bottom: 2vh; flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }        
         .header-info { 
-            font-family: 'Orbitron', sans-serif; 
-            font-size: clamp(14px, 4vw, 24px); 
-            font-weight: 700; color: var(--yellow); 
-            text-transform: uppercase; 
-            letter-spacing: 2px;
-        }
-        
-        .clock { 
-            color: var(--blue-wave); 
-            font-family: 'Orbitron', sans-serif;
-            font-size: 24px; font-weight: 700; 
-            text-shadow: 0 0 10px var(--blue-wave);
-        }
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 24px; font-weight: 700; color: var(--neon-blue); text-transform: uppercase; 
+            text-shadow: 0 0 10px var(--neon-blue);
+        }        
+        .clock { color: var(--neon-pink); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px var(--neon-pink); }
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
 
-        /* GRID STYLIZOWANY NA RAMKI ZE ZDJĘCIA */
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(3, 1fr); 
-            grid-template-rows: repeat(5, 1fr); 
-            gap: 15px; 
+        /* UKŁAD 5x3 ZGODNIE Z ORYGINAŁEM */
+        .grid {             
+            flex: 1.4; display: grid;             
+            grid-template-columns: repeat(5, 1fr);             
+            grid-template-rows: repeat(3, 1fr);             
+            gap: 12px;         
         }
 
-        .tile {
-            background: rgba(10, 10, 10, 0.8); 
-            border: 1px solid var(--blue-wave); 
+        .tile {            
+            background: rgba(10, 10, 10, 0.9); 
+            border: 1px solid var(--neon-blue); 
             border-radius: 4px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; overflow: hidden;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 0 10px rgba(0, 204, 255, 0.1);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;            
+            cursor: pointer; position: relative; overflow: visible;
+            box-shadow: inset 0 0 5px var(--neon-blue);
+            transition: 0.3s;
         }
 
-        .tile::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--blue-wave), transparent);
-        }
+        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; z-index: 2; font-family: 'Rajdhani'; }        
+        .tile .t-bottom { font-size: 12px; font-weight: 600; color: var(--neon-blue); margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; z-index: 2; letter-spacing: 1px; }
-        .tile .t-bottom { font-size: 12px; font-weight: 600; color: var(--yellow); margin-top: 4px; z-index: 2; text-transform: uppercase; }
+        /* AKTYWNA STACJA - STYL ZE ZDJĘCIA (RÓŻ/NEON) */
+        .tile.active {             
+            border: 2px solid var(--neon-pink);             
+            background: rgba(255, 0, 255, 0.05);
+            box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink);
+        }        
+        .tile.active .t-top { color: var(--neon-pink); text-shadow: 0 0 8px var(--neon-pink); }
+        .tile.active .t-bottom { color: #fff; }
 
-        /* AKTYWNA STACJA - STYL FUTURYSTYCZNY */
-        .tile.active { 
-            border: 2px solid var(--yellow-neon); 
-            background: rgba(252, 227, 0, 0.05);
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.4), inset 0 0 15px rgba(252, 227, 0, 0.2);
-        }
-        .tile.active .t-top { color: var(--yellow-neon); }
-
-        /* FALE */
-        .waves {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; z-index: 1;
-        }
-        .tile.active .waves { opacity: 1; }
-        .wave {
-            position: absolute; border: 1.5px solid var(--blue-wave); border-radius: 50%;
-            width: 10px; height: 10px; opacity: 0;
-            animation: ripple 3s infinite linear;
-        }
-        .wave:nth-child(2) { animation-delay: 1s; }
+        /* FALE BŁĘKITNE - ZACHOWANE */
+        .waves {            
+            position: absolute; width: 100%; height: 100%;            
+            display: flex; align-items: center; justify-content: center;            
+            pointer-events: none; opacity: 0; z-index: 1;        
+        }        
+        .tile.active .waves { opacity: 1; }        
+        .wave {            
+            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;            
+            width: 10px; height: 10px; opacity: 0;            
+            box-shadow: 0 0 15px var(--blue-wave);            
+            animation: ripple 3s infinite linear;        
+        }        
+        .wave:nth-child(2) { animation-delay: 1s; }        
         .wave:nth-child(3) { animation-delay: 2s; }
 
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.8; }
-            100% { width: 300%; height: 300%; opacity: 0; }
+        @keyframes ripple {            
+            0% { width: 0; height: 0; opacity: 0.9; }            
+            100% { width: 320%; height: 320%; opacity: 0; }        
         }
 
-        /* SIDEBAR */
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 4vh;
-            border-left: 1px solid var(--border); padding-left: 3vw;
+        .sidebar {             
+            flex: 0.6; display: flex; flex-direction: column;             
+            align-items: center; justify-content: center; gap: 4vh;            
+            border-left: 1px solid var(--border); padding-left: 3vw;        
         }
 
-        .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/9;
-            border: 2px solid var(--yellow); border-radius: 2px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.15), inset 0 0 20px rgba(0, 0, 0, 1);
+        .logo-display {            
+            width: 100%; max-width: 320px; aspect-ratio: 16/10;            
+            border: 2px solid var(--neon-blue); border-radius: 10px;            
+            display: flex; flex-direction: column; align-items: center; justify-content: center;            
+            background: rgba(0, 0, 0, 0.8);            
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
             position: relative;
-        }
-        
-        /* Ozdobne rogi jak na grafice */
-        .logo-display::after {
-            content: ''; position: absolute; width: 20px; height: 20px;
-            border-top: 3px solid var(--pink-neon); border-right: 3px solid var(--pink-neon);
-            top: -5px; right: -5px;
+        }        
+        /* Dekoracyjne narożniki */
+        .logo-display::before {
+            content: ''; position: absolute; top: -2px; left: -2px; width: 20px; height: 20px;
+            border-top: 3px solid var(--neon-pink); border-left: 3px solid var(--neon-pink);
         }
 
-        .logo-display h2 { 
-            font-family: 'Orbitron', sans-serif; font-size: clamp(24px, 5vw, 42px); 
-            color: var(--yellow); text-shadow: 0 0 20px var(--yellow); 
-        }
-        .logo-display p { font-size: 10px; color: var(--blue-wave); letter-spacing: 3px; font-weight: 700; margin-top: 10px; }
+        .logo-display h2 { font-family: 'Rajdhani'; font-size: 46px; color: #fff; text-shadow: 0 0 15px var(--neon-blue); }        
+        .logo-display p { font-size: 11px; color: var(--neon-blue); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
 
-        .controls { display: flex; align-items: center; gap: 3vw; }
-        .c-svg { 
-            width: 40px; height: 40px; fill: var(--blue-wave); cursor: pointer; 
-            filter: drop-shadow(0 0 5px var(--blue-wave));
-            transition: transform 0.2s;
-        }
-        .c-svg:hover { transform: scale(1.1); fill: var(--yellow); }
-        .c-play { width: 80px; height: 80px; fill: var(--yellow); filter: drop-shadow(0 0 15px var(--yellow)); }
+        .controls { display: flex; align-items: center; gap: 3vw; }        
+        .c-svg {             
+            width: 35px; height: 35px; fill: var(--neon-blue); cursor: pointer;             
+            filter: drop-shadow(0 0 8px var(--neon-blue));
+        }        
+        .c-play { width: 70px; height: 70px; fill: var(--neon-pink); filter: drop-shadow(0 0 12px var(--neon-pink)); }
 
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
+        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }        
         .vol-btn { 
-            width: 40px; height: 40px; border: 1px solid var(--blue-wave); 
-            background: none; color: var(--blue-wave); cursor: pointer; 
-            font-family: 'Orbitron'; font-weight: bold; 
-        }
+            width: 35px; height: 35px; border: 1.5px solid var(--neon-blue); 
+            background: none; color: var(--neon-blue); cursor: pointer; font-family: inherit; font-weight: bold; 
+        }        
+        .vol-bar { flex: 1; height: 35px; border: 1.5px solid var(--neon-blue); padding: 0 12px; display: flex; align-items: center; }                
         
-        .vol-bar { 
-            flex: 1; height: 40px; border: 1px solid var(--border); 
-            background: rgba(255,255,255,0.05); border-radius: 4px; 
-            padding: 0 12px; display: flex; align-items: center; 
-        }
-        
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
-        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 20px; height: 20px; 
-            background: var(--yellow); border-radius: 0; 
-            margin-top: -8px; box-shadow: 0 0 10px var(--yellow);
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }        
+        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 4px; }                
+        input[type="range"]::-webkit-slider-thumb {             
+            appearance: none; width: 18px; height: 18px;             
+            background: var(--neon-pink); border-radius: 0;             
+            margin-top: -7px;            
+            box-shadow: 0 0 10px var(--neon-pink);
         }
 
-        @media (max-width: 800px) {
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(2, 1fr); height: auto; flex: none; gap: 10px; }
-            .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border); padding: 20px 0; }
-            .logo-display { max-width: 100%; height: 100px; }
+        @media (max-width: 600px) {
+            .header-info, .clock { font-size: 20px; }
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 50vh; flex: none; }
+            .sidebar { width: 100%; height: 40vh; border-left: none; border-top: 1px solid var(--border); padding: 5px 0; gap: 10px; }
+            .logo-display { width: 95%; height: 65px; aspect-ratio: auto; }
+            .logo-display h2 { font-size: 26px; }
+            .vol-box { width: 95%; }
         }
-    </style>
-</head>
-<body>
+    </style></head><body>
 
-<header>
-    <div class="header-info" id="playing-now">SYSTEM READY // RMF FM</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
+<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
-
-    <aside class="sidebar">
-        <div class="logo-display">
-            <h2 id="display-title">RMF FM</h2>
-            <p id="display-subtitle">STREAMING LIVE</p>
-        </div>
-
-        <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-        </div>
-
-        <div class="vol-box">
-            <button class="vol-btn" onclick="adj(-5)">-</button>
-            <div class="vol-bar">
-                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
-            </div>
-            <button class="vol-btn" onclick="adj(5)">+</button>
-        </div>
-    </aside>
-</div>
+<div class="app-content">    <div class="grid" id="station-grid"></div>
+    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>SYSTEM ONLINE</p>        </div>
+        <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
+        <div class="vol-box">            <button class="vol-btn" onclick="adj(-5)">-</button>            <div class="vol-bar">                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            </div>            <button class="vol-btn" onclick="adj(5)">+</button>        </div>    </aside></div>
 
 <audio id="player"></audio>
 
-<script>
-    const STATIONS = [
-        { n: 'RMF FM', s: 'Main Station', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Hit Music', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s Hits', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s Hits', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: 'Millennium', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Relax', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Culture', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Clubbing', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Oldies', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Hot Rhythm', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Ballads', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Weekend', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'PL Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Hard Sound', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Jazz', u: 'rmf_smooth_jazz' }
+<script>    
+    const STATIONS = [        
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
+        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },        
+        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },        
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },        
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },        
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },        
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },        
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },        
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },        
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },        
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },        
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },        
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },        
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }    
     ];
 
-    const player = document.getElementById('player'), 
-          ico = document.getElementById('p-ico'), 
-          grid = document.getElementById('station-grid'), 
-          vRange = document.getElementById('v-range'),
-          dTitle = document.getElementById('display-title'),
-          dSub = document.getElementById('display-subtitle');
-
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');    
     let current = -1;
 
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
+    function clock() {        
+        const d = new Date();        
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');    
+    }    
     setInterval(clock, 1000); clock();
 
-    STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">${s.n.replace('RMF ', '')}</div>
-            <div class="t-bottom">${s.s}</div>
-        `;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+    STATIONS.forEach((s, i) => {        
+        const t = document.createElement('div');        
+        t.className = 'tile';        
+        t.innerHTML = `            
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
+            <div class="t-top">RMF</div>            
+            <div class="t-bottom">${s.s}</div>        `;        
+        t.onclick = () => play(i);        
+        grid.appendChild(t);    
     });
 
-    function play(i) {
-        current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "// ACTIVE: " + STATIONS[i].n;
-        dTitle.textContent = STATIONS[i].n;
-        dSub.textContent = STATIONS[i].s;
-        
-        const streamBase = "https://rs201-krk.rmfstream.pl/";
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
-        player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+    function play(i) {        
+        current = i;        
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
+        const streamBase = "https://rs201-krk.rmfstream.pl/";        
+        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
+        player.play();        
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');    
     }
 
-    function toggle() {
-        if(current === -1) { play(0); return; }
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+    function toggle() {        
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }        
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }    
     }
 
-    function skip(d) { 
-        let n = current + d; 
-        if(n < 0) n = STATIONS.length - 1;
-        if(n >= STATIONS.length) n = 0;
-        play(n); 
-    }
-    
-    function setV(v) { player.volume = v / 100; }
+    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
+    function setV(v) { player.volume = v / 100; }        
     function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
-</script>
-</body>
-</html>
+</script></body></html>
