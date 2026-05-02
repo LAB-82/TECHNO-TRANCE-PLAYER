@@ -1,271 +1,315 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF HUD INTERFACE</title>    <style>
-        /* --- CAŁKOWICIE NOWY STYL CSS - Oparty na HUD / PURE CSS AVATARS --- */
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&display=swap');
-        
-        :root {            
-            --rmf-yellow: #fce300;            
-            --neon-blue: #00f2ff;
-            --neon-purple: #bc00ff;
-            --bg-deep: #05050a;
-            --panel-glass: rgba(10, 10, 20, 0.6);
-            --border-tech: rgba(0, 242, 255, 0.2);
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMF ULTRA-HUD SYSTEM</title>
+    <style>
+        /* --- CAŁKOWICIE NOWA ARCHITEKTURA WIZUALNA (ULTRA-HUD) --- */
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --rmf-gold: #fce300;
+            --hud-blue: #00f2ff;
+            --hud-purple: #bc00ff;
+            --hud-orange: #ff8c00;
+            --bg-black: #020205;
+            --panel-bg: rgba(0, 20, 30, 0.8);
+            --neon-glow: 0 0 15px rgba(0, 242, 255, 0.5);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }                
-        
-        /* Tło z dynamiczną poświatą i "skanowaniem" */
-        body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg-deep); color: #fff; 
-            font-family: 'Chakra Petch', sans-serif; /* Futurystyczna czcionka */
-            overflow: hidden; 
-            display: flex; flex-direction: column; padding: 15px;
-            position: relative;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Tło - efekt skanowania CRT/HUD */
-        body::before {
-            content: ""; position: absolute; inset: 0;
-            background: 
-                linear-gradient(rgba(188, 0, 255, 0.05) 1px, transparent 1px),
+        body {
+            background-color: var(--bg-black);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            /* Tło z efektem siatki z image_94921f.png */
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(188, 0, 255, 0.1), transparent),
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            pointer-events: none; opacity: 0.5; z-index: -1;
+            background-size: 100% 100%, 30px 30px, 30px 30px;
         }
 
-        /* Pływająca poświata w tle */
-        body::after {
-            content: ""; position: absolute; width: 200%; height: 200%; top: -50%; left: -50%;
-            background: radial-gradient(circle, rgba(188, 0, 255, 0.1) 0%, transparent 60%);
-            animation: drift 15s linear infinite; pointer-events: none; z-index: -2;
+        /* NAGŁÓWEK - STYLIZOWANY NA TOP_IC Z TWOJEJ GRAFIKI */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 40px;
+            background: linear-gradient(90deg, transparent, var(--panel-bg), transparent);
+            border-top: 2px solid var(--hud-blue);
+            border-bottom: 2px solid var(--hud-blue);
+            box-shadow: var(--neon-glow);
+            margin-bottom: 20px;
+            clip-path: polygon(5% 0%, 95% 0%, 100% 50%, 95% 100%, 5% 100%, 0% 50%);
         }
 
-        /* NAGŁÓWEK - STYL PURE CSS HUD AVATAR (Top_IC) */
-        header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center; 
-            margin-bottom: 2vh; flex-shrink: 0;
-            background: var(--panel-glass); backdrop-filter: blur(10px);
-            border-bottom: 3px solid var(--rmf-yellow); border-radius: 8px;
-            padding: 0 25px; 
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.2), inset 0 0 10px rgba(188, 0, 255, 0.1);
+        #playing-now {
+            color: var(--rmf-gold);
+            text-shadow: 0 0 10px var(--rmf-gold);
+            letter-spacing: 3px;
+            font-size: 1.2rem;
+        }
+
+        .clock {
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--hud-blue);
+            font-size: 1.5rem;
+        }
+
+        .app-content {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            min-height: 0;
+        }
+
+        /* GRID STACJI - MODUŁY INSPIROWANE image_94f397.jpg */
+        .grid {
+            flex: 2;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .tile {
+            background: rgba(0, 242, 255, 0.03);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
             position: relative;
+            transition: 0.3s;
+            clip-path: polygon(15% 0, 100% 0, 100% 85%, 85% 100%, 0 100%, 0 15%);
         }
 
-        /* Graficzny element HUD w nagłówku - PURE CSS */
-        header::after {
-            content: ""; position: absolute; right: 20%; top: 0; width: 100px; height: 10px;
-            background: linear-gradient(90deg, transparent, var(--neon-purple), transparent);
-            box-shadow: 0 0 10px var(--neon-purple);
+        .tile:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--hud-blue);
+            box-shadow: inset 0 0 15px rgba(0, 242, 255, 0.2);
         }
 
-        .header-info { 
-            font-size: 20px; font-weight: 700; color: var(--rmf-yellow); 
-            text-shadow: 0 0 10px var(--rmf-yellow);
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-        
-        .clock { 
-            color: var(--neon-blue); font-size: 24px; font-weight: 700; 
-            text-shadow: 0 0 15px var(--neon-blue); 
-            background: rgba(0,0,0,0.3); padding: 5px 15px; border-radius: 4px;
-            border: 1px solid var(--border-tech);
+        .tile.active {
+            border-color: var(--rmf-gold);
+            background: rgba(252, 227, 0, 0.1);
+            box-shadow: 0 0 20px rgba(252, 227, 0, 0.3);
         }
 
-        .app-content { display: flex; flex: 1; gap: 15px; min-height: 0; }
-        
-        /* SIATKA STACJI - MODUŁY SKANUJĄCE */
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); 
-            gap: 10px; min-width: 0;
+        .tile .t-top { color: var(--hud-blue); font-size: 0.8rem; margin-bottom: 5px; }
+        .tile .t-bottom { color: #fff; font-size: 0.9rem; font-weight: bold; }
+        .tile.active .t-bottom { color: var(--rmf-gold); }
+
+        /* SIDEBAR - CENTRALNY AWATAR (Inspiracja: image_9495a6.png) */
+        .sidebar {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 1px solid var(--hud-purple);
+            border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+            padding: 30px;
+            position: relative;
+            box-shadow: 0 0 30px rgba(188, 0, 255, 0.2);
         }
 
-        /* TILE - STYL AWATARA WAFELKOWEGO (Jak na image_94f397.jpg) */
-        .tile { 
-            background: var(--panel-glass); border: 1px solid var(--border-tech); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            cursor: pointer; position: relative; overflow: hidden; 
-            transition: all 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-            border-radius: 4px;
+        .logo-display {
+            width: 220px;
+            height: 220px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Efekt "przeglądania" */
-        .tile::before {
-            content: ""; position: absolute; inset: 0;
-            background: linear-gradient(to right, transparent, rgba(255,255,255,0.05), transparent);
-            transform: translateX(-100%);
-        }
-        .tile:hover::before { animation: scan-tile 1s ease-out; }
-
-        .tile .t-top { font-size: 14px; font-weight: 700; color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); z-index: 2; }
-        .tile .t-bottom { font-size: 10px; color: #fff; margin-top: 4px; opacity: 0.7; z-index: 2; text-align: center; }
-
-        /* AKTYWNA STACJA - "PRZECIĄŻENIE" ŻÓŁTY RMF */
-        .tile.active { 
-            border-color: var(--rmf-yellow);
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.3), inset 0 0 15px rgba(252, 227, 0, 0.1);
-            background: rgba(252, 227, 0, 0.08);
-            transform: translateY(-2px);
-        }
-        .tile.active .t-top { color: var(--rmf-yellow); text-shadow: 0 0 10px var(--rmf-yellow); }
-
-        /* Sidebar - Centralny Widżet Sterujący */
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-around; 
-            background: var(--panel-glass); border-radius: 12px;
-            border: 2px solid var(--neon-purple); padding: 25px;
-            box-shadow: 0 0 40px rgba(188, 0, 255, 0.1), inset 0 0 20px rgba(0,0,0,0.5);
-            min-width: 0;
-        }
-
-        /* DISPLAY - PURE CSS AWATAR MEDYCZNY (Bio_Link) */
-        .logo-display { 
-            width: 100%; aspect-ratio: 1/1; 
-            border: 3px solid var(--rmf-yellow); border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            background: radial-gradient(circle, rgba(188, 0, 255, 0.1) 0%, #000 100%); 
-            box-shadow: 0 0 40px rgba(252, 227, 0, 0.3), inset 0 0 30px rgba(252, 227, 0, 0.2);
-            position: relative; overflow: hidden;
-        }
-        
-        /* Wirujący ring wewątrz awatara */
+        /* UNIKATOWY AWATAR HUD - PURE CSS */
         .logo-display::before {
-            content: ""; position: absolute; inset: 10px;
-            border: 2px dashed var(--neon-blue); border-radius: 50%;
-            animation: rotate-slow 10s linear infinite; opacity: 0.3;
+            content: ""; position: absolute; inset: 0;
+            border: 4px solid var(--hud-blue);
+            border-radius: 50%;
+            border-top-color: transparent;
+            border-bottom-color: var(--hud-purple);
+            animation: spin 4s linear infinite;
         }
 
-        .logo-display h2 { font-size: 50px; color: var(--rmf-yellow); text-shadow: 0 0 20px var(--rmf-yellow); z-index: 2; letter-spacing: 5px; }
-        .logo-display p { font-size: 11px; color: var(--neon-blue); font-weight: bold; letter-spacing: 4px; z-index: 2; text-transform: uppercase; }
-
-        .controls { display: flex; align-items: center; gap: 15px; }
-        .c-svg { width: 40px; height: 40px; fill: var(--neon-blue); cursor: pointer; filter: drop-shadow(0 0 5px var(--neon-blue)); transition: 0.2s; }
-        .c-svg:hover { transform: scale(1.1); fill: var(--rmf-yellow); }
-        .c-play { width: 85px; height: 85px; fill: var(--rmf-yellow); filter: drop-shadow(0 0 15px var(--rmf-yellow)); }
-
-        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; }
-        .vol-bar { 
-            flex: 1; height: 25px; background: #000; border-radius: 12px;
-            border: 2px solid var(--neon-purple); position: relative; overflow: hidden; 
-            box-shadow: inset 0 0 10px rgba(188, 0, 255, 0.3);
+        .logo-display::after {
+            content: ""; position: absolute; inset: 15px;
+            border: 2px dashed var(--rmf-gold);
+            border-radius: 50%;
+            animation: spin 8s linear reverse infinite;
+            opacity: 0.5;
         }
+
+        .logo-display h2 {
+            font-size: 3.5rem;
+            color: var(--rmf-gold);
+            text-shadow: 0 0 20px var(--rmf-gold);
+            z-index: 5;
+        }
+
+        /* ELEMENTY STERUJĄCE - STYL RETRO-FUTURISTIC */
+        .controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            z-index: 5;
+        }
+
+        .c-svg {
+            width: 50px; height: 50px;
+            fill: var(--hud-blue);
+            cursor: pointer;
+            filter: drop-shadow(0 0 8px var(--hud-blue));
+            transition: 0.3s;
+        }
+
+        .c-svg:hover { fill: var(--rmf-gold); filter: drop-shadow(0 0 12px var(--rmf-gold)); }
+        .c-play { width: 80px; height: 80px; fill: var(--rmf-gold); }
+
+        /* VOLUME - STYL ANALOG HUD (Inspiracja: image_9491c0.png) */
+        .vol-box { width: 100%; padding: 0 20px; }
         
-        input[type="range"] { width: 100%; appearance: none; background: transparent; cursor: pointer; outline: none; }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 20px; height: 20px; background: var(--rmf-yellow); 
-            border-radius: 50%; box-shadow: 0 0 15px var(--rmf-yellow); 
-            margin-top: 2px; /* Centrowanie suwaka */
-        }
-        input[type="range"]::-moz-range-thumb {
-            width: 20px; height: 20px; background: var(--rmf-yellow); 
-            border-radius: 50%; box-shadow: 0 0 15px var(--rmf-yellow);
+        input[type="range"] {
+            width: 100%;
+            appearance: none;
+            background: rgba(188, 0, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+            outline: none;
         }
 
-        /* FALE - ZACHOWANA LOGIKA, KOLOR RMF YELLOW */
-        .waves { position: absolute; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; }
-        .tile.active .waves { opacity: 1; }
-        .wave { position: absolute; border: 2px solid var(--rmf-yellow); border-radius: 50%; width: 10px; height: 10px; opacity: 0; box-shadow: 0 0 15px var(--rmf-yellow); animation: ripple 2s infinite ease-out; }
-        .wave:nth-child(2) { border-color: var(--neon-purple); animation-delay: 0.8s; }
-        
-        /* Animacje */
-        @keyframes drift { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes scan-tile { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
-        @keyframes ripple { 0% { width: 0; height: 0; opacity: 1; } 100% { width: 200%; height: 200%; opacity: 0; } }
-        @keyframes rotate-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-        @media (max-width: 600px) {
-            body { padding: 5px; }
-            .app-content { gap: 10px; }
-            .grid { grid-template-columns: repeat(3, 1fr); flex: none; height: 50vh; }
-            .sidebar { width: 100%; padding: 15px; border-top: 2px solid var(--rmf-yellow); border-radius: 0; }
-            header { padding: 0 15px; }
-            .logo-display h2 { font-size: 36px; }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: var(--rmf-gold);
+            border: 3px solid var(--bg-black);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--rmf-gold);
         }
-    </style></head><body>
 
-<header>    
-    <div class="header-info" id="playing-now">GRA: RMF FM</div>    
-    <div class="clock" id="timer">00:00</div>
+        /* ANIMACJE */
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* SCROLLBAR STYLING */
+        .grid::-webkit-scrollbar { width: 4px; }
+        .grid::-webkit-scrollbar-track { background: transparent; }
+        .grid::-webkit-scrollbar-thumb { background: var(--hud-blue); border-radius: 10px; }
+
+        /* EFEKT FAL PRZY AKTYWNEJ STACJI */
+        .waves {
+            position: absolute; inset: 0; pointer-events: none; opacity: 0;
+        }
+        .active .waves { opacity: 1; }
+        .wave {
+            position: absolute; inset: 0;
+            border: 2px solid var(--rmf-gold);
+            animation: wave-anim 2s infinite;
+            border-radius: inherit;
+        }
+        @keyframes wave-anim {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div id="playing-now">SYSTEM READY // RMF UNIT</div>
+    <div class="clock" id="timer">00:00:00</div>
 </header>
 
-<div class="app-content">    
+<div class="app-content">
     <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        
-        <div class="logo-display">            
-            <h2>RMF</h2>            
-            <p>UNIT Active</p>        
+
+    <aside class="sidebar">
+        <div class="logo-display">
+            <h2>RMF</h2>
+            <p style="color: var(--hud-blue); font-size: 0.7rem; letter-spacing: 2px;">HUD_CORE_v3.2</p>
         </div>
-        <div class="controls">            
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        
+
+        <div class="controls">
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
         </div>
-        <div class="vol-box">            
-            <div class="vol-bar">                
-                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            
-            </div>            
-        </div>    
+
+        <div class="vol-box">
+            <p style="font-size: 0.6rem; color: var(--hud-purple); margin-bottom: 5px;">GAIN_CONTROL</p>
+            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+        </div>
     </aside>
 </div>
 
 <audio id="player"></audio>
 
-<script>    
-    /* [STARY KOD - NIENARUSZONY BAZOWY JS] */
-    const STATIONS = [        
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },        
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },        
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },        
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },        
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },        
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },        
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },        
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },        
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },        
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },        
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },        
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },        
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },        
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },        
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }    
+<script>
+    /* TWOJA BAZA LOGICZNA - NIENARUSZONA */
+    const STATIONS = [
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');    
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
     let current = -1;
 
-    function clock() {        
-        const d = new Date();        
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');    
-    }    
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.toLocaleTimeString('pl-PL', {hour12: false});
+    }
     setInterval(clock, 1000); clock();
 
-    STATIONS.forEach((s, i) => {        
-        const t = document.createElement('div');        
-        t.className = 'tile';        
-        t.innerHTML = `            
-            <div class="waves"><div class="wave"></div><div class="wave"></div></div>            
-            <div class="t-top">RMF</div>            
-            <div class="t-bottom">${s.s}</div>        `;        
-        t.onclick = () => play(i);        
-        grid.appendChild(t);    
+    STATIONS.forEach((s, i) => {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `<div class="waves"><div class="wave"></div></div><div class="t-top">STATION_${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.onclick = () => play(i);
+        grid.appendChild(t);
     });
 
-    function play(i) {        
-        current = i;        
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
-        const streamBase = "https://rs201-krk.rmfstream.pl/";        
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
-        player.play();        
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');    
+    function play(i) {
+        current = i;
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "LINK_ESTABLISHED: " + STATIONS[i].n;
+        const streamBase = "https://rs201-krk.rmfstream.pl/";
+        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        player.play();
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
-    function toggle() {        
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }        
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }    
+    function toggle() {
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }        
-    function setV(v) { player.volume = v / 100; }        
-</script></body></html>
+    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
+    function setV(v) { player.volume = v / 100; }
+</script>
+</body>
+</html>
