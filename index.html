@@ -1,30 +1,33 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF NEON HUD</title>    <style>
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF MILITARY HUD</title>    <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
         
         :root {            
-            /* Kolorystyka Amber z image_a24026.jpg */
-            --yellow: #ff9d00;            
-            --blue-wave: #ffcc00;            
-            --bg: #0a0500;
-            --glow: 0 0 15px rgba(255, 157, 0, 0.5);
+            /* Kolorystyka z image_a24026.jpg - Tactical Green/Lime */
+            --lime: #c2d94c;            
+            --bg: #0d1117;
+            --hud-dark: rgba(194, 217, 76, 0.05);
+            --glow: 0 0 12px rgba(194, 217, 76, 0.4);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }                
         body { 
             height: 100vh; width: 100vw; background: var(--bg); color: #fff; 
             font-family: 'Rajdhani', sans-serif; overflow: hidden; padding: 2vh;
-            /* Tekstura scanlines z obrazka */
-            background-image: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 157, 0, 0.02), rgba(0, 0, 0, 0), rgba(255, 157, 0, 0.02));
-            background-size: 100% 4px, 3px 100%;
+            /* Tło z siatką i liniami HUD */
+            background-image: 
+                radial-gradient(circle at center, #1a1f26 0%, #0d1117 100%),
+                linear-gradient(rgba(194, 217, 76, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(194, 217, 76, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 30px 30px, 30px 30px;
         }
 
         header {             
             height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--yellow); margin-bottom: 2vh;
-            box-shadow: 0 0 20px rgba(255, 157, 0, 0.3);
+            border: 1px solid var(--lime); margin-bottom: 2vh; padding: 0 20px;
+            background: var(--hud-dark); clip-path: polygon(0 0, 98% 0, 100% 30%, 100% 100%, 2% 100%, 0 70%);
         }        
-        .header-info { font-family: 'Orbitron', sans-serif; font-size: 20px; color: var(--yellow); text-shadow: var(--glow); }        
-        .clock { font-family: 'Orbitron', sans-serif; color: var(--yellow); font-size: 22px; text-shadow: var(--glow); }
+        .header-info { font-family: 'Orbitron', sans-serif; font-size: 18px; color: var(--lime); text-shadow: var(--glow); letter-spacing: 2px; }        
+        .clock { font-family: 'Orbitron', sans-serif; color: var(--lime); font-size: 20px; }
 
         .app-content { display: flex; flex: 1; gap: 2vw; height: calc(100vh - 120px); }
 
@@ -35,88 +38,79 @@
             gap: 15px;         
         }
 
-        /* KAFELEK - STYLIZACJA RAMKI Z image_a24026.jpg */
+        /* KAFELEK - STYLIZACJA Z OBRAZKA */
         .tile {            
-            background: rgba(255, 157, 0, 0.05); 
-            border: 1px solid rgba(255, 157, 0, 0.3);
-            border-radius: 4px;
+            background: var(--hud-dark); 
+            border: 1px solid rgba(194, 217, 76, 0.2);
             position: relative; cursor: pointer; transition: 0.2s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            backdrop-filter: blur(2px);
         }
 
-        .tile::before { /* Narożniki HUD */
-            content: ''; position: absolute; inset: -1px;
+        /* Narożniki HUD na kafelkach */
+        .tile::after {
+            content: ''; position: absolute; inset: 0;
             background: 
-                linear-gradient(45deg, var(--yellow) 10%, transparent 10%) 0 0 / 10px 10px no-repeat,
-                linear-gradient(-45deg, var(--yellow) 10%, transparent 10%) 100% 0 / 10px 10px no-repeat;
+                linear-gradient(to right, var(--lime) 2px, transparent 2px) 0 0 / 10px 2px no-repeat,
+                linear-gradient(to bottom, var(--lime) 2px, transparent 2px) 0 0 / 2px 10px no-repeat,
+                linear-gradient(to left, var(--lime) 2px, transparent 2px) 100% 100% / 10px 2px no-repeat,
+                linear-gradient(to top, var(--lime) 2px, transparent 2px) 100% 100% / 2px 10px no-repeat;
+            opacity: 0.3;
         }
 
-        .tile .t-top { font-size: 18px; font-weight: 700; color: #fff; z-index: 2; letter-spacing: 1px; }        
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--yellow); text-transform: uppercase; z-index: 2; }
+        .tile .t-top { font-size: 16px; font-weight: 700; color: #fff; z-index: 2; }        
+        .tile .t-bottom { font-size: 10px; color: var(--lime); text-transform: uppercase; z-index: 2; letter-spacing: 1px; }
 
         .tile.active { 
-            background: rgba(255, 157, 0, 0.15); 
-            border-color: var(--yellow);
-            box-shadow: 0 0 20px rgba(255, 157, 0, 0.4), inset 0 0 10px rgba(255, 157, 0, 0.2);
+            background: rgba(194, 217, 76, 0.15); 
+            border-color: var(--lime);
+            box-shadow: inset 0 0 15px rgba(194, 217, 76, 0.2);
         }
-
-        /* TWOJE FALE - KOLOR DOPASOWANY DO AMBER HUD */
-        .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }        
-        .tile.active .waves { opacity: 1; }        
-        .wave { 
-            position: absolute; border: 1px solid var(--yellow); border-radius: 50%; 
-            animation: ripple 3s infinite ease-out; opacity: 0; 
-        }        
-        .wave:nth-child(2) { animation-delay: 1s; }        
-        .wave:nth-child(3) { animation-delay: 2s; }
-        @keyframes ripple { 0% { width: 0%; height: 0%; opacity: 1; } 100% { width: 200%; height: 200%; opacity: 0; } }
+        .tile.active::after { opacity: 1; }
 
         .sidebar {             
             flex: 0.5; display: flex; flex-direction: column;             
             align-items: center; justify-content: space-around;
-            background: rgba(255, 157, 0, 0.02); border: 1px solid rgba(255, 157, 0, 0.2);
-            padding: 20px;
+            border: 1px solid rgba(194, 217, 76, 0.1); background: rgba(0, 0, 0, 0.3);
+            padding: 20px; position: relative;
         }
 
+        /* LOGO - OKRĄGŁY RADAR Z image_a24026.jpg */
         .logo-display {            
-            width: 100%; aspect-ratio: 1; border: 1px solid var(--yellow);
+            width: 100%; aspect-ratio: 1; border: 2px solid var(--lime); border-radius: 50%;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(255, 157, 0, 0.1) 0%, transparent 70%);
-            position: relative;
+            background: 
+                radial-gradient(circle, transparent 40%, rgba(194, 217, 76, 0.05) 41%, rgba(194, 217, 76, 0.05) 42%, transparent 43%),
+                radial-gradient(circle, var(--hud-dark) 0%, transparent 80%);
+            box-shadow: 0 0 20px rgba(194, 217, 76, 0.1);
         }
-        /* Celownik HUD z obrazka */
-        .logo-display::after { content: '+'; position: absolute; top: 10px; left: 10px; color: var(--yellow); font-size: 12px; }
         
-        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 28px; color: var(--yellow); text-shadow: var(--glow); }
-        .logo-display p { font-size: 10px; color: var(--yellow); letter-spacing: 3px; }
+        .logo-display h2 { font-family: 'Orbitron', sans-serif; font-size: 24px; color: var(--lime); text-shadow: var(--glow); }
+        .logo-display p { font-size: 9px; color: var(--lime); letter-spacing: 2px; opacity: 0.7; }
 
-        .controls { display: flex; gap: 20px; align-items: center; }        
-        .c-svg { width: 45px; height: 45px; fill: var(--yellow); cursor: pointer; filter: drop-shadow(0 0 5px var(--yellow)); }
-        .c-play { width: 70px; height: 70px; }
+        .controls { display: flex; gap: 15px; align-items: center; }        
+        .c-svg { width: 40px; height: 40px; fill: var(--lime); cursor: pointer; filter: drop-shadow(0 0 3px var(--lime)); }
+        .c-play { width: 60px; height: 60px; }
 
         .vol-box { width: 100%; }
         input[type="range"] { 
-            width: 100%; appearance: none; background: #221100; height: 8px; border: 1px solid var(--yellow);
+            width: 100%; appearance: none; background: #1a1f26; height: 10px; border: 1px solid rgba(194, 217, 76, 0.3);
         }
         input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 15px; height: 20px; background: var(--yellow); cursor: pointer;
-            box-shadow: 0 0 10px var(--yellow);
+            appearance: none; width: 12px; height: 18px; background: var(--lime); cursor: pointer;
         }
-        /* TWOJA KLASA AT-MID */
-        input[type="range"].at-mid::-webkit-slider-thumb { background: #fff; }
+        /* KLASA AT-MID Z TWOJEJ LOGIKI */
+        input[type="range"].at-mid::-webkit-slider-thumb { box-shadow: 0 0 15px var(--lime); background: #fff; }
 
         @media (max-width: 800px) {
             .app-content { flex-direction: column; }
             .grid { grid-template-columns: repeat(3, 1fr); }
-            .sidebar { width: 100%; }
         }
     </style></head><body>
 
-<header>    <div class="header-info" id="playing-now">GRA: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
+<header>    <div class="header-info" id="playing-now">RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>TRANSCEIVER XT200</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2 id="logo-text">RMF</h2>            <p>TACTICAL AUDIO</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
         <div class="vol-box">            <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">        </div>    </aside></div>
 
@@ -154,7 +148,6 @@
         const t = document.createElement('div');        
         t.className = 'tile';        
         t.innerHTML = `            
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>            
             <div class="t-top">RMF FM</div>            
             <div class="t-bottom">${s.s}</div>        `;        
         t.onclick = () => play(i);        
@@ -164,7 +157,8 @@
     function play(i) {        
         current = i;        
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));        
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;        
+        document.getElementById('playing-now').textContent = STATIONS[i].n;        
+        document.getElementById('logo-text').textContent = STATIONS[i].s.split(' ')[0];
         const streamBase = "https://rs201-krk.rmfstream.pl/";        
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;        
         player.play();        
