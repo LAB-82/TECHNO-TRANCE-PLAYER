@@ -1,156 +1,116 @@
-<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - CYBER HUD EDITION</title>    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Rajdhani:wght@600;700&display=swap');
+<!DOCTYPE html><html lang="pl"><head>    <meta charset="UTF-8">    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    <title>RMF TERMINAL - FINAL FIX</title>    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&display=swap');
         
         :root {            
             --yellow: #fce300;            
-            --yellow-neon: #fffb00;            
-            --bg: #020202;            
-            --tile: #050505;            
-            --border: #1a1a1a;            
-            --blue-wave: #00ccff; 
+            --blue-wave: #00ccff;            
+            --bg-dark: #050505;
+            --panel-bg: rgba(10, 10, 10, 0.9);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }                
-        html, body {             
-            height: 100vh; width: 100vw;             
-            background: var(--bg); color: #fff;             
-            font-family: 'Montserrat Alternates', sans-serif;            
-            overflow: hidden;         
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Rajdhani', sans-serif; }                
         body { 
-            display: flex; flex-direction: column; padding: 2vh; 
-            /* Tekstura tła ze zdjęcia - siatka i poświata */
+            height: 100vh; width: 100vw; background: #000; color: #fff; overflow: hidden; padding: 20px;
             background-image: 
-                linear-gradient(rgba(252, 227, 0, 0.05) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(252, 227, 0, 0.05) 1px, transparent 1px),
-                radial-gradient(circle at 50% 50%, #111 0%, #000 100%);
-            background-size: 30px 30px, 30px 30px, 100% 100%;
+                radial-gradient(circle at center, #111 0%, #000 100%),
+                repeating-linear-gradient(0deg, transparent, transparent 1px, rgba(252, 227, 0, 0.03) 1px, rgba(252, 227, 0, 0.03) 2px);
         }
 
         header {             
-            height: 60px; display: flex; justify-content: space-between; align-items: center;            
-            border-bottom: 2px solid var(--yellow); margin-bottom: 2vh; flex-shrink: 0;
-            position: relative; box-shadow: 0 0 20px rgba(252, 227, 0, 0.2);
+            height: 50px; display: flex; justify-content: space-between; align-items: flex-end;            
+            border-bottom: 2px solid var(--yellow); margin-bottom: 20px; padding-bottom: 5px;
+            box-shadow: 0 4px 15px -5px rgba(252, 227, 0, 0.5);
         }        
-        header::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 1px; background: var(--blue-wave); opacity: 0.5; }
+        .header-info { font-size: 28px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }        
+        .clock { color: var(--blue-wave); font-size: 28px; font-weight: 600; }
 
-        .header-info { font-family: 'Rajdhani', sans-serif; font-size: 26px; font-weight: 700; color: var(--yellow); text-transform: uppercase; text-shadow: 0 0 10px var(--yellow); }        
-        .clock { font-family: 'Rajdhani', sans-serif; color: var(--blue-wave); font-size: 28px; font-weight: 700; text-shadow: 0 0 10px var(--blue-wave); }
+        .app-content { display: flex; flex: 1; gap: 20px; height: calc(100vh - 110px); }
 
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
-
+        /* GRID 5x3 - LOGIKA UKŁADU ZACHOWANA */
         .grid {             
-            flex: 1.4; display: grid;             
+            flex: 1.5; display: grid;             
             grid-template-columns: repeat(5, 1fr);             
             grid-template-rows: repeat(3, 1fr);             
-            gap: 12px;         
+            gap: 15px;         
         }
 
-        /* KAFELEK - STYLIZACJA HUD */
+        /* KAFELEK ZE ZDJĘCIA: Ostre rogi, tech-detale */
         .tile {            
-            background: var(--tile); 
-            border: 1px solid var(--border);
-            position: relative; overflow: visible; transition: 0.3s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            cursor: pointer;
+            background: var(--panel-bg); border: 1px solid #222;
+            position: relative; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            transition: 0.2s;
         }
-        
-        /* Rogi ramki jak na zdjęciu */
+
+        /* Dekoracyjne narożniki */
         .tile::before {
-            content: ''; position: absolute; inset: -1px;
-            border: 1px solid var(--yellow);
-            clip-path: polygon(0 0, 15% 0, 15% 2px, 2px 2px, 2px 15%, 0 15%, 0 0, 100% 0, 100% 15%, calc(100% - 2px) 15%, calc(100% - 2px) 2px, 85% 2px, 85% 0, 100% 0, 100% 100%, 85% 100%, 85% calc(100% - 2px), calc(100% - 2px) calc(100% - 2px), calc(100% - 2px) 85%, 100% 85%, 100% 100%, 0 100%, 0 85%, 2px 85%, 2px calc(100% - 2px), 15% calc(100% - 2px), 15% 100%, 0 100%);
-            opacity: 0.3;
+            content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px;
+            border-top: 2px solid var(--yellow); border-left: 2px solid var(--yellow);
+        }
+        .tile::after {
+            content: ''; position: absolute; bottom: -1px; right: -1px; width: 10px; height: 10px;
+            border-bottom: 2px solid var(--yellow); border-right: 2px solid var(--yellow);
         }
 
-        .tile .t-top { font-family: 'Rajdhani', sans-serif; font-size: 22px; font-weight: 700; color: #fff; z-index: 2; }        
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: var(--yellow); margin-top: 4px; text-align: center; z-index: 2; text-transform: uppercase; letter-spacing: 1px; }
+        .tile .t-top { font-size: 24px; font-weight: 700; color: #555; }        
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--yellow); text-transform: uppercase; }
 
-        /* AKTYWNY KAFELEK */
-        .tile.active {             
-            border-color: var(--yellow-neon);
-            background: rgba(252, 227, 0, 0.08);
-            box-shadow: 0 0 20px rgba(252, 227, 0, 0.2), inset 0 0 10px rgba(252, 227, 0, 0.1);
-        }        
-        .tile.active::before { opacity: 1; filter: drop-shadow(0 0 5px var(--yellow-neon)); }
-        .tile.active .t-top { color: var(--yellow-neon); text-shadow: 0 0 10px var(--yellow-neon); }
+        /* AKTYWNA STACJA */
+        .tile.active { border-color: var(--yellow); background: rgba(252, 227, 0, 0.1); }
+        .tile.active .t-top { color: #fff; text-shadow: 0 0 10px #fff; }
+        .tile.active::before, .tile.active::after { width: 30%; height: 30%; }
 
-        .waves {            
-            position: absolute; width: 100%; height: 100%;            
-            display: flex; align-items: center; justify-content: center;            
-            pointer-events: none; opacity: 0; z-index: 1;        
-        }        
+        /* FALE - TWOJA LOGIKA KOLORYSTYCZNA */
+        .waves { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; }        
         .tile.active .waves { opacity: 1; }        
-        .wave {            
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;            
-            width: 10px; height: 10px; opacity: 0;            
-            box-shadow: 0 0 15px var(--blue-wave);            
-            animation: ripple 3s infinite linear;        
-        }        
+        .wave { position: absolute; border: 1px solid var(--blue-wave); border-radius: 50%; animation: ripple 3s infinite linear; opacity: 0; }        
         .wave:nth-child(2) { animation-delay: 1s; }        
         .wave:nth-child(3) { animation-delay: 2s; }
-
-        @keyframes ripple {            
-            0% { width: 0; height: 0; opacity: 0.9; }            
-            100% { width: 320%; height: 320%; opacity: 0; }        
-        }
+        @keyframes ripple { 0% { width: 0; height: 0; opacity: 0.8; } 100% { width: 250%; height: 250%; opacity: 0; } }
 
         .sidebar {             
-            flex: 0.6; display: flex; flex-direction: column;             
-            align-items: center; justify-content: center; gap: 4vh;            
-            border-left: 1px solid var(--border); padding-left: 3vw;        
+            flex: 0.5; display: flex; flex-direction: column; gap: 30px;
+            border-left: 1px solid #222; padding-left: 20px;
         }
 
-        /* LOGO DISPLAY - STYL BOX ZE ZDJĘCIA */
+        /* LOGO BOX - WYGLĄD MODUŁOWY */
         .logo-display {            
-            width: 100%; max-width: 320px; aspect-ratio: 16/10;            
-            border: 2px solid var(--yellow); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;            
-            background: rgba(0, 0, 0, 0.9);            
-            box-shadow: 0 0 30px rgba(252, 227, 0, 0.2);
+            width: 100%; aspect-ratio: 1; border: 1px solid #222;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #0a0a0a 0%, #111 100%);
             position: relative;
-        }        
-        .logo-display::before {
-            content: 'DATA DECODER'; position: absolute; top: -10px; left: 10px; background: var(--bg);
-            padding: 0 5px; font-size: 10px; color: var(--blue-wave); font-family: 'Rajdhani';
         }
+        .logo-display h2 { font-size: 50px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); line-height: 0.9; }
+        .logo-display p { font-size: 14px; color: var(--blue-wave); letter-spacing: 5px; margin-top: 10px; }
 
-        .logo-display h2 { font-family: 'Rajdhani', sans-serif; font-size: 50px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }        
-        .logo-display p { font-size: 12px; color: var(--blue-wave); font-weight: 700; text-transform: uppercase; letter-spacing: 4px; }
+        .controls { display: flex; justify-content: center; align-items: center; gap: 20px; }        
+        .c-svg { width: 40px; height: 40px; fill: var(--yellow); cursor: pointer; opacity: 0.7; }
+        .c-svg:hover { opacity: 1; filter: drop-shadow(0 0 5px var(--yellow)); }
+        .c-play { width: 80px; height: 80px; opacity: 1; }
 
-        .controls { display: flex; align-items: center; gap: 3vw; }        
-        .c-svg {             
-            width: 40px; height: 40px; fill: var(--yellow); cursor: pointer;             
-            filter: drop-shadow(0 0 8px var(--yellow));
-        }        
-        .c-play { width: 80px; height: 80px; fill: var(--yellow-neon); filter: drop-shadow(0 0 15px var(--yellow-neon)); }
-
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }        
-        .vol-btn { width: 40px; height: 40px; border: 2px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; font-family: 'Rajdhani'; font-weight: bold; font-size: 20px; }        
-        .vol-bar { flex: 1; height: 40px; border: 1px solid var(--yellow); display: flex; align-items: center; padding: 0 10px; background: rgba(252, 227, 0, 0.05); position: relative; }                
+        .vol-box { display: flex; flex-direction: column; gap: 10px; }
+        .vol-bar-wrapper { display: flex; align-items: center; gap: 10px; }
+        .vol-btn { width: 30px; height: 30px; border: 1px solid var(--yellow); background: none; color: var(--yellow); cursor: pointer; }
+        .vol-bar { flex: 1; height: 10px; background: #111; border: 1px solid #222; position: relative; }
         
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }        
-        input[type="range"]::-webkit-slider-runnable-track { background: var(--border); height: 4px; }                
-        input[type="range"]::-webkit-slider-thumb {             
-            appearance: none; width: 12px; height: 24px;             
-            background: var(--yellow-neon); border-radius: 0;             
-            margin-top: -10px; box-shadow: 0 0 10px var(--yellow-neon);
-        }
+        input[type="range"] { width: 100%; appearance: none; background: transparent; }
+        input[type="range"]::-webkit-slider-runnable-track { background: var(--yellow); height: 2px; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 10px; height: 20px; background: #fff; border: 1px solid var(--yellow); margin-top: -9px; }
 
-        @media (max-width: 600px) {
-            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 50vh; flex: none; }
-            .sidebar { width: 100%; border-left: none; border-top: 1px solid var(--border); padding-top: 20px; }
-            .logo-display { height: 100px; }
+        @media (max-width: 800px) {
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; }
+            .sidebar { border: none; padding: 0; }
+            .logo-display { aspect-ratio: 16/9; }
         }
     </style></head><body>
 
 <header>    <div class="header-info" id="playing-now">SYSTEM: RMF FM</div>    <div class="clock" id="timer">00:00</div></header>
 
 <div class="app-content">    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>BROADCASTING</p>        </div>
+    <aside class="sidebar">        <div class="logo-display">            <h2>RMF FM</h2>            <p>ACTIVE</p>        </div>
         <div class="controls">            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>        </div>
-        <div class="vol-box">            <button class="vol-btn" onclick="adj(-5)">-</button>            <div class="vol-bar">                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">            </div>            <button class="vol-btn" onclick="adj(5)">+</button>        </div>    </aside></div>
+        <div class="vol-box">            <div class="vol-bar-wrapper">                <button class="vol-btn" onclick="adj(-5)">-</button>                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">                <button class="vol-btn" onclick="adj(5)">+</button>            </div>        </div>    </aside></div>
 
 <audio id="player"></audio>
 
