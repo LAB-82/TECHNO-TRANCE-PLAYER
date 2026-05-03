@@ -275,33 +275,20 @@
 
     async function updateMetadata() {
         if (!isPowered || !currentSlug) return;
-        
-        // Używamy publicznego proxy, aby ominąć blokadę CORS w przeglądarce
-        const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.laut.fm/station/${currentSlug}/now_playing?_=${Date.now()}`)}`;
-
         try {
-            const response = await fetch(url);
-            if (!response.ok) throw new Error('Network error');
-            const wrapper = await response.json();
-            const data = JSON.parse(wrapper.contents);
+            const response = await fetch(`https://api.laut.fm/station/${currentSlug}/now_playing?_=${Date.now()}`);
+            const data = await response.json();
             
             if (data && data.title) {
                 const title = data.title;
                 const artist = data.artist ? data.artist.name : "Unknown Artist";
+                // Zmiana: Powiększenie napisu artysty o 50% (1.5em) zamiast pogrubienia
                 lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:4px; font-weight:normal;">${artist}</div><div>${title}</div>`;
+            } else {
+                lcdTrack.textContent = "WAITING FOR DATA...";
             }
         } catch (e) {
-            console.log("Metadata fetch failed, trying alternative...");
-            // Jeśli proxy zawiedzie, próbujemy bezpośrednio (może zadziałać na niektórych konfiguracjach)
-            try {
-                const directResp = await fetch(`https://api.laut.fm/station/${currentSlug}/now_playing`);
-                const directData = await directResp.json();
-                if(directData.title) {
-                   lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:4px; font-weight:normal;">${directData.artist.name}</div><div>${directData.title}</div>`;
-                }
-            } catch(e2) {
-                lcdTrack.textContent = "STATION ONLINE";
-            }
+            lcdTrack.textContent = "STATION ONLINE";
         }
     }
 
@@ -332,7 +319,7 @@
             lcdStation.textContent = "MODE: READY";
             lcdTrack.textContent = "SELECT STATION";
             updateHandleGlow(player.volume);
-            metaInterval = setInterval(updateMetadata, 8000); // Odświeżanie co 8 sekund
+            metaInterval = setInterval(updateMetadata, 5000);
         } else {
             player.pause(); player.src = ""; resetUI();
             clearInterval(metaInterval);
