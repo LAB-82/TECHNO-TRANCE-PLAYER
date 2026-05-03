@@ -223,7 +223,7 @@
     <div id="goa-panel" class="genre-panel"><div class="genre-title">GOA/PSY</div></div>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player"></audio>
 
 <script>
     const STATIONS = [
@@ -276,26 +276,22 @@
     async function updateMetadata() {
         if (!isPowered || !currentSlug) return;
         
-        // Wykorzystujemy API AllOrigins - najstabilniejsze proxy dla GitHub Pages
-        const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.laut.fm/station/${currentSlug}/now_playing`)}`;
+        // Próba 1: AllOrigins
+        const url1 = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.laut.fm/station/${currentSlug}/now_playing?t=${Date.now()}`)}`;
 
         try {
-            const response = await fetch(url);
+            const response = await fetch(url1);
             const dataWrap = await response.json();
             const data = JSON.parse(dataWrap.contents);
             
             if (data && data.title) {
                 const artist = data.artist ? data.artist.name : "Unknown Artist";
                 const title = data.title;
-                // Artysta powiększony o 50% (1.5em)
                 lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${title}</div>`;
             }
         } catch (e) {
-            console.error("Meta Error", e);
-            // Wyświetla info o streamie, jeśli meta nie wejdzie
-            if(lcdTrack.textContent.includes('CHOOSE') || lcdTrack.textContent === '') {
-                lcdTrack.innerHTML = "<div>LIVE STREAM</div>";
-            }
+            console.log("Meta fallback...");
+            lcdTrack.innerHTML = "<div>LIVE STREAMING...</div>";
         }
     }
 
@@ -304,7 +300,13 @@
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            player.src = s.u; player.play();
+            // Bardziej agresywne przeładowanie audio
+            player.pause();
+            player.removeAttribute('src');
+            player.load();
+            player.src = s.u; 
+            player.play().catch(e => console.log("Autoplay blocked or stream error"));
+            
             stationDisplay.textContent = "GLOBAL MUSIC PLAYER";
             lcdStation.textContent = s.n;
             currentSlug = s.s;
