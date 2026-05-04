@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="utf-8">
-    <title>SERUM WAVEFORM | CRYSTALLINE ANALYZER</title>
+    <title>SERUM WAVEFORM | 3D CRYSTALLINE</title>
     <style>
         :root {
             --cyan: #00f2ff;
@@ -66,6 +66,7 @@
         #station-name { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px; }
         .powered-on #station-name { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
 
+        /* WYŚWIETLACZ 3D WAVEFORM */
         .crystalline-frame {
             width: 320px; height: 120px;
             background: linear-gradient(145deg, #ffffff, #d1d1d1);
@@ -79,16 +80,15 @@
             width: 100%; height: 100%;
             border-radius: 6px;
             background: linear-gradient(90deg, #f7b84b 0%, #e85d8d 40%, #7d89f0 100%);
-            border: 2px solid #555;
+            border: 2px solid #333;
             position: relative; overflow: hidden;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
+            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
         }
 
-        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.2); }
+        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.15); }
 
         .waveform-svg { width: 100%; height: 100%; }
-        .waveform-path { stroke: white; stroke-width: 2; fill: none; filter: drop-shadow(0 0 3px white); transition: d 0.05s ease; }
+        .lane { fill: none; stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.5; filter: blur(0.5px); }
 
         .controls-main { display: flex; gap: 15px; margin-bottom: 20px; }
 
@@ -138,7 +138,11 @@
         <div class="crystalline-frame">
             <div class="crystalline-screen">
                 <svg class="waveform-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
-                    <path id="visualizer-path" class="waveform-path" d="M0,50 L200,50" />
+                    <path class="lane" id="p1" style="opacity: 0.3; stroke-width: 1;" />
+                    <path class="lane" id="p2" style="opacity: 0.5; stroke-width: 1.5;" />
+                    <path class="lane" id="p3" style="opacity: 0.9; stroke-width: 2;" />
+                    <path class="lane" id="p4" style="opacity: 0.5; stroke-width: 1.5;" />
+                    <path class="lane" id="p5" style="opacity: 0.3; stroke-width: 1;" />
                 </svg>
             </div>
         </div>
@@ -205,12 +209,11 @@
           muteBtn = document.getElementById('muteBtn'),
           stopBtn = document.getElementById('stopBtn'),
           stationDisplay = document.getElementById('station-name'),
-          vPath = document.getElementById('visualizer-path');
+          paths = [document.getElementById('p1'), document.getElementById('p2'), document.getElementById('p3'), document.getElementById('p4'), document.getElementById('p5')];
 
     let isPowered = false, dragging = false;
     let audioCtx, analyzer, dataArray, source;
 
-    // Inicjalizacja Analizatora (wymaga interakcji użytkownika)
     function initAudio() {
         if (audioCtx) return;
         audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -226,18 +229,27 @@
     function draw() {
         requestAnimationFrame(draw);
         if (!isPowered || player.paused) {
-            vPath.setAttribute('d', "M0,50 L200,50");
+            paths.forEach(p => p.setAttribute('d', "M0,50 L200,50"));
             return;
         }
 
         analyzer.getByteTimeDomainData(dataArray);
-        let d = "M0,50";
-        for (let i = 0; i < dataArray.length; i++) {
-            let x = (i / dataArray.length) * 200;
-            let y = (dataArray[i] / 128.0) * 50;
-            d += ` L${x},${y}`;
-        }
-        vPath.setAttribute('d', d);
+        
+        // Generujemy 5 różnych linii dla efektu 3D
+        paths.forEach((path, idx) => {
+            let offset = (idx - 2) * 5; // Przesunięcie w pionie dla każdej linii
+            let smoothing = 1 + (idx * 0.2); // Różna czułość
+            let d = `M0,${50 + offset}`;
+            
+            for (let i = 0; i < dataArray.length; i++) {
+                let x = (i / dataArray.length) * 200;
+                // Obliczamy Y z uwzględnieniem offsetu i głośności
+                let v = (dataArray[i] / 128.0) - 1.0; 
+                let y = 50 + offset + (v * 40 * smoothing);
+                d += ` L${x},${y}`;
+            }
+            path.setAttribute('d', d);
+        });
     }
 
     STATIONS.forEach(s => {
@@ -245,9 +257,8 @@
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            initAudio(); // Odpal analyzer przy pierwszym wyborze
+            initAudio();
             if (audioCtx.state === 'suspended') audioCtx.resume();
-            
             stationDisplay.textContent = s.n;
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
