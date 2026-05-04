@@ -1,271 +1,342 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="utf-8">
-    <title>SERUM WAVEFORM | 3D CRYSTALLINE</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RMF TERMINAL - CRYSTALLINE STYLE</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+
         :root {
-            --cyan: #00f2ff;
-            --cyan-glow: rgba(0, 242, 255, 0.8);
-            --bg-synth: #e0e0e0;
-            --panel-synth: #d2d2d2;
-            --border-synth: #a0a0a0;
+            /* Nowa paleta kolorów - jasny skeuomorfizm */
+            --bg: #e0e0e0; /* Jasnoszare tło */
+            --tile: #e0e0e0;
+            --text-main: #333;
+            --text-sub: #666;
+            
+            /* Cienie dla efektu 3D (neumorfizm) */
+            --shadow-out: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            --shadow-in: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+            --border-light: 1px solid rgba(255,255,255,0.5);
+
+            /* Kolory akcentów z obrazka */
+            --color-active: #ff4081; /* Różowy/Magenta dla aktywnego stanu */
+            --color-wave: #00e5ff;   /* Błękitny dla fal w kafelkach */
+            --accent-green: #00e676;
+            --accent-orange: #ff9100;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg-synth); font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-
-        #main {
-            width: 98vw; height: 96vh;
-            background: var(--panel-synth);
-            border: 2px solid var(--border-synth);
-            border-radius: 8px; padding: 15px;
-            display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;
-            gap: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        html, body { 
+            height: 100vh; width: 100vw; 
+            background: var(--bg); color: var(--text-main); 
+            font-family: 'Montserrat Alternates', sans-serif;
+            overflow: hidden; 
         }
 
-        .genre-panel {
-            background: rgba(255,255,255,0.3);
-            border: 1px solid var(--border-synth);
-            border-radius: 4px; padding: 35px 10px 10px 10px;
-            position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 6px;
-            overflow-y: auto;
+        body { display: flex; flex-direction: column; padding: 2vh; }
+
+        header { 
+            height: 50px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2vh; flex-shrink: 0;
+            background: rgba(255,255,255,0.3); border-radius: 10px; padding: 0 15px;
+            box-shadow: var(--shadow-out);
+        }
+        .header-info { font-size: 20px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
+        .clock { color: var(--text-sub); font-size: 20px; font-weight: 600; }
+
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; padding: 10px 0; }
+
+        .grid { 
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 15px; 
         }
 
-        .genre-title {
-            position: absolute; top: 0; left: 0; right: 0;
-            font-size: 11px; font-weight: bold; letter-spacing: 1px;
-            text-transform: uppercase; padding: 6px;
-            background: #bbb; color: #444;
-            text-align: center; border-bottom: 1px solid var(--border-synth);
+        /* STYLIZACJA KAFELKÓW - WYPUKŁE PRZYCISKI */
+        .tile {
+            background: var(--tile); border-radius: 15px;
+            border: var(--border-light);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; overflow: visible;
+            box-shadow: var(--shadow-out);
+            transition: all 0.2s ease;
         }
         
-        .powered-on .genre-title { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
+        .tile:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
 
-        .chip {
-            background: linear-gradient(180deg, #f9f9f9, #e0e0e0);
-            border: 1px solid #bbb; border-radius: 2px;
-            height: 32px; display: flex; align-items: center; justify-content: center;
-            font-size: 9px; color: #444; font-weight: 600;
-            text-align: center; cursor: pointer; text-transform: uppercase; padding: 2px;
+        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--text-main); line-height: 1; z-index: 2; transition: color 0.2s; }
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-top: 5px; text-align: center; z-index: 2; }
+
+        /* AKTYWNA STACJA - WKLĘSŁY PRZYCISK Z RÓŻOWYM AKCENTEM */
+        .tile.active { 
+            box-shadow: var(--shadow-in);
+            background: #dcdcdc;
         }
+        .tile.active .t-top { color: var(--color-active); }
 
-        .powered-on .chip.active {
-            background: #2c313a; color: var(--cyan);
-            border-color: var(--cyan); box-shadow: 0 0 8px var(--cyan-glow);
-        }
-
-        #center-area { display: flex; flex-direction: column; justify-content: flex-start; align-items: center; }
-
-        #station-window {
-            background: #bbb; border-bottom: 1px solid var(--border-synth);
-            border-radius: 4px 4px 0 0; width: 100%; height: 29px;
-            display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
-        }
-
-        #station-name { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px; }
-        .powered-on #station-name { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
-
-        .crystalline-frame {
-            width: 320px; height: 120px;
-            background: linear-gradient(145deg, #ffffff, #d1d1d1);
-            padding: 8px; border-radius: 12px;
-            border: 2px solid #b0b0b0;
-            box-shadow: 4px 4px 10px rgba(0,0,0,0.15), -2px -2px 5px #ffffff;
-            margin-bottom: 20px;
-        }
-
-        .crystalline-screen {
-            width: 100%; height: 100%;
-            border-radius: 6px;
-            background: linear-gradient(90deg, #f7b84b 0%, #e85d8d 40%, #7d89f0 100%);
-            border: 2px solid #333;
-            position: relative; overflow: hidden;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
-        }
-
-        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.15); }
-
-        .waveform-svg { width: 100%; height: 100%; }
-        .lane { fill: none; stroke: rgba(255, 255, 255, 0.8); stroke-width: 1.5; }
-
-        .controls-main { display: flex; gap: 15px; margin-bottom: 20px; }
-
-        .btn-rect {
-            width: 55px; height: 55px; background: linear-gradient(145deg, #f0f0f0, #cacaca);
-            border: 1px solid #999; border-radius: 50%; cursor: pointer; color: #444;
+        /* FALE BŁĘKITNE - SUBTELNIEJSZE NA JASNYM TLE */
+        .waves {
+            position: absolute; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff; transition: all 0.1s ease;
+            pointer-events: none; opacity: 0; z-index: 1;
+        }
+        .tile.active .waves { opacity: 0.6; }
+        .wave {
+            position: absolute; border: 2px solid var(--color-wave); border-radius: 50%;
+            width: 10px; height: 10px; opacity: 0;
+            box-shadow: 0 0 10px var(--color-wave);
+            animation: ripple 3s infinite linear;
+        }
+        .wave:nth-child(2) { animation-delay: 1s; }
+        .wave:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 0.8; }
+            100% { width: 250%; height: 250%; opacity: 0; }
         }
 
-        .powered-on .btn-rect.active { 
-            color: var(--cyan) !important; 
-            background: #222 !important; 
-            box-shadow: 0 0 15px var(--cyan-glow) !important; 
-            border-color: var(--cyan) !important; 
+        /* PANEL BOCZNY */
+        .sidebar { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-start; gap: 3vh;
+            padding: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 20px;
+            box-shadow: var(--shadow-out);
+            border: var(--border-light);
+        }
+
+        /* STYLIZACJA WYŚWIETLACZA LOGO - NAWZÓR "CRYSTALLINE" */
+        .logo-display {
+            width: 100%; max-width: 320px; aspect-ratio: 16/9;
+            border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            /* Gradient tła jak na obrazku */
+            background: linear-gradient(135deg, #ff9100 0%, #ff4081 50%, #00e5ff 100%);
+            box-shadow: var(--shadow-in), 0 0 20px rgba(255, 64, 129, 0.3);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #fff;
         }
         
-        .btn-rect svg { width: 24px; height: 24px; fill: currentColor; }
+        /* Animowana fala wewnątrz wyświetlacza */
+        .logo-display::after {
+            content: '';
+            position: absolute; width: 200%; height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".1" fill="%23fff"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.6,28.28,22.62,59.13,44.76,94.71,54.11,31.76,8.35,65.65,11.8,99.52,11.79,34.91,0,69.59-3.66,102.46-9.52,68.51-12.21,121.14-53.51,170.83-93.18C1071,11.67,1146.45,13.88,1200,32.47V0Z" opacity=".15" fill="%23fff"></path></svg>');
+            background-size: 50% 100%;
+            animation: waveMove 10s linear infinite;
+            opacity: 0.8;
+        }
 
-        .fader-area { width: 195px; }
-        .fader-track-double { width: 100%; height: 14px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
-        .fader-track-double::before, .fader-track-double::after { content: ""; width: 100%; height: 3px; background: #a8a8a8; border-radius: 1px; }
-        .powered-on .fader-track-double::before, .powered-on .fader-track-double::after { background: var(--cyan); box-shadow: 0 0 5px var(--cyan-glow); }
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
 
-        .fader-handle {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 45px; height: 24px; background: linear-gradient(180deg, #e0e0e0 0%, #ffffff 50%, #e0e0e0 100%);
-            border: 1px solid #999; border-radius: 4px; cursor: grab; z-index: 10; display: flex; align-items: center; justify-content: center;
+        .logo-display h2 { font-size: 40px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; position: relative; }
+        .logo-display p { font-size: 10px; color: rgba(255,255,255,0.8); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; z-index: 2; position: relative; }
+
+        /* KONTROLKI ODTWARZANIA */
+        .controls { display: flex; align-items: center; gap: 2.5vw; background: rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow-in); }
+        .c-svg { 
+            width: 30px; height: 30px; fill: var(--text-sub); cursor: pointer; 
+            transition: all 0.2s;
+        }
+        .c-svg:hover { fill: var(--text-main); transform: scale(1.1); }
+        
+        .c-play { 
+            width: 60px; height: 60px; fill: var(--text-main); 
+            background: var(--tile); border-radius: 50%; padding: 15px;
+            box-shadow: var(--shadow-out);
+            border: var(--border-light);
+        }
+        .c-play:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
+        .c-play:active { box-shadow: var(--shadow-in); }
+
+        /* SEKCJA GŁOŚNOŚCI */
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }
+        
+        .vol-btn { 
+            width: 35px; height: 35px; border: var(--border-light); border-radius: 10px; 
+            background: var(--tile); color: var(--text-main); cursor: pointer; 
+            font-family: inherit; font-weight: bold; font-size: 18px;
+            box-shadow: var(--shadow-out);
+            transition: all 0.2s;
+        }
+        .vol-btn:active { box-shadow: var(--shadow-in); }
+
+        .vol-bar { 
+            flex: 1; height: 35px; border: var(--border-light); border-radius: 10px; 
+            padding: 0 10px; display: flex; align-items: center; 
+            background: var(--tile);
+            box-shadow: var(--shadow-in); /* Wklęsły pasek */
         }
         
-        .powered-on .fader-handle.center-glow { box-shadow: 0 0 15px var(--cyan), 0px 2px 5px rgba(0,0,0,0.2); }
-        .fader-handle-inner { width: 30px; height: 6px; background: #444; border-radius: 1px; }
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
         
-        .powered-on .fader-handle-inner.glow-active { 
-            background: var(--cyan) !important; 
-            box-shadow: 0 0 12px var(--cyan) !important; 
+        /* PROWADNICA SŁABO WIDOCZNA NA JASNYM */
+        input[type="range"]::-webkit-slider-runnable-track { background: rgba(0,0,0,0.05); height: 4px; border-radius: 2px; }
+        
+        /* GAŁKA - WYPUKŁY PRZYCISK JAK NA ZDJĘCIU */
+        input[type="range"]::-webkit-slider-thumb { 
+            appearance: none; width: 22px; height: 22px; 
+            background: var(--tile); border-radius: 50%; 
+            margin-top: -9px;
+            border: var(--border-light);
+            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff;
+            transition: box-shadow 0.2s;
+        }
+        
+        /* Niebieska poświata z obrazka dla suwaka */
+        input[type="range"].at-mid::-webkit-slider-thumb {
+            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff, 0 0 15px rgba(0, 229, 255, 0.6);
+            border-color: var(--color-wave);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1vh; }
+            header { height: 40px; margin-bottom: 1vh; }
+            .header-info, .clock { font-size: 16px; }
+            .app-content { flex-direction: column; gap: 1vh; }
+            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 55vh; flex: none; gap: 8px; }
+            .sidebar { width: 100%; height: auto; border-left: none; padding: 15px; gap: 15px; flex: 1; justify-content: center; }
+            .logo-display { width: 100%; height: 70px; aspect-ratio: auto; }
+            .logo-display h2 { font-size: 28px; }
+            .logo-display p { font-size: 8px; letter-spacing: 1px; }
+            .controls { gap: 15px; padding: 5px 15px; }
+            .c-play { width: 45px; height: 45px; padding: 10px; }
+            .c-svg { width: 22px; height: 22px; }
+            .tile .t-top { font-size: 16px; }
+            .tile .t-bottom { font-size: 10px; margin-top: 2px; }
+            .vol-box { max-width: 100%; }
+            .vol-bar { height: 30px; }
+            .vol-btn { width: 30px; height: 30px; }
+            input[type="range"]::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; }
         }
     </style>
 </head>
 <body>
 
-<div id="main">
-    <div id="techno-panel" class="genre-panel"><div class="genre-title">TECHNO</div></div>
-    <div id="center-area">
-        <div id="station-window"><div id="station-name">OFF</div></div>
-        <div class="crystalline-frame">
-            <div class="crystalline-screen">
-                <svg class="waveform-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
-                    <path class="lane" id="p1" style="opacity: 0.2; stroke-width: 1;" />
-                    <path class="lane" id="p2" style="opacity: 0.4; stroke-width: 1.5;" />
-                    <path class="lane" id="p3" style="opacity: 0.8; stroke-width: 2.5;" />
-                    <path class="lane" id="p4" style="opacity: 0.4; stroke-width: 1.5;" />
-                    <path class="lane" id="p5" style="opacity: 0.2; stroke-width: 1;" />
-                </svg>
+<header>
+    <div class="header-info" id="playing-now">GRA: RMF FM</div>
+    <div class="clock" id="timer">00:00</div>
+</header>
+
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="logo-display">
+            <h2>RMF FM</h2>
+            <p>Najlepsza muzyka</p>
+        </div>
+
+        <div class="controls">
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+        </div>
+
+        <div class="vol-box">
+            <button class="vol-btn" onclick="adj(-5)">-</button>
+            <div class="vol-bar">
+                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">
             </div>
+            <button class="vol-btn" onclick="adj(5)">+</button>
         </div>
-        <div class="controls-main">
-            <button id="pwrBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.18,7.03 3.75,9.63 3.75,12.58C3.75,17.14 7.44,20.83 12,20.83C16.56,20.83 20.25,17.14 20.25,12.58C20.25,9.63 18.82,7.03 16.56,5.44M11,2.08V11.08H13V2.08H11Z"/></svg></button>
-            <button id="muteBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/></svg></button>
-            <button id="stopBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M18,18H6V6H18V18Z"/></svg></button>
-        </div>
-        <div class="fader-area">
-            <div class="fader-track-double" id="faderTrack">
-                <div class="fader-handle" id="faderHandle"><div class="fader-handle-inner" id="faderGlow"></div></div>
-            </div>
-        </div>
-    </div>
-    <div id="house-panel" class="genre-panel"><div class="genre-title">HOUSE</div></div>
-    <div id="dnb-panel" class="genre-panel"><div class="genre-title">DRUM N BASS</div></div>
-    <div id="trance-panel" class="genre-panel"><div class="genre-title">TRANCE</div></div>
-    <div id="goa-panel" class="genre-panel"><div class="genre-title">GOA/PSY</div></div>
+    </aside>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player"></audio>
 
 <script>
+    // Generator HTML kafelków z JS, dostosowany do nowej struktury CSS (RMF FM na górze)
     const STATIONS = [
-        { n: 'TECH 88 TECHNO', u: 'https://stream.laut.fm/tech88', cat: 'techno' },
-        { n: 'HR3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight', cat: 'techno' },
-        { n: '1000 TECHNO FM', u: 'https://stream.laut.fm/1000techno', cat: 'techno' },
-        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno', cat: 'techno' },
-        { n: 'DEEP HOUSE SOUNDS', u: 'https://stream.laut.fm/deep-house-sounds', cat: 'house' },
-        { n: 'HOUSEBOMB FM', u: 'https://stream.laut.fm/housebomb-fn', cat: 'house' },
-        { n: 'DRUM AND BASS FM', u: 'https://stream.laut.fm/drumandbass_fm', cat: 'dnb' },
-        { n: 'DNBZONE RADIO', u: 'https://stream.laut.fm/dnbzone', cat: 'dnb' },
-        { n: 'TRANCEMOTION FM', u: 'https://stream.laut.fm/trancemotionfm', cat: 'trance' },
-        { n: 'GOAFM PSYCHEDELIC', u: 'https://stream.laut.fm/goafm', cat: 'goa' }
-        // Dodałem tylko przykładowe, możesz dopisać resztę
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'),
-          pwrBtn = document.getElementById('pwrBtn'),
-          muteBtn = document.getElementById('muteBtn'),
-          stopBtn = document.getElementById('stopBtn'),
-          stationDisplay = document.getElementById('station-name'),
-          faderHandle = document.getElementById('faderHandle'),
-          faderTrack = document.getElementById('faderTrack'),
-          faderGlow = document.getElementById('faderGlow'),
-          paths = [document.getElementById('p1'), document.getElementById('p2'), document.getElementById('p3'), document.getElementById('p4'), document.getElementById('p5')];
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
+    let current = -1;
 
-    let isPowered = false, dragging = false, audioCtx, analyzer, dataArray, source;
-    const proxy = "https://corsproxy.io/?";
-
-    function initAudio() {
-        if (audioCtx) return;
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        analyzer = audioCtx.createAnalyser();
-        analyzer.fftSize = 128; 
-        source = audioCtx.createMediaElementSource(player);
-        source.connect(analyzer);
-        analyzer.connect(audioCtx.destination);
-        dataArray = new Uint8Array(analyzer.frequencyBinCount);
-        draw();
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
     }
+    setInterval(clock, 1000); clock();
 
-    function draw() {
-        requestAnimationFrame(draw);
-        if (!isPowered || player.paused) {
-            paths.forEach(p => p.setAttribute('d', "M0,50 L200,50"));
-            return;
-        }
-        analyzer.getByteTimeDomainData(dataArray);
-        paths.forEach((path, idx) => {
-            let offset = (idx - 2) * 5;
-            let smoothing = 1 + (idx * 0.15);
-            let d = `M0,${50 + offset}`;
-            for (let i = 0; i < dataArray.length; i++) {
-                let x = (i / dataArray.length) * 200;
-                let v = (dataArray[i] / 128.0) - 1.0;
-                let y = 50 + offset + (v * 45 * smoothing);
-                d += ` L${x},${y}`;
-            }
-            path.setAttribute('d', d);
-        });
-    }
-
-    STATIONS.forEach(s => {
-        const btn = document.createElement('div');
-        btn.className = 'chip'; btn.textContent = s.n;
-        btn.onclick = () => {
-            if(!isPowered) return;
-            initAudio();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            stationDisplay.textContent = s.n;
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            player.src = proxy + encodeURIComponent(s.u);
-            player.load();
-            player.play().catch(e => console.log("CORS/Load error"));
-        };
-        document.getElementById(s.cat + '-panel').appendChild(btn);
+    STATIONS.forEach((s, i) => {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+            <div class="t-top">RMF FM</div>
+            <div class="t-bottom">${s.s}</div>
+        `;
+        t.onclick = () => play(i);
+        grid.appendChild(t);
     });
 
-    pwrBtn.onclick = () => {
-        isPowered = !isPowered;
-        document.body.classList.toggle('powered-on', isPowered);
-        pwrBtn.classList.toggle('active', isPowered);
-        faderGlow.classList.toggle('glow-active', isPowered);
-        stationDisplay.textContent = isPowered ? "READY" : "OFF";
-        if(!isPowered) { player.pause(); player.src = ""; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); }
-    };
+    function play(i) {
+        current = i;
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        
+        // Aktualizacja panelu bocznego
+        const sideDisplay = document.querySelector('.logo-display h2');
+        const sideSub = document.querySelector('.logo-display p');
+        sideDisplay.textContent = "RMF " + STATIONS[i].s;
+        
+        // Prosta logika opisu pod logo w panelu
+        if(STATIONS[i].s === 'RMF FM') sideSub.textContent = 'Najlepsza muzyka';
+        else if(STATIONS[i].s === 'Maxxx') sideSub.textContent = 'Hity są Maxxx';
+        else sideSub.textContent = 'Stacja tematyczna';
 
-    function moveFader(e) {
-        if(!isPowered || !dragging) return;
-        const rect = faderTrack.getBoundingClientRect();
-        const x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-        let pct = Math.max(0, Math.min(1, x / rect.width));
-        player.volume = pct;
-        faderHandle.style.left = (pct * 100) + '%';
+        const streamBase = "https://rs201-krk.rmfstream.pl/";
+        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        player.play();
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); // Ikona Pause
     }
 
-    faderHandle.onmousedown = faderHandle.ontouchstart = () => dragging = true;
-    window.onmousemove = window.ontouchmove = moveFader;
-    window.onmouseup = window.ontouchend = () => dragging = false;
+    function toggle() {
+        if(player.paused) { 
+            if(current === -1) play(0); // Odpal pierwszą jeśli nic nie gra
+            else player.play(); 
+            ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); 
+        }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); } // Ikona Play
+    }
 
-    muteBtn.onclick = () => { if(isPowered) { player.muted = !player.muted; muteBtn.classList.toggle('active', player.muted); } };
-    stopBtn.onclick = () => { if(isPowered) { player.pause(); player.src = ""; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); } };
-    player.volume = 0.5;
+    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
+    
+    function setV(v) { 
+        player.volume = v / 100;
+        // Specjalna poświata dla gałki na środku (jak na zdjęciu)
+        if(parseInt(v) > 40 && parseInt(v) < 60) vRange.classList.add('at-mid');
+        else vRange.classList.remove('at-mid');
+    }
+    
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
+    
+    // Inicjalizacja głośności
+    setV(vRange.value);
 </script>
 </body>
 </html>
