@@ -149,14 +149,21 @@
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'FM', j: 'ド' }, { n: 'RMF MAXXX', s: 'MAXXX', j: 'レ' },
-        { n: 'RMF 80s', s: '80s', j: 'ミ' }, { n: 'RMF 90s', s: '90s', j: 'ファ' },
-        { n: 'RMF 2000', s: '2000', j: 'ソ' }, { n: 'RMF CHILLOUT', s: 'CHILL', j: 'ラ' },
-        { n: 'RMF CLASSIC', s: 'CLASS', j: 'シ' }, { n: 'RMF DANCE', s: 'DANCE', j: 'ド' },
-        { n: 'RMF GOLD', s: 'GOLD', j: 'レ' }, { n: 'RMF LATINO', s: 'LATIN', j: 'ミ' },
-        { n: 'RMF LOVE', s: 'LOVE', j: 'ファ' }, { n: 'RMF PARTY', s: 'PARTY', j: 'ソ' },
-        { n: 'RMF POLSKI ROCK', s: 'P-ROC', j: 'ラ' }, { n: 'RMF ROCK', s: 'ROCK', j: 'シ' },
-        { n: 'RMF SMOOTH JAZZ', s: 'JAZZ', j: 'ド' }
+        { n: 'RMF FM', s: 'FM', j: 'ド', u: 'rmf_fm' }, 
+        { n: 'RMF MAXXX', s: 'MAXXX', j: 'レ', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80s', j: 'ミ', u: 'rmf_80s' }, 
+        { n: 'RMF 90s', s: '90s', j: 'ファ', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '2000', j: 'ソ', u: 'rmf_2000' }, 
+        { n: 'RMF CHILLOUT', s: 'CHILL', j: 'ラ', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'CLASS', j: 'シ', u: 'rmf_classic' }, 
+        { n: 'RMF DANCE', s: 'DANCE', j: 'ド', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'GOLD', j: 'レ', u: 'rmf_gold' }, 
+        { n: 'RMF LATINO', s: 'LATIN', j: 'ミ', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'LOVE', j: 'ファ', u: 'rmf_love' }, 
+        { n: 'RMF PARTY', s: 'PARTY', j: 'ソ', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'P-ROC', j: 'ラ', u: 'rmf_polski_rock' }, 
+        { n: 'RMF ROCK', s: 'ROCK', j: 'シ', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'JAZZ', j: 'ド', u: 'rmf_smooth_jazz' }
     ];
 
     const player = document.getElementById('player'), ico = document.getElementById('p-ico'), keysCont = document.getElementById('station-keys');
@@ -177,7 +184,14 @@
         document.getElementById('station-name').textContent = STATIONS[i].n.toUpperCase();
         document.getElementById('cur-info').textContent = STATIONS[i].s + " Engine";
         const streamBase = "https://rs201-krk.rmfstream.pl/";
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        
+        // FIX dla RMF MAXXX i reszty stacji
+        if (STATIONS[i].n === 'RMF MAXXX') {
+            player.src = 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48';
+        } else {
+            player.src = streamBase + STATIONS[i].u;
+        }
+        
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
@@ -187,7 +201,10 @@
         else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
+    function skip(d) { 
+        let n = current + d; 
+        if(n >= 0 && n < STATIONS.length) play(n); 
+    }
 
     function clock() {
         const d = new Date();
@@ -195,7 +212,7 @@
     }
     setInterval(clock, 1000); clock();
 
-    // VOLUME KNOB
+    // VOLUME KNOB LOGIC
     let isDragging = false, startY = 0;
     function startRotate(e) {
         isDragging = true; startY = e.clientY || e.touches[0].clientY;
@@ -214,6 +231,10 @@
         player.volume = volume / 100;
     }
     function stopRotate() { isDragging = false; }
+    
+    // Inicjalizacja głośności
+    player.volume = 0.5;
+    document.getElementById('knob-pointer').style.transform = `rotate(0deg)`;
 </script>
 </body>
 </html>
