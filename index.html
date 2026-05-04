@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzyczne Radio - Perfect Retro Style</title>
+    <title>Muzyczne Radio - Professional Retro Build</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -12,28 +12,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #d1d1d1;
+            background: #1a1a1a;
             font-family: 'Segoe UI', Arial, sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Drewniana ramka - ciemny orzech jak na zdjęciu image_57d9db.jpg */
+        /* Bardziej drewniana obudowa - wzmocnione usłojenie */
         .case-outer {
-            padding: 15px;
+            padding: 16px;
             background: #5d4037; 
             background-image: 
-                repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.1) 41px, transparent 42px),
-                linear-gradient(135deg, #6d4c41 0%, #3e2723 100%);
+                url('https://www.transparenttextures.com/patterns/dark-wood.png'),
+                linear-gradient(135deg, #6d4c41 0%, #2b1d1a 100%);
             border-radius: 40px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.3);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6), inset 0 0 20px rgba(0,0,0,0.4);
             position: relative;
-            /* Precyzyjne ścięcie rogów */
             clip-path: polygon(6% 0%, 94% 0%, 100% 10%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 10%);
         }
 
-        /* Panel przedni - czysta biel */
+        /* Panel przedni - czysta matowa biel */
         .radio-front {
             width: 820px;
             height: 480px;
@@ -42,47 +41,54 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            border: 1px solid #e0e0e0;
+            border: 1px solid #dcdcdc;
             clip-path: polygon(6% 0%, 94% 0%, 100% 10%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 10%);
         }
 
+        /* Przywrócony napis nad LCD */
         .main-title {
             margin-top: 35px;
             font-size: 26px;
-            color: #222;
-            letter-spacing: 3px;
-            font-weight: 800;
+            color: #333;
+            letter-spacing: 4px;
+            font-weight: 900;
             text-transform: uppercase;
+            transition: color 0.4s;
         }
 
-        /* Wyświetlacz LCD */
+        .powered .main-title {
+            color: #000;
+            text-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        /* Wyświetlacz LCD - Zmniejszony o 25% */
         .lcd-display {
-            width: 300px;
-            height: 160px;
-            background: #080808;
-            border: 5px solid #1a1a1a;
-            border-radius: 12px;
-            margin-top: 25px;
+            width: 225px; /* Zmniejszone z 300px */
+            height: 140px;
+            background: #050505;
+            border: 4px solid #1a1a1a;
+            border-radius: 6px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             font-family: 'DS-Digital', monospace;
-            color: #1a1a1a;
-            transition: color 0.4s, box-shadow 0.4s;
+            color: #1a0000; /* Wyłączony */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 2;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+            box-shadow: inset 0 0 15px rgba(0,0,0,1);
         }
 
         .powered .lcd-display { 
             color: #00ff41; 
-            text-shadow: 0 0 12px rgba(0,255,65,0.6);
-            box-shadow: inset 0 0 30px rgba(0,255,65,0.1), 0 0 10px rgba(0,0,0,0.5);
+            text-shadow: 0 0 8px rgba(0,255,65,0.7), 0 0 2px rgba(0,255,65,1);
+            box-shadow: inset 0 0 20px rgba(0,255,65,0.05), 0 0 5px rgba(0,0,0,0.5);
         }
 
-        .lcd-station { font-size: 24px; margin-bottom: 8px; height: 26px; letter-spacing: 1px; }
-        .lcd-time { font-size: 42px; font-weight: bold; }
-        .lcd-date { font-size: 16px; margin-top: 8px; opacity: 0.8; }
+        .lcd-station { font-size: 20px; margin-bottom: 6px; height: 22px; letter-spacing: 1px; font-weight: normal; }
+        .lcd-time { font-size: 38px; font-weight: bold; letter-spacing: 2px; }
+        .lcd-date { font-size: 14px; margin-top: 6px; opacity: 0.7; }
 
         /* Głośniki mesh z chromowaną ramką */
         .speaker-mesh {
@@ -94,16 +100,11 @@
             border-radius: 50%;
             position: absolute;
             top: 110px;
-            /* Efekt lustrzanego chromu */
-            border: 7px solid #e0e0e0;
-            outline: 1px solid #999;
-            box-shadow: 
-                0 10px 20px rgba(0,0,0,0.3), 
-                inset 0 0 25px #000,
-                0 0 0 2px #fff;
+            border: 8px solid #e0e0e0;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2), inset 0 0 25px #000;
         }
-        .spk-l { left: 45px; }
-        .spk-r { right: 45px; }
+        .spk-l { left: 40px; }
+        .spk-r { right: 40px; }
 
         .controls-area {
             position: absolute;
@@ -114,15 +115,14 @@
             gap: 20px;
         }
 
-        /* Czarny panel sterowania */
         .btn-rack {
             display: flex;
             gap: 10px;
             padding: 15px 25px;
             border-radius: 12px;
-            background: linear-gradient(180deg, #2c2c2c 0%, #111111 100%);
-            border: 1px solid #444;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.1);
+            background: #111;
+            border: 1px solid #333;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
         }
 
         .btn-pro {
@@ -131,21 +131,17 @@
             border-radius: 6px;
             border: 1px solid #333;
             background: #1a1a1a;
-            color: #666;
+            color: #555;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: 0.2s;
         }
 
         .btn-pro svg { width: 22px; height: 22px; fill: currentColor; }
 
-        /* Dolne przyciski wyboru stacji */
-        .station-rack {
-            display: flex;
-            gap: 12px;
-        }
+        .station-rack { display: flex; gap: 12px; }
 
         .btn-station-pro {
             width: 70px;
@@ -153,29 +149,23 @@
             background: linear-gradient(180deg, #f5f5f5 0%, #cccccc 100%);
             border: 1px solid #aaa;
             border-radius: 5px;
-            font-family: sans-serif;
             font-size: 11px;
             font-weight: 800;
             color: #444;
             cursor: pointer;
-            box-shadow: 0 3px 5px rgba(0,0,0,0.15);
             text-transform: uppercase;
         }
 
-        /* Interakcja */
-        .powered .btn-pro { color: #999; }
         .powered .btn-pro.active, .powered .btn-pro:active {
             color: #00ff41 !important;
-            background: #252525;
             border-color: #00ff41 !important;
-            box-shadow: 0 0 12px rgba(0,255,65,0.3);
+            box-shadow: 0 0 10px rgba(0,255,65,0.4);
         }
 
         .vol-wrapper { display: flex; flex-direction: column; gap: 6px; width: 110px; }
         .vol-bar { width: 100%; height: 5px; background: #000; border-radius: 3px; overflow: hidden; }
         .vol-fill { height: 100%; width: 50%; background: #00ff41; opacity: 0; transition: width 0.15s; }
-        .powered .vol-fill { opacity: 1; box-shadow: 0 0 10px #00ff41; }
-
+        .powered .vol-fill { opacity: 1; }
     </style>
 </head>
 <body>
@@ -245,9 +235,7 @@
 
     const flash = el => {
         el.classList.add('active');
-        setTimeout(() => { 
-            if(!(el.id === 'play' && !audio.paused) && !(el.id === 'mute' && audio.muted)) el.classList.remove('active'); 
-        }, 300);
+        setTimeout(() => { if(!(el.id === 'play' && !audio.paused) && !(el.id === 'mute' && audio.muted)) el.classList.remove('active'); }, 300);
     };
 
     document.getElementById('pwr').onclick = function() {
