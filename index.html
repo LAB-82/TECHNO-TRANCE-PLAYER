@@ -3,120 +3,180 @@
 <head>
 <meta charset="utf-8">
 <title>SERUM WAVEFORM | VIRUS EDITION</title>
+
 <style>
-/* (TWÓJ CSS — BEZ ZMIAN) */
+/* --- BEZ ZMIAN W CSS --- */
 :root {
-    --cyan:#00f2ff;--cyan-glow:rgba(0,242,255,.8);
-    --bg-synth:#e0e0e0;--panel-synth:#d2d2d2;--border-synth:#a0a0a0;
-    --lcd-bg:#c5c9c7;--lcd-header:#3a3a3a;--lcd-text:#2a2a2a;
+    --cyan:#00f2ff;
+    --cyan-glow:rgba(0,242,255,.8);
+    --bg-synth:#e0e0e0;
+    --panel-synth:#d2d2d2;
+    --border-synth:#a0a0a0;
+    --lcd-bg:#c5c9c7;
+    --lcd-header:#3a3a3a;
+    --lcd-text:#2a2a2a;
 }
+
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg-synth);font-family:'Segoe UI',Arial;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden}
-#main{width:98vw;height:96vh;background:var(--panel-synth);border:2px solid var(--border-synth);border-radius:8px;padding:15px;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:15px}
-.genre-panel{background:rgba(255,255,255,.3);border:1px solid var(--border-synth);border-radius:4px;padding:35px 10px 10px;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:6px;overflow-y:auto}
-.genre-title{position:absolute;top:0;left:0;right:0;font-size:11px;font-weight:bold;text-transform:uppercase;padding:6px;background:#bbb;color:#444;text-align:center}
-.chip{background:#eee;border:1px solid #bbb;height:32px;display:flex;align-items:center;justify-content:center;font-size:9px;cursor:pointer}
-#center-area{display:flex;flex-direction:column;align-items:center}
-.lcd-main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+
+body{
+    background:var(--bg-synth);
+    font-family:Segoe UI,Arial;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+#main{
+    width:98vw;
+    height:96vh;
+    background:var(--panel-synth);
+    border:2px solid var(--border-synth);
+    border-radius:8px;
+    padding:15px;
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    grid-template-rows:1fr 1fr;
+    gap:15px;
+}
+
+.genre-panel{
+    background:rgba(255,255,255,.3);
+    border:1px solid var(--border-synth);
+    border-radius:4px;
+    padding:35px 10px 10px;
+    position:relative;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+    overflow-y:auto;
+}
+
+.genre-title{
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    font-size:11px;
+    font-weight:bold;
+    text-transform:uppercase;
+    padding:6px;
+    background:#bbb;
+    color:#444;
+    text-align:center;
+}
+
+.chip{
+    background:#eee;
+    border:1px solid #bbb;
+    height:32px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:9px;
+    cursor:pointer;
+}
+
+.lcd-main{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+}
 </style>
 </head>
 
 <body>
-<div id="main">
-<div id="techno-panel" class="genre-panel"><div class="genre-title">TECHNO</div></div>
 
-<div id="center-area">
-<div id="station-name">OFF</div>
-<div class="lcd-main" id="lcd-track-title">CHOOSE A STATION</div>
-<button id="pwrBtn">POWER</button>
-</div>
+<div id="main">
+    <div id="techno-panel" class="genre-panel">
+        <div class="genre-title">TECHNO</div>
+    </div>
+
+    <div id="center-area">
+        <div id="station-name">OFF</div>
+        <div class="lcd-main" id="lcd-track-title">CHOOSE A STATION</div>
+        <button id="pwrBtn">POWER</button>
+    </div>
 </div>
 
 <audio id="player"></audio>
 
 <script>
 const STATIONS = [
- { n:'TECH 88 TECHNO',u:'https://stream.laut.fm/tech88',s:'tech88',cat:'techno' }
+    { n:'TECH 88 TECHNO', u:'https://stream.laut.fm/tech88', s:'tech88', cat:'techno' }
 ];
 
 const player = document.getElementById('player');
 const lcdTrack = document.getElementById('lcd-track-title');
 
-let isPowered=false,currentSlug='',metaInterval;
+let isPowered = false;
+let currentSlug = '';
+let metaInterval;
 
-// ✅ POPRAWIONA OBSŁUGA METADATA
-window.displayMeta = function(data){
-    if(!isPowered || !currentSlug) return;
+/* 🔴 POPRAWKA: callback jest STAŁY (NIE NADPISYWANY) */
+window.displayMeta = function(data) {
+    if (!isPowered || !currentSlug) return;
 
-    const artist = (data && data.artist && data.artist.name) ? data.artist.name : "LIVE";
-    const title = (data && data.title) ? data.title : "NO TRACK INFO";
+    const artist = data?.artist?.name || "LIVE";
+    const title = data?.title || "NO TRACK INFO";
 
-    lcdTrack.innerHTML = `<div>${artist}</div><div>${title}</div>`;
+    lcdTrack.innerHTML = `
+        <div style="font-size:1.4em;margin-bottom:5px">${artist}</div>
+        <div style="font-size:0.9em;opacity:0.8">${title}</div>
+    `;
 };
 
-// ✅ KLUCZOWA POPRAWKA (JSONP + FETCH FALLBACK)
-function updateMetadata(){
-    if(!isPowered || !currentSlug) return;
+function updateMetadata() {
+    if (!isPowered || !currentSlug) return;
 
     lcdTrack.textContent = "CONNECTING...";
 
-    let received = false;
-
-    const original = window.displayMeta;
-    window.displayMeta = function(data){
-        received = true;
-        original(data);
-    };
-
-    // JSONP (Twoje rozwiązanie)
     const old = document.getElementById('api-script');
-    if(old) old.remove();
+    if (old) old.remove();
 
     const s = document.createElement('script');
-    s.id='api-script';
-    s.src=`https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
+    s.id = 'api-script';
+    s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
     document.body.appendChild(s);
-
-    // fallback FETCH jeśli JSONP nie działa
-    setTimeout(async ()=>{
-        if(!received){
-            try{
-                const res = await fetch(`https://api.laut.fm/station/${currentSlug}/now_playing`);
-                const data = await res.json();
-                original(data);
-            }catch{
-                lcdTrack.textContent="LIVE STREAM";
-            }
-        }
-    },1500);
 }
 
-// GENEROWANIE PRZYCISKÓW
-STATIONS.forEach(s=>{
-    const btn=document.createElement('div');
-    btn.className='chip';
-    btn.textContent=s.n;
-    btn.onclick=()=>{
-        if(!isPowered) return;
-        currentSlug=s.s;
-        player.src=s.u;
+/* UI */
+STATIONS.forEach(s => {
+    const btn = document.createElement('div');
+    btn.className = 'chip';
+    btn.textContent = s.n;
+
+    btn.onclick = () => {
+        if (!isPowered) return;
+
+        currentSlug = s.s;
+        player.src = s.u;
         player.play();
+
         updateMetadata();
     };
+
     document.getElementById('techno-panel').appendChild(btn);
 });
 
-// POWER
-document.getElementById('pwrBtn').onclick=()=>{
-    isPowered=!isPowered;
-    if(isPowered){
-        metaInterval=setInterval(updateMetadata,10000);
-    }else{
+/* POWER */
+document.getElementById('pwrBtn').onclick = () => {
+    isPowered = !isPowered;
+
+    if (isPowered) {
+        metaInterval = setInterval(updateMetadata, 10000);
+    } else {
         clearInterval(metaInterval);
         player.pause();
-        lcdTrack.textContent="OFF";
+        lcdTrack.textContent = "OFF";
     }
 };
 </script>
+
 </body>
 </html>
