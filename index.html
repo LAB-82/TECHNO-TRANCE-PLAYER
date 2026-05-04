@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>SERUM WAVEFORM | VIRUS EDITION</title>
-    <!-- Uciszenie błędu favicon 404 -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <style>
         :root {
@@ -212,16 +211,25 @@
     // GLOBALNA FUNKCJA DLA JSONP - Klucz do działania tytułów
     window.displayMeta = function(data) {
         if (!isPowered || !currentSlug) return;
-        if (data && data.title) {
-            const artist = data.artist ? data.artist.name : "Unknown Artist";
-            lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${data.title}</div>`;
+
+        // Fallbacki żeby zawsze coś się wyświetlało
+        if (!data) {
+            lcdTrack.textContent = "NO DATA";
+            return;
         }
+
+        const artist = (data.artist && data.artist.name) ? data.artist.name : "LIVE";
+        const title = (data.title && data.title.trim() !== "") ? data.title : "NO TRACK INFO";
+
+        lcdTrack.innerHTML = `
+            <div style="font-size:1.5em; margin-bottom:5px;">${artist}</div>
+            <div>${title}</div>
+        `;
     };
 
     function updateMetadata() {
         if (!isPowered || !currentSlug) return;
         
-        // Czyścimy stary skrypt przed dodaniem nowego (zapobiega wyciekom pamięci)
         const oldScript = document.getElementById('api-script');
         if (oldScript) oldScript.remove();
 
@@ -238,18 +246,14 @@
             if(!isPowered) return;
             currentSlug = s.s;
             
-            // UI Update
             lcdStation.textContent = s.n;
             lcdTrack.textContent = "CONNECTING...";
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
 
-            // Audio Logic
             player.pause();
-            player.removeAttribute('src'); // Pełne czyszczenie bufora
-            player.load();
             player.src = s.u;
-            player.play().catch(e => console.log("Odtwarzanie wymaga interakcji"));
+            player.play().catch(e => console.log("Interakcja wymagana"));
             
             updateMetadata();
         };
@@ -305,7 +309,6 @@
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         lcdStation.textContent = "SYSTEM READY";
         lcdTrack.textContent = "CHOOSE A STATION";
-        muteBtn.classList.remove('active');
     }
     
     player.volume = 0.5;
