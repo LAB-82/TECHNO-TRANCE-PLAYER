@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzyczne Radio - Final Restoration</title>
+    <title>Muzyczne Radio - Professional Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -18,7 +18,6 @@
             user-select: none;
         }
 
-        /* Drewniana obudowa */
         .outer-box {
             padding: 12px;
             background: linear-gradient(145deg, #8b5a2b, #5d3a1a);
@@ -26,10 +25,9 @@
             box-shadow: 0 30px 60px rgba(0,0,0,0.9);
         }
 
-        /* Srebrny panel */
         .radio-body {
             width: 800px;
-            height: 450px;
+            height: 480px;
             background: linear-gradient(180deg, #d1d1d1 0%, #a3a3a3 100%);
             border-radius: 30px;
             position: relative;
@@ -40,7 +38,7 @@
         }
 
         .radio-title {
-            margin-top: 25px;
+            margin-top: 20px;
             font-family: 'DS-Digital', monospace;
             font-size: 40px;
             color: #444;
@@ -52,17 +50,28 @@
             text-shadow: 0 0 12px rgba(255,0,0,0.6);
         }
 
-        /* Wyświetlacz */
+        /* Wyświetlacz Tekstowy */
         .lcd-screen {
             width: 220px;
-            height: 100px;
+            height: 110px;
             background: #000;
             border: 3px solid #777;
             border-radius: 2px;
-            margin-top: 15px;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #200; /* Kolor gdy wyłączone */
+            font-family: 'DS-Digital', monospace;
         }
 
-        /* Głośniki mesh */
+        .powered .lcd-screen { color: #ff0000; text-shadow: 0 0 5px #ff0000; }
+        .lcd-station { font-size: 22px; margin-bottom: 5px; }
+        .lcd-time { font-size: 28px; }
+        .lcd-date { font-size: 14px; }
+
         .speaker-grill {
             width: 190px;
             height: 190px;
@@ -71,17 +80,34 @@
             background-size: 3px 3px;
             border-radius: 50%;
             position: absolute;
-            top: 120px;
+            top: 130px;
             border: 8px solid #b5b5b5;
             box-shadow: inset 0 8px 15px rgba(0,0,0,0.7);
         }
         .left-spk { left: 35px; }
         .right-spk { right: 35px; }
 
-        /* PANEL PRZYCISKÓW - Zgodnie ze zdjęciem */
-        .control-panel-container {
+        /* PANEL PRZYCISKÓW */
+        .controls-wrapper {
             position: absolute;
-            bottom: 40px;
+            bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Przyciski Stacji (nad sterowaniem) */
+        .stations-panel {
+            display: flex;
+            gap: 8px;
+            background: rgba(0,0,0,0.05);
+            padding: 5px;
+            border-radius: 4px;
+        }
+
+        /* Panel Główny */
+        .main-control-panel {
             background: #0a0a0a;
             padding: 8px;
             border-radius: 6px;
@@ -90,8 +116,6 @@
             border: 1px solid #1a1a1a;
             box-shadow: inset 0 1px 3px rgba(255,255,255,0.05);
         }
-
-        .btn-group { display: flex; gap: 8px; }
 
         .btn-rect {
             width: 70px;
@@ -107,29 +131,14 @@
             transition: all 0.2s;
         }
 
-        /* Grupa głośności z paskiem */
-        .vol-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+        .btn-station { width: 60px; height: 35px; font-family: 'DS-Digital', monospace; font-size: 18px; }
+
+        .vol-group { display: flex; flex-direction: column; gap: 4px; }
         .vol-buttons { display: flex; gap: 8px; }
         .btn-vol { width: 45px; height: 35px; }
         
-        .vol-track {
-            width: 100%;
-            height: 4px;
-            background: #222;
-            border-radius: 1px;
-            overflow: hidden;
-        }
-        .vol-bar {
-            height: 100%;
-            width: 50%;
-            background: #ff0000;
-            box-shadow: 0 0 5px #ff0000;
-            display: none;
-        }
+        .vol-track { width: 100%; height: 4px; background: #222; border-radius: 1px; overflow: hidden; }
+        .vol-bar { height: 100%; width: 50%; background: #ff0000; box-shadow: 0 0 5px #ff0000; display: none; }
 
         .btn-rect svg { width: 20px; height: 20px; fill: currentColor; }
 
@@ -137,10 +146,9 @@
         .powered .btn-rect { color: #555; }
         .powered .btn-rect.active, .powered .btn-rect:active {
             color: #ff0000;
-            box-shadow: inset 0 0 8px rgba(255,0,0,0.2);
+            box-shadow: 0 0 10px rgba(255,0,0,0.3);
         }
         .powered .vol-bar { display: block; }
-
     </style>
 </head>
 <body>
@@ -150,27 +158,39 @@
         <div class="radio-title">MUZYCZNE RADIO</div>
         
         <div class="lcd-screen">
-            <canvas id="visualizer"></canvas>
+            <div id="lcdStation" class="lcd-station">OFFLINE</div>
+            <div id="lcdTime" class="lcd-time">00:00:00</div>
+            <div id="lcdDate" class="lcd-date">--.--.----</div>
         </div>
 
         <div class="speaker-grill left-spk"></div>
         <div class="speaker-grill right-spk"></div>
 
-        <div class="control-panel-container">
-            <div class="btn-group">
+        <div class="controls-wrapper">
+            <!-- Przyciski stacji jak na zdjęciu -->
+            <div class="stations-panel">
+                <button class="btn-rect btn-station" onclick="setStation(1)">1</button>
+                <button class="btn-rect btn-station" onclick="setStation(2)">2</button>
+                <button class="btn-rect btn-station" onclick="setStation(3)">3</button>
+                <button class="btn-rect btn-station" onclick="setStation(4)">4</button>
+                <button class="btn-rect btn-station" onclick="setStation(5)">5</button>
+            </div>
+
+            <!-- Główny panel sterowania -->
+            <div class="main-control-panel">
                 <button id="pwrBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
                 <button id="playBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
                 <button id="stopBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
                 <button id="muteBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12"/></svg></button>
-            </div>
-
-            <div class="vol-group">
-                <div class="vol-buttons">
-                    <button id="volDown" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                    <button id="volUp" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                </div>
-                <div class="vol-track">
-                    <div id="volBar" class="vol-bar"></div>
+                
+                <div class="vol-group">
+                    <div class="vol-buttons">
+                        <button id="volDown" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                        <button id="volUp" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+                    </div>
+                    <div class="vol-track">
+                        <div id="volBar" class="vol-bar"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -181,72 +201,89 @@
 
 <script>
     const audio = document.getElementById('radioStream');
-    const canvas = document.getElementById('visualizer');
-    const ctx = canvas.getContext('2d');
     const radioBody = document.getElementById('radioBody');
     const pwrBtn = document.getElementById('pwrBtn');
+    const playBtn = document.getElementById('playBtn');
+    const muteBtn = document.getElementById('muteBtn');
     const volBar = document.getElementById('volBar');
+    const lcdStation = document.getElementById('lcdStation');
+    const lcdTime = document.getElementById('lcdTime');
+    const lcdDate = document.getElementById('lcdDate');
     
-    let audioCtx, analyser, source, dataArray, isPwr = false;
+    let isPwr = false;
 
-    canvas.width = 220; canvas.height = 100;
-
-    function drawEq(data) {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        const bars = 22;
-        const barWidth = canvas.width / bars;
-        for (let i = 0; i < bars; i++) {
-            const h = data ? data[i*3] / 2.8 : 0;
-            ctx.fillStyle = h > 0 ? "#ff0000" : "#200";
-            // Rysowanie segmentowe
-            for(let j=0; j<10; j++) {
-                ctx.globalAlpha = (h > j*8) ? 1 : 0.1;
-                ctx.fillRect(i * barWidth + 2, canvas.height - (j * 9) - 10, barWidth - 4, 7);
-            }
-        }
+    // Aktualizacja czasu i daty
+    function updateClock() {
+        const now = new Date();
+        const time = now.toLocaleTimeString('pl-PL', { hour12: false });
+        const date = now.toLocaleDateString('pl-PL');
+        lcdTime.textContent = time;
+        lcdDate.textContent = date;
     }
-    drawEq(null);
+    setInterval(updateClock, 1000);
+    updateClock();
 
+    // Funkcja Power
     pwrBtn.onclick = () => {
         isPwr = !isPwr;
         radioBody.classList.toggle('powered');
-        pwrBtn.classList.toggle('active');
-        if(!isPwr) { audio.pause(); drawEq(null); }
-    };
-
-    document.getElementById('playBtn').onclick = () => {
-        if(!isPwr) return;
-        if(!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            source = audioCtx.createMediaElementSource(audio);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 128;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
+        pwrBtn.classList.toggle('active', isPwr);
+        if(!isPwr) {
+            audio.pause();
+            playBtn.classList.remove('active');
+            muteBtn.classList.remove('active');
+            lcdStation.textContent = "OFFLINE";
+        } else {
+            lcdStation.textContent = "MUZYCZNE RADIO";
         }
-        audio.play();
-        render();
     };
 
-    document.getElementById('stopBtn').onclick = () => { audio.pause(); audio.currentTime = 0; };
-    
+    // Play
+    playBtn.onclick = () => {
+        if(!isPwr) return;
+        audio.play();
+        playBtn.classList.add('active');
+    };
+
+    // Stop
+    document.getElementById('stopBtn').onclick = () => {
+        if(!isPwr) return;
+        audio.pause();
+        audio.currentTime = 0;
+        playBtn.classList.remove('active');
+    };
+
+    // MUTE (Naprawione)
+    muteBtn.onclick = () => {
+        if(!isPwr) return;
+        audio.muted = !audio.muted;
+        muteBtn.classList.toggle('active', audio.muted);
+    };
+
+    // Głośność
     document.getElementById('volUp').onclick = () => {
+        if(!isPwr) return;
         audio.volume = Math.min(1, audio.volume + 0.1);
         volBar.style.width = (audio.volume * 100) + "%";
     };
 
     document.getElementById('volDown').onclick = () => {
+        if(!isPwr) return;
         audio.volume = Math.max(0, audio.volume - 0.1);
         volBar.style.width = (audio.volume * 100) + "%";
     };
 
-    function render() {
-        if(!isPwr || audio.paused) return;
-        requestAnimationFrame(render);
-        analyser.getByteFrequencyData(dataArray);
-        drawEq(dataArray);
+    // Zmiana stacji
+    function setStation(num) {
+        if(!isPwr) return;
+        // Tutaj można dodać zmianę src dla audio
+        lcdStation.textContent = "STACJA " + num;
+        console.log("Przełączono na stację: " + num);
+        // Resetowanie przycisku play dla nowej stacji
+        playBtn.classList.remove('active');
     }
+
+    audio.volume = 0.5;
 </script>
 
 </body>
