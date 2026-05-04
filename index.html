@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio - Classic Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muzyczne Radio - Final Restoration</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -15,246 +14,240 @@
             justify-content: center;
             background: #111;
             font-family: Arial, sans-serif;
-            overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* Drewniana obudowa zewnętrzna */
-        .wood-frame {
-            padding: 15px;
-            background: linear-gradient(to bottom, #a67c52 0%, #7d5a36 100%);
-            border-radius: 45px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.2);
-            border: 2px solid #5d4329;
+        /* Drewniana obudowa */
+        .outer-box {
+            padding: 12px;
+            background: linear-gradient(145deg, #8b5a2b, #5d3a1a);
+            border-radius: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
         }
 
-        /* Srebrny panel główny */
-        .radio-panel {
-            width: 850px;
-            height: 480px;
-            background: linear-gradient(180deg, #e0e0e0 0%, #b0b0b0 100%);
-            border-radius: 35px;
+        /* Srebrny panel */
+        .radio-body {
+            width: 800px;
+            height: 450px;
+            background: linear-gradient(180deg, #d1d1d1 0%, #a3a3a3 100%);
+            border-radius: 30px;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
-            border: 1px solid #999;
+            border: 1px solid #888;
         }
 
-        .title {
-            margin-top: 30px;
+        .radio-title {
+            margin-top: 25px;
             font-family: 'DS-Digital', monospace;
-            font-size: 42px;
-            color: #333;
-            letter-spacing: 5px;
-            transition: 0.3s;
+            font-size: 40px;
+            color: #444;
+            letter-spacing: 4px;
         }
 
-        .powered .title {
+        .powered .radio-title {
             color: #ff0000;
-            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+            text-shadow: 0 0 12px rgba(255,0,0,0.6);
         }
 
-        /* Wyświetlacz EQ */
-        .display-area {
-            width: 240px;
-            height: 110px;
+        /* Wyświetlacz */
+        .lcd-screen {
+            width: 220px;
+            height: 100px;
             background: #000;
-            border: 4px solid #888;
-            border-radius: 4px;
-            margin-top: 20px;
-            overflow: hidden;
+            border: 3px solid #777;
+            border-radius: 2px;
+            margin-top: 15px;
         }
 
-        canvas { width: 100%; height: 100%; display: block; }
-
-        /* Głośniki - Mesh jak na zdjęciu */
-        .speaker {
-            width: 200px;
-            height: 200px;
-            background-color: #1a1a1a;
-            background-image: radial-gradient(#333 1px, transparent 1px);
-            background-size: 4px 4px;
+        /* Głośniki mesh */
+        .speaker-grill {
+            width: 190px;
+            height: 190px;
+            background-color: #151515;
+            background-image: radial-gradient(#333 0.5px, transparent 0.5px);
+            background-size: 3px 3px;
             border-radius: 50%;
             position: absolute;
-            top: 130px;
-            border: 10px solid #c0c0c0;
-            box-shadow: inset 0 10px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.1);
+            top: 120px;
+            border: 8px solid #b5b5b5;
+            box-shadow: inset 0 8px 15px rgba(0,0,0,0.7);
         }
-        .speaker.left { left: 40px; }
-        .speaker.right { right: 40px; }
+        .left-spk { left: 35px; }
+        .right-spk { right: 35px; }
 
-        /* Kontrolki na dole */
-        .controls-row {
+        /* PANEL PRZYCISKÓW - Zgodnie ze zdjęciem */
+        .control-panel-container {
             position: absolute;
             bottom: 40px;
+            background: #0a0a0a;
+            padding: 8px;
+            border-radius: 6px;
             display: flex;
-            gap: 10px;
-            background: rgba(0,0,0,0.05);
-            padding: 15px;
-            border-radius: 10px;
+            gap: 8px;
+            border: 1px solid #1a1a1a;
+            box-shadow: inset 0 1px 3px rgba(255,255,255,0.05);
         }
 
-        .btn {
-            width: 65px;
-            height: 45px;
-            background: linear-gradient(180deg, #444 0%, #222 100%);
-            border: 1px solid #111;
-            border-radius: 4px;
+        .btn-group { display: flex; gap: 8px; }
+
+        .btn-rect {
+            width: 70px;
+            height: 42px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 3px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #777;
-            box-shadow: 0 4px 0 #000;
-            transition: all 0.1s;
+            color: #333;
+            transition: all 0.2s;
         }
 
-        .btn:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #000;
+        /* Grupa głośności z paskiem */
+        .vol-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .vol-buttons { display: flex; gap: 8px; }
+        .btn-vol { width: 45px; height: 35px; }
+        
+        .vol-track {
+            width: 100%;
+            height: 4px;
+            background: #222;
+            border-radius: 1px;
+            overflow: hidden;
+        }
+        .vol-bar {
+            height: 100%;
+            width: 50%;
+            background: #ff0000;
+            box-shadow: 0 0 5px #ff0000;
+            display: none;
         }
 
-        .btn svg { width: 22px; height: 22px; fill: currentColor; }
+        .btn-rect svg { width: 20px; height: 20px; fill: currentColor; }
 
         /* Aktywne stany */
-        .powered .btn { color: #aaa; }
-        .powered .btn.active { 
-            color: #ff0000; 
-            box-shadow: 0 0 15px rgba(255,0,0,0.3);
-            background: linear-gradient(180deg, #444 0%, #2a2a2a 100%);
+        .powered .btn-rect { color: #555; }
+        .powered .btn-rect.active, .powered .btn-rect:active {
+            color: #ff0000;
+            box-shadow: inset 0 0 8px rgba(255,0,0,0.2);
         }
+        .powered .vol-bar { display: block; }
 
-        .vol-indicator {
-            width: 100%;
-            height: 3px;
-            background: #111;
-            position: absolute;
-            bottom: -8px;
-        }
-        .vol-fill { height: 100%; background: #ff0000; width: 50%; transition: 0.2s; opacity: 0; }
-        .powered .vol-fill { opacity: 1; }
-
-        @media(max-width: 860px) {
-            .wood-frame { transform: scale(0.6); }
-            .speaker { display: none; }
-        }
     </style>
 </head>
-
 <body>
-    <div class="wood-frame">
-        <div class="radio-panel" id="panel">
-            <div class="title">MUZYCZNE RADIO</div>
-            
-            <div class="display-area">
-                <canvas id="eq"></canvas>
+
+<div class="outer-box">
+    <div class="radio-body" id="radioBody">
+        <div class="radio-title">MUZYCZNE RADIO</div>
+        
+        <div class="lcd-screen">
+            <canvas id="visualizer"></canvas>
+        </div>
+
+        <div class="speaker-grill left-spk"></div>
+        <div class="speaker-grill right-spk"></div>
+
+        <div class="control-panel-container">
+            <div class="btn-group">
+                <button id="pwrBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="playBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="stopBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="muteBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12"/></svg></button>
             </div>
 
-            <div class="speaker left"></div>
-            <div class="speaker right"></div>
-
-            <div class="controls-row">
-                <button id="pwr" class="btn"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="stop" class="btn"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn">
-                    <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12"/></svg>
-                </button>
-                <button id="vDown" class="btn"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                <button id="vUp" class="btn" style="position: relative;">
-                    <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
-                    <div class="vol-indicator"><div id="vFill" class="vol-fill"></div></div>
-                </button>
+            <div class="vol-group">
+                <div class="vol-buttons">
+                    <button id="volDown" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                    <button id="volUp" class="btn-rect btn-vol"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+                </div>
+                <div class="vol-track">
+                    <div id="volBar" class="vol-bar"></div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 
-    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+<audio id="radioStream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
-    <script>
-        const audio = document.getElementById('stream');
-        const canvas = document.getElementById('eq');
-        const ctx = canvas.getContext('2d');
-        const panel = document.getElementById('panel');
-        const pwrBtn = document.getElementById('pwr');
-        const playBtn = document.getElementById('play');
-        const vFill = document.getElementById('vFill');
-        
-        let audioCtx, analyser, source, dataArray, isPwr = false;
+<script>
+    const audio = document.getElementById('radioStream');
+    const canvas = document.getElementById('visualizer');
+    const ctx = canvas.getContext('2d');
+    const radioBody = document.getElementById('radioBody');
+    const pwrBtn = document.getElementById('pwrBtn');
+    const volBar = document.getElementById('volBar');
+    
+    let audioCtx, analyser, source, dataArray, isPwr = false;
 
-        // Inicjalizacja Canvas
-        canvas.width = 240;
-        canvas.height = 110;
+    canvas.width = 220; canvas.height = 100;
 
-        function drawBars(data) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const bars = 25;
-            const barW = canvas.width / bars;
-            for (let i = 0; i < bars; i++) {
-                const val = data ? data[i * 2] / 2.5 : 0;
-                // Segmenty EQ
-                for(let j=0; j<10; j++) {
-                    ctx.fillStyle = (val > j * 10) ? "#ff0000" : "#200";
-                    ctx.fillRect(i * barW + 2, canvas.height - (j * 10) - 10, barW - 4, 8);
-                }
+    function drawEq(data) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const bars = 22;
+        const barWidth = canvas.width / bars;
+        for (let i = 0; i < bars; i++) {
+            const h = data ? data[i*3] / 2.8 : 0;
+            ctx.fillStyle = h > 0 ? "#ff0000" : "#200";
+            // Rysowanie segmentowe
+            for(let j=0; j<10; j++) {
+                ctx.globalAlpha = (h > j*8) ? 1 : 0.1;
+                ctx.fillRect(i * barWidth + 2, canvas.height - (j * 9) - 10, barWidth - 4, 7);
             }
         }
+    }
+    drawEq(null);
 
-        drawBars(null);
+    pwrBtn.onclick = () => {
+        isPwr = !isPwr;
+        radioBody.classList.toggle('powered');
+        pwrBtn.classList.toggle('active');
+        if(!isPwr) { audio.pause(); drawEq(null); }
+    };
 
-        pwrBtn.onclick = function() {
-            isPwr = !isPwr;
-            panel.classList.toggle('powered');
-            this.classList.toggle('active');
-            if(!isPwr) {
-                audio.pause();
-                playBtn.classList.remove('active');
-                drawBars(null);
-            }
-        };
-
-        playBtn.onclick = function() {
-            if(!isPwr) return;
-            if (!audioCtx) {
-                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.fftSize = 128;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                source.connect(audioCtx.destination);
-            }
-            audio.play();
-            this.classList.add('active');
-            render();
-        };
-
-        document.getElementById('stop').onclick = function() {
-            audio.pause(); audio.currentTime = 0;
-            playBtn.classList.remove('active');
-        };
-
-        document.getElementById('vUp').onclick = function() {
-            audio.volume = Math.min(1, audio.volume + 0.1);
-            vFill.style.width = (audio.volume * 100) + "%";
-        };
-
-        document.getElementById('vDown').onclick = function() {
-            audio.volume = Math.max(0, audio.volume - 0.1);
-            vFill.style.width = (audio.volume * 100) + "%";
-        };
-
-        function render() {
-            if (!isPwr || audio.paused) return;
-            requestAnimationFrame(render);
-            analyser.getByteFrequencyData(dataArray);
-            drawBars(dataArray);
+    document.getElementById('playBtn').onclick = () => {
+        if(!isPwr) return;
+        if(!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            analyser.fftSize = 128;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
         }
+        audio.play();
+        render();
+    };
 
-        audio.volume = 0.5;
-    </script>
+    document.getElementById('stopBtn').onclick = () => { audio.pause(); audio.currentTime = 0; };
+    
+    document.getElementById('volUp').onclick = () => {
+        audio.volume = Math.min(1, audio.volume + 0.1);
+        volBar.style.width = (audio.volume * 100) + "%";
+    };
+
+    document.getElementById('volDown').onclick = () => {
+        audio.volume = Math.max(0, audio.volume - 0.1);
+        volBar.style.width = (audio.volume * 100) + "%";
+    };
+
+    function render() {
+        if(!isPwr || audio.paused) return;
+        requestAnimationFrame(render);
+        analyser.getByteFrequencyData(dataArray);
+        drawEq(dataArray);
+    }
+</script>
+
 </body>
 </html>
