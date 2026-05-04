@@ -19,35 +19,35 @@
             user-select: none;
         }
 
-        /* Drewniana obudowa */
+        /* Obudowa w kolorze ze zdjęcia */
         .case-outer {
             padding: 14px;
-            background: #7d5a36;
-            background-image: linear-gradient(135deg, #a67c52 0%, #5d4329 100%);
-            border-radius: 42px;
+            background: #c1884b;
+            background-image: linear-gradient(135deg, #d4a36a 0%, #a36d31 100%);
+            border-radius: 20px;
             box-shadow: 0 25px 60px rgba(0,0,0,0.9);
-            border: 1px solid #4a3521;
+            border: 1px solid #8e5f2a;
         }
 
-        /* Srebrny panel przedni */
+        /* Panel przedni - jaśniejszy, złocisto-srebrny */
         .radio-front {
             width: 820px;
             height: 480px;
-            background: linear-gradient(180deg, #d8d8d8 0%, #b5b5b5 45%, #999 100%);
-            border-radius: 32px;
+            background: linear-gradient(180deg, #e5c091 0%, #d9ae75 45%, #c1955b 100%);
+            border-radius: 15px;
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            border: 1px solid #ffffffaa;
-            box-shadow: inset 0 2px 5px rgba(255,255,255,0.8), inset 0 -2px 5px rgba(0,0,0,0.3);
+            border: 1px solid #f2d7b5;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,0.5);
         }
 
         .main-title {
             margin-top: 22px;
             font-family: 'DS-Digital', monospace;
             font-size: 44px;
-            color: #2a2a2a;
+            color: #4a3521;
             letter-spacing: 6px;
             font-weight: bold;
         }
@@ -57,14 +57,11 @@
             text-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
         }
 
-        /* Wyświetlacz LCD */
         .lcd-display {
             width: 250px;
             height: 110px;
             background: #000;
-            border: 3px solid #333;
-            border-top-color: #000;
-            border-bottom-color: #444;
+            border: 3px solid #5d4329;
             border-radius: 4px;
             margin-top: 12px;
             display: flex;
@@ -74,7 +71,6 @@
             font-family: 'DS-Digital', monospace;
             color: #1a0000;
             transition: color 0.3s;
-            box-shadow: inset 0 0 10px #000;
         }
 
         .powered .lcd-display { color: #e60012; text-shadow: 0 0 10px #e60012; }
@@ -82,21 +78,21 @@
         .lcd-time { font-size: 32px; font-weight: bold; }
         .lcd-date { font-size: 14px; margin-top: 4px; }
 
-        /* Głośniki Mesh */
-        .speaker-hole {
-            width: 190px; height: 190px;
-            background: radial-gradient(circle, #1a1a1a 0%, #0a0a0a 40%, #000 70%);
-            border-radius: 50%;
+        /* Głośniki typu Mesh */
+        .speaker-mesh {
+            width: 210px; height: 320px;
+            background: radial-gradient(circle, #222 1px, transparent 1.5px);
+            background-size: 4px 4px;
+            background-color: #111;
+            border-radius: 12px;
             position: absolute;
-            top: 135px;
-            border: 8px solid #bdbdbd;
-            box-shadow: inset 0 10px 25px rgba(0,0,0,0.8), 2px 5px 10px rgba(0,0,0,0.2);
+            top: 70px;
+            border: 2px solid #b38856;
+            box-shadow: inset 0 0 20px #000, 2px 2px 5px rgba(0,0,0,0.3);
         }
-        .spk-l { left: 45px; }
-        .spk-r { right: 45px; }
-        .powered .speaker-hole { border-color: #e60012; box-shadow: inset 0 0 30px #000, 0 0 15px rgba(230, 0, 18, 0.3); }
+        .spk-l { left: 30px; }
+        .spk-r { right: 30px; }
 
-        /* --- INTEGRACJA TWOICH PRZYCISKÓW I RAMKI --- */
         .controls-area {
             position: absolute;
             bottom: 30px;
@@ -106,19 +102,16 @@
             gap: 10px;
         }
 
-        /* Twoja ramka przycisków (.controls-main) */
         .btn-rack {
             display: flex;
             gap: 6px;
             padding: 10px;
             border-radius: 4px;
-            background: linear-gradient(180deg, #151515 0%, #050505 100%);
-            border: 1px solid #000;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 20px rgba(0, 0, 0, 0.5);
-            align-items: flex-start;
+            background: #0a0a0a;
+            border: 1px solid #1a1a1a;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1);
         }
 
-        /* Twoje przyciski (.btn-rect) */
         .btn-pro {
             width: 68px;
             height: 38px;
@@ -133,74 +126,33 @@
             transition: 0.2s;
         }
 
-        .btn-pro svg { width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
+        .btn-pro svg { width: 22px; height: 22px; fill: currentColor; pointer-events: none; }
 
-        /* Przyciski stacji - wykorzystują parametry Twoich przycisków */
-        .btn-station-pro {
-            font-family: 'DS-Digital';
-            font-size: 22px;
-            font-weight: bold;
-        }
+        .btn-station-pro { font-family: 'DS-Digital'; font-size: 22px; font-weight: bold; }
 
-        /* Kontener głośności - Twoja struktura */
-        .vol-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            width: 100px;
-            height: 38px;
-            justify-content: flex-start;
-        }
-
+        .vol-wrapper { display: flex; flex-direction: column; gap: 4px; width: 100px; }
         .vol-btns { display: flex; gap: 4px; height: 30px; }
 
         .btn-v {
-            flex: 1;
-            height: 100%;
-            border-radius: 2px;
-            border: 1px solid #222;
-            background: #111;
-            color: #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
+            flex: 1; height: 100%; border-radius: 2px; border: 1px solid #222;
+            background: #111; color: #444; display: flex; align-items: center; justify-content: center; cursor: pointer;
         }
         .btn-v svg { width: 18px; height: 18px; fill: currentColor; }
 
-        .vol-bar {
-            width: 100%;
-            height: 4px;
-            background: #000;
-            border-radius: 2px;
-            position: relative;
-            overflow: hidden;
-        }
+        .vol-bar { width: 100%; height: 4px; background: #000; border-radius: 2px; position: relative; overflow: hidden; }
+        .vol-fill { height: 100%; width: 50%; background: #e60012; opacity: 0; transition: width 0.1s; }
 
-        .vol-fill {
-            height: 100%;
-            width: 50%;
-            background: #e60012;
-            opacity: 0;
-            transition: width 0.1s;
-        }
-
-        /* Stany aktywne (Twoje parametry POWERED) */
-        .powered .btn-pro, .powered .btn-v { color: #777; border-color: #333; }
+        .powered .btn-pro, .powered .btn-v { color: #888; border-color: #333; }
         
         .powered .btn-pro.active, 
         .powered .btn-v.active,
         .powered .btn-pro:active {
             color: #e60012 !important;
             border-color: #e60012 !important;
-            box-shadow: 0 0 12px #e60012 !important;
+            box-shadow: 0 0 10px rgba(230, 0, 18, 0.5);
         }
 
-        .powered .vol-fill {
-            opacity: 1;
-            box-shadow: 0 0 5px #e60012;
-        }
-
+        .powered .vol-fill { opacity: 1; box-shadow: 0 0 5px #e60012; }
     </style>
 </head>
 <body>
@@ -215,11 +167,10 @@
             <div id="lcdDate" class="lcd-date">01.01.2026</div>
         </div>
 
-        <div class="speaker-hole spk-l"></div>
-        <div class="speaker-hole spk-r"></div>
+        <div class="speaker-mesh spk-l"></div>
+        <div class="speaker-mesh spk-r"></div>
 
         <div class="controls-area">
-            <!-- Górny rząd stacji w Twojej profesjonalnej ramce -->
             <div class="btn-rack">
                 <button class="btn-pro btn-station-pro" onclick="changeSt(1)">1</button>
                 <button class="btn-pro btn-station-pro" onclick="changeSt(2)">2</button>
@@ -228,12 +179,11 @@
                 <button class="btn-pro btn-station-pro" onclick="changeSt(5)">5</button>
             </div>
 
-            <!-- Główny panel sterowania (Twoja struktura i parametry) -->
             <div class="btn-rack">
                 <button id="pwr" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
                 <button id="play" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
                 <button id="stop" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-pro"><svg viewBox="0 0 24 24"><path id="mute-icon" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                <button id="mute" class="btn-pro"><svg viewBox="0 0 24 24"><path id="mute-icon" d="M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02zM14,3.23v2.06c2.89.86,5,3.54,5,6.71s-2.11,5.85-5,6.71v2.06c4.01-.91,7-4.49,7-8.77s-2.99-7.86-7-8.77z"/></svg></button>
                 
                 <div class="vol-wrapper">
                     <div class="vol-btns">
@@ -256,17 +206,17 @@
     const vFill = document.getElementById('vFill');
     const lcdStation = document.getElementById('lcdStation');
     const lcdTime = document.getElementById('lcdTime');
-    const lcdDate = document.getElementById('lcdDate');
 
-    const MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
-    const MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+    // Poprawione parametry SVG dla MUTE
+    const MUTE_OFF = "M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02zM14,3.23v2.06c2.89.86,5,3.54,5,6.71s-2.11,5.85-5,6.71v2.06c4.01-.91,7-4.49,7-8.77s-2.99-7.86-7-8.77z";
+    const MUTE_ON = "M16.5,12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45,2.45c.03-.2.05-.41.05-.63zm2.5,0c0,.94-.2,1.82-.54,2.64l1.51,1.51C20.63,14.91,21,13.5,21,12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86,5,3.54,5,6.71zM4.27,3L3,4.27,7.73,9H3v6h4l5,5v-6.73l4.25,4.25c-.67.52-1.42.93-2.25,1.18v2.06c1.38-.31,2.63-.95,3.69-1.81L19.73,21 21,19.73l-9-9L4.27,3zM12,4L9.91,6.09,12,8.18V4z";
 
     let isPwr = false;
 
     function clock() {
         const d = new Date();
         lcdTime.textContent = d.toLocaleTimeString('pl-PL', { hour12: false });
-        lcdDate.textContent = d.toLocaleDateString('pl-PL');
+        document.getElementById('lcdDate').textContent = d.toLocaleDateString('pl-PL');
     }
     setInterval(clock, 1000); clock();
 
@@ -274,7 +224,7 @@
         el.classList.add('active');
         setTimeout(() => { 
             if(!(el.id === 'play' && !audio.paused) && !(el.id === 'mute' && audio.muted)) el.classList.remove('active'); 
-        }, 400);
+        }, 300);
     };
 
     document.getElementById('pwr').onclick = function() {
@@ -286,10 +236,9 @@
             document.getElementById('play').classList.remove('active');
             document.getElementById('mute').classList.remove('active');
             lcdStation.textContent = "";
-            audio.muted = false;
             muteIcon.setAttribute('d', MUTE_OFF);
         } else {
-            lcdStation.textContent = "MUZYCZNE RADIO";
+            lcdStation.textContent = "SYSTEM READY";
         }
     };
 
@@ -305,6 +254,7 @@
         audio.currentTime = 0;
         document.getElementById('play').classList.remove('active');
         flash(this);
+        // Głośność zostaje bez zmian (nie zeruje paska)
     };
 
     document.getElementById('mute').onclick = function() {
@@ -331,8 +281,7 @@
     function changeSt(n) {
         if(!isPwr) return;
         lcdStation.textContent = "STACJA " + n;
-        const btn = event.currentTarget;
-        flash(btn);
+        flash(event.currentTarget);
     }
 
     audio.volume = 0.5;
