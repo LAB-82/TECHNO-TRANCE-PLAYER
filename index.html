@@ -3,214 +3,248 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHOSCYON 2 RMF EDITION</title>
+    <title>RMF AVENGER EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@300;500;700&display=swap');
 
         :root {
-            --ph-bg: #d8d8d8;
-            --ph-panel-border: #9b9b9b;
-            --ph-orange: #f39200;
-            --ph-display-bg: #2a2a2a;
-            --ph-display-text: #00ffcc;
-            --ph-text: #333;
-            --ph-shadow: inset 1px 1px 2px #fff, inset -1px -1px 2px #000;
+            --av-bg: #1c1e22;
+            --av-panel: #2a2d33;
+            --av-accent: #00aaff; /* Avenger Blue */
+            --av-border: #111;
+            --av-text: #aab;
+            --av-display: #0f1113;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; background: #1a1a1a; 
-            font-family: 'Chakra Petch', sans-serif;
-            display: flex; align-items: center; justify-content: center;
+            height: 100vh; width: 100vw; 
+            background: #000; color: var(--av-text); 
+            font-family: 'Oxanium', sans-serif;
+            display: flex; flex-direction: column;
+            padding: 10px; overflow: hidden; 
         }
 
-        /* GŁÓWNA OBUDOWA */
-        .phoscyon-case {
-            width: 900px; height: 550px;
-            background: var(--ph-bg);
-            border-radius: 4px; border: 2px solid #555;
-            padding: 10px; display: flex; flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        /* NAGŁÓWEK - SYSTEM BAR */
+        header { 
+            height: 45px; background: linear-gradient(to bottom, #3a3e46, #25282e);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; border: 1px solid var(--av-border);
+            border-radius: 5px 5px 0 0; position: relative;
+        }
+        .logo { color: #fff; font-weight: 700; letter-spacing: 1px; font-size: 14px; }
+        .logo span { color: var(--av-accent); }
+        .sys-info { font-size: 11px; color: #667; text-transform: uppercase; }
+
+        /* GŁÓWNY OBSZAR ROBOCZY */
+        .app-content { 
+            display: flex; flex: 1; gap: 5px; padding: 10px; 
+            background: var(--av-bg); border: 1px solid var(--av-border);
+            border-top: none;
         }
 
-        /* GÓRNY PANEL (SCENE / SYNTHESIS) */
-        header {
-            display: flex; height: 100px; border-bottom: 2px solid var(--ph-panel-border);
-            padding-bottom: 10px; margin-bottom: 10px;
+        /* LEWA STRONA - SIATKA STACJI (OSCILLATOR / BROWSER) */
+        .grid-container { 
+            flex: 1.5; display: flex; flex-direction: column; gap: 10px;
+            background: var(--av-panel); padding: 15px; border-radius: 4px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .header-section { flex: 1; padding: 5px; border-right: 1px solid var(--ph-panel-border); }
-        .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #666; margin-bottom: 5px; text-align: center; border-bottom: 1px solid #bbb; }
+        .section-label { font-size: 10px; font-weight: 700; color: var(--av-accent); text-transform: uppercase; border-bottom: 1px solid #3d424b; padding-bottom: 5px; margin-bottom: 10px; }
+
+        .grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; 
+        }
+
+        .tile {
+            background: linear-gradient(135deg, #32363d, #22252a);
+            border: 1px solid #111; border-radius: 3px;
+            height: 70px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer; position: relative; transition: 0.2s;
+        }
+        .tile::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(255,255,255,0.05);
+        }
+        .tile:hover { border-color: #444; }
         
-        .lcd-small {
-            background: #bbb; height: 35px; border-radius: 2px;
-            border: 1px solid #888; display: flex; align-items: center; padding: 0 10px;
-            font-size: 13px; font-weight: 700; color: #222;
+        .tile .st-code { font-size: 9px; color: #556; margin-bottom: 4px; font-weight: 700; }
+        .tile .st-name { font-size: 11px; font-weight: 500; color: #eee; text-align: center; padding: 0 5px; }
+
+        .tile.active { 
+            border-color: var(--av-accent); 
+            box-shadow: inset 0 0 15px rgba(0, 170, 255, 0.15);
+        }
+        .tile.active .st-code { color: var(--av-accent); }
+
+        /* PRAWA STRONA - PANEL KONTROLNY (AMP / FILTER / MASTER) */
+        .sidebar { 
+            flex: 0.5; display: flex; flex-direction: column; gap: 15px;
+            background: #23262b; padding: 15px; border-radius: 4px; border: 1px solid #111;
         }
 
-        /* ŚRODKOWY PANEL (CONTROLS) */
-        .controls-row {
-            display: flex; gap: 10px; flex: 1;
+        /* WYŚWIETLACZ CENTRALNY */
+        .av-display {
+            background: var(--av-display); height: 120px; border-radius: 3px;
+            border: 1px solid #000; padding: 15px; display: flex; flex-direction: column;
+            justify-content: center; position: relative; overflow: hidden;
         }
-        .side-panel { width: 220px; border: 1px solid var(--ph-panel-border); padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
-        
-        /* KLAWIATURA I KROKI (STACJE) */
-        .sequencer-area {
-            flex: 1; display: flex; flex-direction: column; gap: 10px;
+        .av-display::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, transparent 0, rgba(0,170,255,0.03) 1px, transparent 2px);
+        }
+        .av-display .meta { font-size: 10px; color: var(--av-accent); text-transform: uppercase; letter-spacing: 1px; }
+        .av-display .title { font-size: 18px; color: #fff; margin-top: 5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* KONTROLKI TRANSPORTU */
+        .transport { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
+        .av-btn {
+            width: 40px; height: 40px; background: #32363d; border: 1px solid #111;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .av-btn svg { width: 18px; fill: #aab; }
+        .av-btn:active { background: #1a1c21; transform: translateY(1px); }
+        .av-btn.play-btn { width: 50px; height: 50px; border-color: var(--av-accent); }
+        .av-btn.play-btn svg { fill: var(--av-accent); width: 22px; }
+
+        /* MASTER VOLUME KNOB */
+        .knob-zone { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .knob-outer {
+            width: 90px; height: 90px; background: #111; border-radius: 50%;
+            position: relative; border: 3px solid #333; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+        .knob-inner {
+            width: 70px; height: 70px; background: linear-gradient(135deg, #444, #222);
+            border-radius: 50%; position: relative; transform: rotate(-120deg);
+        }
+        .knob-dot {
+            position: absolute; top: 8px; left: 50%; width: 6px; height: 6px;
+            background: var(--av-accent); border-radius: 50%; margin-left: -3px;
+            box-shadow: 0 0 8px var(--av-accent);
+        }
+        .vol-label { font-size: 9px; font-weight: 700; text-transform: uppercase; color: #667; }
+
+        input[type="range"] { 
+            width: 100%; accent-color: var(--av-accent); height: 4px; background: #111; 
+            border-radius: 2px; cursor: pointer; 
         }
 
-        /* GRID STACJI JAKO KLAWISZE */
-        .station-keys {
-            display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;
+        @media (max-width: 900px) {
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(2, 1fr); }
+            .sidebar { flex: none; }
         }
-        .step-btn {
-            height: 40px; background: #eee; border: 1px solid #999; border-radius: 2px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-size: 9px; cursor: pointer; position: relative; box-shadow: var(--ph-shadow);
-        }
-        .step-btn .led { width: 6px; height: 6px; background: #444; border-radius: 50%; margin-bottom: 4px; }
-        .step-btn.active { background: #fff; }
-        .step-btn.active .led { background: #ff4400; box-shadow: 0 0 5px #ff4400; }
-
-        .keyboard {
-            display: flex; gap: 2px; margin-top: auto; padding: 10px 0;
-        }
-        .key-white { height: 80px; flex: 1; background: #fdfdfd; border: 1px solid #888; border-radius: 0 0 3px 3px; cursor: pointer; box-shadow: 0 2px 2px rgba(0,0,0,0.2); }
-        .key-white.active { background: var(--ph-orange); }
-
-        /* PANEL BOCZNY (TRANSPORT & VOLUME) */
-        .master-lcd {
-            background: var(--ph-display-bg); color: var(--ph-display-text);
-            height: 80px; padding: 10px; border-radius: 4px; border: 3px solid #444;
-            display: flex; flex-direction: column; justify-content: center; text-align: center;
-        }
-        .master-lcd span { font-size: 10px; color: #888; text-transform: uppercase; }
-        .master-lcd h2 { font-size: 18px; letter-spacing: 1px; }
-
-        .btn-orange {
-            background: var(--ph-orange); color: white; border: none; padding: 10px;
-            border-radius: 3px; font-weight: 700; cursor: pointer; text-transform: uppercase;
-            box-shadow: 0 3px 0 #b36b00; margin-top: 10px;
-        }
-        .btn-orange:active { transform: translateY(2px); box-shadow: 0 1px 0 #b36b00; }
-
-        .vol-knob {
-            width: 80px; height: 80px; background: #333; border-radius: 50%;
-            margin: 20px auto; border: 5px solid #444; position: relative;
-        }
-        .knob-marker {
-            position: absolute; top: 10px; left: 50%; width: 4px; height: 15px;
-            background: var(--ph-orange); margin-left: -2px; transform-origin: bottom center;
-        }
-
-        input[type="range"] { width: 100%; accent-color: var(--ph-orange); }
-
     </style>
 </head>
 <body>
 
-<div class="phoscyon-case">
-    <header>
-        <div class="header-section">
-            <div class="section-label">Scene / Preset</div>
-            <div class="lcd-small" id="cur-preset">RMF_COLLECTION_01</div>
-        </div>
-        <div class="header-section" style="border:none; flex: 1.5; display: flex; align-items: center; justify-content: flex-end;">
-            <div style="text-align: right;">
-                <h1 style="font-size: 24px; color: #444; font-weight: 900;">PHOSCYON <span style="color: var(--ph-orange);">2</span></h1>
-                <p style="font-size: 10px; letter-spacing: 3px; color: #666;">ACID LINE RECEIVER</p>
-            </div>
-        </div>
-    </header>
+<header>
+    <div class="logo">VENGEANCE <span>AVENGER</span> // RMF</div>
+    <div class="sys-info" id="clock">00:00:00</div>
+</header>
 
-    <div class="controls-row">
-        <div class="sequencer-area">
-            <div class="section-label">Step Sequencer (Stations)</div>
-            <div class="station-keys" id="grid"></div>
-            
-            <div class="section-label" style="margin-top: 20px;">Manual Trigger</div>
-            <div class="keyboard" id="keyboard"></div>
+<div class="app-content">
+    <main class="grid-container">
+        <div class="section-label">OSCILLATOR 1 / ROUTING BROWSER</div>
+        <div class="grid" id="station-grid">
+            <!-- Stacje generowane przez JS -->
+        </div>
+    </main>
+
+    <aside class="sidebar">
+        <div class="section-label">MASTER INFO</div>
+        <div class="av-display">
+            <div class="meta" id="st-code">SRC: IDLE</div>
+            <div class="title" id="st-name">SELECT MODULE</div>
         </div>
 
-        <aside class="side-panel">
-            <div class="master-lcd">
-                <span>Output Signal</span>
-                <h2 id="st-display">WAITING...</h2>
+        <div class="transport">
+            <div class="av-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+            <div class="av-btn play-btn" onclick="toggle()">
+                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
             </div>
+            <div class="av-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
+        </div>
 
-            <div style="text-align: center;">
-                <div class="vol-knob"><div class="knob-marker" id="knob"></div></div>
-                <input type="range" min="0" max="100" value="70" oninput="setV(this.value)">
-                <div class="section-label" style="border:none; margin-top:5px;">Master Volume</div>
+        <div class="knob-zone">
+            <div class="vol-label">Output Level</div>
+            <div class="knob-outer">
+                <div class="knob-inner" id="knob-visual">
+                    <div class="knob-dot"></div>
+                </div>
             </div>
-
-            <button class="btn-orange" onclick="toggle()" id="play-btn">Start / Stop</button>
-            <div style="display: flex; gap: 5px;">
-                <button class="btn-orange" style="flex:1; background: #666; box-shadow: 0 3px 0 #444;" onclick="skip(-1)">Prev</button>
-                <button class="btn-orange" style="flex:1; background: #666; box-shadow: 0 3px 0 #444;" onclick="skip(1)">Next</button>
-            </div>
-        </aside>
-    </div>
+            <input type="range" min="0" max="100" value="75" oninput="setV(this.value)">
+        </div>
+    </aside>
 </div>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'MAX', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80S', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90S', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '00S', u: 'rmf_2000' },
-        { n: 'RMF CHILL', s: 'CHL', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'CLA', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'DNC', u: 'rmf_dance' }
+        { n: 'RMF FM', s: 'OSC1', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'OSC2', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: 'OSC3', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: 'OSC4', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: 'OSC5', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'OSC6', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'OSC7', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'OSC8', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'OSC9', u: 'rmf_gold' },
+        { n: 'RMF PARTY', s: 'OSC10', u: 'rmf_party' },
+        { n: 'RMF ROCK', s: 'OSC11', u: 'rmf_rock' },
+        { n: 'RMF LOVE', s: 'OSC12', u: 'rmf_love' }
     ];
 
-    const player = document.getElementById('player'), grid = document.getElementById('grid'), kbd = document.getElementById('keyboard');
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
     let current = -1;
 
-    // Renderowanie przycisków kroków (Step Buttons)
+    // Generowanie kafelków
     STATIONS.forEach((s, i) => {
-        const btn = document.createElement('div');
-        btn.className = 'step-btn';
-        btn.innerHTML = `<div class="led"></div>${i+1}`;
-        btn.onclick = () => play(i);
-        grid.appendChild(btn);
-
-        const key = document.createElement('div');
-        key.className = 'key-white';
-        key.onclick = () => play(i);
-        kbd.appendChild(key);
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.innerHTML = `<div class="st-code">${s.s}</div><div class="st-name">${s.n}</div>`;
+        div.onclick = () => play(i);
+        grid.appendChild(div);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.step-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        document.querySelectorAll('.key-white').forEach((k, idx) => k.classList.toggle('active', idx === i));
-        
-        document.getElementById('st-display').textContent = STATIONS[i].n;
-        document.getElementById('cur-preset').textContent = "PRST: " + STATIONS[i].u.toUpperCase();
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('st-name').textContent = STATIONS[i].n;
+        document.getElementById('st-code').textContent = "SRC: " + STATIONS[i].s;
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        
         player.play();
-        document.getElementById('play-btn').textContent = "Stop Engine";
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(player.paused) { player.play(); document.getElementById('play-btn').textContent = "Stop Engine"; }
-        else { player.pause(); document.getElementById('play-btn').textContent = "Start Engine"; }
+        if(current === -1) { play(0); return; }
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
     
     function setV(v) { 
         player.volume = v / 100; 
-        document.getElementById('knob').style.transform = `rotate(${(v * 2.4) - 120}deg)`;
+        const deg = (v * 2.4) - 120; // Od -120 do 120 stopni
+        document.getElementById('knob-visual').style.transform = `rotate(${deg}deg)`;
     }
 
-    setV(70);
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+    setV(75);
 </script>
 </body>
 </html>
