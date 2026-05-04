@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEKTOR RMF - FULL GRID EDITION</title>
+    <title>SEKTOR RMF - OSC B EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
 
         :root {
             --s-bg: #13161a;
             --s-panel: #20252b;
-            --s-green: #24ff24;
+            --s-yellow: #f0ff00; /* Żółty Neon */
             --s-blue: #3a86ff;
             --s-border: #0a0c0e;
             --s-text: #9097a0;
@@ -24,7 +24,6 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* OBUDOWA VST - STAŁY ROZMIAR */
         .sektor-vst {
             width: 1000px; height: 600px;
             background: var(--s-bg);
@@ -34,129 +33,167 @@
             position: relative;
         }
 
-        /* PRESET BROWSER BAR */
+        /* TOP DISPLAY - OSC B STYLE */
         .top-nav {
-            height: 60px; background: #1a1e24;
+            height: 65px; background: #1a1e24;
             display: flex; align-items: center; justify-content: center;
-            border-bottom: 1px solid var(--s-border);
+            border-bottom: 2px solid var(--s-border);
             padding: 0 20px;
         }
 
         .patch-display {
-            width: 500px; height: 34px; background: #0b0d0f;
-            border: 1px solid #333; border-radius: 3px;
+            width: 520px; height: 40px; background: #0b0d0f;
+            border: 1px solid #3d444d; border-radius: 2px;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 2px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
+
         .p-btn { 
-            width: 40px; height: 28px; background: #262b32; 
-            color: #fff; font-size: 10px; border: 1px solid #111;
+            width: 45px; height: 100%; background: #262b32; 
+            color: #fff; font-size: 10px; border: none;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; text-transform: uppercase;
+            cursor: pointer; text-transform: uppercase; font-weight: 700;
         }
+        .p-btn:hover { background: #2f353d; color: var(--s-yellow); }
+
         .p-name { 
-            flex: 1; text-align: center; color: var(--s-green); 
-            font-weight: 700; letter-spacing: 1px; font-size: 14px;
-            text-shadow: 0 0 8px rgba(36, 255, 36, 0.4);
+            flex: 1; text-align: center; color: var(--s-yellow); 
+            font-weight: 700; letter-spacing: 2px; font-size: 16px;
+            text-shadow: 0 0 12px rgba(240, 255, 0, 0.6);
         }
 
         .main-frame { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
 
-        /* BROWSER SECTION - WYPEŁNIANIE KAFELKAMI */
+        /* BROWSER SECTION */
         .browser-section {
             flex: 1.6; background: var(--s-panel);
             border-radius: 3px; border: 1px solid var(--s-border);
-            padding: 10px; display: flex; flex-direction: column;
+            padding: 12px; display: flex; flex-direction: column;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.2);
         }
-        .section-hdr { font-size: 11px; color: #fff; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
-        .section-hdr span { color: var(--s-blue); }
+        
+        .section-hdr { font-size: 11px; color: #fff; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+        .section-hdr span { color: var(--s-yellow); }
 
-        /* DYNAMICZNA SIATKA WYPEŁNIAJĄCA CAŁE POLE */
+        /* KAFELKI - MIĘKKIE PRZYCISKI INITIAL */
         .grid { 
-            flex: 1;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            align-content: stretch; /* Rozciąga rzędy by wypełnić wysokość */
+            flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; 
         }
 
         .tile {
-            flex: 1 1 calc(25% - 4px); /* Bazowo 4 kolumny, ale rosną */
+            flex: 1 1 calc(25% - 6px);
             min-width: 100px;
-            background: #1a1e23; border: 1px solid #111;
+            background: linear-gradient(to bottom, #2d333b, #1d2127);
+            border: 1px solid #111; border-radius: 3px;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 12px; color: var(--s-text);
-            transition: 0.1s;
-            text-align: center;
-            padding: 5px;
+            cursor: pointer; font-size: 13px; color: var(--s-text);
+            transition: all 0.15s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+            font-weight: 500;
         }
-        .tile:hover { background: #23282e; color: #fff; }
+        .tile:hover { color: #fff; background: linear-gradient(to bottom, #343b44, #22272e); }
+        
+        /* ŻÓŁTE PODŚWIETLENIE NEONOWE */
         .tile.active { 
-            background: #2a3138; color: var(--s-green); 
-            border: 1px solid var(--s-green);
-            box-shadow: inset 0 0 10px rgba(36, 255, 36, 0.1);
+            background: linear-gradient(to bottom, #2a2f36, #1a1e23);
+            border-color: var(--s-yellow);
+            color: var(--s-yellow);
+            box-shadow: 0 0 15px rgba(240, 255, 0, 0.3), inset 0 0 8px rgba(240, 255, 0, 0.1);
+            text-shadow: 0 0 5px rgba(240, 255, 0, 0.5);
         }
 
-        /* PANEL STEROWANIA */
+        /* MASTER SECTION */
         .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 15px; }
-        .control-box { background: var(--s-panel); border: 1px solid var(--s-border); padding: 15px; flex: 1; display: flex; flex-direction: column; }
+        
+        .control-box { 
+            background: var(--s-panel); border: 1px solid var(--s-border); 
+            padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center;
+        }
 
         .play-btn {
-            width: 100%; height: 60px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
+            width: 100%; height: 55px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
             border: 1px solid #000; border-radius: 3px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 #000; margin-bottom: 20px;
+            box-shadow: 0 4px 0 #000; margin-bottom: 25px;
         }
-        .play-btn svg { width: 28px; fill: var(--s-blue); filter: drop-shadow(0 0 5px var(--s-blue)); }
+        .play-btn svg { width: 28px; fill: var(--s-yellow); filter: drop-shadow(0 0 8px var(--s-yellow)); }
 
-        .vol-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        /* VOL KNOB & SLIDER */
+        .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
         .knob-base {
-            width: 90px; height: 90px; background: #0a0c0e; border-radius: 50%;
-            margin-bottom: 15px; border: 4px solid #333; position: relative;
+            width: 100px; height: 100px; background: #0a0c0e; border-radius: 50%;
+            margin-bottom: 20px; border: 5px solid #111; position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from -135deg, var(--s-blue) 0%, #111 0%);
+            /* Synchronizacja z kółkiem - startuje od lewego dołu */
+            background: conic-gradient(from -135deg, var(--s-yellow) 0%, #111 0%);
+            transition: background 0.05s linear;
         }
-        .knob-center { position: absolute; inset: 12px; background: radial-gradient(circle, #444, #111); border-radius: 50%; }
+        .knob-center { 
+            position: absolute; inset: 15px; 
+            background: radial-gradient(circle, #3d444d, #111); 
+            border-radius: 50%; border: 1px solid #000;
+            cursor: pointer;
+        }
+        .knob-center:active { background: #222; }
 
-        .vol-slider { width: 100%; appearance: none; background: #111; height: 6px; border-radius: 10px; accent-color: var(--s-blue); }
+        /* SUWAK INITIAL STYLE */
+        .vol-slider { 
+            width: 100%; appearance: none; background: #0a0c0e; height: 6px; 
+            border-radius: 10px; border: 1px solid #333; outline: none;
+        }
+        .vol-slider::-webkit-slider-thumb {
+            appearance: none; width: 14px; height: 14px; background: #fff;
+            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-yellow);
+            box-shadow: 0 0 10px var(--s-yellow);
+        }
+
+        .footer-logo { flex: 0.25; background: #0b0d0f; display: flex; justify-content: center; align-items: center; border: 1px solid #000; }
+        .footer-logo span { font-size: 26px; color: #1a1e24; font-weight: 700; letter-spacing: 5px; }
 
     </style>
 </head>
 <body>
 
 <div class="sektor-vst">
+    <!-- TOP NAV - OSC B STYLE -->
     <div class="top-nav">
         <div class="patch-display">
-            <div class="p-btn" onclick="skip(-1)">PREV</div>
-            <div class="p-name" id="patch-name">INITIAL AUDIO // RMF FM</div>
-            <div class="p-btn" onclick="skip(1)">NEXT</div>
+            <button class="p-btn" onclick="skip(-1)">Prev</button>
+            <div class="p-name" id="patch-name">OSC B // SELECT STATION</div>
+            <button class="p-btn" onclick="skip(1)">Next</button>
         </div>
     </div>
 
     <div class="main-frame">
+        <!-- STATION BROWSER -->
         <div class="browser-section">
-            <div class="section-hdr"><span>OSC</span> BROADCAST BROWSER</div>
+            <div class="section-hdr"><span>INITIAL</span> STATION SELECTOR</div>
             <div class="grid" id="grid"></div>
         </div>
 
+        <!-- MASTER CONTROL -->
         <div class="master-section">
             <div class="control-box">
-                <div class="section-hdr"><span>MASTER</span> CONTROL</div>
+                <div class="section-hdr"><span>OUTPUT</span> GAIN</div>
                 <button class="play-btn" onclick="toggle()">
                     <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </button>
+                
                 <div class="vol-container">
                     <div class="knob-base">
                         <div class="knob-turner" id="v-knob"></div>
-                        <div class="knob-center"></div>
+                        <div class="knob-center" title="Reset to 50%" onclick="resetVol()"></div>
                     </div>
-                    <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="setV(this.value)">
+                    <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="70" oninput="setV(this.value)">
                 </div>
             </div>
-            <div class="control-box" style="flex: 0.3; background: #0b0d0f; justify-content: center; align-items: center;">
-                <div style="font-size: 24px; color: #222; font-weight: 700; letter-spacing: 3px;">SEKTOR</div>
+            
+            <div class="footer-logo">
+                <span>SEKTOR</span>
             </div>
         </div>
     </div>
@@ -176,9 +213,15 @@
         { n: 'RMF HIP HOP', u: 'rmf_hip_hop' }, { n: 'RMF RELAX', u: 'rmf_relax' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('grid');
+    const player = document.getElementById('player'), 
+          ico = document.getElementById('p-ico'), 
+          grid = document.getElementById('grid'),
+          vKnob = document.getElementById('v-knob'),
+          vSlider = document.getElementById('v-slider');
+
     let current = -1;
 
+    // Generowanie kafelków
     STATIONS.forEach((s, i) => {
         const div = document.createElement('div');
         div.className = 'tile';
@@ -190,9 +233,11 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('patch-name').textContent = STATIONS[i].n.toUpperCase();
+        document.getElementById('patch-name').textContent = "OSC B // " + STATIONS[i].n.toUpperCase();
+        
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
@@ -208,11 +253,22 @@
         play(n);
     }
 
+    // Obsługa głośności i kółka
     function setV(v) {
         player.volume = v / 100;
-        document.getElementById('v-knob').style.background = `conic-gradient(from -135deg, var(--s-blue) ${v}%, #111 0%)`;
+        // Obliczanie wypełnienia kółka (conic-gradient)
+        // Sektor używa zakresu ok. 270 stopni (od lewego dołu do prawego dołu)
+        const fill = v * 0.75; // Skalowanie do wizualnego zakresu kółka
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-yellow) ${fill}%, #111 0%)`;
     }
 
+    // Reset do 50% po kliknięciu w środek
+    function resetVol() {
+        vSlider.value = 50;
+        setV(50);
+    }
+
+    // Inicjalizacja
     setV(70);
 </script>
 </body>
