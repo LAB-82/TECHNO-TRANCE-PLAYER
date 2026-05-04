@@ -3,227 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF HALOGEN FM</title>
+    <title>RMF PURE LOFI</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+JP:wght@300;500&display=swap');
 
         :root {
-            --h-bg: #0d0d12;
-            --h-panel: #14141c;
-            --h-green: #00ffaa;
-            --h-pink: #ff00ff;
-            --h-blue: #00d4ff;
-            --h-text: #808090;
+            --lofi-bg: #f4ece4;
+            --lofi-panel: #fcf9f6;
+            --lofi-accent: #e59a7d;
+            --lofi-text: #6d5f5a;
+            --lofi-border: #e8ddd3;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--h-bg); color: #fff; 
+            background: var(--lofi-bg); color: var(--lofi-text); 
             font-family: 'Outfit', sans-serif;
             display: flex; flex-direction: column;
-            padding: 10px; overflow: hidden; 
+            padding: 12px; overflow: hidden; 
         }
 
-        /* GÓRNY PASEK - STYL DAW/VST */
+        /* HEADER - ARTURIA STYLE */
         header { 
-            height: 40px; background: #1a1a24; border-radius: 4px;
+            height: 45px; background: #1a1a1a; color: #fff;
             display: flex; align-items: center; justify-content: space-between;
-            padding: 0 15px; margin-bottom: 10px; border: 1px solid #2a2a35;
+            padding: 0 15px; border-radius: 4px 4px 0 0; font-size: 12px;
         }
-        .preset-name { font-size: 11px; letter-spacing: 2px; color: #fff; font-weight: 500; text-transform: uppercase; }
-        .top-icons { display: flex; gap: 15px; }
-        .top-icons svg { width: 14px; height: 14px; fill: var(--h-text); cursor: pointer; }
-        .top-icons svg:hover { fill: #fff; }
+        .brand { font-weight: 700; letter-spacing: 1px; }
+        .preset-display { background: #2a2a2a; padding: 4px 20px; border-radius: 2px; color: #aaa; }
 
-        .main-layout { display: flex; flex: 1; gap: 10px; position: relative; }
-
-        /* SEKCJE OPERATORÓW (STACJE) */
-        .operator-side { 
-            flex: 1; display: flex; flex-direction: column; gap: 10px; 
-            background: rgba(20, 20, 28, 0.5); padding: 15px; border-radius: 8px;
-        }
-        .op-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-        .op-1 { color: var(--h-green); }
-        .op-2 { color: var(--h-pink); }
-
-        /* SIATKA STACJI - ADAPTACJA DO 5x3 */
-        .grid-half { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; flex: 1;
+        /* MAIN DASHBOARD */
+        .dashboard {
+            flex: 1; background: var(--lofi-panel);
+            border: 1px solid var(--lofi-border);
+            display: flex; flex-direction: column; padding: 20px; gap: 15px;
         }
 
-        .tile {
-            background: #1a1a24; border: 1px solid #2a2a35;
-            border-radius: 4px; padding: 10px; cursor: pointer;
-            transition: 0.2s; position: relative; overflow: hidden;
+        /* TOP MODULES */
+        .top-row { display: flex; gap: 15px; height: 180px; }
+        .module { 
+            flex: 1; border: 1px solid var(--lofi-border); border-radius: 6px; 
+            padding: 12px; position: relative;
         }
-        .tile:hover { background: #222230; border-color: #444; }
+        .mod-title { font-size: 10px; font-weight: 700; text-transform: uppercase; color: var(--lofi-accent); margin-bottom: 10px; }
         
-        .tile.active-g { border-color: var(--h-green); box-shadow: inset 0 0 10px rgba(0, 255, 170, 0.1); }
-        .tile.active-p { border-color: var(--h-pink); box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.1); }
-
-        .tile .t-num { font-size: 8px; color: var(--h-text); }
-        .tile .t-name { font-size: 11px; font-weight: 500; margin-top: 4px; }
-
-        /* CENTRUM - WIZUALIZER OKRĄG */
-        .center-core {
-            width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        /* VOLUME KNOB - "AMOUNT" */
+        .vol-module { flex: 0.7; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .knob-outer {
+            width: 100px; height: 100px; background: #fff; border-radius: 50%;
+            border: 1px solid var(--lofi-border); position: relative; cursor: ns-resize;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .visual-circle {
-            width: 220px; height: 220px; border-radius: 50%;
-            border: 2px solid var(--h-pink);
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.2), inset 0 0 30px rgba(255, 0, 255, 0.1);
-            display: flex; align-items: center; justify-content: center;
-            position: relative; transition: 0.3s;
-        }
-        .visual-circle.playing { animation: pulse 1.5s infinite; }
-        @keyframes pulse {
-            0% { transform: scale(1); border-color: var(--h-pink); box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); }
-            50% { transform: scale(1.02); border-color: var(--h-green); box-shadow: 0 0 40px rgba(0, 255, 170, 0.3); }
-            100% { transform: scale(1); border-color: var(--h-pink); box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); }
-        }
-        .core-text { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 300; letter-spacing: 4px; color: #fff; }
-
-        /* DOLNY PANEL STEROWANIA */
-        footer {
-            height: 100px; background: #14141c; border-radius: 12px 12px 0 0;
-            margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 40px;
-            border: 1px solid #2a2a35; border-bottom: none;
+        .knob-line {
+            position: absolute; top: 10px; left: 50%; width: 2px; height: 15px;
+            background: var(--lofi-accent); transform-origin: bottom;
         }
 
-        .knob-group { text-align: center; }
-        .knob-label { font-size: 9px; text-transform: uppercase; color: var(--h-text); margin-bottom: 8px; letter-spacing: 1px; }
-        
-        .knob {
-            width: 45px; height: 45px; background: #0d0d12; border-radius: 50%;
-            border: 2px solid #2a2a35; position: relative; cursor: ns-resize;
-            display: flex; align-items: center; justify-content: center;
+        /* KEYBOARD SELECTOR (15 STATIONS) */
+        .keyboard-container {
+            margin-top: auto; display: flex; flex-direction: column; align-items: center;
         }
-        .knob-indicator {
-            position: absolute; top: 5px; width: 2px; height: 8px;
-            background: var(--h-blue); border-radius: 1px;
-            transform-origin: center 17px;
+        .keys { display: flex; gap: 6px; }
+        .key {
+            width: 50px; height: 90px; background: #fff;
+            border: 1px solid var(--lofi-border); border-radius: 0 0 4px 4px;
+            cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: flex-end;
+            padding-bottom: 10px; transition: 0.2s;
         }
-        .knob-val { font-size: 10px; color: #fff; font-weight: 700; margin-top: 5px; display: block; }
+        .key:hover { background: #fdfdfd; transform: translateY(2px); }
+        .key.active { border-top: 4px solid var(--lofi-accent); background: #fffdfb; }
+        .key .k-label { font-size: 8px; font-weight: 700; color: #ccc; }
+        .key .k-jap { font-family: 'Noto Sans JP', sans-serif; font-size: 10px; margin-top: 5px; color: var(--lofi-text); }
 
-        @media (max-width: 900px) {
-            .center-core { display: none; }
-            .main-layout { flex-direction: column; }
-            footer { gap: 15px; }
+        /* WAVE VISUALIZER STYLE */
+        .wave-svg { width: 100%; height: 40px; fill: none; stroke: var(--lofi-accent); stroke-width: 1; opacity: 0.5; }
+
+        /* CONTROLS */
+        .main-controls { display: flex; gap: 20px; align-items: center; margin-bottom: 15px; }
+        .btn-circle {
+            width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--lofi-border);
+            display: flex; align-items: center; justify-content: center; cursor: pointer; background: #fff;
+        }
+        .btn-circle svg { width: 18px; fill: var(--lofi-text); }
+
+        @media (max-width: 800px) {
+            .top-row { flex-direction: column; height: auto; }
+            .keys { flex-wrap: wrap; justify-content: center; }
+            .key { width: 45px; height: 70px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="top-icons">
-        <svg viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/></svg>
-        <span style="font-size: 10px; color: var(--h-text);">HALOGEN FM V2</span>
-    </div>
-    <div class="preset-name" id="current-station">DUB STATION RMF</div>
-    <div class="top-icons">
-        <svg onclick="toggle()" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-        <svg onclick="skip(1)" viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-    </div>
+    <div class="brand">PURE LOFI <span>v1.0.4</span></div>
+    <div class="preset-display" id="station-name">GOLDEN AGE RMF</div>
+    <div style="font-size: 10px; opacity: 0.6;">ADVANCED</div>
 </header>
 
-<div class="main-layout">
-    <!-- OPERATOR 1 (Zielony) -->
-    <div class="operator-side">
-        <div class="op-title op-1">OPR 1 <span style="font-size: 10px; font-weight: 400; opacity: 0.5;">RADIO BANK A</span></div>
-        <div class="grid-half" id="grid-a"></div>
-    </div>
-
-    <!-- CENTRUM -->
-    <div class="center-core">
-        <div class="visual-circle" id="viz">
-            <div class="core-text">RMF</div>
+<div class="dashboard">
+    <div class="top-row">
+        <div class="module">
+            <div class="mod-title">realistic instrument</div>
+            <div style="font-size: 16px; font-weight: 600;" id="cur-info">Rhodes FM</div>
+            <div style="margin-top: 20px;">
+                <svg class="wave-svg" viewBox="0 0 100 20"><path d="M0 10 Q 25 0, 50 10 T 100 10" /></svg>
+            </div>
+            <div style="font-size: 9px; margin-top: 10px; opacity: 0.6;">DETERIORATE [ON]</div>
         </div>
-        <div id="timer" style="margin-top: 20px; font-family: monospace; color: var(--h-blue);">00:00:00</div>
+
+        <div class="module vol-module">
+            <div class="mod-title" style="margin-bottom: 5px;">lofi amount</div>
+            <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+                <div class="knob-line" id="knob-pointer"></div>
+            </div>
+            <div style="font-size: 12px; font-weight: 700; margin-top: 10px;" id="vol-txt">50%</div>
+        </div>
+
+        <div class="module">
+            <div class="mod-title">noise texture</div>
+            <div style="font-size: 16px; font-weight: 600;">Light Rain</div>
+            <div style="margin-top: 20px;">
+                <svg class="wave-svg" viewBox="0 0 100 20"><path d="M0 10 L 5 12 L 10 8 L 15 15 L 20 5 L 100 10" /></svg>
+            </div>
+            <div style="font-size: 9px; margin-top: 10px; opacity: 0.6;" id="timer">00:00:00</div>
+        </div>
     </div>
 
-    <!-- OPERATOR 2 (Różowy) -->
-    <div class="operator-side">
-        <div class="op-title op-2">OPR 2 <span style="font-size: 10px; font-weight: 400; opacity: 0.5;">RADIO BANK B</span></div>
-        <div class="grid-half" id="grid-b"></div>
+    <div class="keyboard-container">
+        <div class="main-controls">
+            <div class="btn-circle" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+            <div class="btn-circle" onclick="toggle()" style="width: 60px; border-radius: 30px;">
+                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            </div>
+            <div class="btn-circle" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
+        </div>
+
+        <div class="keys" id="station-keys"></div>
     </div>
 </div>
-
-<footer>
-    <div class="knob-group">
-        <div class="knob-label">Mix</div>
-        <div class="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-            <div class="knob-indicator" id="knob-pointer"></div>
-        </div>
-        <span class="knob-val" id="vol-txt">50%</span>
-    </div>
-    <div class="knob-group">
-        <div class="knob-label">Timbre</div>
-        <div class="knob"><div class="knob-indicator" style="transform: rotate(45deg)"></div></div>
-        <span class="knob-val">Poly</span>
-    </div>
-    <div class="knob-group">
-        <div class="knob-label">Mod</div>
-        <div class="knob"><div class="knob-indicator" style="transform: rotate(-30deg)"></div></div>
-        <span class="knob-val">Sync</span>
-    </div>
-    <div class="knob-group">
-        <div class="knob-label">FX</div>
-        <div class="knob"><div class="knob-indicator" style="transform: rotate(90deg)"></div></div>
-        <span class="knob-val">Reverb</span>
-    </div>
-</footer>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'P-Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', s: 'FM', j: 'ド' }, { n: 'RMF MAXXX', s: 'MAXXX', j: 'レ' },
+        { n: 'RMF 80s', s: '80s', j: 'ミ' }, { n: 'RMF 90s', s: '90s', j: 'ファ' },
+        { n: 'RMF 2000', s: '2000', j: 'ソ' }, { n: 'RMF CHILLOUT', s: 'CHILL', j: 'ラ' },
+        { n: 'RMF CLASSIC', s: 'CLASS', j: 'シ' }, { n: 'RMF DANCE', s: 'DANCE', j: 'ド' },
+        { n: 'RMF GOLD', s: 'GOLD', j: 'レ' }, { n: 'RMF LATINO', s: 'LATIN', j: 'ミ' },
+        { n: 'RMF LOVE', s: 'LOVE', j: 'ファ' }, { n: 'RMF PARTY', s: 'PARTY', j: 'ソ' },
+        { n: 'RMF POLSKI ROCK', s: 'P-ROC', j: 'ラ' }, { n: 'RMF ROCK', s: 'ROCK', j: 'シ' },
+        { n: 'RMF SMOOTH JAZZ', s: 'JAZZ', j: 'ド' }
     ];
 
-    const player = document.getElementById('player'), gridA = document.getElementById('grid-a'), gridB = document.getElementById('grid-b'), viz = document.getElementById('viz');
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), keysCont = document.getElementById('station-keys');
     let current = -1;
     let volume = 50;
 
     STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `<div class="t-num">STATION ${i+1}</div><div class="t-name">${s.s}</div>`;
-        t.onclick = () => play(i);
-        if(i < 8) gridA.appendChild(t); else gridB.appendChild(t);
+        const k = document.createElement('div');
+        k.className = 'key';
+        k.innerHTML = `<div class="k-label">${s.s}</div><div class="k-jap">${s.j}</div>`;
+        k.onclick = () => play(i);
+        keysCont.appendChild(k);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => {
-            t.classList.remove('active-g', 'active-p');
-            if(idx === i) t.classList.add(i < 8 ? 'active-g' : 'active-p');
-        });
-        document.getElementById('current-station').textContent = STATIONS[i].n;
+        document.querySelectorAll('.key').forEach((k, idx) => k.classList.toggle('active', idx === i));
+        document.getElementById('station-name').textContent = STATIONS[i].n.toUpperCase();
+        document.getElementById('cur-info').textContent = STATIONS[i].s + " Engine";
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        viz.classList.add('playing');
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(player.paused) { player.play(); viz.classList.add('playing'); }
-        else { player.pause(); viz.classList.remove('playing'); }
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
