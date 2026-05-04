@@ -3,180 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF AVENGER EDITION</title>
+    <title>RMF COLDFIRE EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@300;400;600&display=swap');
 
         :root {
-            --av-bg: #1c1e22;
-            --av-panel: #2a2d33;
-            --av-accent: #00aaff; /* Avenger Blue */
-            --av-border: #111;
-            --av-text: #aab;
-            --av-display: #0f1113;
+            --cf-bg: #e3e3e6;
+            --cf-panel: #f0f0f2;
+            --cf-cold: #2356ff;
+            --cf-fire: #ff3a2d;
+            --cf-text: #4a4a4e;
+            --cf-border: #d1d1d4;
+            --cf-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --cf-inner-shadow: inset 2px 2px 5px rgba(0,0,0,0.05), inset -2px -2px 5px #fff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: #000; color: var(--av-text); 
-            font-family: 'Oxanium', sans-serif;
+            background: var(--cf-bg); color: var(--cf-text); 
+            font-family: 'Segoe UI', sans-serif;
             display: flex; flex-direction: column;
-            padding: 10px; overflow: hidden; 
+            padding: 12px; overflow: hidden; 
         }
 
-        /* NAGŁÓWEK - SYSTEM BAR */
+        /* TOP BAR */
         header { 
-            height: 45px; background: linear-gradient(to bottom, #3a3e46, #25282e);
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 20px; border: 1px solid var(--av-border);
-            border-radius: 5px 5px 0 0; position: relative;
+            height: 40px; display: flex; justify-content: space-between; align-items: center;
+            padding: 0 20px; border-bottom: 1px solid var(--cf-border);
+            background: #f8f8f9; border-radius: 6px 6px 0 0;
         }
-        .logo { color: #fff; font-weight: 700; letter-spacing: 1px; font-size: 14px; }
-        .logo span { color: var(--av-accent); }
-        .sys-info { font-size: 11px; color: #667; text-transform: uppercase; }
+        .logo { font-weight: 300; font-size: 14px; letter-spacing: 1px; color: #888; }
+        .logo span { font-weight: 600; color: #444; }
+        .preset-display { 
+            background: #fff; border: 1px solid var(--cf-border); 
+            padding: 2px 20px; border-radius: 3px; font-size: 11px; color: #666;
+        }
 
-        /* GŁÓWNY OBSZAR ROBOCZY */
+        /* MAIN CONTENT */
         .app-content { 
-            display: flex; flex: 1; gap: 5px; padding: 10px; 
-            background: var(--av-bg); border: 1px solid var(--av-border);
-            border-top: none;
+            display: flex; flex: 1; gap: 10px; padding: 15px; 
+            background: var(--cf-panel); border: 1px solid var(--cf-border);
+            border-top: none; border-radius: 0 0 6px 6px;
         }
 
-        /* LEWA STRONA - SIATKA STACJI (OSCILLATOR / BROWSER) */
+        /* LEWY PANEL - STACJE (W STYLE MODUŁU A) */
         .grid-container { 
-            flex: 1.5; display: flex; flex-direction: column; gap: 10px;
-            background: var(--av-panel); padding: 15px; border-radius: 4px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            flex: 1.4; display: flex; flex-direction: column; 
+            background: #ebecf0; border-radius: 8px; border: 1px solid #ddd;
+            padding: 15px; box-shadow: var(--cf-shadow);
         }
-        .section-label { font-size: 10px; font-weight: 700; color: var(--av-accent); text-transform: uppercase; border-bottom: 1px solid #3d424b; padding-bottom: 5px; margin-bottom: 10px; }
+        .module-header { 
+            display: flex; align-items: center; gap: 8px; margin-bottom: 15px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase; color: #999;
+        }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--cf-cold); }
 
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; 
         }
 
         .tile {
-            background: linear-gradient(135deg, #32363d, #22252a);
-            border: 1px solid #111; border-radius: 3px;
-            height: 70px; display: flex; flex-direction: column;
+            background: #f0f1f4; border: 1px solid #e0e0e3; border-radius: 6px;
+            height: 80px; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.2s;
+            cursor: pointer; position: relative; transition: all 0.2s;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.03);
         }
-        .tile::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: rgba(255,255,255,0.05);
-        }
-        .tile:hover { border-color: #444; }
+        .tile:hover { background: #fff; border-color: #ccc; }
         
-        .tile .st-code { font-size: 9px; color: #556; margin-bottom: 4px; font-weight: 700; }
-        .tile .st-name { font-size: 11px; font-weight: 500; color: #eee; text-align: center; padding: 0 5px; }
+        .tile .st-label { font-size: 9px; color: #aaa; margin-bottom: 4px; font-weight: 700; }
+        .tile .st-name { font-size: 12px; font-weight: 600; color: #555; text-align: center; }
 
         .tile.active { 
-            border-color: var(--av-accent); 
-            box-shadow: inset 0 0 15px rgba(0, 170, 255, 0.15);
+            background: #fff; border-color: var(--cf-cold);
+            box-shadow: 0 0 10px rgba(35, 86, 255, 0.15);
         }
-        .tile.active .st-code { color: var(--av-accent); }
+        .tile.active .st-label { color: var(--cf-cold); }
 
-        /* PRAWA STRONA - PANEL KONTROLNY (AMP / FILTER / MASTER) */
+        /* PRAWY PANEL - MASTER (W STYLE MODUŁU CENTRALNEGO) */
         .sidebar { 
-            flex: 0.5; display: flex; flex-direction: column; gap: 15px;
-            background: #23262b; padding: 15px; border-radius: 4px; border: 1px solid #111;
+            flex: 0.6; display: flex; flex-direction: column; gap: 20px;
+            padding: 20px; background: #e6e7eb; border-radius: 8px; border: 1px solid #ddd;
         }
 
-        /* WYŚWIETLACZ CENTRALNY */
-        .av-display {
-            background: var(--av-display); height: 120px; border-radius: 3px;
-            border: 1px solid #000; padding: 15px; display: flex; flex-direction: column;
-            justify-content: center; position: relative; overflow: hidden;
+        /* WIZUALIZACJA CENTRALNA */
+        .cf-visual {
+            height: 140px; background: #fff; border-radius: 6px;
+            border: 1px solid #ddd; position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: var(--cf-inner-shadow);
         }
-        .av-display::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(0deg, transparent 0, rgba(0,170,255,0.03) 1px, transparent 2px);
+        /* Gradient "Cold" i "Fire" */
+        .cf-visual::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(35,86,255,0.1) 0%, rgba(255,58,45,0.1) 100%);
         }
-        .av-display .meta { font-size: 10px; color: var(--av-accent); text-transform: uppercase; letter-spacing: 1px; }
-        .av-display .title { font-size: 18px; color: #fff; margin-top: 5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .wave-text { position: relative; z-index: 1; text-align: center; }
+        .wave-text h2 { font-size: 20px; color: #333; font-weight: 600; }
+        .wave-text p { font-size: 10px; color: #999; text-transform: uppercase; letter-spacing: 2px; }
 
         /* KONTROLKI TRANSPORTU */
-        .transport { display: flex; justify-content: center; gap: 10px; margin: 10px 0; }
-        .av-btn {
-            width: 40px; height: 40px; background: #32363d; border: 1px solid #111;
+        .transport { display: flex; justify-content: center; gap: 15px; }
+        .cf-btn {
+            width: 44px; height: 44px; background: #f0f1f4; border: 1px solid #d1d1d4;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            cursor: pointer; box-shadow: 2px 2px 5px rgba(0,0,0,0.05), -2px -2px 5px #fff;
         }
-        .av-btn svg { width: 18px; fill: #aab; }
-        .av-btn:active { background: #1a1c21; transform: translateY(1px); }
-        .av-btn.play-btn { width: 50px; height: 50px; border-color: var(--av-accent); }
-        .av-btn.play-btn svg { fill: var(--av-accent); width: 22px; }
+        .cf-btn svg { width: 18px; fill: #666; }
+        .cf-btn:active { box-shadow: var(--cf-inner-shadow); }
+        .cf-btn.play-active { border-color: var(--cf-fire); }
+        .cf-btn.play-active svg { fill: var(--cf-fire); }
 
-        /* MASTER VOLUME KNOB */
-        .knob-zone { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        .knob-outer {
-            width: 90px; height: 90px; background: #111; border-radius: 50%;
-            position: relative; border: 3px solid #333; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-        }
-        .knob-inner {
-            width: 70px; height: 70px; background: linear-gradient(135deg, #444, #222);
-            border-radius: 50%; position: relative; transform: rotate(-120deg);
-        }
-        .knob-dot {
-            position: absolute; top: 8px; left: 50%; width: 6px; height: 6px;
-            background: var(--av-accent); border-radius: 50%; margin-left: -3px;
-            box-shadow: 0 0 8px var(--av-accent);
-        }
-        .vol-label { font-size: 9px; font-weight: 700; text-transform: uppercase; color: #667; }
-
+        /* SLIDER GŁOŚNOŚCI (JAK MODULACJA) */
+        .fader-zone { margin-top: auto; padding-top: 20px; border-top: 1px solid #dcdce0; }
+        .fader-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; margin-bottom: 10px; }
+        
         input[type="range"] { 
-            width: 100%; accent-color: var(--av-accent); height: 4px; background: #111; 
-            border-radius: 2px; cursor: pointer; 
+            width: 100%; appearance: none; background: #d1d1d4; height: 4px; border-radius: 2px; outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none; width: 16px; height: 16px; background: #fff;
+            border: 2px solid var(--cf-cold); border-radius: 50%; cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         @media (max-width: 900px) {
             .app-content { flex-direction: column; overflow-y: auto; }
             .grid { grid-template-columns: repeat(2, 1fr); }
-            .sidebar { flex: none; }
+            .sidebar { flex: none; width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">VENGEANCE <span>AVENGER</span> // RMF</div>
-    <div class="sys-info" id="clock">00:00:00</div>
+    <div class="logo">DIST <span>COLDFIRE</span> // RMF FM</div>
+    <div class="preset-display" id="clock">00:00:00</div>
+    <div style="font-size: 10px; color: var(--cf-cold); font-weight: 700;">ADVANCED</div>
 </header>
 
 <div class="app-content">
+    <!-- LEWA STRONA: LISTA STACJI -->
     <main class="grid-container">
-        <div class="section-label">OSCILLATOR 1 / ROUTING BROWSER</div>
+        <div class="module-header"><div class="dot"></div> ENGINE A: BROADCAST BROWSER</div>
         <div class="grid" id="station-grid">
             <!-- Stacje generowane przez JS -->
         </div>
     </main>
 
+    <!-- PRAWA STRONA: MASTER KONTROLA -->
     <aside class="sidebar">
-        <div class="section-label">MASTER INFO</div>
-        <div class="av-display">
-            <div class="meta" id="st-code">SRC: IDLE</div>
-            <div class="title" id="st-name">SELECT MODULE</div>
+        <div class="module-header"><div class="dot" style="background: var(--cf-fire);"></div> OUTPUT VISUALIZER</div>
+        
+        <div class="cf-visual">
+            <div class="wave-text">
+                <p id="st-meta">SIGNAL READY</p>
+                <h2 id="st-name">CHOOSE STATION</h2>
+            </div>
         </div>
 
         <div class="transport">
-            <div class="av-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
-            <div class="av-btn play-btn" onclick="toggle()">
+            <div class="cf-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+            <div class="cf-btn" id="play-container" onclick="toggle()">
                 <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
             </div>
-            <div class="av-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
+            <div class="cf-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
         </div>
 
-        <div class="knob-zone">
-            <div class="vol-label">Output Level</div>
-            <div class="knob-outer">
-                <div class="knob-inner" id="knob-visual">
-                    <div class="knob-dot"></div>
-                </div>
-            </div>
-            <input type="range" min="0" max="100" value="75" oninput="setV(this.value)">
+        <div class="fader-zone">
+            <div class="fader-label">Master Output Level</div>
+            <input type="range" min="0" max="100" value="70" oninput="setV(this.value)">
         </div>
     </aside>
 </div>
@@ -185,28 +183,28 @@
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'OSC1', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'OSC2', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: 'OSC3', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: 'OSC4', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: 'OSC5', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'OSC6', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'OSC7', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'OSC8', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'OSC9', u: 'rmf_gold' },
-        { n: 'RMF PARTY', s: 'OSC10', u: 'rmf_party' },
-        { n: 'RMF ROCK', s: 'OSC11', u: 'rmf_rock' },
-        { n: 'RMF LOVE', s: 'OSC12', u: 'rmf_love' }
+        { n: 'RMF FM', s: 'RADIO 1', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'RADIO 2', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: 'ERA 80', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: 'ERA 90', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: 'ERA 00', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'SMOOTH', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'ART', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'CLUB', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'RETRO', u: 'rmf_gold' },
+        { n: 'RMF PARTY', s: 'BEAT', u: 'rmf_party' },
+        { n: 'RMF ROCK', s: 'DRIVE', u: 'rmf_rock' },
+        { n: 'RMF LOVE', s: 'MOOD', u: 'rmf_love' }
     ];
 
     const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
     let current = -1;
 
-    // Generowanie kafelków
+    // Generowanie stacji
     STATIONS.forEach((s, i) => {
         const div = document.createElement('div');
         div.className = 'tile';
-        div.innerHTML = `<div class="st-code">${s.s}</div><div class="st-name">${s.n}</div>`;
+        div.innerHTML = `<div class="st-label">${s.s}</div><div class="st-name">${s.n}</div>`;
         div.onclick = () => play(i);
         grid.appendChild(div);
     });
@@ -215,28 +213,34 @@
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
         document.getElementById('st-name').textContent = STATIONS[i].n;
-        document.getElementById('st-code').textContent = "SRC: " + STATIONS[i].s;
+        document.getElementById('st-meta').textContent = "BROADCASTING: " + STATIONS[i].s;
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        updateUI(true);
     }
 
     function toggle() {
         if(current === -1) { play(0); return; }
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(player.paused) { player.play(); updateUI(true); }
+        else { player.pause(); updateUI(false); }
+    }
+
+    function updateUI(isPlaying) {
+        const btn = document.getElementById('play-container');
+        if(isPlaying) {
+            ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+            btn.classList.add('play-active');
+        } else {
+            ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z');
+            btn.classList.remove('play-active');
+        }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
-    
-    function setV(v) { 
-        player.volume = v / 100; 
-        const deg = (v * 2.4) - 120; // Od -120 do 120 stopni
-        document.getElementById('knob-visual').style.transform = `rotate(${deg}deg)`;
-    }
+    function setV(v) { player.volume = v / 100; }
 
     function updateClock() {
         const now = new Date();
@@ -244,7 +248,6 @@
     }
     setInterval(updateClock, 1000);
     updateClock();
-    setV(75);
 </script>
 </body>
 </html>
