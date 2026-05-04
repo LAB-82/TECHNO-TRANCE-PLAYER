@@ -3,172 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF V4LVE TERMINAL</title>
+    <title>RMF TERMINAL - MASSIVE EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
         :root {
-            --bg-gradient: linear-gradient(135deg, #f39c12, #e74c3c, #9b59b6, #3498db);
-            --glass-bg: rgba(255, 255, 255, 0.15);
-            --panel-white: #f0f2f5;
-            --text-dark: #4a4a4a;
-            --accent-pink: #ff4d6d;
+            --bg-dark: #333333;
+            --panel-grey: #e0e0e0;
+            --panel-border: #bcbcbc;
+            --knob-light: #f5f5f5;
+            --mod-green: #4ade80;
+            --mod-blue: #3b82f6;
+            --text-main: #222222;
+            --text-muted: #666666;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--bg-gradient);
-            font-family: 'Montserrat', sans-serif;
+            background: var(--bg-dark); color: var(--text-main); 
+            font-family: 'Roboto', sans-serif;
             display: flex; flex-direction: column;
-            padding: 1.5vh; overflow: hidden; 
+            padding: 10px; overflow: hidden; 
         }
 
-        /* HEADER - STYL V4LVE */
+        /* HEADER - STYL MASSIVE X TOP BAR */
         header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            background: rgba(255, 255, 255, 0.8); border-radius: 30px;
-            margin-bottom: 2vh; padding: 0 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            height: 45px; display: flex; justify-content: space-between; align-items: center;
+            background: #2a2a2a; border-radius: 4px;
+            margin-bottom: 10px; padding: 0 15px;
+            color: #ccc; border-bottom: 2px solid #1a1a1a;
         }
-        .header-info { font-weight: 800; font-size: 18px; color: #e67e22; letter-spacing: 1px; }
-        .preset-bar { 
-            background: #fff; padding: 8px 40px; border-radius: 20px;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05); font-size: 13px; font-weight: 600;
-        }
+        .header-info { font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
+        .header-info span { color: var(--mod-green); }
+        .clock { font-family: monospace; font-size: 16px; color: var(--mod-blue); }
 
-        .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
+        .app-content { display: flex; flex: 1; gap: 10px; min-height: 0; }
 
-        /* GRID - ORYGINALNY UKŁAD 5x3 W STYLU SZKLANYM */
+        /* GRID - ORYGINALNY UKŁAD 5x3 W STYLU PANELU SYNTEZATORA */
         .grid { 
-            flex: 1.4; display: grid; 
+            flex: 1.5; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 12px; 
+            gap: 8px; background: #444; padding: 8px; border-radius: 4px;
         }
 
         .tile {
-            background: var(--glass-bg);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
+            background: var(--panel-grey);
+            border: 1px solid var(--panel-border);
+            border-radius: 2px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.3s ease;
-        }
-
-        .tile:hover { background: rgba(255, 255, 255, 0.25); transform: translateY(-2px); }
-
-        .tile .t-top { font-size: 10px; font-weight: 800; color: rgba(255,255,255,0.7); text-transform: uppercase; }
-        .tile .t-bottom { font-size: 15px; font-weight: 700; color: #fff; margin-top: 4px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
-
-        /* AKTYWNA STACJA - PODŚWIETLENIE Z V4LVE */
-        .tile.active {
-            background: rgba(255, 255, 255, 0.4);
-            border: 2px solid #fff;
-            box-shadow: 0 0 20px rgba(255,255,255,0.4);
-        }
-
-        /* SIDEBAR - BIAŁY PANEL Z GAŁKAMI */
-        .sidebar { 
-            flex: 0.7; background: var(--panel-white); border-radius: 25px;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-around;
-            padding: 30px; box-shadow: 0 15px 45px rgba(0,0,0,0.15);
+            cursor: pointer; transition: background 0.2s;
             position: relative;
         }
 
-        /* GAŁKA (KNOB) - STYL V4LVE */
-        .knob-container { display: flex; flex-direction: column; align-items: center; gap: 10px; }
-        
+        .tile:hover { background: #eeeeee; }
+
+        .tile .t-top { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
+        .tile .t-bottom { font-size: 12px; font-weight: 500; color: var(--text-main); text-align: center; padding: 0 4px; }
+
+        /* AKTYWNA STACJA - KOLOROWE WSKAŹNIKI Z MASSIVE X */
+        .tile.active {
+            background: #fff;
+            border: 1px solid var(--mod-green);
+            box-shadow: inset 0 0 0 1px var(--mod-green);
+        }
+        .tile.active::before {
+            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--mod-green);
+        }
+
+        /* SIDEBAR - SEKCYJNY PANEL MODULACJI */
+        .sidebar { 
+            flex: 0.6; background: var(--panel-grey); border-radius: 4px;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; gap: 25px;
+            padding: 20px; border: 1px solid var(--panel-border);
+        }
+
+        .display-unit {
+            width: 100%; background: #fff; border: 1px solid var(--panel-border);
+            padding: 15px; border-radius: 2px; text-align: center;
+        }
+        .display-unit h2 { font-size: 22px; color: var(--text-main); margin-bottom: 5px; }
+        .display-unit p { font-size: 10px; color: var(--mod-blue); font-weight: 700; text-transform: uppercase; }
+
+        /* GAŁKA (KNOB) - STYL MASSIVE X */
+        .knob-section { text-align: center; }
         .knob-outer {
-            width: 100px; height: 100px;
-            background: #fff; border-radius: 50%;
+            width: 90px; height: 90px;
+            background: var(--knob-light); border-radius: 50%;
+            border: 2px solid var(--panel-border);
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08), inset 0 -2px 5px rgba(0,0,0,0.05);
             position: relative; cursor: ns-resize;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        /* Kolorowy pierścień wokół gałki */
-        .knob-outer::after {
-            content: ''; position: absolute; inset: 5px;
-            border-radius: 50%; border: 3px solid #eee;
+        .knob-pointer {
+            position: absolute; top: 8px; width: 3px; height: 12px;
+            background: #444; border-radius: 2px;
+            transform-origin: 50% 37px;
         }
-        
-        .knob-inner {
-            width: 70px; height: 70px; background: #f8f9fa; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
-            font-weight: 700; color: var(--text-dark);
-        }
-
-        .knob-dot {
-            position: absolute; top: 12px; width: 6px; height: 6px;
-            background: var(--accent-pink); border-radius: 50%;
-            box-shadow: 0 0 5px var(--accent-pink);
+        /* Pierścień wartości (modulacja) */
+        .knob-ring {
+            position: absolute; width: 100%; height: 100%;
+            border-radius: 50%; border: 4px solid var(--mod-blue);
+            clip-path: polygon(50% 50%, -50% -50%, 150% -50%); /* Uproszczony wizualnie */
+            opacity: 0.3;
         }
 
-        .label { font-size: 11px; font-weight: 800; color: #a0a0a0; text-transform: uppercase; letter-spacing: 1px; }
+        .vol-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 10px; text-transform: uppercase; }
 
-        /* PRZYCISKI STEROWANIA */
-        .controls { display: flex; gap: 20px; align-items: center; }
-        .btn-ctrl {
-            width: 55px; height: 55px; background: #fff; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05); cursor: pointer; transition: 0.2s;
+        /* PRZYCISKI - STYL MASSIVE X */
+        .controls { display: flex; gap: 12px; }
+        .btn-massive {
+            width: 50px; height: 40px; background: #fff; border: 1px solid var(--panel-border);
+            border-radius: 2px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
-        .btn-ctrl:active { transform: scale(0.9); }
-        .btn-ctrl svg { width: 20px; height: 20px; fill: #bbb; }
-        .btn-ctrl.play { width: 70px; height: 70px; background: #fff; border: 2px solid #eee; }
-        .btn-ctrl.play svg { width: 30px; height: 30px; fill: var(--accent-pink); }
+        .btn-massive svg { width: 18px; height: 18px; fill: #555; }
+        .btn-massive.active svg { fill: var(--mod-green); }
 
         @media (max-width: 600px) {
             .app-content { flex-direction: column; overflow-y: auto; }
             .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { flex: none; width: 100%; height: auto; padding: 20px; }
+            .sidebar { flex: none; width: 100%; gap: 15px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info">⚡ V4LVE</div>
-    <div class="preset-bar" id="playing-now">Factory > Default*</div>
-    <div style="font-weight: 800; color: #bbb;" id="timer">00:00</div>
+    <div class="header-info">MASSIVE <span>RMF</span> // ENGINE</div>
+    <div class="preset-display" id="playing-now">Init Preset</div>
+    <div class="clock" id="timer">00:00</div>
 </header>
 
 <div class="app-content">
     <div class="grid" id="station-grid"></div>
 
     <aside class="sidebar">
-        <div class="knob-container">
+        <div class="display-unit">
+            <h2 id="current-name">RMF FM</h2>
+            <p>Routing: Main Bus</p>
+        </div>
+
+        <div class="knob-section">
             <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                <div class="knob-dot" id="knob-pointer"></div>
-                <div class="knob-inner" id="vol-txt">50%</div>
+                <div class="knob-ring"></div>
+                <div class="knob-pointer" id="knob-pointer"></div>
+                <div style="font-size: 14px; font-weight: 700;" id="vol-txt">50</div>
             </div>
-            <div class="label">Output Gain</div>
+            <div class="vol-label">Master Level</div>
         </div>
 
         <div class="controls">
-            <div class="btn-ctrl" onclick="skip(-1)">
-                <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            </div>
-            <div class="btn-ctrl play" onclick="toggle()">
-                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            </div>
-            <div class="btn-ctrl" onclick="skip(1)">
-                <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-            </div>
-        </div>
-
-        <div style="text-align: center;">
-            <div class="label">Sonic Digital</div>
-            <div style="font-size: 9px; color: #ccc; margin-top: 5px;">RMF TERMINAL EMULATION</div>
+            <div class="btn-massive" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+            <div class="btn-massive active" onclick="toggle()"><svg viewBox="0 0 24 24"><path id="p-ico" d="M14,19H18V5H14M6,19H10V5H6V19Z"/></svg></div>
+            <div class="btn-massive" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
         </div>
     </aside>
 </div>
 
-<audio id="player"></audio>
+<audio id="player" autoplay></audio>
 
 <script>
     const STATIONS = [
@@ -202,7 +198,7 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">Band 0${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-top">Slot ${i+1}</div><div class="t-bottom">${s.s}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
@@ -210,7 +206,8 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = `Station > ${STATIONS[i].n}*`;
+        document.getElementById('playing-now').textContent = STATIONS[i].n;
+        document.getElementById('current-name').textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -224,7 +221,7 @@
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
 
-    // OBSŁUGA GAŁKI GŁOŚNOŚCI (Knob)
+    // OBSŁUGA GAŁKI (Knob)
     let isDragging = false;
     let startY = 0;
 
@@ -249,13 +246,13 @@
     function stopRotate() { isDragging = false; }
 
     function updateKnob() {
-        const rotation = (volume * 2.8) - 140; // Skalowanie obrotu kropki
-        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg) translateY(-35px)`;
-        document.getElementById('vol-txt').textContent = Math.round(volume) + "%";
+        const rotation = (volume * 2.4) - 120; // Massive X vibe: od ok. -120 do 120 stopni
+        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg)`;
+        document.getElementById('vol-txt').textContent = Math.round(volume);
         player.volume = volume / 100;
     }
     
-    updateKnob(); // Inicjalizacja
+    updateKnob();
 </script>
 </body>
 </html>
