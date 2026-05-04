@@ -3,176 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF PLUTO TERMINAL</title>
+    <title>RMF SUPERNOVA TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;500;700&display=swap');
 
         :root {
-            --pluto-white: #e6e9ef;
-            --pluto-glow: #00f2ff;
-            --pluto-shadow: #c5cad5;
-            --pluto-light: #ffffff;
-            --text-grey: #6a768a;
+            --sn-deep: #0a0a12;
+            --sn-panel: #161625;
+            --sn-purple: #8a2be2;
+            --sn-neon: #ff00ff;
+            --sn-text: #e0e0ff;
+            --sn-glass: rgba(255, 255, 255, 0.03);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: #0a0a0c; 
-            font-family: 'Outfit', sans-serif;
+            background: var(--sn-deep); color: var(--sn-text); 
+            font-family: 'Inter', sans-serif;
             display: flex; flex-direction: column;
             padding: 15px; overflow: hidden; 
-            color: var(--text-grey);
         }
 
-        /* PANEL GŁÓWNY (BIAŁY SATYNOWY) */
-        .main-container {
-            flex: 1; display: flex; gap: 20px;
-            background: var(--pluto-white);
-            border-radius: 20px; padding: 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            border: 1px solid var(--pluto-light);
-        }
-
-        /* NAGŁÓWEK W STYLU PLUTO */
+        /* TOP BAR - STYL SUPERNOVA */
         header { 
-            width: 100%; height: 50px; display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; border-bottom: 1px solid var(--pluto-shadow);
+            height: 50px; display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(90deg, #1a1a2e, #0f0f1a);
+            border-radius: 8px; margin-bottom: 15px; padding: 0 20px;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .logo-text { font-weight: 600; font-size: 24px; letter-spacing: 4px; color: #333; }
-        .logo-text span { font-weight: 300; font-size: 14px; display: block; letter-spacing: 1px; color: var(--text-grey); }
+        .logo { font-family: 'Syncopate', sans-serif; font-weight: 700; letter-spacing: 3px; font-size: 14px; color: #fff; }
+        .logo span { color: var(--sn-neon); text-shadow: 0 0 10px var(--sn-neon); }
+        .preset-info { font-size: 12px; color: #889; border-left: 1px solid #445; padding-left: 15px; }
 
-        /* GRID 5x3 - ORYGINALNY UKŁAD */
+        .app-content { display: flex; flex: 1; gap: 15px; min-height: 0; }
+
+        /* GRID 5x3 - ORYGINALNY UKŁAD I ROZMIAR */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 12px; 
+            gap: 10px; 
         }
 
         .tile {
-            background: var(--pluto-white);
-            border-radius: 12px;
+            background: var(--sn-panel);
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            border-radius: 6px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            box-shadow: 6px 6px 12px var(--pluto-shadow), -4px -4px 10px var(--pluto-light);
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255,255,255,0.5);
+            cursor: pointer; position: relative; transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .tile:active {
-            box-shadow: inset 4px 4px 8px var(--pluto-shadow), inset -4px -4px 8px var(--pluto-light);
-            transform: scale(0.98);
-        }
+        .tile:hover { border-color: var(--sn-purple); background: #1c1c30; }
 
-        .tile .t-top { font-size: 9px; font-weight: 600; color: #99a; text-transform: uppercase; }
-        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #445; margin-top: 4px; }
+        .tile .t-top { font-size: 8px; font-weight: 700; color: #667; text-transform: uppercase; letter-spacing: 1px; }
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #fff; margin-top: 4px; }
 
-        /* AKTYWNY KAFELEK - CYBER NEON */
+        /* AKTYWNA STACJA */
         .tile.active {
-            border: 1px solid var(--pluto-glow);
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
+            border-color: var(--sn-neon);
+            background: radial-gradient(circle at center, #251a3a, #161625);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
         }
-        .tile.active .t-bottom { color: #000; }
         .tile.active::after {
-            content: ''; position: absolute; bottom: 8px; width: 4px; height: 4px;
-            background: var(--pluto-glow); border-radius: 50%; box-shadow: 0 0 8px var(--pluto-glow);
+            content: ''; position: absolute; top: 5px; right: 5px;
+            width: 4px; height: 4px; background: var(--sn-neon); border-radius: 50%;
+            box-shadow: 0 0 8px var(--sn-neon);
         }
 
-        /* SIDEBAR - KONTROLER PLUTO */
+        /* SIDEBAR - CENTRUM KONTROLI */
         .sidebar { 
-            flex: 0.8; display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-between;
-            padding: 10px; border-left: 1px solid var(--pluto-shadow);
+            flex: 0.7; background: var(--sn-panel); border-radius: 12px;
+            display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-around;
+            padding: 20px; border: 1px solid rgba(255,255,255,0.05);
         }
 
-        /* DUŻE POKRĘTŁO (KNOB) Z OBRAZU */
-        .master-knob-area { position: relative; width: 180px; height: 180px; }
-        
-        .knob-glow-ring {
-            position: absolute; inset: 0; border-radius: 50%;
-            border: 2px solid rgba(0, 242, 255, 0.1);
-            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
-        }
-
-        .knob-main {
-            position: absolute; inset: 15px;
-            background: var(--pluto-white); border-radius: 50%;
-            box-shadow: 10px 10px 20px var(--pluto-shadow), -10px -10px 20px var(--pluto-light);
-            cursor: ns-resize; display: flex; align-items: center; justify-content: center;
-        }
-
-        .knob-indicator {
-            position: absolute; top: 10px; width: 4px; height: 15px;
-            background: var(--pluto-glow); border-radius: 2px;
-            box-shadow: 0 0 10px var(--pluto-glow);
-            transform-origin: 2px 75px;
-        }
-
-        .vol-display { font-size: 28px; font-weight: 300; color: #334; }
-
-        /* PRZYCISKI - KWADRATOWE KAFELKI STERUJĄCE */
-        .pluto-buttons { display: flex; gap: 15px; margin-top: 20px; }
-        
-        .btn-pluto {
-            width: 60px; height: 60px;
-            background: var(--pluto-white); border-radius: 12px;
-            box-shadow: 5px 5px 10px var(--pluto-shadow), -3px -3px 8px var(--pluto-light);
+        /* POKRĘTŁO GŁOŚNOŚCI - STYL GAŁEK SUPERNOVA */
+        .knob-container { text-align: center; }
+        .knob-outer {
+            width: 120px; height: 120px;
+            background: #0d0d16; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: 1px solid rgba(255,255,255,0.4);
+            position: relative; cursor: ns-resize;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            border: 2px solid #222;
+        }
+        
+        /* Pierścień postępu */
+        .knob-ring {
+            position: absolute; inset: 5px; border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--sn-purple);
+            transform: rotate(0deg);
         }
 
-        .btn-pluto svg { width: 24px; height: 24px; fill: var(--text-grey); transition: 0.3s; }
-        .btn-pluto:hover svg { fill: var(--pluto-glow); filter: drop-shadow(0 0 5px var(--pluto-glow)); }
-        .btn-pluto:active { box-shadow: inset 3px 3px 6px var(--pluto-shadow); }
+        .knob-inner {
+            width: 85px; height: 85px; background: #1a1a2e; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'Syncopate', sans-serif; font-size: 18px; color: var(--sn-neon);
+            text-shadow: 0 0 10px var(--sn-neon);
+        }
 
-        @media (max-width: 800px) {
-            .main-container { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; }
-            .sidebar { border-left: none; border-top: 1px solid var(--pluto-shadow); padding-top: 30px; }
+        .knob-dot {
+            position: absolute; top: 12px; width: 6px; height: 6px;
+            background: var(--sn-neon); border-radius: 50%;
+            box-shadow: 0 0 10px var(--sn-neon);
+        }
+
+        /* PRZYCISKI STEROWANIA - JAK KAFELKI */
+        .controls { display: flex; gap: 12px; width: 100%; justify-content: center; }
+        .btn-tile {
+            width: 60px; height: 60px; background: var(--sn-panel);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-tile:hover { border-color: var(--sn-purple); }
+        .btn-tile:active { transform: scale(0.95); background: #000; }
+        .btn-tile svg { width: 22px; height: 22px; fill: #889; }
+        .btn-tile.play-btn { border-color: var(--sn-purple); width: 80px; }
+        .btn-tile.play-btn svg { fill: #fff; filter: drop-shadow(0 0 5px var(--sn-purple)); }
+
+        .label { font-size: 10px; font-weight: 700; color: #556; text-transform: uppercase; letter-spacing: 2px; }
+
+        @media (max-width: 600px) {
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
+            .sidebar { padding: 30px; }
         }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div style="flex: 1.4; display: flex; flex-direction: column;">
-        <header>
-            <div class="logo-text">PLUTO <span>MULTI FX TERMINAL</span></div>
-            <div style="font-weight: 600; color: #333;" id="timer">00:00</div>
-        </header>
+<header>
+    <div class="logo">SUPER<span>NOVA</span></div>
+    <div class="preset-info" id="playing-now">Classic RMF FM*</div>
+    <div style="font-family: monospace; color: var(--sn-neon);" id="timer">00:00</div>
+</header>
 
-        <div class="grid" id="station-grid"></div>
-    </div>
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
 
     <aside class="sidebar">
-        <div style="text-align: center;">
-            <p style="font-size: 10px; font-weight: 800; letter-spacing: 2px; margin-bottom: 20px;">OUTPUT LEVEL</p>
-            <div class="master-knob-area">
-                <div class="knob-glow-ring"></div>
-                <div class="knob-main" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                    <div class="knob-indicator" id="knob-pointer"></div>
-                    <div class="vol-display" id="vol-txt">50</div>
+        <div class="knob-container">
+            <div class="label" style="margin-bottom: 15px;">Master Gain</div>
+            <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+                <div class="knob-ring" id="knob-ring"></div>
+                <div class="knob-dot" id="knob-pointer"></div>
+                <div class="knob-inner" id="vol-txt">50%</div>
+            </div>
+        </div>
+
+        <div style="text-align: center; width: 100%;">
+            <div class="label" style="margin-bottom: 12px;">Transport</div>
+            <div class="controls">
+                <div class="btn-tile" onclick="skip(-1)">
+                    <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+                </div>
+                <div class="btn-tile play-btn" onclick="toggle()">
+                    <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+                </div>
+                <div class="btn-tile" onclick="skip(1)">
+                    <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
                 </div>
             </div>
         </div>
 
-        <div class="pluto-buttons">
-            <div class="btn-pluto" onclick="skip(-1)">
-                <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            </div>
-            <div class="btn-pluto" onclick="toggle()" style="width: 80px;">
-                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            </div>
-            <div class="btn-pluto" onclick="skip(1)">
-                <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-            </div>
-        </div>
-
-        <div style="text-align: center; font-size: 10px; opacity: 0.5;">
-            RMF FM • DIGITAL EMULATION • V1.0
-        </div>
+        <div style="font-size: 9px; color: #445; letter-spacing: 1px;">NURO AUDIO X RMF</div>
     </aside>
 </div>
 
@@ -210,7 +210,7 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">FX ST ${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-top">MODULE 0${i+1}</div><div class="t-bottom">${s.s}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
@@ -218,6 +218,7 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = `${STATIONS[i].n}*`;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -256,9 +257,10 @@
     function stopRotate() { isDragging = false; }
 
     function updateKnob() {
-        const rotation = (volume * 2.4) - 120;
-        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg)`;
-        document.getElementById('vol-txt').textContent = Math.round(volume);
+        const rotation = (volume * 2.8) - 140;
+        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg) translateY(-45px)`;
+        document.getElementById('knob-ring').style.transform = `rotate(${rotation}deg)`;
+        document.getElementById('vol-txt').textContent = Math.round(volume) + "%";
         player.volume = volume / 100;
     }
     
