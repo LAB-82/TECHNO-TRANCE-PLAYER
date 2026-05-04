@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzyczne Radio - MSI Logic Integration</title>
+    <title>Muzyczne Radio - Final Audit Version</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -45,11 +45,11 @@
             clip-path: polygon(6% 0%, 94% 0%, 100% 10%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 10%);
         }
 
-        /* Napis z efektem poświaty - INTEGRACJA MSI */
+        /* Napis z efektem poświaty */
         .main-title {
             margin-top: 35px;
             font-size: 26px;
-            color: #ccc; /* Wyłączony kolor */
+            color: #444;
             letter-spacing: 5px;
             font-weight: 900;
             text-transform: uppercase;
@@ -61,7 +61,7 @@
             text-shadow: 0 0 15px rgba(0, 162, 255, 0.4), 0 0 2px rgba(255, 255, 255, 0.8);
         }
 
-        /* Profesjonalny Wyświetlacz LCD */
+        /* Profesjonalny Wyświetlacz LCD (Zmniejszony) */
         .lcd-display {
             width: 220px;
             height: 135px;
@@ -90,7 +90,7 @@
         .lcd-time { font-size: 40px; font-weight: bold; letter-spacing: 2px; }
         .lcd-date { font-size: 13px; margin-top: 5px; opacity: 0.6; }
 
-        /* Głośniki */
+        /* Głośniki z chromem */
         .speaker-mesh {
             width: 200px;
             height: 200px;
@@ -191,7 +191,7 @@
                 <button id="stop" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
                 <button id="mute" class="btn-pro">
                     <svg viewBox="0 0 24 24">
-                        <path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/>
+                        <path d="M3.27,3L2,4.27l5,5V15h4l5,5V15.27l4.46,4.46l1.27-1.27L3.27,3z M9,13H5v-2h1.73L9,13.27V13z M12,4L9.91,6.09L12,8.18V4z M16.5,12 c0-1.77-1.02-3.29-2.5-4.03V9.18l2.45,2.45C16.47,11.82,16.5,11.91,16.5,12z M19,12c0,0.94-0.2,1.82-0.54,2.64l1.51,1.51 C20.63,14.91,21,13.5,21,12c0-4.28-2.99-7.86-7-8.77v2.06C16.89,6.15,19,8.83,19,12z"/>
                     </svg>
                 </button>
                 
@@ -224,21 +224,16 @@
     const vFill = document.getElementById('vFill');
     const lcdStation = document.getElementById('lcdStation');
     const lcdTime = document.getElementById('lcdTime');
-    const mutePath = document.getElementById('mute-path');
 
     let isPwr = false;
 
-    // IKONY Z WERSJI MSI
-    const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
-    const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
-
     const stations = {
-        1: "Muzyczne Radio",
-        2: "RMF FM",
-        3: "Radio ZET",
-        4: "Radio Eska",
-        5: "Radio Złote Przeboje",
-        6: "Polskie Radio Czwórka"
+        1: { name: "Muzyczne Radio", url: "https://stream.rcs.revma.com/gzwc1xcq042vv" },
+        2: { name: "RMF FM", url: "https://rs101-krk.rmfstream.pl/RMFFM48" },
+        3: { name: "Radio ZET", url: "https://r.online.radiozet.pl/zet.mp3" },
+        4: { name: "Radio Eska", url: "https://ext03.polsatmedia.pl/ESKA_WAW" },
+        5: { name: "Radio Złote Przeboje", url: "https://radiostream.polsatmedia.pl/ZŁOTE_PRZEBOJE" },
+        6: { name: "Polskie Radio Czwórka", url: "https://stream85.polskieradio.pl/pr4/direct.mp3" }
     };
 
     function clock() {
@@ -259,10 +254,7 @@
         this.classList.toggle('active', isPwr);
         if(!isPwr) {
             audio.pause();
-            audio.muted = false;
-            mutePath.setAttribute('d', ICON_MUTE_OFF);
             document.getElementById('play').classList.remove('active');
-            document.getElementById('mute').classList.remove('active');
             lcdStation.textContent = "";
         } else {
             lcdStation.textContent = "SYSTEM ONLINE";
@@ -280,16 +272,16 @@
         if(!isPwr) return;
         audio.pause();
         audio.currentTime = 0;
+        audio.volume = 0.5;
+        updateVol();
         document.getElementById('play').classList.remove('active');
-        lcdStation.textContent = "STOPPED";
+        lcdStation.textContent = "STOP / RESET VOL";
         flash(this);
     };
 
     document.getElementById('mute').onclick = function() {
         if(!isPwr) return;
-        audio.muted = !audio.muted;
-        mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
-        this.classList.toggle('active', audio.muted);
+        flash(this);
     };
 
     function updateVol() { vFill.style.width = (audio.volume * 100) + "%"; }
@@ -308,7 +300,13 @@
 
     function changeSt(n) {
         if(!isPwr) return;
-        lcdStation.textContent = stations[n];
+        const station = stations[n];
+        if (station) {
+            lcdStation.textContent = station.name;
+            audio.src = station.url;
+            audio.play().catch(() => { lcdStation.textContent = "LINK ERROR"; });
+            document.getElementById('play').classList.add('active');
+        }
     }
 
     audio.volume = 0.5;
