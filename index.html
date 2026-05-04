@@ -196,10 +196,10 @@
             <div class="station-rack">
                 <button class="btn-station-pro" onclick="changeSt(1)">MR</button>
                 <button class="btn-station-pro" onclick="changeSt(2)">RMF FM</button>
-                <button class="btn-station-pro" onclick="changeSt(3)">RADIO ZET</button>
-                <button class="btn-station-pro" onclick="changeSt(4)">TRÓJKA</button>
-                <button class="btn-station-pro" onclick="changeSt(5)">JEDYNKA</button>
-                <button class="btn-station-pro" onclick="changeSt(6)">DZIECIOM</button>
+                <button class="btn-station-pro" onclick="changeSt(3)">Plus</button>
+                <button class="btn-station-pro" onclick="changeSt(4)">Złote P.</button>
+                <button class="btn-station-pro" onclick="changeSt(5)">Plus</button>
+                <button class="btn-station-pro" onclick="changeSt(6)">Złote P.</button>
             </div>
         </div>
     </div>
@@ -218,13 +218,14 @@
 
     let isPwr = false;
 
+    // Streamy wyciągnięte z serwerów nadawczych dla myradioonline
     const stations = {
         1: { name: "Muzyczne Radio", url: "https://stream.rcs.revma.com/gzwc1xcq042vv" },
         2: { name: "RMF FM", url: "https://rs101-krk.rmfstream.pl/RMFFM48" },
-        3: { name: "Radio ZET", url: "https://zet-net-01.cdn.eurozet.pl/zet.mp3" },
-        4: { name: "Polskie Radio Trójka", url: "https://stream85.polskieradio.pl/pr3/direct.mp3" },
-        5: { name: "Polskie Radio Jedynka", url: "https://stream85.polskieradio.pl/pr1/direct.mp3" },
-        6: { name: "PR Dzieciom", url: "https://stream85.polskieradio.pl/pr9/direct.mp3" }
+        3: { name: "Radio Plus", url: "https://ext03.polsatmedia.pl/PLUS_WAW" },
+        4: { name: "Złote Przeboje", url: "https://an06.cdn.eurozet.pl/zlo-kra.mp3" },
+        5: { name: "Radio Plus", url: "https://ext03.polsatmedia.pl/PLUS_WAW" },
+        6: { name: "Złote Przeboje", url: "https://an06.cdn.eurozet.pl/zlo-kra.mp3" }
     };
 
     const iconUnmuted = "M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z";
@@ -252,7 +253,7 @@
             document.getElementById('play').classList.remove('active');
             lcdStation.textContent = "";
         } else {
-            changeSt(1);
+            changeSt(1); // Auto-start MR
         }
     };
 
@@ -275,6 +276,7 @@
         audio.muted = !audio.muted;
         mutePath.setAttribute('d', audio.muted ? iconMuted : iconUnmuted);
         this.classList.toggle('active', audio.muted);
+        lcdStation.textContent = audio.muted ? "MUTE ON" : "MUTE OFF";
     };
 
     document.getElementById('vUp').onclick = function() {
