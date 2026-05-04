@@ -3,207 +3,223 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF SUPERNOVA EDITION</title>
+    <title>RMF ACID V EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Orbitron:wght@500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
 
         :root {
-            --sn-bg: #0d0d0f;
-            --sn-panel: #1a1a1e;
-            --sn-accent: #ff00ff; /* Magenta neon */
-            --sn-purple: #7022eadb;
-            --sn-text-dim: #8e8e93;
-            --sn-glass: rgba(255, 255, 255, 0.03);
+            --acid-silver: #c0c0c0;
+            --acid-dark-silver: #a0a0a0;
+            --acid-accent: #00ffcc; /* Neonowa zieleń Acid V */
+            --acid-red: #ff3300; /* Diody LED */
+            --acid-bg: #1a1a1a;
+            --acid-border: #444;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--sn-bg); color: #fff; 
-            font-family: 'Inter', sans-serif;
+            background: var(--acid-bg); color: #333; 
+            font-family: 'Roboto Condensed', sans-serif;
             display: flex; flex-direction: column;
-            overflow: hidden; 
+            padding: 15px; overflow: hidden; 
         }
 
-        /* TOP BAR */
+        /* NAGŁÓWEK - TYPOGRAFIA ARTURIA */
         header { 
-            height: 60px; background: #000;
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 0 25px; border-bottom: 1px solid #222;
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            background: linear-gradient(to bottom, #eee, #ccc);
+            padding: 0 25px; border-radius: 8px 8px 0 0;
+            border: 1px solid #888; border-bottom: 2px solid #555;
         }
-        .logo { font-family: 'Orbitron', sans-serif; letter-spacing: 4px; font-size: 14px; color: #fff; }
-        .logo span { color: var(--sn-accent); text-shadow: 0 0 10px var(--sn-accent); }
-        .preset-info { background: #111; border: 1px solid #333; padding: 6px 15px; border-radius: 4px; font-size: 11px; color: #aaa; }
+        .header-info { font-size: 20px; font-weight: 700; color: #222; text-transform: uppercase; letter-spacing: 2px; }
+        .clock { color: #222; font-family: monospace; font-size: 22px; font-weight: bold; background: #bbb; padding: 2px 10px; border-radius: 4px; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
 
-        /* MAIN ENGINE AREA */
-        .main-engine {
-            flex: 1; display: flex; flex-direction: column;
-            background: radial-gradient(circle at center, #1a0b1a 0%, #0d0d0f 100%);
-            padding: 20px; gap: 20px;
-        }
-
-        /* CORE VISUALIZER AREA */
-        .core-display {
-            height: 220px; display: flex; align-items: center; justify-content: space-around;
-            position: relative;
-        }
-        .nebula {
-            position: absolute; width: 250px; height: 250px;
-            background: var(--sn-purple); filter: blur(80px);
-            border-radius: 50%; opacity: 0.4; z-index: 0;
-        }
-        .central-ring {
-            width: 140px; height: 140px; border-radius: 50%;
-            border: 2px solid var(--sn-accent);
-            box-shadow: 0 0 30px var(--sn-accent), inset 0 0 20px var(--sn-accent);
-            display: flex; align-items: center; justify-content: center;
-            z-index: 1; position: relative;
-        }
-        .central-ring::after {
-            content: ''; position: absolute; width: 110%; height: 110%;
-            border: 1px solid rgba(255,0,255,0.2); border-radius: 50%;
+        /* GŁÓWNY PANEL */
+        .app-content { 
+            display: flex; flex: 1; gap: 15px; padding: 20px; 
+            background: var(--acid-silver);
+            border: 1px solid #888; border-top: none;
+            border-radius: 0 0 8px 8px;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* STATION GRID STYLED AS DIALS/KNOBS */
-        .station-grid {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px;
-            padding: 10px; background: var(--sn-glass); border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .knob-station {
-            aspect-ratio: 1; background: #16161a; border-radius: 50%;
-            border: 2px solid #222; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; cursor: pointer;
-            transition: 0.3s; position: relative;
-        }
-        .knob-station:hover { border-color: #444; }
-        .knob-station.active {
-            border-color: var(--sn-accent);
-            box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
-        }
-        .knob-station .label { font-size: 9px; color: var(--sn-text-dim); text-transform: uppercase; font-weight: 600; }
-        .knob-station .val { font-size: 12px; font-weight: 600; margin-top: 2px; }
-        .knob-station.active .val { color: var(--sn-accent); }
-
-        /* FOOTER CONTROLS */
-        footer {
-            height: 100px; background: #111; border-top: 1px solid #222;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 40px;
-        }
-        .vol-slider-cont { width: 250px; display: flex; align-items: center; gap: 15px; }
-        input[type="range"] {
-            flex: 1; appearance: none; background: #222; height: 4px; border-radius: 2px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 16px; height: 16px; background: #fff; 
-            border-radius: 50%; cursor: pointer; box-shadow: 0 0 10px var(--sn-accent);
+        /* GRID STACJI - STYL SEKWENCERA */
+        .grid { 
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 12px; 
         }
 
-        .transport { display: flex; align-items: center; gap: 20px; }
-        .btn-transport {
-            width: 45px; height: 45px; border-radius: 50%; background: #1a1a1e;
-            border: 1px solid #333; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
+        .tile {
+            background: #dcdcdc; 
+            border: 2px solid #999; 
+            border-radius: 4px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative;
+            box-shadow: 3px 3px 0px #888;
+            transition: transform 0.05s;
         }
-        .btn-transport:hover { background: #25252a; border-color: var(--sn-accent); }
-        .btn-transport svg { width: 18px; fill: #fff; }
+        .tile:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #888; }
+
+        .tile .t-top { font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; }
+        .tile .t-bottom { font-size: 14px; font-weight: 700; color: #222; text-transform: uppercase; }
+
+        /* DIODA LED STACJI */
+        .led {
+            width: 8px; height: 8px; background: #444; border-radius: 50%;
+            position: absolute; top: 10px; border: 1px solid #222;
+        }
+
+        .tile.active { background: #eee; border-color: #777; }
+        .tile.active .led {
+            background: var(--acid-red);
+            box-shadow: 0 0 8px var(--acid-red);
+        }
+
+        /* BOCZNY PANEL - STYL MODUŁU SYNTEZATORA */
+        .sidebar { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-between; padding: 20px;
+            background: #b8b8b8; border-left: 2px solid #999; border-radius: 4px;
+        }
+
+        .display-vst {
+            width: 100%; height: 100px;
+            background: #222; border-radius: 4px;
+            border: 3px solid #444; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        /* Fala w tle wyświetlacza */
+        .display-vst::after {
+            content: ""; position: absolute; width: 200%; height: 100%;
+            background: repeating-linear-gradient(90deg, transparent, var(--acid-accent) 2px, transparent 4px);
+            opacity: 0.1;
+        }
+
+        .display-vst h2 { font-size: 24px; color: var(--acid-accent); text-shadow: 0 0 10px var(--acid-accent); z-index: 1; }
+        .display-vst p { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; z-index: 1; }
+
+        .controls { display: flex; align-items: center; gap: 15px; }
+        .c-btn {
+            width: 45px; height: 45px; background: #333; border-radius: 4px;
+            border: 1px solid #000; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 2px 2px 0px #111;
+        }
+        .c-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #111; }
+        .c-btn svg { width: 20px; fill: var(--acid-accent); }
+        .c-play { width: 60px; height: 60px; border-radius: 50%; background: #444; }
+
+        /* KNOB GŁOŚNOŚCI (JAK W ACID V) */
+        .vol-section { text-align: center; width: 100%; }
+        .vol-label { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #555; }
+        
+        .knob-container {
+            width: 80px; height: 80px; background: #333; border-radius: 50%;
+            margin: 0 auto; position: relative; border: 4px solid #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .knob-indicator {
+            position: absolute; top: 10px; left: 50%; width: 4px; height: 15px;
+            background: var(--acid-accent); transform-origin: bottom center;
+            margin-left: -2px; border-radius: 2px;
+        }
+
+        input[type="range"] { width: 100%; margin-top: 20px; accent-color: var(--acid-accent); cursor: pointer; }
 
         @media (max-width: 800px) {
-            .station-grid { grid-template-columns: repeat(3, 1fr); }
-            footer { flex-direction: column; height: auto; padding: 20px; gap: 20px; }
-            .core-display { height: 150px; }
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
+            .sidebar { width: 100%; border-left: none; border-top: 2px solid #999; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">SUPER<span>NOVA</span> RMF</div>
-    <div class="preset-info" id="cur-st-name">GOLDEN AGE // RMF FM</div>
-    <div style="font-size: 10px; color: #555;">BYPASS: OFF</div>
+    <div class="header-info" id="playing-now">ACID V // ENGINE: RMF FM</div>
+    <div class="clock" id="timer">00:00</div>
 </header>
 
-<div class="main-engine">
-    <div class="core-display">
-        <div class="nebula"></div>
-        <div style="text-align: center; color: var(--sn-text-dim); font-size: 11px;">
-            <p>REVERB</p>
-            <p style="color: #fff; font-weight: 600;">VINTAGE HALL</p>
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="display-vst">
+            <p>Current Patch</p>
+            <h2 id="st-name">RMF FM</h2>
         </div>
-        
-        <div class="central-ring">
-            <div id="visualizer-circle" style="text-align: center;">
-                <span style="font-family: 'Orbitron'; font-size: 18px;" id="timer">00:00</span>
+
+        <div class="controls">
+            <div class="c-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+            <div class="c-btn c-play" onclick="toggle()">
+                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
             </div>
+            <div class="c-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
         </div>
 
-        <div style="text-align: center; color: var(--sn-text-dim); font-size: 11px;">
-            <p>DELAY</p>
-            <p style="color: #fff; font-weight: 600;">MELLOW DIGITAL</p>
+        <div class="vol-section">
+            <div class="vol-label">Master Volume</div>
+            <div class="knob-container">
+                <div class="knob-indicator" id="knob"></div>
+            </div>
+            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
         </div>
-    </div>
-
-    <div class="station-grid" id="grid">
-        <!-- Generowane przez JS -->
-    </div>
+    </aside>
 </div>
-
-<footer>
-    <div class="vol-slider-cont">
-        <span style="font-size: 10px; color: var(--sn-text-dim);">OUTPUT</span>
-        <input type="range" min="0" max="100" value="50" oninput="setV(this.value)">
-    </div>
-
-    <div class="transport">
-        <div class="btn-transport" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
-        <div class="btn-transport" style="width: 60px; border-radius: 30px;" onclick="toggle()">
-            <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-        </div>
-        <div class="btn-transport" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
-    </div>
-
-    <div style="width: 250px; text-align: right; font-size: 10px; color: var(--sn-text-dim);">
-        ENGINE: <span id="engine-type" style="color: #fff;">LINEAR PHASE</span>
-    </div>
-</footer>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'MAX', u: 'RMFMAXXX48' },
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
         { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
         { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '00s', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'CHL', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'CLA', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'DNC', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'GLD', u: 'rmf_gold' },
-        { n: 'RMF PARTY', s: 'PTY', u: 'rmf_party' }
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('grid');
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
     let current = -1;
 
-    // Generowanie kafelków-pokręteł
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    }
+    setInterval(clock, 1000); clock();
+
     STATIONS.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'knob-station';
-        div.innerHTML = `<div class="label">Module</div><div class="val">${s.s}</div>`;
-        div.onclick = () => play(i);
-        grid.appendChild(div);
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `
+            <div class="led"></div>
+            <div class="t-top">STEP ${i+1}</div>
+            <div class="t-bottom">${s.s}</div>
+        `;
+        t.onclick = () => play(i);
+        grid.appendChild(t);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.knob-station').forEach((k, idx) => k.classList.toggle('active', idx === i));
-        document.getElementById('cur-st-name').textContent = "CURRENT // " + STATIONS[i].n.toUpperCase();
-        
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "ACID V // ENGINE: " + STATIONS[i].n;
+        document.getElementById('st-name').textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
-        
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
@@ -214,13 +230,15 @@
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
-    function setV(v) { player.volume = v / 100; }
-
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    
+    function setV(v) { 
+        player.volume = v / 100; 
+        const deg = (v * 2.4) - 120; // Obrót knoba od -120 do +120 stopni
+        document.getElementById('knob').style.transform = `rotate(${deg}deg)`;
     }
-    setInterval(clock, 1000); clock();
+
+    // Startowa głośność
+    setV(50);
 </script>
 </body>
 </html>
