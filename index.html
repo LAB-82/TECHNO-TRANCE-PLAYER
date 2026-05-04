@@ -1,352 +1,202 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
+    <title>Techno Trance Player - Original Style</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #e0e0e0; /* Jasne tło pasujące do białego radia */
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+            margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
+            background: #0a0a0a; font-family: Arial, sans-serif; overflow: hidden;
+            -webkit-user-select: none; user-select: none;
         }
 
+        /* OBUDOWA - CZARNA, ZAOKRĄGLONA */
         .frame {
-            width: 100%;
-            max-width: 900px;
-            border-radius: 60px; /* Mocne zaokrąglenie z grafiki */
-            padding: 20px;
-            background: #ffffff; /* Biała obudowa */
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), inset 0 -5px 15px rgba(0,0,0,0.05);
-            position: relative;
-            border: 1px solid #d1d1d1;
-            box-sizing: border-box;
-        }
-
-        /* Stan POWER - delikatna poświata zamiast agresywnej czerwieni */
-        .frame.powered {
-            background: #ffffff;
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.2), 0 20px 60px rgba(0, 0, 0, 0.1);
+            width: 100%; max-width: 900px; border-radius: 60px; padding: 20px;
+            background: #111; /* Oryginalna czerń */
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 10px rgba(255,255,255,0.05);
+            border: 1px solid #222; box-sizing: border-box; position: relative;
         }
 
         .title {
-            text-align: center;
-            font-size: clamp(28px, 6vw, 48px);
-            font-weight: bold !important;
-            letter-spacing: 10px;
-            color: #d0d0d0; /* Wyłączony napis */
-            font-family: 'DS-Digital', monospace !important;
-            margin: 0 auto 16px auto;
-            display: block;
-            width: fit-content;
+            text-align: center; font-size: 48px; font-weight: bold; letter-spacing: 10px;
+            color: #1a1a1a; font-family: 'DS-Digital', monospace; margin-bottom: 16px;
             transition: 0.3s;
         }
-
-        .frame.powered .title {
-            color: #333333 !important; /* Napis po włączeniu */
-            text-shadow: 0 0 1px rgba(0,0,0,0.2);
-        }
+        .frame.powered .title { color: #00FF00; text-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
 
         .display-frame {
-            background: #000;
-            border: 8px solid #f0f0f0; /* Szeroka ramka ekranu z grafiki */
-            border-radius: 12px;
-            margin: 0.25cm auto 0 auto;
-            box-sizing: border-box;
-            overflow: hidden;
-            width: 600px;
-            box-shadow: inset 0 0 10px #000;
+            background: #000; border: 4px solid #1a1a1a; border-radius: 10px;
+            margin: 0 auto; overflow: hidden; width: 600px;
+            box-shadow: inset 0 0 20px #000;
         }
-
-        canvas { width: 100%; height: 100px; display: block; }
+        canvas { width: 100%; height: 120px; display: block; }
 
         .main-content {
-            position: relative;
-            width: 100%;
-            min-height: 320px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 0.25cm;
+            position: relative; width: 100%; min-height: 300px;
+            display: flex; flex-direction: column; align-items: center; padding-top: 20px;
         }
 
-        /* Głośniki z maskownicą (pattern kropkowy) */
-        .speaker {
-            width: 180px; height: 180px; border-radius: 50%; position: absolute; bottom: 1.2cm;
-            background: 
-                radial-gradient(circle, #888 0.5px, transparent 1px) 0 0 / 4px 4px,
-                #dcdcdc;
-            border: 4px solid #f0f0f0; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
-            z-index: 1; display: flex; align-items: center; justify-content: center;
-        }
-        .speaker::after { 
-            content: ''; width: 60px; height: 60px; border-radius: 50%; 
-            background: radial-gradient(circle, #bbb 0%, #dcdcdc 100%); 
-            opacity: 0.3;
-        }
-        
-        .speaker.left { left: 1cm; } 
-        .speaker.right { right: 1cm; }
-
+        /* PRZYCISKI - STYL Z TWOJEGO SCREENA */
         .controls-main {
-            display: flex; gap: 6px; padding: 12px; border-radius: 12px;
-            background: #f8f8f8; /* Jasny panel przycisków */
-            border: 1px solid #ddd; 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-            z-index: 10; width: fit-content; align-items: flex-start;
+            display: flex; gap: 8px; padding: 15px; border-radius: 8px;
+            background: #080808; border: 1px solid #1a1a1a;
+            box-shadow: inset 0 0 10px #000; z-index: 10;
         }
 
-        .btn-rect, .btn-v {
-            border: 1px solid #ccc; 
-            background: linear-gradient(180deg, #ffffff 0%, #efefef 100%); 
-            color: #999;
+        .btn-rect {
+            width: 70px; height: 45px; border-radius: 4px;
+            background: #111; border: 1px solid #222; color: #444;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .btn-rect svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* PODŚWIETLENIA */
+        .frame.powered .btn-rect { color: #666; border-color: #333; }
+        .frame.powered .btn-rect.active { 
+            color: #00FF00 !important; border-color: #00FF00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.3), inset 0 0 5px rgba(0, 255, 0, 0.2);
         }
 
-        .btn-rect { width: 68px; height: 38px; border-radius: 6px; }
-        .btn-rect svg, .btn-v svg { width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
-
-        .vol-wrapper { display: flex; flex-direction: column; gap: 4px; width: 100px; height: 38px; justify-content: flex-start; }
-        .vol-btns { display: flex; gap: 4px; height: 30px; }
-        .btn-v { flex: 1; height: 100%; border-radius: 50%; width: 35px; height: 35px; } /* Okrągłe pokrętła/przyciski */
-        .vol-label { display: none; } 
-        .vol-bar { width: 100%; height: 6px; background: #eee; border-radius: 3px; position: relative; overflow: hidden; }
-        .vol-fill { height: 100%; width: 50%; background: #555; opacity: 0; transition: width 0.1s; }
-
-        .frame.powered .btn-rect, .frame.powered .btn-v { color: #444; border-color: #bbb; }
-        .frame.powered .btn-rect.active, .frame.powered .btn-v.active { 
-            background: #fff; border-color: #888; color: #000 !important; box-shadow: inset 0 2px 4px rgba(0,0,0,0.1); 
+        /* VOLUME SECTION */
+        .vol-wrapper { display: flex; flex-direction: column; width: 140px; justify-content: center; padding-left: 10px; }
+        .vol-btns { display: flex; gap: 5px; margin-bottom: 8px; }
+        .btn-v { 
+            flex: 1; height: 35px; background: #111; border: 1px solid #222; 
+            color: #444; border-radius: 4px; cursor: pointer;
         }
+        .vol-bar { width: 100%; height: 4px; background: #1a1a1a; border-radius: 2px; overflow: hidden; }
+        .vol-fill { height: 100%; width: 50%; background: #00FF00; opacity: 0; box-shadow: 0 0 10px #00FF00; }
         .frame.powered .vol-fill { opacity: 1; }
+        .frame.powered .btn-v { color: #666; }
 
-        .lab-logo { margin-top: 1.2cm; width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 11px; font-weight: bold; }
-        .frame.powered .lab-logo { color: #333; }
-        .link-container { margin-top: auto; padding-bottom: 1cm; text-align: center; z-index: 10; }
-        .link-container a { color: #ccc; text-decoration: none; font-family: 'DS-Digital'; letter-spacing: 2px; font-size: 14px; }
-        .frame.powered .link-container a { color: #555; }
+        /* LOGO I LINK */
+        .lab-logo { margin-top: 40px; color: #222; font-weight: bold; font-size: 14px; letter-spacing: 2px; }
+        .frame.powered .lab-logo { color: #00FF00; opacity: 0.7; }
+        .link-container { margin-top: 20px; }
+        .link-container a { color: #222; text-decoration: none; font-family: 'DS-Digital'; font-size: 16px; }
+        .frame.powered .link-container a { color: #00FF00; opacity: 0.5; }
 
-        /* --- MOBILE --- */
+        /* GŁOŚNIKI */
+        .speaker {
+            width: 160px; height: 160px; border-radius: 50%; position: absolute; bottom: 60px;
+            background: radial-gradient(circle, #1a1a1a 1px, transparent 1px) 0 0 / 4px 4px, #0d0d0d;
+            border: 2px solid #1a1a1a; box-shadow: inset 0 0 20px #000;
+        }
+        .speaker.left { left: 40px; } .speaker.right { right: 40px; }
+
         @media(max-width:700px) {
             .speaker { display: none; }
-            .display-frame { width: 100% !important; margin-bottom: 20px; }
-            canvas { height: 160px !important; }
-            
-            .controls-main { 
-                display: grid !important; 
-                grid-template-columns: 1fr 1fr; 
-                width: 100% !important; 
-                gap: 12px; 
-                background: transparent; border: none; box-shadow: none; padding: 0;
-                box-sizing: border-box;
-            }
-
-            .btn-rect { 
-                width: 3.5cm; 
-                height: 55px; 
-            }
-            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
-            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
-
-            .vol-wrapper { 
-                grid-column: span 2; 
-                width: 100% !important; 
-                height: auto !important; 
-                margin-top: 15px; 
-                padding: 0 7.5mm; 
-                box-sizing: border-box;
-            }
-            
-            .vol-btns { 
-                height: 55px; 
-                order: 2; 
-                display: flex; 
-                justify-content: space-between;
-                align-items: center;
-                width: 100%;
-            }
-
-            .btn-v { 
-                width: 2cm; 
-                height: 55px; 
-                flex: none;
-                border-radius: 8px;
-            }
-
-            .vol-label { 
-                display: block; 
-                color: #bbb; 
-                font-family: 'DS-Digital'; 
-                font-size: 16px; 
-                letter-spacing: 2px;
-            }
-            .frame.powered .vol-label { color: #333; }
-
-            .vol-bar { 
-                height: 12px; 
-                order: 1; 
-                margin-bottom: 10px; 
-                width: 100%;
-            }
-
-            .link-container { margin-top: 2cm; }
+            .display-frame { width: 90%; }
+            .controls-main { scale: 0.9; }
         }
     </style>
 </head>
+<body>
 
-<body oncontextmenu="return false;">
-    <div class="frame">
-        <div class="title">MUZYCZNE RADIO</div>
-        <div class="display-frame"><canvas id="eq"></canvas></div>
-        <div class="main-content">
-            <div class="speaker left"></div>
-            <div class="speaker right"></div>
+<div class="frame" id="mainFrame">
+    <div class="title">TECHNO PLAYER</div>
+    <div class="display-frame"><canvas id="eq"></canvas></div>
+    <div class="main-content">
+        <div class="speaker left"></div>
+        <div class="speaker right"></div>
 
-            <div class="controls-main" id="controls">
-                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
-                
-                <div class="vol-wrapper" id="vol-container">
-                    <div class="vol-btns">
-                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <div class="vol-label">VOLUME</div>
-                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                    </div>
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+        <div class="controls-main">
+            <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+            <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+            <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+            <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+            
+            <div class="vol-wrapper">
+                <div class="vol-btns">
+                    <button id="vDown" class="btn-v">-</button>
+                    <button id="vUp" class="btn-v">+</button>
                 </div>
+                <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
             </div>
-
-            <div class="lab-logo">L.A.B.</div>
-            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
         </div>
+
+        <div class="lab-logo">L.A.B. SYSTEM</div>
+        <div class="link-container"><a href="#">WWW.TECHNO-TRANCE.PL</a></div>
     </div>
+</div>
 
-    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+<audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
-    <script>
-        const audio = document.getElementById('stream');
-        const canvas = document.getElementById('eq');
-        const ctx = canvas.getContext('2d');
-        const pwrBtn = document.getElementById('pwr');
-        const playBtn = document.getElementById('play');
-        const stopBtn = document.getElementById('stop');
-        const muteBtn = document.getElementById('mute');
-        const mutePath = document.getElementById('mute-path');
-        const vFill = document.getElementById('vFill');
-        const controls = document.getElementById('controls');
+<script>
+    const audio = document.getElementById('stream');
+    const canvas = document.getElementById('eq');
+    const ctx = canvas.getContext('2d');
+    const pwrBtn = document.getElementById('pwr');
+    const playBtn = document.getElementById('play');
+    const stopBtn = document.getElementById('stop');
+    const muteBtn = document.getElementById('mute');
+    const vFill = document.getElementById('vFill');
+    const frame = document.getElementById('mainFrame');
 
-        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
-        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+    let audioCtx, analyser, source, dataArray, isPwr = false;
 
-        let audioCtx, analyser, source, dataArray, isPwr = false;
-
-        function resize() {
-            const df = document.querySelector('.display-frame');
-            if(window.innerWidth > 700) {
-                df.style.width = controls.offsetWidth + "px";
-            } else {
-                df.style.width = "100%";
-            }
-            canvas.width = df.clientWidth;
-            drawStatic();
+    function drawBars(data) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const bars = 32;
+        const barW = canvas.width / bars;
+        for (let i = 0; i < bars; i++) {
+            let h = data ? (data[i] / 255) * canvas.height : 2;
+            ctx.fillStyle = isPwr ? "#00FF00" : "#111";
+            ctx.fillRect(i * barW, canvas.height - h, barW - 2, h);
         }
+    }
 
-        function drawBars(data) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const totalBars = 33;
-            const barW = canvas.width / totalBars;
-            for (let i = 0; i < totalBars; i++) {
-                let level = data ? Math.floor(data[i] / 24) : 0;
-                for (let j = 0; j < 10; j++) {
-                    ctx.fillStyle = (j < level) ? "#ffffff" : "#1a1a1a"; /* Białe słupki na czarnym tle */
-                    ctx.fillRect(i * barW + 1, canvas.height - (j * 9) - 10, barW - 2, 7);
-                }
-            }
+    pwrBtn.onclick = function() {
+        isPwr = !isPwr;
+        frame.classList.toggle('powered');
+        this.classList.toggle('active');
+        if (!isPwr) { audio.pause(); playBtn.classList.remove('active'); drawBars(null); }
+    };
+
+    playBtn.onclick = function() {
+        if (!isPwr) return;
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            source = audioCtx.createMediaElementSource(audio);
+            source.connect(analyser);
+            source.connect(audioCtx.destination);
+            analyser.fftSize = 64;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
         }
+        audio.play();
+        this.classList.add('active');
+        render();
+    };
 
-        const flash = el => {
-            el.classList.add('active');
-            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted)) el.classList.remove('active'); }, 600);
-        };
+    stopBtn.onclick = function() {
+        audio.pause(); audio.currentTime = 0;
+        playBtn.classList.remove('active');
+        drawBars(null);
+    };
 
-        function drawStatic() { drawBars(null); }
-        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+    function render() {
+        if (!isPwr || audio.paused) return;
+        requestAnimationFrame(render);
+        analyser.getByteFrequencyData(dataArray);
+        drawBars(dataArray);
+    }
 
-        pwrBtn.onclick = function() {
-            isPwr = !isPwr;
-            document.querySelector('.frame').classList.toggle('powered');
-            this.classList.toggle('active');
-            if (!isPwr) {
-                audio.pause();
-                playBtn.classList.remove('active');
-                audio.muted = false;
-                muteBtn.classList.remove('active');
-                mutePath.setAttribute('d', ICON_MUTE_OFF);
-                drawStatic();
-            }
-            resize();
-        };
+    function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+    document.getElementById('vUp').onclick = () => { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); };
+    document.getElementById('vDown').onclick = () => { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); };
 
-        playBtn.onclick = function() {
-            if (!isPwr) return;
-            if (!audioCtx) {
-                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                analyser.fftSize = 128;
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
-                source.connect(audioCtx.destination);
-            }
-            audio.play();
-            this.classList.add('active');
-            updateEQ();
-        };
-
-        stopBtn.onclick = function() {
-            if (!isPwr) return;
-            audio.pause(); audio.currentTime = 0;
-            audio.volume = 0.5;
-            playBtn.classList.remove('active');
-            updateVol();
-            flash(this);
-            drawStatic();
-        };
-
-        muteBtn.onclick = function() {
-            if (!isPwr) return;
-            audio.muted = !audio.muted;
-            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
-            this.classList.toggle('active', audio.muted);
-        };
-
-        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
-        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
-
-        function updateEQ() {
-            if (!isPwr || audio.paused) return;
-            requestAnimationFrame(updateEQ);
-            analyser.getByteFrequencyData(dataArray);
-            drawBars(dataArray);
-        }
-
-        window.onresize = resize;
-        window.onload = resize;
-        audio.volume = 0.5;
+    window.onload = () => {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        drawBars(null);
         updateVol();
-    </script>
+    };
+</script>
 </body>
 </html>
