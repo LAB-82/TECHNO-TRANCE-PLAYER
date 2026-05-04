@@ -238,4 +238,197 @@
                 width: 3.5cm; 
                 height: 55px; 
             }
-            .btn-rect:nth-child(odd) { margin-left:
+            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
+            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
+
+            .vol-wrapper { 
+                grid-column: span 2; 
+                width: 100% !important; 
+                height: auto !important; 
+                margin-top: 15px; 
+                padding: 0 7.5mm; 
+                box-sizing: border-box;
+            }
+            
+            .vol-btns { 
+                height: 55px; 
+                order: 2; 
+                display: flex; 
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .btn-v { 
+                width: 2cm; 
+                height: 55px; 
+                flex: none;
+                border-radius: 5px;
+            }
+
+            .vol-label { 
+                display: block; 
+                color: #bbb; 
+                font-family: 'DS-Digital'; 
+                font-size: 16px; 
+                letter-spacing: 2px;
+            }
+            .frame.powered .vol-label { color: #333; }
+
+            .vol-bar { 
+                height: 12px; 
+                order: 1; 
+                margin-bottom: 10px; 
+                width: 100%;
+            }
+
+            .link-container { margin-top: 2cm; }
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="frame">
+        <div class="title">MUZYCZNE RADIO</div>
+        <div class="display-frame"><canvas id="eq"></canvas></div>
+        <div class="main-content">
+            <div class="speaker left"></div>
+            <div class="speaker right"></div>
+
+            <div class="controls-main" id="controls">
+                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                
+                <div class="vol-wrapper" id="vol-container">
+                    <div class="vol-btns">
+                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                        <div class="vol-label">VOLUME</div>
+                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+                    </div>
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                </div>
+            </div>
+
+            <div class="lab-logo">L.A.B.</div>
+            <div class="link-container"><a href="[https://www.muzyczneradio.pl](https://www.muzyczneradio.pl)" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+        </div>
+    </div>
+
+    <audio id="stream" crossorigin="anonymous" src="[https://stream.rcs.revma.com/gzwc1xcq042vv](https://stream.rcs.revma.com/gzwc1xcq042vv)"></audio>
+
+    <script>
+        const audio = document.getElementById('stream');
+        const canvas = document.getElementById('eq');
+        const ctx = canvas.getContext('2d');
+        const pwrBtn = document.getElementById('pwr');
+        const playBtn = document.getElementById('play');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const controls = document.getElementById('controls');
+
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+
+        let audioCtx, analyser, source, dataArray, isPwr = false;
+
+        function resize() {
+            const df = document.querySelector('.display-frame');
+            if(window.innerWidth > 700) {
+                df.style.width = controls.offsetWidth + "px";
+            } else {
+                df.style.width = "100%";
+            }
+            canvas.width = df.clientWidth;
+            drawStatic();
+        }
+
+        function drawBars(data) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const totalBars = 33;
+            const barW = canvas.width / totalBars;
+            for (let i = 0; i < totalBars; i++) {
+                let level = data ? Math.floor(data[i] / 24) : 0;
+                for (let j = 0; j < 10; j++) {
+                    ctx.fillStyle = (j < level) ? "#ffffff" : "#222222";
+                    ctx.fillRect(i * barW + 1, canvas.height - (j * 9) - 10, barW - 2, 7);
+                }
+            }
+        }
+
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted)) el.classList.remove('active'); }, 600);
+        };
+
+        function drawStatic() { drawBars(null); }
+        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                audio.pause();
+                playBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+                drawStatic();
+            }
+            resize();
+        };
+
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.fftSize = 128;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                source.connect(audioCtx.destination);
+            }
+            audio.play();
+            this.classList.add('active');
+            updateEQ();
+        };
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.pause(); audio.currentTime = 0;
+            audio.volume = 0.5;
+            playBtn.classList.remove('active');
+            updateVol();
+            flash(this);
+            drawStatic();
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        function updateEQ() {
+            if (!isPwr || audio.paused) return;
+            requestAnimationFrame(updateEQ);
+            analyser.getByteFrequencyData(dataArray);
+            drawBars(dataArray);
+        }
+
+        window.onresize = resize;
+        window.onload = resize;
+        audio.volume = 0.5;
+        updateVol();
+    </script>
+</body>
+</html>
