@@ -3,167 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF SUPERNOVA TERMINAL</title>
+    <title>RMF LANDR EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
 
         :root {
-            --sn-deep: #0a0a12;
-            --sn-panel: #161625;
-            --sn-purple: #8a2be2;
-            --sn-neon: #ff00ff;
-            --sn-text: #e0e0ff;
-            --sn-glass: rgba(255, 255, 255, 0.03);
+            --landr-bg: #1d2333;
+            --landr-panel: #252c3f;
+            --landr-blue: #5684f7;
+            --landr-cyan: #4fe3d1;
+            --landr-text: #9ea7ba;
+            --landr-tile-active: #323d57;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--sn-deep); color: var(--sn-text); 
+            background: var(--landr-bg); color: #fff; 
             font-family: 'Inter', sans-serif;
             display: flex; flex-direction: column;
             padding: 15px; overflow: hidden; 
         }
 
-        /* TOP BAR - STYL SUPERNOVA */
+        /* HEADER - LANDR STYLE */
         header { 
             height: 50px; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(90deg, #1a1a2e, #0f0f1a);
-            border-radius: 8px; margin-bottom: 15px; padding: 0 20px;
-            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px; padding: 0 10px;
         }
-        .logo { font-family: 'Syncopate', sans-serif; font-weight: 700; letter-spacing: 3px; font-size: 14px; color: #fff; }
-        .logo span { color: var(--sn-neon); text-shadow: 0 0 10px var(--sn-neon); }
-        .preset-info { font-size: 12px; color: #889; border-left: 1px solid #445; padding-left: 15px; }
+        .logo { font-size: 14px; font-weight: 600; letter-spacing: 1px; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .logo span { color: var(--landr-text); font-weight: 300; }
+        .master-pill { 
+            background: var(--landr-cyan); color: #1d2333; 
+            padding: 5px 25px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        }
 
-        .app-content { display: flex; flex: 1; gap: 15px; min-height: 0; }
+        .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GRID 5x3 - ORYGINALNY UKŁAD I ROZMIAR */
+        /* GRID - ORYGINALNY UKŁAD 5x3 */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 10px; 
+            gap: 12px; 
         }
 
         .tile {
-            background: var(--sn-panel);
-            border: 1px solid rgba(138, 43, 226, 0.2);
-            border-radius: 6px;
+            background: var(--landr-panel);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; transition: 0.3s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            cursor: pointer; transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        .tile:hover { border-color: var(--sn-purple); background: #1c1c30; }
+        .tile:hover { background: #2d364d; transform: translateY(-2px); }
 
-        .tile .t-top { font-size: 8px; font-weight: 700; color: #667; text-transform: uppercase; letter-spacing: 1px; }
-        .tile .t-bottom { font-size: 13px; font-weight: 600; color: #fff; margin-top: 4px; }
+        .tile .t-top { font-size: 9px; color: var(--landr-text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #ced4e0; }
 
-        /* AKTYWNA STACJA */
+        /* AKTYWNY KAFELEK */
         .tile.active {
-            border-color: var(--sn-neon);
-            background: radial-gradient(circle at center, #251a3a, #161625);
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+            background: var(--landr-tile-active);
+            border-color: var(--landr-blue);
+            box-shadow: 0 0 15px rgba(86, 132, 247, 0.2);
         }
-        .tile.active::after {
-            content: ''; position: absolute; top: 5px; right: 5px;
-            width: 4px; height: 4px; background: var(--sn-neon); border-radius: 50%;
-            box-shadow: 0 0 8px var(--sn-neon);
-        }
+        .tile.active .t-bottom { color: var(--landr-blue); }
 
-        /* SIDEBAR - CENTRUM KONTROLI */
+        /* SIDEBAR - SEKCYJNY PANEL */
         .sidebar { 
-            flex: 0.7; background: var(--sn-panel); border-radius: 12px;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-around;
-            padding: 20px; border: 1px solid rgba(255,255,255,0.05);
+            flex: 0.7; display: flex; flex-direction: column; gap: 20px;
         }
 
-        /* POKRĘTŁO GŁOŚNOŚCI - STYL GAŁEK SUPERNOVA */
-        .knob-container { text-align: center; }
+        .side-panel {
+            background: var(--landr-panel); border-radius: 12px;
+            padding: 20px; display: flex; flex-direction: column; align-items: center;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+
+        /* POKRĘTŁO GŁOŚNOŚCI (LOUDNESS) */
+        .knob-area { position: relative; width: 130px; height: 130px; margin: 10px 0; }
         .knob-outer {
-            width: 120px; height: 120px;
-            background: #0d0d16; border-radius: 50%;
+            width: 100%; height: 100%;
+            background: #1d2333; border-radius: 50%;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.05);
             display: flex; align-items: center; justify-content: center;
-            position: relative; cursor: ns-resize;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-            border: 2px solid #222;
+            cursor: ns-resize;
         }
-        
-        /* Pierścień postępu */
-        .knob-ring {
-            position: absolute; inset: 5px; border-radius: 50%;
-            border: 3px solid transparent;
-            border-top-color: var(--sn-purple);
-            transform: rotate(0deg);
+        .knob-indicator {
+            position: absolute; top: 10px; width: 3px; height: 12px;
+            background: var(--landr-blue); border-radius: 2px;
+            transform-origin: 1.5px 55px;
         }
+        .vol-val { font-size: 24px; font-weight: 300; color: #fff; }
+        .panel-label { font-size: 10px; color: var(--landr-text); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
 
-        .knob-inner {
-            width: 85px; height: 85px; background: #1a1a2e; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'Syncopate', sans-serif; font-size: 18px; color: var(--sn-neon);
-            text-shadow: 0 0 10px var(--sn-neon);
-        }
-
-        .knob-dot {
-            position: absolute; top: 12px; width: 6px; height: 6px;
-            background: var(--sn-neon); border-radius: 50%;
-            box-shadow: 0 0 10px var(--sn-neon);
-        }
-
-        /* PRZYCISKI STEROWANIA - JAK KAFELKI */
-        .controls { display: flex; gap: 12px; width: 100%; justify-content: center; }
+        /* PRZYCISKI STEROWANIA - NA WZÓR KAFELKÓW */
+        .controls { display: flex; gap: 10px; width: 100%; }
         .btn-tile {
-            width: 60px; height: 60px; background: var(--sn-panel);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            flex: 1; height: 60px; background: var(--landr-panel);
+            border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.2s;
         }
-        .btn-tile:hover { border-color: var(--sn-purple); }
-        .btn-tile:active { transform: scale(0.95); background: #000; }
-        .btn-tile svg { width: 22px; height: 22px; fill: #889; }
-        .btn-tile.play-btn { border-color: var(--sn-purple); width: 80px; }
-        .btn-tile.play-btn svg { fill: #fff; filter: drop-shadow(0 0 5px var(--sn-purple)); }
+        .btn-tile:hover { background: #2d364d; }
+        .btn-tile svg { width: 20px; height: 20px; fill: var(--landr-text); }
+        .btn-tile.active svg { fill: var(--landr-cyan); }
 
-        .label { font-size: 10px; font-weight: 700; color: #556; text-transform: uppercase; letter-spacing: 2px; }
-
-        @media (max-width: 600px) {
+        @media (max-width: 800px) {
             .app-content { flex-direction: column; overflow-y: auto; }
             .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { padding: 30px; }
+            .sidebar { flex: none; width: 100%; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">SUPER<span>NOVA</span></div>
-    <div class="preset-info" id="playing-now">Classic RMF FM*</div>
-    <div style="font-family: monospace; color: var(--sn-neon);" id="timer">00:00</div>
+    <div class="logo">LANDR <span>Mastering Pro</span></div>
+    <div class="master-pill">Master</div>
+    <div style="font-size: 12px; color: var(--landr-text);" id="timer">00:00</div>
 </header>
 
 <div class="app-content">
     <div class="grid" id="station-grid"></div>
 
     <aside class="sidebar">
-        <div class="knob-container">
-            <div class="label" style="margin-bottom: 15px;">Master Gain</div>
-            <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                <div class="knob-ring" id="knob-ring"></div>
-                <div class="knob-dot" id="knob-pointer"></div>
-                <div class="knob-inner" id="vol-txt">50%</div>
+        <div class="side-panel">
+            <div class="panel-label">Loudness</div>
+            <div class="knob-area">
+                <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+                    <div class="knob-indicator" id="knob-pointer"></div>
+                    <div class="vol-val" id="vol-txt">50</div>
+                </div>
             </div>
+            <div style="color: var(--landr-text); font-size: 11px;">Amount</div>
         </div>
 
-        <div style="text-align: center; width: 100%;">
-            <div class="label" style="margin-bottom: 12px;">Transport</div>
+        <div class="side-panel">
+            <div class="panel-label">Transport</div>
             <div class="controls">
                 <div class="btn-tile" onclick="skip(-1)">
                     <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
                 </div>
-                <div class="btn-tile play-btn" onclick="toggle()">
+                <div class="btn-tile active" onclick="toggle()">
                     <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </div>
                 <div class="btn-tile" onclick="skip(1)">
@@ -171,8 +154,6 @@
                 </div>
             </div>
         </div>
-
-        <div style="font-size: 9px; color: #445; letter-spacing: 1px;">NURO AUDIO X RMF</div>
     </aside>
 </div>
 
@@ -210,7 +191,7 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">MODULE 0${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-top">Slot 0${i+1}</div><div class="t-bottom">${s.s}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
@@ -218,7 +199,6 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = `${STATIONS[i].n}*`;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -257,10 +237,9 @@
     function stopRotate() { isDragging = false; }
 
     function updateKnob() {
-        const rotation = (volume * 2.8) - 140;
-        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg) translateY(-45px)`;
-        document.getElementById('knob-ring').style.transform = `rotate(${rotation}deg)`;
-        document.getElementById('vol-txt').textContent = Math.round(volume) + "%";
+        const rotation = (volume * 2.4) - 120;
+        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg)`;
+        document.getElementById('vol-txt').textContent = Math.round(volume);
         player.volume = volume / 100;
     }
     
