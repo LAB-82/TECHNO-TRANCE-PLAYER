@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF FM SEKTOR - BLUE EDITION</title>
+    <title>RMF FM SEKTOR - PRO AUDIO</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Montserrat+Alternates:wght@700;800&display=swap');
 
         :root {
             --s-bg: #13161a;
-            --s-panel: #20252b;
-            --s-init-blue: #00d4ff; /* Oryginalny niebieski Initial */
+            --s-panel: #1b1f24;
+            --s-init-blue: #00d4ff; 
             --rmf-neon: #ffcc00; 
             --s-border: #0a0c0e;
-            --s-text: #9097a0;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -27,39 +26,35 @@
         .sektor-vst {
             width: 1000px; height: 600px;
             background: var(--s-bg);
-            border: 2px solid #333; border-radius: 4px;
+            border: 1px solid #333; border-radius: 2px;
             display: flex; flex-direction: column;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.9);
-            position: relative;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.9);
         }
 
         /* TOP DISPLAY */
         .top-nav {
-            height: 65px; background: #1a1e24;
+            height: 65px; background: #161a1f;
             display: flex; align-items: center; justify-content: center;
             border-bottom: 2px solid var(--s-border);
-            padding: 0 20px;
         }
 
         .patch-display {
-            width: 520px; height: 40px; background: #0b0d0f;
-            border: 1px solid #3d444d; border-radius: 2px;
+            width: 520px; height: 38px; background: #080a0c;
+            border: 1px solid #2a2f36; border-radius: 2px;
             display: flex; align-items: center; justify-content: space-between;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
         }
 
         .p-btn { 
-            width: 45px; height: 100%; background: #262b32; 
-            color: #fff; font-size: 10px; border: none;
-            display: flex; align-items: center; justify-content: center;
+            width: 50px; height: 100%; background: #1e2329; 
+            color: #555; font-size: 10px; border: none;
             cursor: pointer; text-transform: uppercase; font-weight: 700;
         }
-        .p-btn:hover { background: #2f353d; color: var(--s-init-blue); }
+        .p-btn:hover { color: var(--s-init-blue); background: #252b33; }
 
         .p-name { 
             flex: 1; text-align: center; color: var(--s-init-blue); 
-            font-weight: 700; letter-spacing: 2px; font-size: 16px;
-            text-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
+            font-weight: 700; letter-spacing: 2px; font-size: 15px;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
         }
 
         .main-frame { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
@@ -67,99 +62,97 @@
         /* BROWSER SECTION */
         .browser-section {
             flex: 1.6; background: var(--s-panel);
-            border-radius: 3px; border: 1px solid var(--s-border);
-            padding: 12px; display: flex; flex-direction: column;
+            border: 1px solid var(--s-border);
+            padding: 10px; display: flex; flex-direction: column;
         }
 
-        .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; }
+        .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; align-content: stretch; }
 
         .tile {
-            flex: 1 1 calc(25% - 6px);
-            min-width: 100px;
-            background: linear-gradient(to bottom, #2d333b, #1d2127);
-            border: 1px solid #111; border-radius: 3px;
+            flex: 1 1 calc(25% - 4px);
+            background: #23282f;
+            border: none; /* Brak pierścienia/obramowania */
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 13px; color: var(--rmf-neon);
+            cursor: pointer; font-size: 13px; 
+            color: var(--rmf-neon); /* Kolor jak RMF FM zawsze */
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             font-weight: 600;
             position: relative;
-            z-index: 1;
         }
         
-        .tile:hover { background: linear-gradient(to bottom, #343b44, #22272e); }
+        .tile:hover { background: #2a313a; }
         
-        /* AKTYWNA STACJA - NIEBIESKI PRZYCISK + FALA RMF */
+        /* AKTYWNA STACJA - FALA I POŚWIATA */
         .tile.active { 
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, #1a1e23 100%);
-            color: #fff;
-            text-shadow: 0 0 8px var(--s-init-blue);
-        }
-
-        /* EMITOWANIE FALI (W KOLORZE RMF) SPOD PRZYCISKU */
-        .tile.active::after {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            border-radius: 4px;
-            box-shadow: 0 0 20px 2px var(--rmf-neon);
-            opacity: 0.5;
-            z-index: -1;
-            pointer-events: none;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, #1a1e23 100%);
+            color: var(--rmf-neon);
+            text-shadow: 0 0 12px var(--rmf-neon); /* Poświata na napisie */
+            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.4); /* Fala wewnątrz kafelka */
         }
 
         /* MASTER SECTION */
         .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 15px; }
+        
         .control-box { 
             background: var(--s-panel); border: 1px solid var(--s-border); 
             padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
         .play-btn {
-            width: 100%; height: 55px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
-            border: 1px solid #000; border-radius: 3px; cursor: pointer;
+            width: 70px; height: 70px; background: radial-gradient(circle, #333, #111);
+            border: 2px solid #000; border-radius: 50%; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 #000; margin-bottom: 35px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.1);
+            margin-bottom: 30px;
         }
-        .play-btn svg { width: 28px; fill: var(--s-init-blue); filter: drop-shadow(0 0 8px var(--s-init-blue)); }
+        .play-btn svg { width: 24px; fill: var(--s-init-blue); filter: drop-shadow(0 0 5px var(--s-init-blue)); }
+        .play-btn:active { transform: translateY(2px); box-shadow: 0 2px 5px #000; }
 
-        /* VOL KNOB */
+        /* PROFESIONAL VOL KNOB - INITIAL STYLE */
         .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
         .knob-base {
-            width: 100px; height: 100px; background: #0a0c0e; border-radius: 50%;
-            margin-bottom: 20px; border: 5px solid #111; position: relative;
+            width: 90px; height: 90px; background: #080a0c; border-radius: 50%;
+            margin-bottom: 20px; border: 4px solid #111; position: relative;
+            box-shadow: inset 0 2px 10px #000;
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #111 0%);
+            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #1a1e23 0%);
         }
         .knob-center { 
-            position: absolute; inset: 15px; 
-            background: radial-gradient(circle, #3d444d, #111); 
+            position: absolute; inset: 12px; 
+            background: linear-gradient(145deg, #2c323a, #13161a); 
             border-radius: 50%; border: 1px solid #000; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .knob-center::after {
+            content: ''; width: 4px; height: 12px; background: var(--s-init-blue);
+            position: absolute; top: 8px; border-radius: 2px;
+            box-shadow: 0 0 5px var(--s-init-blue);
         }
 
+        /* PROFESIONAL SLIDER */
         .vol-slider { 
-            width: 100%; appearance: none; background: #0a0c0e; height: 6px; 
-            border-radius: 10px; border: 1px solid #333; outline: none;
+            width: 100%; appearance: none; background: #080a0c; height: 4px; 
+            border-radius: 2px; outline: none; border: 1px solid #222;
         }
         .vol-slider::-webkit-slider-thumb {
-            appearance: none; width: 14px; height: 14px; background: #fff;
-            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-init-blue);
-            box-shadow: 0 0 10px var(--s-init-blue);
+            appearance: none; width: 18px; height: 10px; 
+            background: linear-gradient(to bottom, #444, #111);
+            border: 1px solid #000; border-radius: 1px; cursor: pointer;
+            box-shadow: 0 0 8px var(--s-init-blue);
         }
 
-        /* LOGO RMF FM */
+        /* FOOTER LOGO */
         .footer-logo { 
-            flex: 0.25; background: #0b0d0f; display: flex; 
+            flex: 0.25; background: #080a0c; display: flex; 
             justify-content: center; align-items: center; border: 1px solid #000; 
         }
         .footer-logo span { 
             font-family: 'Montserrat Alternates', sans-serif;
-            font-size: 32px; color: var(--rmf-neon); font-weight: 800; 
-            letter-spacing: -1px;
-            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+            font-size: 30px; color: var(--rmf-neon); font-weight: 800; 
+            letter-spacing: -1px; text-shadow: 0 0 15px rgba(255, 204, 0, 0.6);
         }
 
     </style>
@@ -182,14 +175,14 @@
 
         <div class="master-section">
             <div class="control-box">
-                <button class="play-btn" id="main-ctrl" onclick="toggle()">
+                <button class="play-btn" onclick="toggle()">
                     <svg id="svg-ico" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </button>
                 
                 <div class="vol-container">
                     <div class="knob-base">
                         <div class="knob-turner" id="v-knob"></div>
-                        <div class="knob-center" title="Reset to 50%" onclick="resetVol()"></div>
+                        <div class="knob-center" onclick="resetVol()"></div>
                     </div>
                     <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
                 </div>
@@ -242,12 +235,11 @@
         
         player.play();
         updateIcon(true);
-        resetVol(); // Przycisk suwaka na środku przy włączeniu stacji
+        resetVol(); 
     }
 
     function toggle() {
         if(current === -1) { play(0); return; }
-        
         if(player.src && !player.paused) {
             player.pause();
             player.src = ""; 
@@ -269,7 +261,8 @@
     function setV(v) {
         player.volume = v / 100;
         const fill = v * 0.75; 
-        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #111 0%)`;
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #1a1e23 0%)`;
+        document.querySelector('.knob-center').style.transform = `rotate(${(v * 2.7) - 135}deg)`;
     }
 
     function resetVol() {
@@ -277,8 +270,7 @@
         setV(50);
     }
 
-    // Start na środku
-    resetVol();
+    setV(50);
 </script>
 </body>
 </html>
