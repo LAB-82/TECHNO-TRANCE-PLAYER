@@ -3,176 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF BASSLINE TERMINAL</title>
+    <title>RMF HALOGEN FM</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
 
         :root {
-            --bl-bg: #8ba7b9;
-            --bl-panel: #d1dee7;
-            --bl-dark: #6e8a9d;
-            --bl-accent: #4c6d85;
-            --bl-text: #ffffff;
-            --bl-label: #5a7587;
+            --h-bg: #0d0d12;
+            --h-panel: #14141c;
+            --h-green: #00ffaa;
+            --h-pink: #ff00ff;
+            --h-blue: #00d4ff;
+            --h-text: #808090;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--bl-bg); color: var(--bl-text); 
-            font-family: 'Montserrat', sans-serif;
+            background: var(--h-bg); color: #fff; 
+            font-family: 'Outfit', sans-serif;
             display: flex; flex-direction: column;
             padding: 10px; overflow: hidden; 
         }
 
-        /* TOP SECTION - LOGO & OSCILLATOR VISUALIZER */
-        .top-section {
-            background: var(--bl-dark);
-            border-radius: 4px; padding: 15px;
-            margin-bottom: 10px; position: relative;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+        /* GÓRNY PASEK - STYL DAW/VST */
+        header { 
+            height: 40px; background: #1a1a24; border-radius: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 15px; margin-bottom: 10px; border: 1px solid #2a2a35;
         }
-        .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .brand { font-weight: 800; font-size: 24px; letter-spacing: -1px; text-transform: uppercase; }
-        .brand span { font-weight: 400; font-size: 10px; vertical-align: middle; margin-left: 10px; opacity: 0.7; }
+        .preset-name { font-size: 11px; letter-spacing: 2px; color: #fff; font-weight: 500; text-transform: uppercase; }
+        .top-icons { display: flex; gap: 15px; }
+        .top-icons svg { width: 14px; height: 14px; fill: var(--h-text); cursor: pointer; }
+        .top-icons svg:hover { fill: #fff; }
 
-        .wave-area {
-            height: 80px; width: 100%;
-            border-top: 2px solid rgba(255,255,255,0.3);
-            border-bottom: 2px solid rgba(255,255,255,0.3);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; font-weight: 700; letter-spacing: 2px;
-            background: rgba(0,0,0,0.05);
+        .main-layout { display: flex; flex: 1; gap: 10px; position: relative; }
+
+        /* SEKCJE OPERATORÓW (STACJE) */
+        .operator-side { 
+            flex: 1; display: flex; flex-direction: column; gap: 10px; 
+            background: rgba(20, 20, 28, 0.5); padding: 15px; border-radius: 8px;
         }
+        .op-title { font-size: 18px; font-weight: 700; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .op-1 { color: var(--h-green); }
+        .op-2 { color: var(--h-pink); }
 
-        /* MAIN CONTENT AREA */
-        .main-content { display: flex; flex: 1; gap: 10px; min-height: 0; }
-
-        /* GRID 5x3 - IDENTYCZNY UKŁAD */
-        .grid { 
-            flex: 1.5; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 8px; background: var(--bl-panel);
-            padding: 10px; border-radius: 4px;
+        /* SIATKA STACJI - ADAPTACJA DO 5x3 */
+        .grid-half { 
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; flex: 1;
         }
 
         .tile {
-            background: var(--bl-bg);
-            border-radius: 4px; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.1s;
-            border-bottom: 3px solid var(--bl-accent);
+            background: #1a1a24; border: 1px solid #2a2a35;
+            border-radius: 4px; padding: 10px; cursor: pointer;
+            transition: 0.2s; position: relative; overflow: hidden;
         }
-
-        .tile:active { transform: translateY(2px); border-bottom-width: 1px; }
-        .tile.active { background: var(--bl-accent); border-bottom-color: #fff; }
-
-        .tile .t-top { font-size: 8px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; }
-        .tile .t-bottom { font-size: 11px; font-weight: 700; text-transform: uppercase; }
-
-        /* RIGHT PANEL - CONTROLS */
-        .right-panel {
-            flex: 0.6; background: var(--bl-panel);
-            border-radius: 4px; padding: 15px;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-
-        .section-label { color: var(--bl-label); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
-
-        /* KNOB - VOLUME */
-        .knob-box { text-align: center; }
-        .knob-wrap {
-            width: 100px; height: 100px; margin: 0 auto;
-            background: var(--bl-bg); border-radius: 50%;
-            border: 4px solid var(--bl-dark); position: relative;
-            cursor: ns-resize; display: flex; align-items: center; justify-content: center;
-        }
-        .knob-pointer {
-            position: absolute; top: 10px; width: 4px; height: 15px;
-            background: #fff; border-radius: 2px;
-        }
-        .knob-val { font-size: 18px; font-weight: 800; color: #fff; }
-
-        /* TRANSPORT BUTTONS - FLAT STYLE */
-        .transport { display: flex; gap: 5px; margin-top: 15px; }
-        .t-btn {
-            flex: 1; height: 40px; background: var(--bl-dark);
-            border-radius: 3px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; border: none;
-        }
-        .t-btn:hover { background: var(--bl-accent); }
-        .t-btn svg { width: 18px; height: 18px; fill: #fff; }
-
-        /* BOTTOM FX BAR */
-        .fx-bar {
-            height: 60px; background: var(--bl-panel);
-            margin-top: 10px; border-radius: 4px;
-            display: flex; align-items: center; padding: 0 20px; gap: 30px;
-        }
-        .fx-item { display: flex; align-items: center; gap: 10px; }
-        .fx-label { font-size: 10px; font-weight: 800; color: var(--bl-label); text-transform: uppercase; }
+        .tile:hover { background: #222230; border-color: #444; }
         
-        /* TOGGLE SWITCH - BASSLINE STYLE */
-        .switch {
-            width: 40px; height: 20px; background: var(--bl-dark);
-            border-radius: 2px; position: relative; cursor: pointer;
-        }
-        .switch::after {
-            content: ''; position: absolute; left: 2px; top: 2px;
-            width: 16px; height: 16px; background: #fff; border-radius: 1px;
-            transition: 0.2s;
-        }
-        .switch.on { background: var(--bl-accent); }
-        .switch.on::after { left: 22px; }
+        .tile.active-g { border-color: var(--h-green); box-shadow: inset 0 0 10px rgba(0, 255, 170, 0.1); }
+        .tile.active-p { border-color: var(--h-pink); box-shadow: inset 0 0 10px rgba(255, 0, 255, 0.1); }
 
-        @media (max-width: 700px) {
-            .main-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); flex: none; height: auto; }
+        .tile .t-num { font-size: 8px; color: var(--h-text); }
+        .tile .t-name { font-size: 11px; font-weight: 500; margin-top: 4px; }
+
+        /* CENTRUM - WIZUALIZER OKRĄG */
+        .center-core {
+            width: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .visual-circle {
+            width: 220px; height: 220px; border-radius: 50%;
+            border: 2px solid var(--h-pink);
+            box-shadow: 0 0 30px rgba(255, 0, 255, 0.2), inset 0 0 30px rgba(255, 0, 255, 0.1);
+            display: flex; align-items: center; justify-content: center;
+            position: relative; transition: 0.3s;
+        }
+        .visual-circle.playing { animation: pulse 1.5s infinite; }
+        @keyframes pulse {
+            0% { transform: scale(1); border-color: var(--h-pink); box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); }
+            50% { transform: scale(1.02); border-color: var(--h-green); box-shadow: 0 0 40px rgba(0, 255, 170, 0.3); }
+            100% { transform: scale(1); border-color: var(--h-pink); box-shadow: 0 0 30px rgba(255, 0, 255, 0.2); }
+        }
+        .core-text { font-family: 'Outfit', sans-serif; font-size: 24px; font-weight: 300; letter-spacing: 4px; color: #fff; }
+
+        /* DOLNY PANEL STEROWANIA */
+        footer {
+            height: 100px; background: #14141c; border-radius: 12px 12px 0 0;
+            margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 40px;
+            border: 1px solid #2a2a35; border-bottom: none;
+        }
+
+        .knob-group { text-align: center; }
+        .knob-label { font-size: 9px; text-transform: uppercase; color: var(--h-text); margin-bottom: 8px; letter-spacing: 1px; }
+        
+        .knob {
+            width: 45px; height: 45px; background: #0d0d12; border-radius: 50%;
+            border: 2px solid #2a2a35; position: relative; cursor: ns-resize;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .knob-indicator {
+            position: absolute; top: 5px; width: 2px; height: 8px;
+            background: var(--h-blue); border-radius: 1px;
+            transform-origin: center 17px;
+        }
+        .knob-val { font-size: 10px; color: #fff; font-weight: 700; margin-top: 5px; display: block; }
+
+        @media (max-width: 900px) {
+            .center-core { display: none; }
+            .main-layout { flex-direction: column; }
+            footer { gap: 15px; }
         }
     </style>
 </head>
 <body>
 
-<div class="top-section">
-    <div class="header-main">
-        <div class="brand">BASSLINE <span>RADIO ANALYZER V1</span></div>
-        <div id="timer" style="font-weight: 700; font-size: 12px;">00:00</div>
+<header>
+    <div class="top-icons">
+        <svg viewBox="0 0 24 24"><path d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z"/></svg>
+        <span style="font-size: 10px; color: var(--h-text);">HALOGEN FM V2</span>
     </div>
-    <div class="wave-area" id="status-text">
-        SELECT STATION_
+    <div class="preset-name" id="current-station">DUB STATION RMF</div>
+    <div class="top-icons">
+        <svg onclick="toggle()" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+        <svg onclick="skip(1)" viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+    </div>
+</header>
+
+<div class="main-layout">
+    <!-- OPERATOR 1 (Zielony) -->
+    <div class="operator-side">
+        <div class="op-title op-1">OPR 1 <span style="font-size: 10px; font-weight: 400; opacity: 0.5;">RADIO BANK A</span></div>
+        <div class="grid-half" id="grid-a"></div>
+    </div>
+
+    <!-- CENTRUM -->
+    <div class="center-core">
+        <div class="visual-circle" id="viz">
+            <div class="core-text">RMF</div>
+        </div>
+        <div id="timer" style="margin-top: 20px; font-family: monospace; color: var(--h-blue);">00:00:00</div>
+    </div>
+
+    <!-- OPERATOR 2 (Różowy) -->
+    <div class="operator-side">
+        <div class="op-title op-2">OPR 2 <span style="font-size: 10px; font-weight: 400; opacity: 0.5;">RADIO BANK B</span></div>
+        <div class="grid-half" id="grid-b"></div>
     </div>
 </div>
 
-<div class="main-content">
-    <div class="grid" id="station-grid"></div>
-
-    <aside class="right-panel">
-        <div class="knob-box">
-            <div class="section-label">Master Level</div>
-            <div class="knob-wrap" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                <div class="knob-pointer" id="knob-pointer"></div>
-                <div class="knob-val" id="vol-txt">50</div>
-            </div>
+<footer>
+    <div class="knob-group">
+        <div class="knob-label">Mix</div>
+        <div class="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+            <div class="knob-indicator" id="knob-pointer"></div>
         </div>
-
-        <div>
-            <div class="section-label">Transport</div>
-            <div class="transport">
-                <div class="t-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
-                <div class="t-btn" onclick="toggle()" style="background: var(--bl-accent);"><svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></div>
-                <div class="t-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
-            </div>
-        </div>
-    </aside>
-</div>
-
-<div class="fx-bar">
-    <div class="fx-item"><div class="fx-label">Chorus</div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
-    <div class="fx-item"><div class="fx-label">Delay</div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
-    <div class="fx-item"><div class="fx-label">Hype</div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
-</div>
+        <span class="knob-val" id="vol-txt">50%</span>
+    </div>
+    <div class="knob-group">
+        <div class="knob-label">Timbre</div>
+        <div class="knob"><div class="knob-indicator" style="transform: rotate(45deg)"></div></div>
+        <span class="knob-val">Poly</span>
+    </div>
+    <div class="knob-group">
+        <div class="knob-label">Mod</div>
+        <div class="knob"><div class="knob-indicator" style="transform: rotate(-30deg)"></div></div>
+        <span class="knob-val">Sync</span>
+    </div>
+    <div class="knob-group">
+        <div class="knob-label">FX</div>
+        <div class="knob"><div class="knob-indicator" style="transform: rotate(90deg)"></div></div>
+        <span class="knob-val">Reverb</span>
+    </div>
+</footer>
 
 <audio id="player"></audio>
 
@@ -195,71 +196,63 @@
         { n: 'RMF SMOOTH JAZZ', s: 'Smooth', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
+    const player = document.getElementById('player'), gridA = document.getElementById('grid-a'), gridB = document.getElementById('grid-b'), viz = document.getElementById('viz');
     let current = -1;
     let volume = 50;
-
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
 
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">BANK 0${Math.floor(i/5)+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-num">STATION ${i+1}</div><div class="t-name">${s.s}</div>`;
         t.onclick = () => play(i);
-        grid.appendChild(t);
+        if(i < 8) gridA.appendChild(t); else gridB.appendChild(t);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('status-text').textContent = `PLAYING: ${STATIONS[i].n.toUpperCase()}_`;
+        document.querySelectorAll('.tile').forEach((t, idx) => {
+            t.classList.remove('active-g', 'active-p');
+            if(idx === i) t.classList.add(i < 8 ? 'active-g' : 'active-p');
+        });
+        document.getElementById('current-station').textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        viz.classList.add('playing');
     }
 
     function toggle() {
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(player.paused) { player.play(); viz.classList.add('playing'); }
+        else { player.pause(); viz.classList.remove('playing'); }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
 
-    let isDragging = false, startY = 0;
-
-    function startRotate(e) {
-        isDragging = true;
-        startY = e.clientY || e.touches[0].clientY;
-        document.addEventListener('mousemove', onRotate);
-        document.addEventListener('mouseup', stopRotate);
-        document.addEventListener('touchmove', onRotate);
-        document.addEventListener('touchend', stopRotate);
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0') + ":" + d.getSeconds().toString().padStart(2,'0');
     }
+    setInterval(clock, 1000); clock();
 
+    // VOLUME KNOB
+    let isDragging = false, startY = 0;
+    function startRotate(e) {
+        isDragging = true; startY = e.clientY || e.touches[0].clientY;
+        document.addEventListener('mousemove', onRotate); document.addEventListener('mouseup', stopRotate);
+        document.addEventListener('touchmove', onRotate); document.addEventListener('touchend', stopRotate);
+    }
     function onRotate(e) {
         if (!isDragging) return;
         const currentY = e.clientY || e.touches[0].clientY;
         const diff = startY - currentY;
         volume = Math.min(Math.max(volume + diff * 0.5, 0), 100);
         startY = currentY;
-        updateKnob();
-    }
-
-    function stopRotate() { isDragging = false; }
-
-    function updateKnob() {
-        const rotation = (volume * 2.4) - 120;
-        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg) translateY(-35px)`;
-        document.getElementById('vol-txt').textContent = Math.round(volume);
+        const rot = (volume * 2.4) - 120;
+        document.getElementById('knob-pointer').style.transform = `rotate(${rot}deg)`;
+        document.getElementById('vol-txt').textContent = Math.round(volume) + "%";
         player.volume = volume / 100;
     }
-    
-    updateKnob();
+    function stopRotate() { isDragging = false; }
 </script>
 </body>
 </html>
