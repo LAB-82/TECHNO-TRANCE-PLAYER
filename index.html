@@ -3,168 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - MASSIVE EDITION</title>
+    <title>RMF PLUTO TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
 
         :root {
-            --bg-dark: #333333;
-            --panel-grey: #e0e0e0;
-            --panel-border: #bcbcbc;
-            --knob-light: #f5f5f5;
-            --mod-green: #4ade80;
-            --mod-blue: #3b82f6;
-            --text-main: #222222;
-            --text-muted: #666666;
+            --pluto-white: #e6e9ef;
+            --pluto-glow: #00f2ff;
+            --pluto-shadow: #c5cad5;
+            --pluto-light: #ffffff;
+            --text-grey: #6a768a;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--bg-dark); color: var(--text-main); 
-            font-family: 'Roboto', sans-serif;
+            background: #0a0a0c; 
+            font-family: 'Outfit', sans-serif;
             display: flex; flex-direction: column;
-            padding: 10px; overflow: hidden; 
+            padding: 15px; overflow: hidden; 
+            color: var(--text-grey);
         }
 
-        /* HEADER - STYL MASSIVE X TOP BAR */
+        /* PANEL GŁÓWNY (BIAŁY SATYNOWY) */
+        .main-container {
+            flex: 1; display: flex; gap: 20px;
+            background: var(--pluto-white);
+            border-radius: 20px; padding: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            border: 1px solid var(--pluto-light);
+        }
+
+        /* NAGŁÓWEK W STYLU PLUTO */
         header { 
-            height: 45px; display: flex; justify-content: space-between; align-items: center;
-            background: #2a2a2a; border-radius: 4px;
-            margin-bottom: 10px; padding: 0 15px;
-            color: #ccc; border-bottom: 2px solid #1a1a1a;
+            width: 100%; height: 50px; display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 20px; border-bottom: 1px solid var(--pluto-shadow);
         }
-        .header-info { font-weight: 700; font-size: 14px; letter-spacing: 0.5px; }
-        .header-info span { color: var(--mod-green); }
-        .clock { font-family: monospace; font-size: 16px; color: var(--mod-blue); }
+        .logo-text { font-weight: 600; font-size: 24px; letter-spacing: 4px; color: #333; }
+        .logo-text span { font-weight: 300; font-size: 14px; display: block; letter-spacing: 1px; color: var(--text-grey); }
 
-        .app-content { display: flex; flex: 1; gap: 10px; min-height: 0; }
-
-        /* GRID - ORYGINALNY UKŁAD 5x3 W STYLU PANELU SYNTEZATORA */
+        /* GRID 5x3 - ORYGINALNY UKŁAD */
         .grid { 
-            flex: 1.5; display: grid; 
+            flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 8px; background: #444; padding: 8px; border-radius: 4px;
+            gap: 12px; 
         }
 
         .tile {
-            background: var(--panel-grey);
-            border: 1px solid var(--panel-border);
-            border-radius: 2px;
+            background: var(--pluto-white);
+            border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: background 0.2s;
-            position: relative;
+            cursor: pointer; position: relative;
+            box-shadow: 6px 6px 12px var(--pluto-shadow), -4px -4px 10px var(--pluto-light);
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255,255,255,0.5);
         }
 
-        .tile:hover { background: #eeeeee; }
+        .tile:active {
+            box-shadow: inset 4px 4px 8px var(--pluto-shadow), inset -4px -4px 8px var(--pluto-light);
+            transform: scale(0.98);
+        }
 
-        .tile .t-top { font-size: 9px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .tile .t-bottom { font-size: 12px; font-weight: 500; color: var(--text-main); text-align: center; padding: 0 4px; }
+        .tile .t-top { font-size: 9px; font-weight: 600; color: #99a; text-transform: uppercase; }
+        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #445; margin-top: 4px; }
 
-        /* AKTYWNA STACJA - KOLOROWE WSKAŹNIKI Z MASSIVE X */
+        /* AKTYWNY KAFELEK - CYBER NEON */
         .tile.active {
-            background: #fff;
-            border: 1px solid var(--mod-green);
-            box-shadow: inset 0 0 0 1px var(--mod-green);
+            border: 1px solid var(--pluto-glow);
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.3);
         }
-        .tile.active::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--mod-green);
+        .tile.active .t-bottom { color: #000; }
+        .tile.active::after {
+            content: ''; position: absolute; bottom: 8px; width: 4px; height: 4px;
+            background: var(--pluto-glow); border-radius: 50%; box-shadow: 0 0 8px var(--pluto-glow);
         }
 
-        /* SIDEBAR - SEKCYJNY PANEL MODULACJI */
+        /* SIDEBAR - KONTROLER PLUTO */
         .sidebar { 
-            flex: 0.6; background: var(--panel-grey); border-radius: 4px;
-            display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; gap: 25px;
-            padding: 20px; border: 1px solid var(--panel-border);
+            flex: 0.8; display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-between;
+            padding: 10px; border-left: 1px solid var(--pluto-shadow);
         }
 
-        .display-unit {
-            width: 100%; background: #fff; border: 1px solid var(--panel-border);
-            padding: 15px; border-radius: 2px; text-align: center;
+        /* DUŻE POKRĘTŁO (KNOB) Z OBRAZU */
+        .master-knob-area { position: relative; width: 180px; height: 180px; }
+        
+        .knob-glow-ring {
+            position: absolute; inset: 0; border-radius: 50%;
+            border: 2px solid rgba(0, 242, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.15);
         }
-        .display-unit h2 { font-size: 22px; color: var(--text-main); margin-bottom: 5px; }
-        .display-unit p { font-size: 10px; color: var(--mod-blue); font-weight: 700; text-transform: uppercase; }
 
-        /* GAŁKA (KNOB) - STYL MASSIVE X */
-        .knob-section { text-align: center; }
-        .knob-outer {
-            width: 90px; height: 90px;
-            background: var(--knob-light); border-radius: 50%;
-            border: 2px solid var(--panel-border);
+        .knob-main {
+            position: absolute; inset: 15px;
+            background: var(--pluto-white); border-radius: 50%;
+            box-shadow: 10px 10px 20px var(--pluto-shadow), -10px -10px 20px var(--pluto-light);
+            cursor: ns-resize; display: flex; align-items: center; justify-content: center;
+        }
+
+        .knob-indicator {
+            position: absolute; top: 10px; width: 4px; height: 15px;
+            background: var(--pluto-glow); border-radius: 2px;
+            box-shadow: 0 0 10px var(--pluto-glow);
+            transform-origin: 2px 75px;
+        }
+
+        .vol-display { font-size: 28px; font-weight: 300; color: #334; }
+
+        /* PRZYCISKI - KWADRATOWE KAFELKI STERUJĄCE */
+        .pluto-buttons { display: flex; gap: 15px; margin-top: 20px; }
+        
+        .btn-pluto {
+            width: 60px; height: 60px;
+            background: var(--pluto-white); border-radius: 12px;
+            box-shadow: 5px 5px 10px var(--pluto-shadow), -3px -3px 8px var(--pluto-light);
             display: flex; align-items: center; justify-content: center;
-            position: relative; cursor: ns-resize;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .knob-pointer {
-            position: absolute; top: 8px; width: 3px; height: 12px;
-            background: #444; border-radius: 2px;
-            transform-origin: 50% 37px;
-        }
-        /* Pierścień wartości (modulacja) */
-        .knob-ring {
-            position: absolute; width: 100%; height: 100%;
-            border-radius: 50%; border: 4px solid var(--mod-blue);
-            clip-path: polygon(50% 50%, -50% -50%, 150% -50%); /* Uproszczony wizualnie */
-            opacity: 0.3;
+            cursor: pointer; border: 1px solid rgba(255,255,255,0.4);
         }
 
-        .vol-label { font-size: 11px; font-weight: 700; color: var(--text-muted); margin-top: 10px; text-transform: uppercase; }
+        .btn-pluto svg { width: 24px; height: 24px; fill: var(--text-grey); transition: 0.3s; }
+        .btn-pluto:hover svg { fill: var(--pluto-glow); filter: drop-shadow(0 0 5px var(--pluto-glow)); }
+        .btn-pluto:active { box-shadow: inset 3px 3px 6px var(--pluto-shadow); }
 
-        /* PRZYCISKI - STYL MASSIVE X */
-        .controls { display: flex; gap: 12px; }
-        .btn-massive {
-            width: 50px; height: 40px; background: #fff; border: 1px solid var(--panel-border);
-            border-radius: 2px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-        }
-        .btn-massive svg { width: 18px; height: 18px; fill: #555; }
-        .btn-massive.active svg { fill: var(--mod-green); }
-
-        @media (max-width: 600px) {
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { flex: none; width: 100%; gap: 15px; }
+        @media (max-width: 800px) {
+            .main-container { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; }
+            .sidebar { border-left: none; border-top: 1px solid var(--pluto-shadow); padding-top: 30px; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-info">MASSIVE <span>RMF</span> // ENGINE</div>
-    <div class="preset-display" id="playing-now">Init Preset</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
+<div class="main-container">
+    <div style="flex: 1.4; display: flex; flex-direction: column;">
+        <header>
+            <div class="logo-text">PLUTO <span>MULTI FX TERMINAL</span></div>
+            <div style="font-weight: 600; color: #333;" id="timer">00:00</div>
+        </header>
 
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
+        <div class="grid" id="station-grid"></div>
+    </div>
 
     <aside class="sidebar">
-        <div class="display-unit">
-            <h2 id="current-name">RMF FM</h2>
-            <p>Routing: Main Bus</p>
-        </div>
-
-        <div class="knob-section">
-            <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                <div class="knob-ring"></div>
-                <div class="knob-pointer" id="knob-pointer"></div>
-                <div style="font-size: 14px; font-weight: 700;" id="vol-txt">50</div>
+        <div style="text-align: center;">
+            <p style="font-size: 10px; font-weight: 800; letter-spacing: 2px; margin-bottom: 20px;">OUTPUT LEVEL</p>
+            <div class="master-knob-area">
+                <div class="knob-glow-ring"></div>
+                <div class="knob-main" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+                    <div class="knob-indicator" id="knob-pointer"></div>
+                    <div class="vol-display" id="vol-txt">50</div>
+                </div>
             </div>
-            <div class="vol-label">Master Level</div>
         </div>
 
-        <div class="controls">
-            <div class="btn-massive" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
-            <div class="btn-massive active" onclick="toggle()"><svg viewBox="0 0 24 24"><path id="p-ico" d="M14,19H18V5H14M6,19H10V5H6V19Z"/></svg></div>
-            <div class="btn-massive" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
+        <div class="pluto-buttons">
+            <div class="btn-pluto" onclick="skip(-1)">
+                <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            </div>
+            <div class="btn-pluto" onclick="toggle()" style="width: 80px;">
+                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            </div>
+            <div class="btn-pluto" onclick="skip(1)">
+                <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 10px; opacity: 0.5;">
+            RMF FM • DIGITAL EMULATION • V1.0
         </div>
     </aside>
 </div>
 
-<audio id="player" autoplay></audio>
+<audio id="player"></audio>
 
 <script>
     const STATIONS = [
@@ -198,7 +210,7 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">Slot ${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-top">FX ST ${i+1}</div><div class="t-bottom">${s.s}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
@@ -206,8 +218,6 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = STATIONS[i].n;
-        document.getElementById('current-name').textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -221,7 +231,7 @@
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
 
-    // OBSŁUGA GAŁKI (Knob)
+    // KNOB LOGIC
     let isDragging = false;
     let startY = 0;
 
@@ -246,7 +256,7 @@
     function stopRotate() { isDragging = false; }
 
     function updateKnob() {
-        const rotation = (volume * 2.4) - 120; // Massive X vibe: od ok. -120 do 120 stopni
+        const rotation = (volume * 2.4) - 120;
         document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg)`;
         document.getElementById('vol-txt').textContent = Math.round(volume);
         player.volume = volume / 100;
