@@ -4,208 +4,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio - Retro White Edition</title>
+    <title>Muzyczne Radio - MSI Dragon Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
-        /* --- STYLIZACJA WZOROWANA NA ZDJĘCIU --- */
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #e0e0e0;
+            background: #000;
             font-family: Arial, sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
         }
 
+        /* Obudowa wzorowana na kształcie ze zdjęcia */
         .frame {
-            width: 95%;
-            max-width: 800px;
-            background: #fdfdfd;
-            border-radius: 60px; /* Zaokrąglone rogi obudowy */
-            padding: 40px;
-            box-shadow: 
-                inset 0 0 15px rgba(0,0,0,0.1),
-                10px 20px 50px rgba(0,0,0,0.2);
-            border: 1px solid #d1d1d1;
+            width: 900px;
+            height: 500px;
+            background: #151515;
+            border-radius: 70px;
+            padding: 20px;
             position: relative;
             box-sizing: border-box;
-            transition: all 0.3s ease;
+            border: 2px solid #222;
+            box-shadow: 0 20px 50px rgba(0,0,0,1);
         }
 
-        /* Frontowy panel (wgłębienie) */
-        .main-content {
-            background: #ffffff;
-            border-radius: 40px;
-            border: 1px solid #e0e0e0;
-            padding: 30px;
+        .frame.powered {
+            border-color: #e60012;
+            box-shadow: 0 0 30px rgba(230, 0, 18, 0.4);
+        }
+
+        /* Panel frontowy */
+        .main-panel {
+            width: 100%;
+            height: 100%;
+            background: #0a0a0a;
+            border-radius: 55px;
+            border: 1px solid #111;
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             position: relative;
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05);
         }
 
         .title {
             position: absolute;
-            top: 20px;
-            left: 40px;
-            font-size: 14px;
-            font-weight: bold;
-            color: #888;
-            letter-spacing: 1px;
+            top: 40px;
+            left: 60px;
+            font-family: 'DS-Digital', monospace;
+            font-size: 20px;
+            color: #2a0000;
+            letter-spacing: 2px;
         }
 
-        /* Głośniki po bokach */
+        .frame.powered .title {
+            color: #e60012;
+            text-shadow: 0 0 10px #e60012;
+        }
+
+        /* Głośniki w pozycjach jak na zdjęciu */
         .speaker {
-            width: 160px;
-            height: 160px;
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             position: absolute;
-            top: 50%;
-            transform: translateY(-80%);
-            background: radial-gradient(circle, #888 1px, transparent 1px);
-            background-size: 4px 4px;
-            background-color: #bebebe;
-            border: 4px solid #e0e0e0;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            top: 100px;
+            background: radial-gradient(circle, #1a1a1a 0%, #050505 70%);
+            border: 5px solid #1a1a1a;
+            box-shadow: inset 0 0 40px #000;
         }
-        .speaker.left { left: 30px; }
-        .speaker.right { right: 30px; }
+        .speaker.left { left: 40px; }
+        .speaker.right { right: 40px; }
+        
+        .frame.powered .speaker { border-color: #e60012; }
 
-        /* Wyświetlacz LCD */
+        /* Centralny wyświetlacz */
         .display-frame {
-            background: #111;
-            width: 220px;
-            height: 130px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+            background: #000;
+            width: 300px;
+            height: 160px;
             border: 3px solid #333;
-            box-shadow: inset 0 0 15px #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2;
+            border-top-color: #000;
+            border-bottom-color: #444;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            z-index: 10;
         }
+        canvas { width: 100%; height: 100%; display: block; }
 
-        canvas {
-            width: 90%;
-            height: 80%;
-        }
-
-        /* Przyciski i pokrętła */
-        .controls-main {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            z-index: 2;
-        }
-
-        .btn-group {
-            display: flex;
+        /* Przyciski pod ekranem */
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
+            margin-bottom: 30px;
+            z-index: 10;
         }
 
         .btn-rect {
-            width: 45px;
-            height: 12px;
-            background: #b0b0b0;
-            border: 1px solid #999;
-            border-radius: 2px;
+            width: 60px;
+            height: 15px;
+            background: #111;
+            border: 1px solid #222;
             cursor: pointer;
-            box-shadow: 0 2px 0 #777;
+            transition: 0.2s;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: 0.1s;
         }
 
-        .btn-rect svg { width: 10px; height: 10px; fill: #444; }
+        .btn-rect svg { width: 12px; fill: #444; }
 
-        .btn-rect:active, .btn-rect.active {
-            transform: translateY(2px);
-            box-shadow: 0 0px 0 #777;
-            background: #d1d1d1;
+        .frame.powered .btn-rect { color: #777; border-color: #333; }
+        .frame.powered .btn-rect.active {
+            border-color: #e60012;
+            box-shadow: 0 0 10px #e60012;
         }
+        .frame.powered .btn-rect.active svg { fill: #e60012; }
 
         /* Pokrętła na dole */
-        .vol-wrapper {
+        .knobs-container {
+            display: flex;
+            gap: 120px;
+            z-index: 10;
+        }
+
+        .knob-unit {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 10px;
         }
 
-        .vol-btns {
-            display: flex;
-            gap: 40px;
-            margin-top: 10px;
-        }
-
-        .btn-v {
-            width: 60px;
-            height: 60px;
+        .knob-circle {
+            width: 75px;
+            height: 75px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #e0e0e0, #bebebe);
-            border: 1px solid #a0a0a0;
-            box-shadow: 2px 4px 6px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.5);
+            background: linear-gradient(180deg, #222, #050505);
+            border: 3px solid #1a1a1a;
+            box-shadow: 0 5px 15px #000;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .btn-v svg { width: 20px; height: 20px; fill: #666; }
 
-        .vol-label {
-            font-size: 10px;
-            color: #999;
-            text-transform: uppercase;
-            font-weight: bold;
+        .knob-circle svg { width: 25px; fill: #444; }
+        .frame.powered .knob-circle { border-color: #333; }
+        .frame.powered .knob-circle:active { border-color: #e60012; }
+
+        .knob-label {
+            font-family: 'DS-Digital';
+            font-size: 12px;
+            color: #444;
+            letter-spacing: 1px;
         }
+
+        .frame.powered .knob-label { color: #e60012; }
 
         .vol-bar {
-            width: 150px;
+            width: 100px;
             height: 4px;
-            background: #ddd;
+            background: #000;
             border-radius: 2px;
             overflow: hidden;
+            margin-top: 10px;
         }
+        .vol-fill { height: 100%; width: 50%; background: #e60012; opacity: 0; }
+        .frame.powered .vol-fill { opacity: 1; }
 
-        .vol-fill {
-            height: 100%;
-            width: 0%;
-            background: #555;
-            transition: width 0.2s;
-        }
+        .lab-logo { position: absolute; bottom: 40px; font-weight: bold; color: #222; }
+        .frame.powered .lab-logo { color: #e60012; }
 
-        /* Logo i Link */
-        .lab-logo { margin-top: 15px; font-weight: bold; color: #ccc; font-size: 12px; }
-        .link-container { margin-top: 10px; }
-        .link-container a { color: #aaa; text-decoration: none; font-size: 10px; letter-spacing: 1px; }
-
-        /* Stan Włączony (Powered) */
-        .frame.powered { box-shadow: 0 20px 60px rgba(0,0,0,0.15); }
-        .frame.powered .display-frame { border-color: #555; box-shadow: 0 0 15px rgba(255,255,255,0.1); }
-        .frame.powered .btn-rect.active { background: #fff; border-color: #ccc; box-shadow: 0 0 8px rgba(0,0,0,0.2); }
-
-        /* Responsive Mobile */
-        @media(max-width:700px) {
+        /* Responsive */
+        @media(max-width:920px) {
+            .frame { width: 95%; height: auto; border-radius: 40px; padding: 20px; }
             .speaker { display: none; }
-            .frame { border-radius: 30px; padding: 20px; }
-            .display-frame { width: 180px; }
+            .knobs-container { gap: 40px; }
         }
     </style>
 </head>
 
 <body oncontextmenu="return false;">
     <div class="frame">
-        <div class="main-content">
+        <div class="main-panel">
             <div class="title">MUZYCZNE RADIO</div>
+            
             <div class="speaker left"></div>
             <div class="speaker right"></div>
 
@@ -213,34 +203,34 @@
                 <canvas id="eq"></canvas>
             </div>
 
-            <div class="controls-main" id="controls">
-                <!-- Przyciski funkcyjne stylizowane na te podłużne ze zdjęcia -->
-                <div class="btn-group">
-                    <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                    <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                    <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                    <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
-                </div>
-                
-                <div class="vol-wrapper" id="vol-container">
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                    <div class="vol-label">VOLUME / TUNING</div>
-                    <div class="vol-btns">
-                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                    </div>
-                </div>
+            <div class="controls-grid">
+                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
             </div>
 
-            <div class="lab-logo">L.A.B. DESIGN</div>
-            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+            <div class="knobs-container">
+                <div class="knob-unit">
+                    <div id="vDown" class="knob-circle"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></div>
+                    <div class="knob-label">TUNING</div>
+                </div>
+                <div class="knob-unit">
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                    <div class="knob-label">VOLUME</div>
+                    <div class="lab-logo">L.A.B.</div>
+                </div>
+                <div class="knob-unit">
+                    <div id="vUp" class="knob-circle"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></div>
+                    <div class="knob-label">SELECT</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
     <script>
-        /* LOGIKA POZOSTAJE BEZ ZMIAN - DOKŁADNIE TAKA JAK W ORYGINALE */
         const audio = document.getElementById('stream');
         const canvas = document.getElementById('eq');
         const ctx = canvas.getContext('2d');
@@ -250,7 +240,6 @@
         const muteBtn = document.getElementById('mute');
         const mutePath = document.getElementById('mute-path');
         const vFill = document.getElementById('vFill');
-        const controls = document.getElementById('controls');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
@@ -258,28 +247,23 @@
         let audioCtx, analyser, source, dataArray, isPwr = false;
 
         function resize() {
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            canvas.width = canvas.clientWidth;
+            canvas.height = canvas.clientHeight;
             drawStatic();
         }
 
         function drawBars(data) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const totalBars = 33;
+            const totalBars = 30;
             const barW = canvas.width / totalBars;
             for (let i = 0; i < totalBars; i++) {
-                let level = data ? Math.floor(data[i] / 24) : 0;
+                let level = data ? Math.floor(data[i] / 25) : 0;
                 for (let j = 0; j < 10; j++) {
-                    ctx.fillStyle = (j < level) ? "#00ff00" : "#1a1a1a"; // Zielony LCD retro
-                    ctx.fillRect(i * barW + 1, canvas.height - (j * 9) - 10, barW - 2, 7);
+                    ctx.fillStyle = (j < level) ? "#e60012" : "#120000";
+                    ctx.fillRect(i * barW + 1, canvas.height - (j * 12) - 12, barW - 2, 10);
                 }
             }
         }
-
-        const flash = el => {
-            el.classList.add('active');
-            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted)) el.classList.remove('active'); }, 600);
-        };
 
         function drawStatic() { drawBars(null); }
         function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
@@ -291,9 +275,6 @@
             if (!isPwr) {
                 audio.pause();
                 playBtn.classList.remove('active');
-                audio.muted = false;
-                muteBtn.classList.remove('active');
-                mutePath.setAttribute('d', ICON_MUTE_OFF);
                 drawStatic();
             }
             resize();
@@ -318,10 +299,7 @@
         stopBtn.onclick = function() {
             if (!isPwr) return;
             audio.pause(); audio.currentTime = 0;
-            audio.volume = 0.5;
             playBtn.classList.remove('active');
-            updateVol();
-            flash(this);
             drawStatic();
         };
 
@@ -332,8 +310,8 @@
             this.classList.toggle('active', audio.muted);
         };
 
-        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
-        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); }};
 
         function updateEQ() {
             if (!isPwr || audio.paused) return;
