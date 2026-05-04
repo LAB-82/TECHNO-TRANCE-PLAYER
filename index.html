@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF FM SEKTOR - AUDIT COMPLETED</title>
+    <title>RMF FM SEKTOR - FINAL AUDIT OK</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Montserrat+Alternates:wght@700;800&display=swap');
 
@@ -67,16 +67,16 @@
 
         .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; }
 
-        /* KAFELKI - ZERO PIERŚCIENIA */
+        /* KAFELKI - BEZ ŻADNYCH RAMEK */
         .tile {
             flex: 1 1 calc(25% - 6px);
             background: linear-gradient(to bottom, #2d333b, #1d2127);
-            border: none !important; /* Całkowite usunięcie obramowania */
+            border: none !important; /* USUNIĘCIE OBRAMOWANIA */
             border-radius: 3px;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 13px; 
-            color: var(--white-neon); /* Nieaktywne - biały neon */
-            text-shadow: 0 0 5px rgba(224, 230, 237, 0.3);
+            color: var(--white-neon); /* BIAŁY NEON DLA NIEAKTYWNYCH */
+            text-shadow: 0 0 8px rgba(224, 230, 237, 0.4);
             transition: all 0.2s ease;
             font-weight: 600;
             position: relative;
@@ -84,12 +84,13 @@
         
         .tile:hover { background: #343b44; color: #fff; }
         
-        /* AKTYWNA STACJA - FALA RMF I BRAK RAMKI */
+        /* AKTYWNA STACJA - KOLOR RMF FM + FALA */
         .tile.active { 
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, #1a1e23 100%);
-            color: var(--rmf-neon);
-            text-shadow: 0 0 12px var(--rmf-neon);
-            box-shadow: inset 0 0 20px rgba(255, 204, 0, 0.5); /* EMITOWANIE FALI */
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.35) 0%, #1a1e23 100%);
+            color: var(--rmf-neon); /* ŻÓŁTY RMF */
+            text-shadow: 0 0 15px var(--rmf-neon);
+            box-shadow: inset 0 0 25px rgba(255, 204, 0, 0.5); /* FALA RMF */
+            border: none !important;
         }
 
         .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 15px; }
@@ -99,7 +100,6 @@
             padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center;
         }
 
-        /* PRZYWRÓCONY ORYGINALNY PRZYCISK PLAY */
         .play-btn {
             width: 100%; height: 55px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
             border: 1px solid #000; border-radius: 3px; cursor: pointer;
@@ -110,30 +110,38 @@
 
         .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
+        /* PROFESJONALNE KÓŁKO INITIAL */
         .knob-base {
             width: 100px; height: 100px; background: #0a0c0e; border-radius: 50%;
-            margin-bottom: 20px; border: 5px solid #111; position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            margin-bottom: 20px; border: 4px solid #111; position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #111 0%);
+            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #1a1e23 0%);
         }
         .knob-center { 
-            position: absolute; inset: 15px; 
-            background: radial-gradient(circle, #3d444d, #111); 
+            position: absolute; inset: 12px; 
+            background: linear-gradient(135deg, #3d444d, #111); 
             border-radius: 50%; border: 1px solid #000; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .knob-center::after {
+            content: ''; width: 3px; height: 10px; background: var(--s-init-blue);
+            position: absolute; top: 5px; border-radius: 2px;
+            box-shadow: 0 0 5px var(--s-init-blue);
         }
 
-        /* PROFESIONALNY SUWAK INITIAL */
+        /* PROFESJONALNY SUWAK INITIAL */
         .vol-slider { 
-            width: 100%; appearance: none; background: #0a0c0e; height: 6px; 
-            border-radius: 10px; border: 1px solid #333; outline: none;
+            width: 100%; appearance: none; background: #080a0c; height: 4px; 
+            border-radius: 2px; border: 1px solid #333; outline: none;
         }
         .vol-slider::-webkit-slider-thumb {
-            appearance: none; width: 14px; height: 14px; background: #fff;
-            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-init-blue);
-            box-shadow: 0 0 10px var(--s-init-blue);
+            appearance: none; width: 20px; height: 12px; 
+            background: linear-gradient(to bottom, #4d545d, #1a1e24);
+            border: 1px solid #000; border-radius: 1px; cursor: pointer;
+            box-shadow: 0 0 8px var(--s-init-blue);
         }
 
         .footer-logo { 
@@ -173,7 +181,7 @@
                 <div class="vol-container">
                     <div class="knob-base">
                         <div class="knob-turner" id="v-knob"></div>
-                        <div class="knob-center" onclick="resetVol()"></div>
+                        <div class="knob-center" id="v-center" onclick="resetVol()"></div>
                     </div>
                     <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
                 </div>
@@ -204,6 +212,7 @@
           svgIco = document.getElementById('svg-ico'),
           grid = document.getElementById('grid'),
           vKnob = document.getElementById('v-knob'),
+          vCenter = document.getElementById('v-center'),
           vSlider = document.getElementById('v-slider');
 
     let current = -1;
@@ -247,7 +256,8 @@
     function setV(v) {
         player.volume = v / 100;
         const fill = v * 0.75; 
-        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #111 0%)`;
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #1a1e23 0%)`;
+        vCenter.style.transform = `rotate(${(v * 2.7) - 135}deg)`;
     }
 
     function resetVol() {
@@ -255,7 +265,7 @@
         setV(50);
     }
 
-    resetVol();
+    setV(50);
 </script>
 </body>
 </html>
