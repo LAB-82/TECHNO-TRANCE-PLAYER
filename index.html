@@ -212,43 +212,20 @@
         const stationObj = STATIONS.find(s => s.s === currentSlug);
         const stationName = stationObj ? stationObj.n : "STATION";
 
-        if (!data || !data.artist) {
+        // 🔽 POPRAWKA: sprawdzamy tylko data, NIE artist
+        if (!data) {
             lcdTrack.innerHTML = `<div style="font-size:1.1em; color:var(--cyan);">STATION:</div><div>${stationName}</div>`;
             return;
         }
 
-        const artist = data.artist.name || "LIVE";
-        const title = data.title || "NON-STOP MUSIC";
+        const artist = (data.artist && data.artist.name) ? data.artist.name : "LIVE";
+        const title = data.title ? data.title : stationName;
 
         lcdTrack.innerHTML = `
             <div style="font-size:1.4em; margin-bottom:5px;">${artist}</div>
             <div style="font-size:0.9em; opacity:0.8;">${title}</div>
         `;
     };
-
-    function updateMetadata() {
-        if (!isPowered || !currentSlug) return;
-
-        // Tymczasowy placeholder przed załadowaniem danych
-        if (lcdTrack.textContent === "CONNECTING..." || lcdTrack.textContent === "SELECT CHANNEL") {
-             const sObj = STATIONS.find(s => s.s === currentSlug);
-             lcdTrack.innerHTML = `<div style="font-size:0.8em; opacity:0.5;">LOADING...</div><div>${sObj.n}</div>`;
-        }
-
-        const old = document.getElementById('api-script');
-        if (old) old.remove();
-
-        const s = document.createElement('script');
-        s.id = 'api-script';
-        s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
-        
-        // Jeśli stacja nie zostanie znaleziona w API, wyświetlamy jej nazwę
-        s.onerror = () => {
-            const sObj = STATIONS.find(s => s.s === currentSlug);
-            lcdTrack.innerHTML = `<div style="color:var(--cyan);">STATION:</div><div>${sObj ? sObj.n : "ONLINE"}</div>`;
-        };
-        document.body.appendChild(s);
-    }
 
     // GENEROWANIE PRZYCISKÓW
     STATIONS.forEach(s => {
