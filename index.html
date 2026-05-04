@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF FM SEKTOR - FINAL EDITION</title>
+    <title>RMF FM SEKTOR - BLUE EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Montserrat+Alternates:wght@700;800&display=swap');
 
         :root {
             --s-bg: #13161a;
             --s-panel: #20252b;
-            --s-init: #24ff24; 
+            --s-init-blue: #00d4ff; /* Oryginalny niebieski Initial */
             --rmf-neon: #ffcc00; 
             --s-border: #0a0c0e;
             --s-text: #9097a0;
@@ -54,12 +54,12 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; text-transform: uppercase; font-weight: 700;
         }
-        .p-btn:hover { background: #2f353d; color: var(--s-init); }
+        .p-btn:hover { background: #2f353d; color: var(--s-init-blue); }
 
         .p-name { 
-            flex: 1; text-align: center; color: var(--s-init); 
+            flex: 1; text-align: center; color: var(--s-init-blue); 
             font-weight: 700; letter-spacing: 2px; font-size: 16px;
-            text-shadow: 0 0 12px rgba(36, 255, 36, 0.6);
+            text-shadow: 0 0 12px rgba(0, 212, 255, 0.6);
         }
 
         .main-frame { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
@@ -71,10 +71,7 @@
             padding: 12px; display: flex; flex-direction: column;
         }
 
-        /* KAFELKI */
-        .grid { 
-            flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; 
-        }
+        .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; }
 
         .tile {
             flex: 1 1 calc(25% - 6px);
@@ -82,47 +79,49 @@
             background: linear-gradient(to bottom, #2d333b, #1d2127);
             border: 1px solid #111; border-radius: 3px;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 13px; 
-            color: var(--rmf-neon); /* Kolor napisów jak logo */
+            cursor: pointer; font-size: 13px; color: var(--rmf-neon);
             transition: all 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             font-weight: 600;
             position: relative;
+            z-index: 1;
         }
         
         .tile:hover { background: linear-gradient(to bottom, #343b44, #22272e); }
         
-        /* AKTYWNA STACJA - FALA I PODŚWIETLENIE INITIAL */
+        /* AKTYWNA STACJA - NIEBIESKI PRZYCISK + FALA RMF */
         .tile.active { 
-            background: radial-gradient(circle, rgba(36, 255, 36, 0.3) 0%, #1a1e23 100%);
-            border-color: #111;
+            background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, #1a1e23 100%);
             color: #fff;
-            text-shadow: 0 0 8px var(--s-init);
-            animation: pulse-wave 2s infinite ease-in-out;
+            text-shadow: 0 0 8px var(--s-init-blue);
         }
 
-        @keyframes pulse-wave {
-            0% { box-shadow: inset 0 0 10px rgba(36, 255, 36, 0.2); }
-            50% { box-shadow: inset 0 0 25px rgba(36, 255, 36, 0.4); }
-            100% { box-shadow: inset 0 0 10px rgba(36, 255, 36, 0.2); }
+        /* EMITOWANIE FALI (W KOLORZE RMF) SPOD PRZYCISKU */
+        .tile.active::after {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border-radius: 4px;
+            box-shadow: 0 0 20px 2px var(--rmf-neon);
+            opacity: 0.5;
+            z-index: -1;
+            pointer-events: none;
         }
 
         /* MASTER SECTION */
         .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 15px; }
-        
         .control-box { 
             background: var(--s-panel); border: 1px solid var(--s-border); 
             padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
-        /* PLAY / STOP BUTTON */
         .play-btn {
             width: 100%; height: 55px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
             border: 1px solid #000; border-radius: 3px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 0 #000; margin-bottom: 35px;
         }
-        .play-btn svg { width: 28px; fill: var(--s-init); filter: drop-shadow(0 0 8px var(--s-init)); }
+        .play-btn svg { width: 28px; fill: var(--s-init-blue); filter: drop-shadow(0 0 8px var(--s-init-blue)); }
 
         /* VOL KNOB */
         .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -130,17 +129,15 @@
         .knob-base {
             width: 100px; height: 100px; background: #0a0c0e; border-radius: 50%;
             margin-bottom: 20px; border: 5px solid #111; position: relative;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from -135deg, var(--s-init) 0%, #111 0%);
+            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #111 0%);
         }
         .knob-center { 
             position: absolute; inset: 15px; 
             background: radial-gradient(circle, #3d444d, #111); 
-            border-radius: 50%; border: 1px solid #000;
-            cursor: pointer;
+            border-radius: 50%; border: 1px solid #000; cursor: pointer;
         }
 
         .vol-slider { 
@@ -149,22 +146,20 @@
         }
         .vol-slider::-webkit-slider-thumb {
             appearance: none; width: 14px; height: 14px; background: #fff;
-            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-init);
-            box-shadow: 0 0 10px var(--s-init);
+            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-init-blue);
+            box-shadow: 0 0 10px var(--s-init-blue);
         }
 
-        /* LOGO RMF FM - MONTSERRAT ALTERNATES */
+        /* LOGO RMF FM */
         .footer-logo { 
             flex: 0.25; background: #0b0d0f; display: flex; 
             justify-content: center; align-items: center; border: 1px solid #000; 
         }
         .footer-logo span { 
             font-family: 'Montserrat Alternates', sans-serif;
-            font-size: 32px; 
-            color: var(--rmf-neon); 
-            font-weight: 800; 
+            font-size: 32px; color: var(--rmf-neon); font-weight: 800; 
             letter-spacing: -1px;
-            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7), 0 0 30px rgba(255, 204, 0, 0.3);
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
         }
 
     </style>
@@ -188,7 +183,6 @@
         <div class="master-section">
             <div class="control-box">
                 <button class="play-btn" id="main-ctrl" onclick="toggle()">
-                    <!-- Ikona Play -->
                     <svg id="svg-ico" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </button>
                 
@@ -197,7 +191,7 @@
                         <div class="knob-turner" id="v-knob"></div>
                         <div class="knob-center" title="Reset to 50%" onclick="resetVol()"></div>
                     </div>
-                    <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="70" oninput="setV(this.value)">
+                    <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
                 </div>
             </div>
             
@@ -248,31 +242,23 @@
         
         player.play();
         updateIcon(true);
+        resetVol(); // Przycisk suwaka na środku przy włączeniu stacji
     }
 
-    // Funkcja STOP zamiast PAUSE
     function toggle() {
         if(current === -1) { play(0); return; }
         
         if(player.src && !player.paused) {
-            // STOP: Czyścimy źródło, by całkowicie ubić połączenie/bufor
             player.pause();
             player.src = ""; 
             updateIcon(false);
         } else {
-            // Wznowienie odtwarzania wybranej stacji
             play(current);
         }
     }
 
     function updateIcon(isPlaying) {
-        if(isPlaying) {
-            // Ikona STOP (Kwadrat)
-            svgIco.innerHTML = '<path d="M6,6H18V18H6V6Z"/>';
-        } else {
-            // Ikona PLAY (Trójkąt)
-            svgIco.innerHTML = '<path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>';
-        }
+        svgIco.innerHTML = isPlaying ? '<path d="M6,6H18V18H6V6Z"/>' : '<path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>';
     }
 
     function skip(d) {
@@ -283,7 +269,7 @@
     function setV(v) {
         player.volume = v / 100;
         const fill = v * 0.75; 
-        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init) ${fill}%, #111 0%)`;
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #111 0%)`;
     }
 
     function resetVol() {
@@ -291,7 +277,8 @@
         setV(50);
     }
 
-    setV(70);
+    // Start na środku
+    resetVol();
 </script>
 </body>
 </html>
