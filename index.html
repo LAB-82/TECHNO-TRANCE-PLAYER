@@ -10,9 +10,8 @@
         :root {
             --s-bg: #13161a;
             --s-panel: #20252b;
-            --s-yellow: #f0ff00; 
-            --rmf-neon: #ffcc00; /* Oryginalny żółty RMF FM */
-            --s-blue: #3a86ff;
+            --s-init: #24ff24; /* Oryginalna zieleń Initial Audio */
+            --rmf-neon: #ffcc00; 
             --s-border: #0a0c0e;
             --s-text: #9097a0;
         }
@@ -34,7 +33,7 @@
             position: relative;
         }
 
-        /* TOP DISPLAY - OSC B STYLE */
+        /* TOP DISPLAY - TERAZ GRA STYLE */
         .top-nav {
             height: 65px; background: #1a1e24;
             display: flex; align-items: center; justify-content: center;
@@ -55,12 +54,12 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; text-transform: uppercase; font-weight: 700;
         }
-        .p-btn:hover { background: #2f353d; color: var(--s-yellow); }
+        .p-btn:hover { background: #2f353d; color: var(--s-init); }
 
         .p-name { 
-            flex: 1; text-align: center; color: var(--s-yellow); 
+            flex: 1; text-align: center; color: var(--s-init); 
             font-weight: 700; letter-spacing: 2px; font-size: 16px;
-            text-shadow: 0 0 12px rgba(240, 255, 0, 0.6);
+            text-shadow: 0 0 12px rgba(36, 255, 36, 0.6);
         }
 
         .main-frame { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
@@ -71,9 +70,6 @@
             border-radius: 3px; border: 1px solid var(--s-border);
             padding: 12px; display: flex; flex-direction: column;
         }
-        
-        .section-hdr { font-size: 11px; color: #fff; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-        .section-hdr span { color: var(--s-yellow); }
 
         /* KAFELKI - INITIAL STYLE */
         .grid { 
@@ -90,19 +86,17 @@
             transition: all 0.2s ease;
             box-shadow: 0 2px 4px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.05);
             font-weight: 500;
-            position: relative;
-            overflow: hidden;
         }
         
         .tile:hover { color: #fff; background: linear-gradient(to bottom, #343b44, #22272e); }
         
-        /* PODŚWIETLENIE CAŁEGO KAFELKA JAK W INITIAL */
+        /* PODŚWIETLENIE INITIAL AUDIO (BEZ OBRAMOWANIA) */
         .tile.active { 
-            background: radial-gradient(circle, rgba(240, 255, 0, 0.25) 0%, #1a1e23 100%);
-            border-color: var(--s-yellow);
+            background: radial-gradient(circle, rgba(36, 255, 36, 0.25) 0%, #1a1e23 100%);
+            border-color: #111; /* Usunięto podświetlenie ramki */
             color: #fff;
-            box-shadow: 0 0 20px rgba(240, 255, 0, 0.15), inset 0 0 15px rgba(240, 255, 0, 0.2);
-            text-shadow: 0 0 8px var(--s-yellow);
+            box-shadow: inset 0 0 15px rgba(36, 255, 36, 0.2); /* Poświata tylko wewnątrz */
+            text-shadow: 0 0 8px var(--s-init);
         }
 
         /* MASTER SECTION */
@@ -110,16 +104,16 @@
         
         .control-box { 
             background: var(--s-panel); border: 1px solid var(--s-border); 
-            padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center;
+            padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
         }
 
         .play-btn {
             width: 100%; height: 55px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
             border: 1px solid #000; border-radius: 3px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 #000; margin-bottom: 25px;
+            box-shadow: 0 4px 0 #000; margin-bottom: 35px;
         }
-        .play-btn svg { width: 28px; fill: var(--s-yellow); filter: drop-shadow(0 0 8px var(--s-yellow)); }
+        .play-btn svg { width: 28px; fill: var(--s-init); filter: drop-shadow(0 0 8px var(--s-init)); }
 
         /* VOL KNOB */
         .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
@@ -131,7 +125,7 @@
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
-            background: conic-gradient(from -135deg, var(--s-yellow) 0%, #111 0%);
+            background: conic-gradient(from -135deg, var(--s-init) 0%, #111 0%);
         }
         .knob-center { 
             position: absolute; inset: 15px; 
@@ -146,8 +140,8 @@
         }
         .vol-slider::-webkit-slider-thumb {
             appearance: none; width: 14px; height: 14px; background: #fff;
-            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-yellow);
-            box-shadow: 0 0 10px var(--s-yellow);
+            border-radius: 50%; cursor: pointer; border: 2px solid var(--s-init);
+            box-shadow: 0 0 10px var(--s-init);
         }
 
         /* LOGO RMF FM NEON */
@@ -172,20 +166,18 @@
     <div class="top-nav">
         <div class="patch-display">
             <button class="p-btn" onclick="skip(-1)">Prev</button>
-            <div class="p-name" id="patch-name">OSC B // SELECT STATION</div>
+            <div class="p-name" id="patch-name">TERAZ GRA // SELECT STATION</div>
             <button class="p-btn" onclick="skip(1)">Next</button>
         </div>
     </div>
 
     <div class="main-frame">
         <div class="browser-section">
-            <div class="section-hdr"><span>INITIAL</span> STATION SELECTOR</div>
             <div class="grid" id="grid"></div>
         </div>
 
         <div class="master-section">
             <div class="control-box">
-                <div class="section-hdr"><span>OUTPUT</span> GAIN</div>
                 <button class="play-btn" onclick="toggle()">
                     <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </button>
@@ -216,7 +208,7 @@
         { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' },
         { n: 'RMF GOLD', u: 'rmf_gold' }, { n: 'RMF PARTY', u: 'rmf_party' },
         { n: 'RMF ROCK', u: 'rmf_rock' }, { n: 'RMF LOVE', u: 'rmf_love' },
-        { n: 'RMF BEST 2025', u: 'rmf_2025' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
+        { n: 'RMF POLSKI ROCK', u: 'rmf_polski_rock' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
         { n: 'RMF HIP HOP', u: 'rmf_hip_hop' }, { n: 'RMF GROOVE', u: 'rmf_groove' }
     ];
 
@@ -239,7 +231,7 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('patch-name').textContent = "OSC B // " + STATIONS[i].n.toUpperCase();
+        document.getElementById('patch-name').textContent = "TERAZ GRA // " + STATIONS[i].n.toUpperCase();
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
@@ -262,7 +254,7 @@
     function setV(v) {
         player.volume = v / 100;
         const fill = v * 0.75; 
-        vKnob.style.background = `conic-gradient(from -135deg, var(--s-yellow) ${fill}%, #111 0%)`;
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init) ${fill}%, #111 0%)`;
     }
 
     function resetVol() {
