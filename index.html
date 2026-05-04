@@ -3,158 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF LANDR EDITION</title>
+    <title>RMF BASSLINE TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap');
 
         :root {
-            --landr-bg: #1d2333;
-            --landr-panel: #252c3f;
-            --landr-blue: #5684f7;
-            --landr-cyan: #4fe3d1;
-            --landr-text: #9ea7ba;
-            --landr-tile-active: #323d57;
+            --bl-bg: #8ba7b9;
+            --bl-panel: #d1dee7;
+            --bl-dark: #6e8a9d;
+            --bl-accent: #4c6d85;
+            --bl-text: #ffffff;
+            --bl-label: #5a7587;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: var(--landr-bg); color: #fff; 
-            font-family: 'Inter', sans-serif;
+            background: var(--bl-bg); color: var(--bl-text); 
+            font-family: 'Montserrat', sans-serif;
             display: flex; flex-direction: column;
-            padding: 15px; overflow: hidden; 
+            padding: 10px; overflow: hidden; 
         }
 
-        /* HEADER - LANDR STYLE */
-        header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 20px; padding: 0 10px;
+        /* TOP SECTION - LOGO & OSCILLATOR VISUALIZER */
+        .top-section {
+            background: var(--bl-dark);
+            border-radius: 4px; padding: 15px;
+            margin-bottom: 10px; position: relative;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
         }
-        .logo { font-size: 14px; font-weight: 600; letter-spacing: 1px; color: #fff; display: flex; align-items: center; gap: 8px; }
-        .logo span { color: var(--landr-text); font-weight: 300; }
-        .master-pill { 
-            background: var(--landr-cyan); color: #1d2333; 
-            padding: 5px 25px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        .header-main { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .brand { font-weight: 800; font-size: 24px; letter-spacing: -1px; text-transform: uppercase; }
+        .brand span { font-weight: 400; font-size: 10px; vertical-align: middle; margin-left: 10px; opacity: 0.7; }
+
+        .wave-area {
+            height: 80px; width: 100%;
+            border-top: 2px solid rgba(255,255,255,0.3);
+            border-bottom: 2px solid rgba(255,255,255,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700; letter-spacing: 2px;
+            background: rgba(0,0,0,0.05);
         }
 
-        .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
+        /* MAIN CONTENT AREA */
+        .main-content { display: flex; flex: 1; gap: 10px; min-height: 0; }
 
-        /* GRID - ORYGINALNY UKŁAD 5x3 */
+        /* GRID 5x3 - IDENTYCZNY UKŁAD */
         .grid { 
-            flex: 1.4; display: grid; 
+            flex: 1.5; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 12px; 
+            gap: 8px; background: var(--bl-panel);
+            padding: 10px; border-radius: 4px;
         }
 
         .tile {
-            background: var(--landr-panel);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 8px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.2s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            background: var(--bl-bg);
+            border-radius: 4px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.1s;
+            border-bottom: 3px solid var(--bl-accent);
         }
 
-        .tile:hover { background: #2d364d; transform: translateY(-2px); }
+        .tile:active { transform: translateY(2px); border-bottom-width: 1px; }
+        .tile.active { background: var(--bl-accent); border-bottom-color: #fff; }
 
-        .tile .t-top { font-size: 9px; color: var(--landr-text); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #ced4e0; }
+        .tile .t-top { font-size: 8px; font-weight: 700; opacity: 0.6; margin-bottom: 2px; }
+        .tile .t-bottom { font-size: 11px; font-weight: 700; text-transform: uppercase; }
 
-        /* AKTYWNY KAFELEK */
-        .tile.active {
-            background: var(--landr-tile-active);
-            border-color: var(--landr-blue);
-            box-shadow: 0 0 15px rgba(86, 132, 247, 0.2);
-        }
-        .tile.active .t-bottom { color: var(--landr-blue); }
-
-        /* SIDEBAR - SEKCYJNY PANEL */
-        .sidebar { 
-            flex: 0.7; display: flex; flex-direction: column; gap: 20px;
+        /* RIGHT PANEL - CONTROLS */
+        .right-panel {
+            flex: 0.6; background: var(--bl-panel);
+            border-radius: 4px; padding: 15px;
+            display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .side-panel {
-            background: var(--landr-panel); border-radius: 12px;
-            padding: 20px; display: flex; flex-direction: column; align-items: center;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
+        .section-label { color: var(--bl-label); font-size: 10px; font-weight: 800; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
 
-        /* POKRĘTŁO GŁOŚNOŚCI (LOUDNESS) */
-        .knob-area { position: relative; width: 130px; height: 130px; margin: 10px 0; }
-        .knob-outer {
-            width: 100%; height: 100%;
-            background: #1d2333; border-radius: 50%;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 2px 5px rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: center;
-            cursor: ns-resize;
+        /* KNOB - VOLUME */
+        .knob-box { text-align: center; }
+        .knob-wrap {
+            width: 100px; height: 100px; margin: 0 auto;
+            background: var(--bl-bg); border-radius: 50%;
+            border: 4px solid var(--bl-dark); position: relative;
+            cursor: ns-resize; display: flex; align-items: center; justify-content: center;
         }
-        .knob-indicator {
-            position: absolute; top: 10px; width: 3px; height: 12px;
-            background: var(--landr-blue); border-radius: 2px;
-            transform-origin: 1.5px 55px;
+        .knob-pointer {
+            position: absolute; top: 10px; width: 4px; height: 15px;
+            background: #fff; border-radius: 2px;
         }
-        .vol-val { font-size: 24px; font-weight: 300; color: #fff; }
-        .panel-label { font-size: 10px; color: var(--landr-text); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+        .knob-val { font-size: 18px; font-weight: 800; color: #fff; }
 
-        /* PRZYCISKI STEROWANIA - NA WZÓR KAFELKÓW */
-        .controls { display: flex; gap: 10px; width: 100%; }
-        .btn-tile {
-            flex: 1; height: 60px; background: var(--landr-panel);
-            border-radius: 8px; border: 1px solid rgba(255,255,255,0.05);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
+        /* TRANSPORT BUTTONS - FLAT STYLE */
+        .transport { display: flex; gap: 5px; margin-top: 15px; }
+        .t-btn {
+            flex: 1; height: 40px; background: var(--bl-dark);
+            border-radius: 3px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; border: none;
         }
-        .btn-tile:hover { background: #2d364d; }
-        .btn-tile svg { width: 20px; height: 20px; fill: var(--landr-text); }
-        .btn-tile.active svg { fill: var(--landr-cyan); }
+        .t-btn:hover { background: var(--bl-accent); }
+        .t-btn svg { width: 18px; height: 18px; fill: #fff; }
 
-        @media (max-width: 800px) {
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { flex: none; width: 100%; }
+        /* BOTTOM FX BAR */
+        .fx-bar {
+            height: 60px; background: var(--bl-panel);
+            margin-top: 10px; border-radius: 4px;
+            display: flex; align-items: center; padding: 0 20px; gap: 30px;
+        }
+        .fx-item { display: flex; align-items: center; gap: 10px; }
+        .fx-label { font-size: 10px; font-weight: 800; color: var(--bl-label); text-transform: uppercase; }
+        
+        /* TOGGLE SWITCH - BASSLINE STYLE */
+        .switch {
+            width: 40px; height: 20px; background: var(--bl-dark);
+            border-radius: 2px; position: relative; cursor: pointer;
+        }
+        .switch::after {
+            content: ''; position: absolute; left: 2px; top: 2px;
+            width: 16px; height: 16px; background: #fff; border-radius: 1px;
+            transition: 0.2s;
+        }
+        .switch.on { background: var(--bl-accent); }
+        .switch.on::after { left: 22px; }
+
+        @media (max-width: 700px) {
+            .main-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); flex: none; height: auto; }
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo">LANDR <span>Mastering Pro</span></div>
-    <div class="master-pill">Master</div>
-    <div style="font-size: 12px; color: var(--landr-text);" id="timer">00:00</div>
-</header>
+<div class="top-section">
+    <div class="header-main">
+        <div class="brand">BASSLINE <span>RADIO ANALYZER V1</span></div>
+        <div id="timer" style="font-weight: 700; font-size: 12px;">00:00</div>
+    </div>
+    <div class="wave-area" id="status-text">
+        SELECT STATION_
+    </div>
+</div>
 
-<div class="app-content">
+<div class="main-content">
     <div class="grid" id="station-grid"></div>
 
-    <aside class="sidebar">
-        <div class="side-panel">
-            <div class="panel-label">Loudness</div>
-            <div class="knob-area">
-                <div class="knob-outer" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
-                    <div class="knob-indicator" id="knob-pointer"></div>
-                    <div class="vol-val" id="vol-txt">50</div>
-                </div>
+    <aside class="right-panel">
+        <div class="knob-box">
+            <div class="section-label">Master Level</div>
+            <div class="knob-wrap" id="knob" onmousedown="startRotate(event)" ontouchstart="startRotate(event)">
+                <div class="knob-pointer" id="knob-pointer"></div>
+                <div class="knob-val" id="vol-txt">50</div>
             </div>
-            <div style="color: var(--landr-text); font-size: 11px;">Amount</div>
         </div>
 
-        <div class="side-panel">
-            <div class="panel-label">Transport</div>
-            <div class="controls">
-                <div class="btn-tile" onclick="skip(-1)">
-                    <svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-                </div>
-                <div class="btn-tile active" onclick="toggle()">
-                    <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-                </div>
-                <div class="btn-tile" onclick="skip(1)">
-                    <svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-                </div>
+        <div>
+            <div class="section-label">Transport</div>
+            <div class="transport">
+                <div class="t-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
+                <div class="t-btn" onclick="toggle()" style="background: var(--bl-accent);"><svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></div>
+                <div class="t-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
             </div>
         </div>
     </aside>
+</div>
+
+<div class="fx-bar">
+    <div class="fx-item"><div class="fx-label">Chorus</div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
+    <div class="fx-item"><div class="fx-label">Delay</div><div class="switch on" onclick="this.classList.toggle('on')"></div></div>
+    <div class="fx-item"><div class="fx-label">Hype</div><div class="switch" onclick="this.classList.toggle('on')"></div></div>
 </div>
 
 <audio id="player"></audio>
@@ -191,7 +208,7 @@
     STATIONS.forEach((s, i) => {
         const t = document.createElement('div');
         t.className = 'tile';
-        t.innerHTML = `<div class="t-top">Slot 0${i+1}</div><div class="t-bottom">${s.s}</div>`;
+        t.innerHTML = `<div class="t-top">BANK 0${Math.floor(i/5)+1}</div><div class="t-bottom">${s.s}</div>`;
         t.onclick = () => play(i);
         grid.appendChild(t);
     });
@@ -199,6 +216,7 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('status-text').textContent = `PLAYING: ${STATIONS[i].n.toUpperCase()}_`;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -212,9 +230,7 @@
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
 
-    // KNOB LOGIC
-    let isDragging = false;
-    let startY = 0;
+    let isDragging = false, startY = 0;
 
     function startRotate(e) {
         isDragging = true;
@@ -238,7 +254,7 @@
 
     function updateKnob() {
         const rotation = (volume * 2.4) - 120;
-        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg)`;
+        document.getElementById('knob-pointer').style.transform = `rotate(${rotation}deg) translateY(-35px)`;
         document.getElementById('vol-txt').textContent = Math.round(volume);
         player.volume = volume / 100;
     }
