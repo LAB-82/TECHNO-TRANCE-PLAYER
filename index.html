@@ -185,7 +185,6 @@
         document.getElementById('cur-info').textContent = STATIONS[i].s + " Engine";
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         
-        // FIX dla RMF MAXXX i reszty stacji
         if (STATIONS[i].n === 'RMF MAXXX') {
             player.src = 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48';
         } else {
@@ -212,7 +211,6 @@
     }
     setInterval(clock, 1000); clock();
 
-    // VOLUME KNOB LOGIC
     let isDragging = false, startY = 0;
     function startRotate(e) {
         isDragging = true; startY = e.clientY || e.touches[0].clientY;
@@ -232,7 +230,6 @@
     }
     function stopRotate() { isDragging = false; }
     
-    // Inicjalizacja głośności
     player.volume = 0.5;
     document.getElementById('knob-pointer').style.transform = `rotate(0deg)`;
 </script>
