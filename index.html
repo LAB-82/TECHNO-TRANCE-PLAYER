@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="utf-8">
-    <title>SERUM WAVEFORM | VIRUS EDITION</title>
+    <title>SERUM WAVEFORM | CRYSTALLINE EDITION</title>
     <style>
         :root {
             --cyan: #00f2ff;
@@ -10,9 +10,6 @@
             --bg-synth: #e0e0e0;
             --panel-synth: #d2d2d2;
             --border-synth: #a0a0a0;
-            --lcd-bg: #c5c9c7;
-            --lcd-header: #3a3a3a;
-            --lcd-text: #2a2a2a;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -69,30 +66,36 @@
         #station-name { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px; }
         .powered-on #station-name { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
 
-        .virus-display-frame {
-            width: 300px; height: 140px; background: #f0f0f0; border: 1px solid #999; border-radius: 4px;
-            padding: 10px; box-shadow: inset 1px 1px 2px white, 2px 2px 5px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px;
+        /* WYŚWIETLACZ CRYSTALLINE KICKVERB */
+        .crystalline-frame {
+            width: 320px; height: 120px;
+            background: linear-gradient(145deg, #ffffff, #d1d1d1);
+            padding: 8px; border-radius: 12px;
+            border: 2px solid #b0b0b0;
+            box-shadow: 4px 4px 10px rgba(0,0,0,0.15), -2px -2px 5px #ffffff;
+            margin-bottom: 20px;
         }
 
-        .lcd-screen {
-            width: 260px; height: 100px; background: var(--lcd-bg); border: 4px solid #1a1a1a;
-            display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        .crystalline-screen {
+            width: 100%; height: 100%;
+            border-radius: 6px;
+            background: linear-gradient(90deg, #f7b84b 0%, #e85d8d 40%, #7d89f0 100%);
+            border: 2px solid #555;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
         }
 
-        .lcd-header {
-            height: 24px; background: var(--lcd-header); display: flex; align-items: center; padding: 0 10px;
-            color: #ddd; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
-        }
+        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.3); }
 
-        .lcd-main {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 5px; text-align: center; color: var(--lcd-text); font-family: 'Courier New', monospace;
-            font-size: 13px; line-height: 1.2;
-        }
+        /* Animacja fali (Waveform) */
+        .waveform-svg { width: 80%; height: 60px; opacity: 0.8; stroke: white; stroke-width: 1.5; fill: none; }
+        .powered-on .waveform-path { animation: waveMove 2s infinite linear; }
 
-        body:not(.powered-on) .lcd-screen { background: #222; }
-        body:not(.powered-on) .lcd-header, body:not(.powered-on) .lcd-main { visibility: hidden; }
+        @keyframes waveMove {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-20px); }
+        }
 
         .controls-main { display: flex; gap: 15px; margin-bottom: 20px; }
 
@@ -103,7 +106,6 @@
             box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff; transition: all 0.1s ease;
         }
 
-        /* PODŚWIETLENIE PRZYCISKÓW STERUJĄCYCH */
         .powered-on .btn-rect.active { 
             color: var(--cyan) !important; 
             background: #222 !important; 
@@ -127,7 +129,6 @@
         .powered-on .fader-handle.center-glow { box-shadow: 0 0 15px var(--cyan), 0px 2px 5px rgba(0,0,0,0.2); }
         .fader-handle-inner { width: 30px; height: 6px; background: #444; border-radius: 1px; }
         
-        /* PODŚWIETLENIE ŚRODKA SUWAKA */
         .powered-on .fader-handle-inner.glow-active { 
             background: var(--cyan) !important; 
             box-shadow: 0 0 12px var(--cyan) !important; 
@@ -140,12 +141,16 @@
     <div id="techno-panel" class="genre-panel"><div class="genre-title">TECHNO</div></div>
     <div id="center-area">
         <div id="station-window"><div id="station-name">OFF</div></div>
-        <div class="virus-display-frame">
-            <div class="lcd-screen">
-                <div class="lcd-header" id="lcd-station-name">SYSTEM READY</div>
-                <div class="lcd-main" id="lcd-track-title">CHOOSE A STATION</div>
+        
+        <div class="crystalline-frame">
+            <div class="crystalline-screen">
+                <svg class="waveform-svg" viewBox="0 0 100 40">
+                    <path class="waveform-path" d="M0,20 Q5,5 10,20 T20,20 T30,20 T40,20 T50,20 T60,20 T70,20 T80,20 T90,20 T100,20" />
+                    <path class="waveform-path" d="M0,25 Q5,10 10,25 T20,25 T30,25 T40,25 T50,25 T60,25 T70,25 T80,25 T90,25 T100,25" style="opacity:0.5"/>
+                </svg>
             </div>
         </div>
+
         <div class="controls-main">
             <button id="pwrBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.18,7.03 3.75,9.63 3.75,12.58C3.75,17.14 7.44,20.83 12,20.83C16.56,20.83 20.25,17.14 20.25,12.58C20.25,9.63 18.82,7.03 16.56,5.44M11,2.08V11.08H13V2.08H11Z"/></svg></button>
             <button id="muteBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/></svg></button>
@@ -207,50 +212,21 @@
           pwrBtn = document.getElementById('pwrBtn'),
           muteBtn = document.getElementById('muteBtn'),
           stopBtn = document.getElementById('stopBtn'),
-          stationDisplay = document.getElementById('station-name'),
-          lcdStation = document.getElementById('lcd-station-name'),
-          lcdTrack = document.getElementById('lcd-track-title');
+          stationDisplay = document.getElementById('station-name');
 
-    let isPowered = false, dragging = false, currentSlug = '', metaInterval;
-
-    window.displayMeta = function(data) {
-        if (!isPowered || !currentSlug) return;
-        const sObj = STATIONS.find(s => s.s === currentSlug);
-        if (!data || !data.artist) {
-            lcdTrack.innerHTML = `<div style="font-size:1.1em; color:var(--cyan);">STATION:</div><div>${sObj ? sObj.n : "RADIO"}</div>`;
-            return;
-        }
-        lcdTrack.innerHTML = `<div style="font-size:1.4em; margin-bottom:5px;">${data.artist.name || "LIVE"}</div><div style="font-size:0.9em; opacity:0.8;">${data.title || ""}</div>`;
-    };
-
-    function updateMetadata() {
-        if (!isPowered || !currentSlug) return;
-        const old = document.getElementById('api-script');
-        if (old) old.remove();
-        const s = document.createElement('script');
-        s.id = 'api-script';
-        s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
-        s.onerror = () => {
-            const sObj = STATIONS.find(s => s.s === currentSlug);
-            lcdTrack.innerHTML = `<div style="color:var(--cyan);">STATION:</div><div>${sObj ? sObj.n : "ONLINE"}</div>`;
-        };
-        document.body.appendChild(s);
-    }
+    let isPowered = false, dragging = false;
 
     STATIONS.forEach(s => {
         const btn = document.createElement('div');
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            currentSlug = s.s;
-            lcdStation.textContent = s.n;
-            lcdTrack.textContent = "CONNECTING...";
+            stationDisplay.textContent = s.n;
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-            stopBtn.classList.remove('active'); // Wyłączamy podświetlenie STOP przy starcie stacji
+            stopBtn.classList.remove('active'); 
             player.pause(); player.src = s.u;
             player.play().catch(() => {});
-            updateMetadata();
         };
         document.getElementById(s.cat + '-panel').appendChild(btn);
     });
@@ -259,15 +235,10 @@
         isPowered = !isPowered;
         document.body.classList.toggle('powered-on', isPowered);
         pwrBtn.classList.toggle('active', isPowered);
-        faderGlow.classList.toggle('glow-active', isPowered); // Środek suwaka świeci gdy ON
-        stationDisplay.textContent = isPowered ? "VIRUS STATION READY" : "OFF";
-        if(isPowered) {
-            lcdStation.textContent = "SYSTEM ONLINE";
-            lcdTrack.textContent = "SELECT CHANNEL";
-            metaInterval = setInterval(updateMetadata, 10000);
-        } else {
-            player.pause(); player.src = ""; currentSlug = "";
-            clearInterval(metaInterval);
+        faderGlow.classList.toggle('glow-active', isPowered);
+        stationDisplay.textContent = isPowered ? "CRYSTALLINE READY" : "OFF";
+        if(!isPowered) {
+            player.pause(); player.src = "";
             document.querySelectorAll('.chip, .btn-rect').forEach(c => c.classList.remove('active'));
         }
     };
@@ -292,9 +263,12 @@
     stopBtn.onclick = () => { 
         if(isPowered) { 
             player.pause(); player.src = ""; 
-            lcdTrack.textContent = "STOPPED"; 
-            stopBtn.classList.add('active'); // Podświetlamy STOP
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); 
+            stopBtn.classList.add('active'); 
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            // WYGASZANIE STOP PO 1 SEKUNDZIE
+            setTimeout(() => {
+                stopBtn.classList.remove('active');
+            }, 1000);
         } 
     };
     
