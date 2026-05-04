@@ -2,206 +2,161 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Professional Studio Radio - Cali Edition</title>
+    <title>Wierna Rekonstrukcja - Muzyczne Radio</title>
     <style>
-        :root {
-            --leather: #2b1d1a;
-            --panel-metal: #1a1a1a;
-            --gold-light: #d4af37;
-            --knob-gradient: conic-gradient(#333, #111, #444, #111, #333);
-        }
-
         body {
-            background: #0f0f0f;
+            background: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Georgia', serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
         }
 
-        /* Główna obudowa - Vintage Leather */
-        .amp-case {
-            width: 900px;
-            height: 520px;
-            background: var(--leather);
-            background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,0.8);
-            border: 2px solid #3d2b1f;
-            position: relative;
+        /* Obudowa drewniana - głęboki profil ze zdjęcia */
+        .wood-case {
+            padding: 15px;
+            background: #4b3621;
+            background-image: linear-gradient(135deg, #5d4037 0%, #2b1d1a 100%);
+            border-radius: 45px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* Górny panel sterowania - Szczotkowany Metal */
-        .control-panel {
-            height: 180px;
-            background: #111;
-            border-radius: 5px;
-            border-bottom: 3px solid #000;
-            display: flex;
-            align-items: center;
-            padding: 0 30px;
-            gap: 25px;
-            box-shadow: inset 0 2px 10px rgba(255,255,255,0.05);
-        }
-
-        /* Pokrętła (Knobs) */
-        .knob-container {
+        /* Biały panel frontowy - Satynowe wykończenie */
+        .front-panel {
+            width: 800px;
+            height: 420px;
+            background: #fdfdfd;
+            border-radius: 35px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-        }
-
-        .knob {
-            width: 55px;
-            height: 55px;
-            background: var(--knob-gradient);
-            border-radius: 50%;
-            border: 3px solid #000;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.2);
             position: relative;
-            cursor: pointer;
-            transition: transform 0.2s;
+            box-shadow: inset 0 2px 5px rgba(255,255,255,1), 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .knob::after {
-            content: '';
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            width: 3px;
-            height: 12px;
-            background: #fff;
-            transform: translateX(-50%);
-        }
-
-        .knob-label {
-            color: #888;
-            font-size: 9px;
+        /* Napis dokładnie jak na zdjęciu */
+        .main-label {
+            margin-top: 35px;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            letter-spacing: 2px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: bold;
         }
 
-        /* Sekcja Maskownicy (Grill Cloth) */
-        .grill-section {
+        /* Centralny Wyświetlacz LCD */
+        .lcd-screen {
+            width: 320px;
+            height: 160px;
+            background: #080808;
+            border-radius: 12px;
             margin-top: 20px;
-            height: 280px;
-            background: #c4a484; /* Kolor bazy rattanowej */
-            background-image: 
-                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px),
-                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
-            background-size: 15px 15px;
-            border-radius: 5px;
-            border: 5px solid #1a1a1a;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 60px rgba(0,0,0,0.5);
-        }
-
-        /* Logo Cali */
-        .logo-plate {
-            position: absolute;
-            top: 50%;
-            left: 100px;
-            transform: translateY(-50%);
-            background: #111;
-            padding: 20px 40px;
-            border-radius: 4px;
-            border: 2px solid #333;
-            box-shadow: 5px 10px 20px rgba(0,0,0,0.6);
-        }
-
-        .logo-text {
-            color: #eee;
-            font-size: 64px;
-            font-style: italic;
-            font-family: 'Times New Roman', serif;
-            letter-spacing: -2px;
-        }
-
-        /* Suwaki Equalizera (Faders) */
-        .eq-faders {
-            margin-left: auto;
             display: flex;
-            gap: 15px;
-            background: #222;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #333;
-        }
-
-        .fader-track {
-            width: 6px;
-            height: 100px;
-            background: #000;
-            border-radius: 3px;
-            position: relative;
-        }
-
-        .fader-knob {
-            width: 24px;
-            height: 12px;
-            background: #555;
-            border: 1px solid #000;
-            position: absolute;
-            left: -9px;
-            bottom: 40%;
-            box-shadow: 0 2px 5px #000;
-        }
-
-        /* Status LED */
-        .led {
-            width: 12px;
-            height: 12px;
-            background: #300;
-            border-radius: 50%;
-            box-shadow: inset 0 2px 5px #000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 20px #000;
+            border: 4px solid #e0e0e0;
             transition: 0.3s;
         }
 
-        .powered .led {
-            background: #f00;
-            box-shadow: 0 0 15px #f00, inset 0 2px 5px rgba(255,255,255,0.5);
+        .powered .lcd-screen {
+            box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.2), 0 0 10px rgba(0,0,0,0.5);
         }
+
+        .clock-digits {
+            font-family: 'Courier New', monospace;
+            font-size: 50px;
+            color: #1a1a1a;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .powered .clock-digits { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
+
+        /* Głośniki po bokach - Metalowa siatka */
+        .speaker {
+            width: 190px;
+            height: 190px;
+            background: radial-gradient(circle, #222 1px, #111 2px);
+            background-size: 5px 5px;
+            border-radius: 50%;
+            position: absolute;
+            top: 130px;
+            border: 8px solid #f0f0f0;
+            box-shadow: inset 0 5px 15px #000, 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .spk-l { left: 35px; }
+        .spk-r { right: 35px; }
+
+        /* Przyciski pod LCD - "Piano Keys" ze zdjęcia */
+        .button-bar {
+            margin-top: 45px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .key-btn {
+            width: 65px;
+            height: 35px;
+            background: #2a2a2a;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #000, 0 6px 10px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.1s;
+        }
+
+        .key-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #000;
+        }
+
+        .key-btn svg { width: 18px; height: 18px; fill: #777; transition: 0.3s; }
+        .powered .key-btn.active svg { fill: #00ff41; filter: drop-shadow(0 0 5px #00ff41); }
+
+        /* Głośność - Ukryty suwak pod przyciskami */
+        .vol-indicator {
+            margin-top: 20px;
+            width: 250px;
+            height: 4px;
+            background: #ddd;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .vol-level { height: 100%; width: 50%; background: #00ff41; opacity: 0; transition: 0.3s; }
+        .powered .vol-level { opacity: 1; }
 
     </style>
 </head>
 <body>
 
-<div class="amp-case" id="unit">
-    <div class="control-panel">
-        <div class="knob-container">
-            <div class="led" id="pwrLed"></div>
-            <div class="knob" id="pwrToggle"></div>
-            <span class="knob-label">Power</span>
+<div class="wood-case">
+    <div class="front-panel" id="radio">
+        <div class="main-label">MUZYCZNE RADIO</div>
+        
+        <div class="lcd-screen">
+            <div id="status" style="color: #444; font-size: 10px; margin-bottom: 5px; font-family: sans-serif;">STANDBY</div>
+            <div id="clock" class="clock-digits">00:00:00</div>
         </div>
 
-        <div class="knob-container">
-            <div class="knob" style="transform: rotate(45deg);"></div>
-            <span class="knob-label">Volume</span>
-        </div>
+        <div class="speaker spk-l"></div>
+        <div class="speaker spk-r"></div>
 
-        <div class="knob-container">
-            <div class="knob" style="transform: rotate(-30deg);"></div>
-            <span class="knob-label">Tuning</span>
+        <div class="button-bar">
+            <button id="pwr" class="key-btn"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+            <button id="play" class="key-btn"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+            <button id="stop" class="key-btn"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+            <button id="mute" class="key-btn"><svg viewBox="0 0 24 24"><path id="m-icon" d="M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02z"/></svg></button>
+            <button id="vDn" class="key-btn"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+            <button id="vUp" class="key-btn"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
         </div>
-
-        <div class="eq-faders">
-            <div class="fader-track"><div class="fader-knob" style="bottom: 70%"></div></div>
-            <div class="fader-track"><div class="fader-knob" style="bottom: 50%"></div></div>
-            <div class="fader-track"><div class="fader-knob" style="bottom: 30%"></div></div>
-            <div class="fader-track"><div class="fader-knob" style="bottom: 60%"></div></div>
-        </div>
-    </div>
-
-    <div class="grill-section">
-        <div class="logo-plate">
-            <div class="logo-text">Cali</div>
-        </div>
+        
+        <div class="vol-indicator"><div id="vFill" class="vol-level"></div></div>
     </div>
 </div>
 
@@ -209,22 +164,60 @@
 
 <script>
     const audio = document.getElementById('stream');
-    const unit = document.getElementById('unit');
-    const pwrLed = document.getElementById('pwrLed');
-    let isOn = false;
+    const radio = document.getElementById('radio');
+    const clock = document.getElementById('clock');
+    const status = document.getElementById('status');
+    const vFill = document.getElementById('vFill');
+    const mIcon = document.getElementById('m-icon');
 
-    document.getElementById('pwrToggle').onclick = function() {
-        isOn = !isOn;
-        if(isOn) {
-            audio.play();
-            unit.classList.add('powered');
-            this.style.transform = "rotate(20deg)";
-        } else {
+    const M_OFF = "M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02z";
+    const M_ON = "M4.27,3L3,4.27,7.73,9H3v6h4l5,5v-6.73l4.25,4.25c-.67.52-1.42.93-2.25,1.18v2.06c1.38-.31,2.63-.95,3.69-1.81L19.73,21 21,19.73l-9-9L4.27,3z";
+
+    let isPwr = false;
+
+    setInterval(() => {
+        clock.textContent = new Date().toLocaleTimeString('pl-PL', {hour12:false});
+    }, 1000);
+
+    document.getElementById('pwr').onclick = function() {
+        isPwr = !isPwr;
+        radio.classList.toggle('powered');
+        this.classList.toggle('active');
+        status.textContent = isPwr ? "ONLINE" : "STANDBY";
+        if(!isPwr) {
             audio.pause();
-            unit.classList.remove('powered');
-            this.style.transform = "rotate(0deg)";
+            document.getElementById('play').classList.remove('active');
         }
     };
+
+    document.getElementById('play').onclick = function() {
+        if(!isPwr) return;
+        audio.play();
+        this.classList.add('active');
+        status.textContent = "PLAYING";
+    };
+
+    document.getElementById('stop').onclick = function() {
+        if(!isPwr) return;
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 0.5;
+        vFill.style.width = "50%";
+        document.getElementById('play').classList.remove('active');
+        status.textContent = "STOPPED";
+    };
+
+    document.getElementById('mute').onclick = function() {
+        if(!isPwr) return;
+        audio.muted = !audio.muted;
+        this.classList.toggle('active');
+        mIcon.setAttribute('d', audio.muted ? M_ON : M_OFF);
+    };
+
+    document.getElementById('vUp').onclick = () => { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); vFill.style.width = (audio.volume * 100) + "%"; } };
+    document.getElementById('vDn').onclick = () => { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); vFill.style.width = (audio.volume * 100) + "%"; } };
+
+    audio.volume = 0.5;
 </script>
 </body>
 </html>
