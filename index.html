@@ -2,206 +2,229 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Professional Hi-Fi Station</title>
+    <title>Professional Studio Radio - Cali Edition</title>
     <style>
         :root {
-            --aluminum: linear-gradient(180deg, #444 0%, #222 100%);
-            --walnut: #3d2b1f;
-            --vfd-cyan: #00f2ff;
-            --display-bg: #050505;
+            --leather: #2b1d1a;
+            --panel-metal: #1a1a1a;
+            --gold-light: #d4af37;
+            --knob-gradient: conic-gradient(#333, #111, #444, #111, #333);
         }
 
         body {
-            background: #121212;
+            background: #0f0f0f;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Georgia', serif;
         }
 
-        /* Obudowa z efektem głębi i tekstury drewna */
-        .chassis {
-            padding: 30px;
-            background: var(--walnut);
-            background-image: url('https://www.transparenttextures.com/patterns/dark-wood.png');
-            border-radius: 60px;
-            box-shadow: 0 80px 150px rgba(0,0,0,0.9), inset 0 0 50px rgba(0,0,0,0.6);
-        }
-
-        /* Panel przedni - szczotkowane aluminium */
-        .faceplate {
-            width: 860px;
-            height: 500px;
-            background: #e0e0e0;
-            background-image: linear-gradient(90deg, transparent 49%, rgba(0,0,0,0.05) 50%, transparent 51%);
-            background-size: 3px 100%;
-            border-radius: 40px;
+        /* Główna obudowa - Vintage Leather */
+        .amp-case {
+            width: 900px;
+            height: 520px;
+            background: var(--leather);
+            background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 0 40px rgba(0,0,0,0.8);
+            border: 2px solid #3d2b1f;
             position: relative;
+        }
+
+        /* Górny panel sterowania - Szczotkowany Metal */
+        .control-panel {
+            height: 180px;
+            background: #111;
+            border-radius: 5px;
+            border-bottom: 3px solid #000;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            gap: 25px;
+            box-shadow: inset 0 2px 10px rgba(255,255,255,0.05);
+        }
+
+        /* Pokrętła (Knobs) */
+        .knob-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: inset 0 2px 5px #fff, 0 10px 30px rgba(0,0,0,0.3);
+            gap: 10px;
         }
 
-        /* Wyświetlacz VFD (Vacuum Fluorescent Display) */
-        .vfd-glass {
-            width: 320px;
-            height: 160px;
-            background: var(--display-bg);
-            margin-top: 60px;
-            border: 10px solid #1a1a1a;
-            border-radius: 4px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 0 40px #000, 0 5px 15px rgba(0,0,0,0.5);
-        }
-
-        .vfd-text {
-            color: #1a1a1a; /* Stan wyłączony */
-            font-family: 'Courier New', monospace;
-            transition: all 0.4s ease;
-            text-transform: uppercase;
-        }
-
-        .powered .vfd-text {
-            color: var(--vfd-cyan);
-            text-shadow: 0 0 15px var(--vfd-cyan), 0 0 2px #fff;
-        }
-
-        /* Głośniki z metalową maskownicą */
-        .driver {
-            width: 220px;
-            height: 220px;
-            background: radial-gradient(circle, #333 1px, #111 2px);
-            background-size: 5px 5px;
+        .knob {
+            width: 55px;
+            height: 55px;
+            background: var(--knob-gradient);
             border-radius: 50%;
-            position: absolute;
-            top: 110px;
-            border: 12px solid #ccc;
-            box-shadow: inset 0 10px 20px #000, 5px 15px 30px rgba(0,0,0,0.2);
-        }
-        .left-spk { left: 40px; }
-        .right-spk { right: 40px; }
-
-        /* Przyciski typu "Tactile Metal" */
-        .controls {
-            position: absolute;
-            bottom: 50px;
-            display: flex;
-            gap: 20px;
-            background: #222;
-            padding: 20px 40px;
-            border-radius: 20px;
-            box-shadow: inset 0 5px 15px #000;
-        }
-
-        .btn-metal {
-            width: 65px;
-            height: 50px;
-            background: linear-gradient(180deg, #555, #222);
-            border: none;
-            border-radius: 8px;
-            color: #999;
+            border: 3px solid #000;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5), inset 0 2px 2px rgba(255,255,255,0.2);
+            position: relative;
             cursor: pointer;
-            box-shadow: 0 4px 0 #111, 0 6px 10px rgba(0,0,0,0.5);
-            transition: 0.1s;
+            transition: transform 0.2s;
+        }
+
+        .knob::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            width: 3px;
+            height: 12px;
+            background: #fff;
+            transform: translateX(-50%);
+        }
+
+        .knob-label {
+            color: #888;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
+        /* Sekcja Maskownicy (Grill Cloth) */
+        .grill-section {
+            margin-top: 20px;
+            height: 280px;
+            background: #c4a484; /* Kolor bazy rattanowej */
+            background-image: 
+                linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px),
+                linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 15px 15px;
+            border-radius: 5px;
+            border: 5px solid #1a1a1a;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.5);
+        }
+
+        /* Logo Cali */
+        .logo-plate {
+            position: absolute;
+            top: 50%;
+            left: 100px;
+            transform: translateY(-50%);
+            background: #111;
+            padding: 20px 40px;
+            border-radius: 4px;
+            border: 2px solid #333;
+            box-shadow: 5px 10px 20px rgba(0,0,0,0.6);
+        }
+
+        .logo-text {
+            color: #eee;
+            font-size: 64px;
+            font-style: italic;
+            font-family: 'Times New Roman', serif;
+            letter-spacing: -2px;
+        }
+
+        /* Suwaki Equalizera (Faders) */
+        .eq-faders {
+            margin-left: auto;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            gap: 15px;
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
         }
 
-        .btn-metal:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #111;
-            background: linear-gradient(180deg, #333, #111);
+        .fader-track {
+            width: 6px;
+            height: 100px;
+            background: #000;
+            border-radius: 3px;
+            position: relative;
         }
 
-        .btn-metal.active { color: var(--vfd-cyan); text-shadow: 0 0 8px var(--vfd-cyan); }
+        .fader-knob {
+            width: 24px;
+            height: 12px;
+            background: #555;
+            border: 1px solid #000;
+            position: absolute;
+            left: -9px;
+            bottom: 40%;
+            box-shadow: 0 2px 5px #000;
+        }
 
-        /* Volume Slider Custom */
-        .volume-unit { display: flex; flex-direction: column; gap: 10px; width: 150px; }
-        .slider-rail { width: 100%; height: 6px; background: #000; border-radius: 3px; overflow: hidden; }
-        .slider-fill { height: 100%; width: 50%; background: var(--vfd-cyan); opacity: 0; transition: 0.3s; }
-        .powered .slider-fill { opacity: 1; box-shadow: 0 0 10px var(--vfd-cyan); }
+        /* Status LED */
+        .led {
+            width: 12px;
+            height: 12px;
+            background: #300;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px #000;
+            transition: 0.3s;
+        }
+
+        .powered .led {
+            background: #f00;
+            box-shadow: 0 0 15px #f00, inset 0 2px 5px rgba(255,255,255,0.5);
+        }
 
     </style>
 </head>
 <body>
 
-<div class="chassis">
-    <div class="faceplate" id="mainUnit">
-        <div style="margin-top:30px; letter-spacing:6px; font-weight:bold; color:#555">MUZYCZNE RADIO</div>
-        
-        <div class="vfd-glass">
-            <div style="font-size: 12px; margin-bottom: 5px;" class="vfd-text">Hi-Fi System Ready</div>
-            <div id="vfdTime" style="font-size: 48px; font-weight: bold;" class="vfd-text">00:00:00</div>
+<div class="amp-case" id="unit">
+    <div class="control-panel">
+        <div class="knob-container">
+            <div class="led" id="pwrLed"></div>
+            <div class="knob" id="pwrToggle"></div>
+            <span class="knob-label">Power</span>
         </div>
 
-        <div class="driver left-spk"></div>
-        <div class="driver right-spk"></div>
+        <div class="knob-container">
+            <div class="knob" style="transform: rotate(45deg);"></div>
+            <span class="knob-label">Volume</span>
+        </div>
 
-        <div class="controls">
-            <button id="pwr" class="btn-metal">PWR</button>
-            <button id="play" class="btn-metal">PLAY</button>
-            <button id="stop" class="btn-metal">STOP</button>
-            <button id="mute" class="btn-metal">MUTE</button>
-            <div class="volume-unit">
-                <div style="color:#777; font-size:10px; display:flex; justify-content:space-between"><span>VOLUME</span><span id="vNum">50%</span></div>
-                <div class="slider-rail"><div id="vFill" class="slider-fill"></div></div>
-                <div style="display:flex; gap:10px;">
-                    <button id="vDn" class="btn-metal" style="width:100%; height:30px;">-</button>
-                    <button id="vUp" class="btn-metal" style="width:100%; height:30px;">+</button>
-                </div>
-            </div>
+        <div class="knob-container">
+            <div class="knob" style="transform: rotate(-30deg);"></div>
+            <span class="knob-label">Tuning</span>
+        </div>
+
+        <div class="eq-faders">
+            <div class="fader-track"><div class="fader-knob" style="bottom: 70%"></div></div>
+            <div class="fader-track"><div class="fader-knob" style="bottom: 50%"></div></div>
+            <div class="fader-track"><div class="fader-knob" style="bottom: 30%"></div></div>
+            <div class="fader-track"><div class="fader-knob" style="bottom: 60%"></div></div>
+        </div>
+    </div>
+
+    <div class="grill-section">
+        <div class="logo-plate">
+            <div class="logo-text">Cali</div>
         </div>
     </div>
 </div>
 
-<audio id="audio" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+<audio id="stream" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
 <script>
-    const audio = document.getElementById('audio');
-    const unit = document.getElementById('mainUnit');
-    const vFill = document.getElementById('vFill');
-    const vNum = document.getElementById('vNum');
+    const audio = document.getElementById('stream');
+    const unit = document.getElementById('unit');
+    const pwrLed = document.getElementById('pwrLed');
     let isOn = false;
 
-    // Clock
-    setInterval(() => {
-        document.getElementById('vfdTime').textContent = new Date().toLocaleTimeString('pl-PL', {hour12:false});
-    }, 1000);
-
-    function syncUI() {
-        vFill.style.width = (audio.volume * 100) + "%";
-        vNum.textContent = Math.round(audio.volume * 100) + "%";
-    }
-
-    document.getElementById('pwr').onclick = function() {
+    document.getElementById('pwrToggle').onclick = function() {
         isOn = !isOn;
-        unit.classList.toggle('powered');
-        this.classList.toggle('active');
-        if(!isOn) audio.pause();
+        if(isOn) {
+            audio.play();
+            unit.classList.add('powered');
+            this.style.transform = "rotate(20deg)";
+        } else {
+            audio.pause();
+            unit.classList.remove('powered');
+            this.style.transform = "rotate(0deg)";
+        }
     };
-
-    document.getElementById('play').onclick = () => { if(isOn) { audio.play(); document.getElementById('play').classList.add('active'); } };
-    
-    document.getElementById('stop').onclick = () => { 
-        if(!isOn) return;
-        audio.pause(); 
-        audio.currentTime = 0; 
-        audio.volume = 0.5; 
-        syncUI();
-        document.getElementById('play').classList.remove('active');
-    };
-
-    document.getElementById('vUp').onclick = () => { if(isOn) { audio.volume = Math.min(1, audio.volume + 0.05); syncUI(); } };
-    document.getElementById('vDn').onclick = () => { if(isOn) { audio.volume = Math.max(0, audio.volume - 0.05); syncUI(); } };
-
-    audio.volume = 0.5;
 </script>
 </body>
 </html>
