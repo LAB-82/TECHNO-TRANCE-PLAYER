@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <title>SERUM WAVEFORM | VIRUS EDITION</title>
-    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <style>
         :root {
             --cyan: #00f2ff;
@@ -17,14 +16,7 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            background: var(--bg-synth);
-            font-family: 'Segoe UI', Arial, sans-serif;
-            height: 100vh;
-            display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-        }
+        body { background: var(--bg-synth); font-family: 'Segoe UI', Arial, sans-serif; height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
 
         #main {
             width: 98vw; height: 96vh;
@@ -162,38 +154,16 @@
 <audio id="player"></audio>
 
 <script>
+    // UWAGA: s to slug z adresu URL po laut.fm/
     const STATIONS = [
         { n: 'TECH 88 TECHNO', u: 'https://stream.laut.fm/tech88', s: 'tech88', cat: 'techno' },
         { n: 'HR3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight', s: 'hr3_clubnight', cat: 'techno' },
         { n: '1000 TECHNO FM', u: 'https://stream.laut.fm/1000techno', s: '1000techno', cat: 'techno' },
-        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno', s: 'best-of-techno', cat: 'techno' },
-        { n: 'CHRIS BURN TECHNO', u: 'https://stream.laut.fm/chris_burn', s: 'chris_burn', cat: 'techno' },
-        { n: 'RETRO ELECTRONIC', u: 'https://stream.laut.fm/retroelectronicmusic', s: 'retroelectronicmusic', cat: 'techno' },
-        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio', s: 'gehirn-treiber-beat-radio', cat: 'techno' },
         { n: 'DEEP HOUSE SOUNDS', u: 'https://stream.laut.fm/deep-house-sounds', s: 'deep-house-sounds', cat: 'house' },
-        { n: 'HOUSEBOMB FM', u: 'https://stream.laut.fm/housebomb-fn', s: 'housebomb-fn', cat: 'house' },
-        { n: 'SYMBIOTIC BEATS', u: 'https://stream.laut.fm/symbiotic-beats', s: 'symbiotic-beats', cat: 'house' },
         { n: 'HOUSE MUSIC FM', u: 'https://stream.laut.fm/house', s: 'house', cat: 'house' },
-        { n: 'FAF RECORDS 979', u: 'https://stream.laut.fm/faf-records-979', s: 'faf-records-979', cat: 'house' },
-        { n: 'TORNADO RADIO', u: 'https://stream.laut.fm/tornadofm', s: 'tornadofm', cat: 'house' },
         { n: 'DRUM AND BASS FM', u: 'https://stream.laut.fm/drumandbass_fm', s: 'drumandbass_fm', cat: 'dnb' },
-        { n: 'FMBASE DNB', u: 'https://stream.laut.fm/fmbase', s: 'fmbase', cat: 'dnb' },
-        { n: 'DNBZONE RADIO', u: 'https://stream.laut.fm/dnbzone', s: 'dnbzone', cat: 'dnb' },
-        { n: 'DNB BASE GERMANY', u: 'https://stream.laut.fm/dnb-base', s: 'dnb-base', cat: 'dnb' },
-        { n: 'A5 RECORDINGS', u: 'https://stream.laut.fm/a5recordings', s: 'a5recordings', cat: 'dnb' },
-        { n: 'DJMO DNB', u: 'https://stream.laut.fm/djmo', s: 'djmo', cat: 'dnb' },
         { n: 'TRANCEMOTION FM', u: 'https://stream.laut.fm/trancemotionfm', s: 'trancemotionfm', cat: 'trance' },
-        { n: 'TRANCE BEATS FM', u: 'https://stream.laut.fm/trancebeats', s: 'trancebeats', cat: 'trance' },
-        { n: 'YOUR TRANCE RADIO', u: 'https://stream.laut.fm/yourtranceradio', s: 'yourtranceradio', cat: 'trance' },
-        { n: 'TRANCE WORLD FM', u: 'https://stream.laut.fm/trance', s: 'trance', cat: 'trance' },
-        { n: 'CLUBNIGHT TRANCE', u: 'https://stream.laut.fm/clubnight', s: 'clubnight', cat: 'trance' },
-        { n: 'TRANCE 02 RADIO', u: 'https://stream.laut.fm/trance02', s: 'trance02', cat: 'trance' },
-        { n: 'GOAFM PSYCHEDELIC', u: 'https://stream.laut.fm/goafm', s: 'goafm', cat: 'goa' },
-        { n: 'GOA BASE RADIO', u: 'https://stream.laut.fm/goa-base', s: 'goa-base', cat: 'goa' },
-        { n: 'GOA CHANNEL ONE', u: 'https://stream.laut.fm/goa-channel-one', s: 'goa-channel-one', cat: 'goa' },
-        { n: 'PSY-GOA DARKSPY', u: 'https://stream.laut.fm/psychedelic_goa_trance_pro_darkspy', s: 'psychedelic_goa_trance_pro_darkspy', cat: 'goa' },
-        { n: 'PSYCORE RADIO', u: 'https://stream.laut.fm/psycore', s: 'psycore', cat: 'goa' },
-        { n: 'PSYTRANCELICIOUS', u: 'https://stream.laut.fm/psytrancelicious', s: 'psytrancelicious', cat: 'goa' }
+        { n: 'GOAFM PSYCHEDELIC', u: 'https://stream.laut.fm/goafm', s: 'goafm', cat: 'goa' }
     ];
 
     const player = document.getElementById('player'),
@@ -208,45 +178,43 @@
 
     let isPowered = false, dragging = false, currentSlug = '', metaInterval;
 
-    // GLOBALNA FUNKCJA DLA JSONP - Klucz do działania tytułów
+    // JSONP CALLBACK
     window.displayMeta = function(data) {
         if (!isPowered || !currentSlug) return;
-
-        // Jeśli API nie zwróciło danych artysty, pokazujemy nazwę stacji jako fallback
+        
         const stationObj = STATIONS.find(s => s.s === currentSlug);
-        const fallbackName = stationObj ? stationObj.n : "RADIO";
+        const fallback = stationObj ? stationObj.n : "RADIO";
 
         if (!data || !data.artist) {
-            lcdTrack.innerHTML = `<div style="font-size:1.2em; color:var(--cyan); opacity:0.8;">STATION:</div><div>${fallbackName}</div>`;
+            lcdTrack.innerHTML = `<div style="font-size:1.1em; color:var(--cyan); opacity:0.8;">STATION:</div><div>${fallback}</div>`;
             return;
         }
 
-        const artist = (data.artist && data.artist.name) ? data.artist.name : "LIVE";
-        const title = (data.title && data.title.trim() !== "") ? data.title : "NON-STOP MUSIC";
+        const artist = data.artist.name || "LIVE";
+        const title = data.title || "MUSIC";
 
-        lcdTrack.innerHTML = `
-            <div style="font-size:1.5em; margin-bottom:5px;">${artist}</div>
-            <div>${title}</div>
-        `;
+        lcdTrack.innerHTML = `<div style="font-size:1.4em; margin-bottom:4px;">${artist}</div><div style="font-size:0.9em; opacity:0.9;">${title}</div>`;
     };
 
     function updateMetadata() {
         if (!isPowered || !currentSlug) return;
         
-        const oldScript = document.getElementById('api-script');
-        if (oldScript) oldScript.remove();
+        // Animacja ładowania tylko jeśli wyświetlacz jest pusty
+        if (lcdTrack.textContent === "CONNECTING...") {
+             const sObj = STATIONS.find(s => s.s === currentSlug);
+             lcdTrack.innerHTML = `<div style="font-size:0.8em; opacity:0.5;">LOADING DATA...</div><div>${sObj.n}</div>`;
+        }
+
+        const old = document.getElementById('api-script');
+        if (old) old.remove();
 
         const s = document.createElement('script');
         s.id = 'api-script';
-        // Unikalny t= zapobiega ładowaniu starych danych z pamięci
         s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
-        
-        // Jeśli skrypt się nie załaduje (np. błędna podstrona), wyświetlamy nazwę stacji
         s.onerror = () => {
-            const stationObj = STATIONS.find(s => s.s === currentSlug);
-            lcdTrack.innerHTML = `<div style="font-size:1.2em; color:var(--cyan);">STATION:</div><div>${stationObj ? stationObj.n : "OFFLINE"}</div>`;
+            const sObj = STATIONS.find(s => s.s === currentSlug);
+            lcdTrack.innerHTML = `<div style="color:var(--cyan);">STATION:</div><div>${sObj ? sObj.n : "ONLINE"}</div>`;
         };
-
         document.body.appendChild(s);
     }
 
@@ -256,16 +224,12 @@
         btn.onclick = () => {
             if(!isPowered) return;
             currentSlug = s.s;
-            
             lcdStation.textContent = s.n;
             lcdTrack.textContent = "CONNECTING...";
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
-
-            player.pause();
-            player.src = s.u;
-            player.play().catch(e => console.log("Manual trigger required"));
-            
+            player.pause(); player.src = s.u;
+            player.play().catch(() => {});
             updateMetadata();
         };
         document.getElementById(s.cat + '-panel').appendChild(btn);
@@ -275,16 +239,15 @@
         isPowered = !isPowered;
         document.body.classList.toggle('powered-on', isPowered);
         pwrBtn.classList.toggle('active', isPowered);
-        stationDisplay.textContent = isPowered ? "GLOBAL MUSIC PLAYER" : "OFF";
-        
+        stationDisplay.textContent = isPowered ? "VIRUS STATION READY" : "OFF";
         if(isPowered) {
-            lcdStation.textContent = "MODE: READY";
-            lcdTrack.textContent = "SELECT STATION";
+            lcdStation.textContent = "SYSTEM ONLINE";
+            lcdTrack.textContent = "SELECT CHANNEL";
             metaInterval = setInterval(updateMetadata, 10000);
         } else {
             player.pause(); player.src = ""; currentSlug = "";
             clearInterval(metaInterval);
-            resetUI();
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         }
     };
 
@@ -295,29 +258,13 @@
         let pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
         player.volume = pct;
         faderHandle.style.left = (pct * 100) + '%';
-        if (pct > 0.48 && pct < 0.52) faderHandle.classList.add('center-glow');
-        else faderHandle.classList.remove('center-glow');
     }
 
     faderHandle.onmousedown = faderHandle.ontouchstart = () => dragging = true;
     window.onmousemove = window.ontouchmove = (e) => moveFader(e);
     window.onmouseup = window.ontouchend = () => dragging = false;
-
     muteBtn.onclick = () => { if(isPowered) { player.muted = !player.muted; muteBtn.classList.toggle('active', player.muted); } };
-    
-    stopBtn.onclick = () => { 
-        if(isPowered) { 
-            player.pause(); player.src = ""; 
-            lcdTrack.textContent = "STOPPED"; 
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); 
-        } 
-    };
-    
-    function resetUI() {
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-        lcdStation.textContent = "SYSTEM READY";
-        lcdTrack.textContent = "CHOOSE A STATION";
-    }
+    stopBtn.onclick = () => { if(isPowered) { player.pause(); player.src = ""; lcdTrack.textContent = "STOPPED"; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); } };
     
     player.volume = 0.5;
 </script>
