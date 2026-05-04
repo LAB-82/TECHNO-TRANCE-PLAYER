@@ -3,175 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>L.A.B. Radio - Audizio Layout</title>
+    <title>L.A.B. RADIO - TRUE STYLE</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
-        :root { --neon: #e60012; --bg-display: #1a0000; }
-        body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #050505; }
+        body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #000; font-family: Arial, sans-serif; }
 
-        /* Obudowa wg proporcji ze zdjęcia image_64911b.png */
-        .radio-frame {
-            width: 900px;
-            height: 400px;
-            background: #121212;
-            border-radius: 40px;
-            border: 4px solid #1a1a1a;
+        /* Ramka drewniana */
+        .wood-frame {
+            width: 880px;
+            height: 480px;
+            background: #b68d68;
+            border-radius: 50px;
+            padding: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             display: flex;
-            padding: 20px;
-            box-sizing: border-box;
-            box-shadow: 0 50px 100px #000;
-            position: relative;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Głośniki - duże, po bokach */
-        .speaker-box {
-            width: 280px;
-            height: 280px;
-            background: radial-gradient(circle, #1a1a1a 0%, #080808 70%);
-            border-radius: 50%;
-            align-self: center;
-            border: 10px solid #181818;
-            box-shadow: inset 0 0 40px #000;
+        /* Panel frontowy metalowy */
+        .metal-front {
+            width: 100%;
+            height: 100%;
+            background: #d1d1d1;
+            border-radius: 35px;
+            border: 2px solid #a0a0a0;
             position: relative;
-        }
-        .speaker-box::after {
-            content: ''; position: absolute; top:0; left:0; width:100%; height:100%;
-            background-image: radial-gradient(#222 1px, transparent 1px);
-            background-size: 5px 5px; border-radius: 50%; opacity: 0.4;
-        }
-
-        /* Panel Centralny - precyzyjne wyliczenie środka */
-        .panel-center {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding-top: 40px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
         }
 
-        /* Wyświetlacz - Kolor tła jak podświetlenie LAB */
-        .display-lenco {
+        /* Głośniki */
+        .speaker {
             width: 220px;
-            height: 95px;
-            background: var(--bg-display);
-            border: 2px solid #222;
+            height: 220px;
+            background: #252525;
+            border-radius: 50%;
+            position: absolute;
+            top: 130px;
+            border: 5px solid #b0b0b0;
+            box-shadow: inset 0 0 30px #000;
+        }
+        .speaker.left { left: 40px; }
+        .speaker.right { right: 40px; }
+
+        /* Wyświetlacz i Napis */
+        #main-title {
+            font-family: 'DS-Digital', monospace;
+            font-size: 45px;
+            color: #800;
+            margin-top: 40px;
+            letter-spacing: 5px;
+        }
+        .powered #main-title { color: #ff0000; text-shadow: 0 0 15px #ff0000; }
+
+        .display-container {
+            width: 240px;
+            height: 110px;
+            background: #000;
+            border: 3px solid #888;
+            margin-top: 10px;
             position: relative;
-            margin-bottom: 20px;
             overflow: hidden;
         }
-        .powered .display-lenco { background: var(--neon); box-shadow: 0 0 15px var(--neon); }
+        canvas { width: 100%; height: 100%; }
 
-        .info-layer {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-family: 'DS-Digital', monospace; color: rgba(255,255,255,0.1); z-index: 2;
+        /* Overlay na wyświetlaczu (Czas i Data) */
+        .info-overlay {
+            position: absolute; width: 100%; top: 5px;
+            text-align: center; font-family: 'DS-Digital', monospace;
+            color: #fff; font-size: 14px; display: none; z-index: 5;
         }
-        .powered .info-layer { color: #fff; text-shadow: 1px 1px 2px #000; }
+        .powered .info-overlay { display: block; }
 
-        canvas { position: absolute; top:0; left:0; width:100%; height:100%; z-index: 1; }
+        /* Przyciski - Układ z Twojego zdjęcia */
+        .btn-row { display: flex; gap: 8px; margin-top: 15px; }
+        .btn-row.top { margin-top: 25px; } /* Przyciski stacji */
+        
+        .btn-rect {
+            width: 60px; height: 22px;
+            background: linear-gradient(180deg, #444, #222);
+            border: 1px solid #111;
+            border-radius: 3px;
+            cursor: pointer;
+        }
 
-        /* Przyciski - Układ siatki wg Audizio */
-        .buttons-group {
-            display: grid;
-            grid-template-columns: repeat(5, 45px);
-            gap: 5px;
-            margin-bottom: 10px;
+        .btn-main {
+            width: 58px; height: 38px;
+            background: linear-gradient(180deg, #333, #111);
+            border: 1px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-sq {
-            width: 45px; height: 18px; background: #222; border: 1px solid #333;
-            border-radius: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-        .btn-sq svg { width: 12px; fill: #555; }
-        .powered .btn-sq.active svg { fill: #fff; filter: drop-shadow(0 0 3px #fff); }
+        .btn-main svg { width: 18px; fill: #555; }
+        .powered .btn-main.active svg { fill: #ff0000; filter: drop-shadow(0 0 5px #ff0000); }
 
-        /* Sekcja Głośności wg image_6493e2.png */
-        .volume-zone {
-            margin-top: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        /* Pasek głośności pod +/- */
+        .vol-bar {
+            width: 120px; height: 4px; background: #333;
+            margin-top: 10px; border-radius: 2px; overflow: hidden;
         }
-        .vol-row { display: flex; gap: 10px; margin-bottom: 8px; }
-        .vol-ctrl {
-            width: 55px; height: 35px; background: #1a1a1a; border: 1px solid #333;
-            color: #555; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-        }
-        .vol-bar-container {
-            width: 120px; height: 6px; background: #000; border-radius: 3px; overflow: hidden;
-        }
-        .vol-bar-fill {
-            width: 50%; height: 100%; background: var(--neon); 
-            box-shadow: 0 0 10px var(--neon); opacity: 0; transition: 0.2s;
-        }
-        .powered .vol-bar-fill { opacity: 1; }
+        .vol-fill { width: 50%; height: 100%; background: #ff0000; opacity: 0; }
+        .powered .vol-fill { opacity: 1; }
 
-        .lab-text { font-family: 'DS-Digital', monospace; font-size: 30px; color: #222; margin-bottom: 5px; }
-        .powered .lab-text { color: var(--neon); text-shadow: 0 0 10px var(--neon); }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-<div class="radio-frame" id="app">
-    <div class="speaker-box"></div>
-
-    <div class="panel-center">
-        <div class="lab-text">L.A.B. RADIO</div>
+<div class="wood-frame">
+    <div class="metal-front" id="radio">
+        <div id="main-title">L.A.B. RADIO</div>
         
-        <div class="display-lenco">
-            <div class="info-layer">
-                <div style="font-size: 16px;">MUZYCZNE RADIO</div>
-                <div id="clock" style="font-size: 24px;">00:00</div>
-                <div id="date" style="font-size: 11px;">04-05-2026</div>
+        <div class="speaker left"></div>
+        <div class="speaker right"></div>
+
+        <div class="display-container">
+            <div class="info-overlay">
+                <span id="clock">00:00:00</span><br>
+                <span id="date" style="font-size: 10px;">01.01.2026</span>
             </div>
-            <canvas id="viz"></canvas>
+            <canvas id="spectrum"></canvas>
         </div>
 
-        <div class="buttons-group">
-            <div id="pwr" class="btn-sq"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></div>
-            <div id="play" class="btn-sq"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></div>
-            <div id="stop" class="btn-sq"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></div>
-            <div id="mute" class="btn-sq"><svg viewBox="0 0 24 24"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></div>
-            <div class="btn-sq"><svg viewBox="0 0 24 24"><path d="M10,9V5L3,12L10,19V15H21V9H10Z"/></svg></div>
+        <!-- Rząd przycisków stacji -->
+        <div class="btn-row top">
+            <div class="btn-rect"></div><div class="btn-rect"></div>
+            <div class="btn-rect"></div><div class="btn-rect"></div>
         </div>
 
-        <div class="volume-zone">
-            <div class="vol-row">
-                <div id="vDn" class="vol-ctrl">-</div>
-                <div id="vUp" class="vol-ctrl">+</div>
-            </div>
-            <div class="vol-bar-container">
-                <div id="vFill" class="vol-bar-fill"></div>
-            </div>
+        <!-- Rząd głównych przycisków -->
+        <div class="btn-row">
+            <div id="pwr" class="btn-main"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></div>
+            <div id="play" class="btn-main"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></div>
+            <div id="stop" class="btn-main"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></div>
+            <div id="mute" class="btn-main"><svg viewBox="0 0 24 24"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></div>
+            <div id="vDn" class="btn-main"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></div>
+            <div id="vUp" class="btn-main"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></div>
         </div>
+
+        <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
     </div>
-
-    <div class="speaker-box"></div>
 </div>
 
 <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
 <script>
     const audio = document.getElementById('stream');
-    const canvas = document.getElementById('viz');
+    const canvas = document.getElementById('spectrum');
     const ctx = canvas.getContext('2d');
-    const app = document.getElementById('app');
+    const radio = document.getElementById('radio');
     const vFill = document.getElementById('vFill');
     
     let audioCtx, analyser, source, dataArray, isOn = false;
 
     function updateTime() {
-        const n = new Date();
-        document.getElementById('clock').textContent = n.toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit'});
-        document.getElementById('date').textContent = n.toLocaleDateString('pl-PL').replace(/\//g, '-');
+        const now = new Date();
+        document.getElementById('clock').textContent = now.toLocaleTimeString('pl-PL');
+        document.getElementById('date').textContent = now.toLocaleDateString('pl-PL');
     }
     setInterval(updateTime, 1000); updateTime();
 
     document.getElementById('pwr').onclick = function() {
         isOn = !isOn;
-        app.classList.toggle('powered');
+        radio.classList.toggle('powered');
         this.classList.toggle('active');
-        if(!isOn) { audio.pause(); render(null); }
+        if(!isOn) { audio.pause(); draw(null); }
     };
 
     document.getElementById('play').onclick = function() {
@@ -190,24 +189,28 @@
         loop();
     };
 
-    document.getElementById('stop').onclick = () => { audio.pause(); audio.currentTime = 0; document.getElementById('play').classList.remove('active'); };
+    document.getElementById('stop').onclick = () => { audio.pause(); document.getElementById('play').classList.remove('active'); };
     document.getElementById('mute').onclick = function() { audio.muted = !audio.muted; this.classList.toggle('active'); };
 
     document.getElementById('vUp').onclick = () => { audio.volume = Math.min(1, audio.volume + 0.1); vFill.style.width = (audio.volume * 100) + '%'; };
     document.getElementById('vDn').onclick = () => { audio.volume = Math.max(0, audio.volume - 0.1); vFill.style.width = (audio.volume * 100) + '%'; };
 
-    function render(data) {
+    function draw(data) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         if(!data) return;
         const bars = 32; const w = canvas.width / bars;
         for (let i = 0; i < bars; i++) {
             const h = (data[i] / 255) * canvas.height;
-            ctx.fillStyle = 'rgba(0,0,0,0.2)'; // Cień słupka na czerwonym tle
-            ctx.fillRect(i*w, canvas.height - h, w-1, h);
+            ctx.fillStyle = '#ff0000';
+            for(let j=0; j<10; j++) {
+                if(j < (h/10)) {
+                    ctx.fillRect(i*w + 1, canvas.height - (j*11) - 10, w-2, 8);
+                }
+            }
         }
     }
 
-    function loop() { if(!isOn || audio.paused) return; requestAnimationFrame(loop); analyser.getByteFrequencyData(dataArray); render(dataArray); }
+    function loop() { if(!isOn || audio.paused) return; requestAnimationFrame(loop); analyser.getByteFrequencyData(dataArray); draw(dataArray); }
 
     window.onload = () => { 
         canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight; 
