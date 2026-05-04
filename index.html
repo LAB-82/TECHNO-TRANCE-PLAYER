@@ -2,220 +2,253 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Wierna Rekonstrukcja - Muzyczne Radio</title>
+    <title>Muzyczne Radio - High Detail Replica</title>
     <style>
+        :root {
+            --wood-tone: #5d4037;
+            --panel-bg: #f5f5f5;
+            --display-black: #0a0a0a;
+            --btn-gray: #333333;
+        }
+
         body {
-            background: #1a1a1a;
+            background: #e0e0e0;
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
-            font-family: 'Helvetica Neue', Arial, sans-serif;
+            perspective: 1000px;
         }
 
-        /* Obudowa drewniana - głęboki profil ze zdjęcia */
-        .wood-case {
-            padding: 15px;
-            background: #4b3621;
-            background-image: linear-gradient(135deg, #5d4037 0%, #2b1d1a 100%);
-            border-radius: 45px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.5);
+        /* Obudowa zewnętrzna - drewno */
+        .radio-case {
+            width: 820px;
+            height: 440px;
+            background: var(--wood-tone);
+            background-image: linear-gradient(135deg, #6d4c41 0%, #3e2723 100%);
+            border-radius: 60px;
+            padding: 12px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.4);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Biały panel frontowy - Satynowe wykończenie */
+        /* Biały panel przedni */
         .front-panel {
-            width: 800px;
-            height: 420px;
-            background: #fdfdfd;
-            border-radius: 35px;
+            width: 100%;
+            height: 100%;
+            background: var(--panel-bg);
+            border-radius: 50px;
             display: flex;
             flex-direction: column;
             align-items: center;
             position: relative;
-            box-shadow: inset 0 2px 5px rgba(255,255,255,1), 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Napis dokładnie jak na zdjęciu */
-        .main-label {
+        /* Nóżki radia */
+        .foot {
+            position: absolute;
+            bottom: -15px;
+            width: 60px;
+            height: 15px;
+            background: #ccc;
+            border-radius: 0 0 15px 15px;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3);
+        }
+        .foot-l { left: 80px; }
+        .foot-r { right: 80px; }
+
+        /* Branding */
+        .brand-text {
             margin-top: 35px;
+            font-family: Arial, sans-serif;
+            font-weight: 800;
             font-size: 18px;
-            font-weight: 700;
             color: #333;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Centralny Wyświetlacz LCD */
-        .lcd-screen {
-            width: 320px;
-            height: 160px;
-            background: #080808;
-            border-radius: 12px;
-            margin-top: 20px;
+        /* Wyświetlacz */
+        .display-unit {
+            width: 340px;
+            height: 150px;
+            background: var(--display-black);
+            border-radius: 15px;
+            margin-top: 15px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 0 20px #000;
-            border: 4px solid #e0e0e0;
+            border: 8px solid #e0e0e0;
+            box-shadow: inset 0 0 30px #000;
+        }
+
+        .lcd-content {
+            font-family: 'Courier New', monospace;
+            color: #1a1a1a;
+            font-size: 40px;
             transition: 0.3s;
         }
+        .powered .lcd-content { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
 
-        .powered .lcd-screen {
-            box-shadow: inset 0 0 30px rgba(0, 255, 65, 0.2), 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .clock-digits {
-            font-family: 'Courier New', monospace;
-            font-size: 50px;
-            color: #1a1a1a;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .powered .clock-digits { color: #00ff41; text-shadow: 0 0 10px #00ff41; }
-
-        /* Głośniki po bokach - Metalowa siatka */
-        .speaker {
+        /* Głośniki */
+        .speaker-hole {
             width: 190px;
             height: 190px;
-            background: radial-gradient(circle, #222 1px, #111 2px);
-            background-size: 5px 5px;
+            background: radial-gradient(circle, #222 1.5px, #000 2px);
+            background-size: 6px 6px;
             border-radius: 50%;
             position: absolute;
             top: 130px;
-            border: 8px solid #f0f0f0;
-            box-shadow: inset 0 5px 15px #000, 0 8px 20px rgba(0,0,0,0.1);
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.6), 0 5px 15px rgba(0,0,0,0.1);
         }
-        .spk-l { left: 35px; }
-        .spk-r { right: 35px; }
+        .spk-l { left: 40px; }
+        .spk-r { right: 40px; }
 
-        /* Przyciski pod LCD - "Piano Keys" ze zdjęcia */
-        .button-bar {
-            margin-top: 45px;
+        /* Sekcja przycisków */
+        .controls-area {
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .button-row {
             display: flex;
             gap: 12px;
+            margin-top: 10px;
         }
 
-        .key-btn {
-            width: 65px;
-            height: 35px;
-            background: #2a2a2a;
-            border: none;
+        .btn-physical {
+            width: 60px;
+            height: 32px;
+            background: var(--btn-gray);
             border-radius: 6px;
+            border: none;
             cursor: pointer;
-            box-shadow: 0 4px 0 #000, 0 6px 10px rgba(0,0,0,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 4px 0 #000, 0 5px 10px rgba(0,0,0,0.4);
             transition: 0.1s;
         }
 
-        .key-btn:active {
+        .btn-physical:active {
             transform: translateY(3px);
             box-shadow: 0 1px 0 #000;
         }
 
-        .key-btn svg { width: 18px; height: 18px; fill: #777; transition: 0.3s; }
-        .powered .key-btn.active svg { fill: #00ff41; filter: drop-shadow(0 0 5px #00ff41); }
-
-        /* Głośność - Ukryty suwak pod przyciskami */
-        .vol-indicator {
-            margin-top: 20px;
-            width: 250px;
-            height: 4px;
-            background: #ddd;
-            border-radius: 2px;
-            overflow: hidden;
+        /* Opisy pod przyciskami */
+        .labels-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
         }
-        .vol-level { height: 100%; width: 50%; background: #00ff41; opacity: 0; transition: 0.3s; }
-        .powered .vol-level { opacity: 1; }
+        .label-text {
+            width: 60px;
+            text-align: center;
+            font-family: sans-serif;
+            font-size: 11px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Pasek głośności nad przyciskami (jak na zdjęciu) */
+        .vol-line {
+            width: 300px;
+            height: 6px;
+            background: #222;
+            border-radius: 3px;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        .vol-fill { width: 50%; height: 100%; background: #00ff41; opacity: 0; transition: 0.3s; }
+        .powered .vol-fill { opacity: 1; }
 
     </style>
 </head>
 <body>
 
-<div class="wood-case">
-    <div class="front-panel" id="radio">
-        <div class="main-label">MUZYCZNE RADIO</div>
+<div class="radio-case">
+    <!-- Nóżki -->
+    <div class="foot foot-l"></div>
+    <div class="foot foot-r"></div>
+
+    <div class="front-panel" id="radioUI">
+        <div class="brand-text">MUZYCZNE RADIO</div>
         
-        <div class="lcd-screen">
-            <div id="status" style="color: #444; font-size: 10px; margin-bottom: 5px; font-family: sans-serif;">STANDBY</div>
-            <div id="clock" class="clock-digits">00:00:00</div>
+        <div class="display-unit">
+            <div id="clock" class="lcd-content">00:00:00</div>
         </div>
 
-        <div class="speaker spk-l"></div>
-        <div class="speaker spk-r"></div>
+        <div class="speaker-hole spk-l"></div>
+        <div class="speaker-hole spk-r"></div>
 
-        <div class="button-bar">
-            <button id="pwr" class="key-btn"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-            <button id="play" class="key-btn"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-            <button id="stop" class="key-btn"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-            <button id="mute" class="key-btn"><svg viewBox="0 0 24 24"><path id="m-icon" d="M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02z"/></svg></button>
-            <button id="vDn" class="key-btn"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-            <button id="vUp" class="key-btn"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+        <div class="controls-area">
+            <div class="vol-line"><div id="vFill" class="vol-fill"></div></div>
+            
+            <div class="button-row">
+                <button id="btnPwr" class="btn-physical"></button>
+                <button id="btnPlay" class="btn-physical"></button>
+                <button id="btnStop" class="btn-physical"></button>
+                <button id="btnMute" class="btn-physical"></button>
+                <button id="btnVdn" class="btn-physical"></button>
+                <button id="btnVup" class="btn-physical"></button>
+            </div>
+            
+            <div class="labels-row">
+                <div class="label-text">1 (PWR)</div>
+                <div class="label-text">2 (PLAY)</div>
+                <div class="label-text">3 (STOP)</div>
+                <div class="label-text">&蓝牙; (MUTE)</div>
+                <div class="label-text">−</div>
+                <div class="label-text">+</div>
+            </div>
         </div>
-        
-        <div class="vol-indicator"><div id="vFill" class="vol-level"></div></div>
     </div>
 </div>
 
-<audio id="stream" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+<audio id="audioStream" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
 <script>
-    const audio = document.getElementById('stream');
-    const radio = document.getElementById('radio');
+    const audio = document.getElementById('audioStream');
+    const ui = document.getElementById('radioUI');
     const clock = document.getElementById('clock');
-    const status = document.getElementById('status');
     const vFill = document.getElementById('vFill');
-    const mIcon = document.getElementById('m-icon');
+    let isOn = false;
 
-    const M_OFF = "M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02z";
-    const M_ON = "M4.27,3L3,4.27,7.73,9H3v6h4l5,5v-6.73l4.25,4.25c-.67.52-1.42.93-2.25,1.18v2.06c1.38-.31,2.63-.95,3.69-1.81L19.73,21 21,19.73l-9-9L4.27,3z";
-
-    let isPwr = false;
-
+    // Zegar
     setInterval(() => {
         clock.textContent = new Date().toLocaleTimeString('pl-PL', {hour12:false});
     }, 1000);
 
-    document.getElementById('pwr').onclick = function() {
-        isPwr = !isPwr;
-        radio.classList.toggle('powered');
-        this.classList.toggle('active');
-        status.textContent = isPwr ? "ONLINE" : "STANDBY";
-        if(!isPwr) {
-            audio.pause();
-            document.getElementById('play').classList.remove('active');
-        }
+    // Sterowanie
+    document.getElementById('btnPwr').onclick = () => {
+        isOn = !isOn;
+        ui.classList.toggle('powered');
+        if(!isOn) audio.pause();
     };
 
-    document.getElementById('play').onclick = function() {
-        if(!isPwr) return;
-        audio.play();
-        this.classList.add('active');
-        status.textContent = "PLAYING";
-    };
-
-    document.getElementById('stop').onclick = function() {
-        if(!isPwr) return;
+    document.getElementById('btnPlay').onclick = () => { if(isOn) audio.play(); };
+    
+    document.getElementById('btnStop').onclick = () => { 
+        if(!isOn) return;
         audio.pause();
         audio.currentTime = 0;
         audio.volume = 0.5;
         vFill.style.width = "50%";
-        document.getElementById('play').classList.remove('active');
-        status.textContent = "STOPPED";
     };
 
-    document.getElementById('mute').onclick = function() {
-        if(!isPwr) return;
-        audio.muted = !audio.muted;
-        this.classList.toggle('active');
-        mIcon.setAttribute('d', audio.muted ? M_ON : M_OFF);
+    document.getElementById('btnMute').onclick = () => { if(isOn) audio.muted = !audio.muted; };
+    
+    document.getElementById('btnVup').onclick = () => { 
+        if(isOn) { audio.volume = Math.min(1, audio.volume + 0.1); vFill.style.width = (audio.volume * 100) + "%"; }
     };
-
-    document.getElementById('vUp').onclick = () => { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); vFill.style.width = (audio.volume * 100) + "%"; } };
-    document.getElementById('vDn').onclick = () => { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); vFill.style.width = (audio.volume * 100) + "%"; } };
+    
+    document.getElementById('btnVdn').onclick = () => { 
+        if(isOn) { audio.volume = Math.max(0, audio.volume - 0.1); vFill.style.width = (audio.volume * 100) + "%"; }
+    };
 
     audio.volume = 0.5;
 </script>
