@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>SERUM WAVEFORM | VIRUS EDITION</title>
+    <!-- Uciszenie błędu favicon 404 -->
     <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <style>
         :root {
@@ -198,7 +199,6 @@
 
     const player = document.getElementById('player'),
           faderHandle = document.getElementById('faderHandle'),
-          faderGlow = document.getElementById('faderGlow'),
           faderTrack = document.getElementById('faderTrack'),
           pwrBtn = document.getElementById('pwrBtn'),
           muteBtn = document.getElementById('muteBtn'),
@@ -209,6 +209,7 @@
 
     let isPowered = false, dragging = false, currentSlug = '', metaInterval;
 
+    // GLOBALNA FUNKCJA DLA JSONP - Klucz do działania tytułów
     window.displayMeta = function(data) {
         if (!isPowered || !currentSlug) return;
         if (data && data.title) {
@@ -219,8 +220,11 @@
 
     function updateMetadata() {
         if (!isPowered || !currentSlug) return;
-        const old = document.getElementById('api-script');
-        if (old) old.remove();
+        
+        // Czyścimy stary skrypt przed dodaniem nowego (zapobiega wyciekom pamięci)
+        const oldScript = document.getElementById('api-script');
+        if (oldScript) oldScript.remove();
+
         const s = document.createElement('script');
         s.id = 'api-script';
         s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
@@ -232,19 +236,20 @@
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            console.log("Stacja wybrana:", s.n);
             currentSlug = s.s;
             
-            // UI Update natychmiastowy
+            // UI Update
             lcdStation.textContent = s.n;
             lcdTrack.textContent = "CONNECTING...";
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
 
-            // Audio
+            // Audio Logic
             player.pause();
+            player.removeAttribute('src'); // Pełne czyszczenie bufora
+            player.load();
             player.src = s.u;
-            player.play().catch(e => console.log("Błąd autoodtwarzania"));
+            player.play().catch(e => console.log("Odtwarzanie wymaga interakcji"));
             
             updateMetadata();
         };
@@ -256,6 +261,7 @@
         document.body.classList.toggle('powered-on', isPowered);
         pwrBtn.classList.toggle('active', isPowered);
         stationDisplay.textContent = isPowered ? "GLOBAL MUSIC PLAYER" : "OFF";
+        
         if(isPowered) {
             lcdStation.textContent = "MODE: READY";
             lcdTrack.textContent = "SELECT STATION";
@@ -281,14 +287,27 @@
     faderHandle.addEventListener('mousedown', () => dragging = true);
     window.addEventListener('mousemove', moveFader);
     window.addEventListener('mouseup', () => dragging = false);
+    faderHandle.addEventListener('touchstart', () => dragging = true);
+    window.addEventListener('touchmove', moveFader);
+    window.addEventListener('touchend', () => dragging = false);
+
     muteBtn.onclick = () => { if(isPowered) { player.muted = !player.muted; muteBtn.classList.toggle('active', player.muted); } };
-    stopBtn.onclick = () => { if(isPowered) { player.pause(); player.src = ""; lcdTrack.textContent = "STOPPED"; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); } };
+    
+    stopBtn.onclick = () => { 
+        if(isPowered) { 
+            player.pause(); player.src = ""; 
+            lcdTrack.textContent = "STOPPED"; 
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); 
+        } 
+    };
     
     function resetUI() {
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         lcdStation.textContent = "SYSTEM READY";
         lcdTrack.textContent = "CHOOSE A STATION";
+        muteBtn.classList.remove('active');
     }
+    
     player.volume = 0.5;
 </script>
 </body>
