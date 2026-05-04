@@ -2,310 +2,292 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muzyczne Radio - Final Audit Version</title>
-    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RMF TERMINAL - CRYSTALLINE STYLE</title>
     <style>
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #222;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+
+        :root {
+            --bg: #e0e0e0;
+            --tile: #e0e0e0;
+            --text-main: #333;
+            --text-sub: #666;
+            --shadow-out: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
+            --shadow-in: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
+            --border-light: 1px solid rgba(255,255,255,0.5);
+            --color-active: #ff4081;
+            --color-wave: #00e5ff;
+            --accent-green: #00e676;
+            --accent-orange: #ff9100;
         }
 
-        /* Bardziej drewniana obudowa - Real Wood Effect */
-        .case-outer {
-            padding: 18px;
-            background: #4e342e; 
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(0,0,0,0.05) 0px, rgba(0,0,0,0.05) 2px, transparent 2px, transparent 4px),
-                linear-gradient(135deg, #5d4037 0%, #2b1d1a 100%);
-            border-radius: 40px;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.7), inset 0 0 30px rgba(0,0,0,0.5);
-            position: relative;
-            clip-path: polygon(6% 0%, 94% 0%, 100% 10%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 10%);
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        
+        html, body { 
+            height: 100vh; width: 100vw; 
+            background: var(--bg); color: var(--text-main); 
+            font-family: 'Montserrat Alternates', sans-serif;
+            overflow: hidden; 
         }
 
-        /* Panel przedni - Matowa Biel */
-        .radio-front {
-            width: 820px;
-            height: 480px;
-            background: #fdfdfd;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            border: 1px solid #ccc;
-            clip-path: polygon(6% 0%, 94% 0%, 100% 10%, 100% 90%, 94% 100%, 6% 100%, 0% 90%, 0% 10%);
+        body { display: flex; flex-direction: column; padding: 2vh; }
+
+        header { 
+            height: 50px; display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2vh; flex-shrink: 0;
+            background: rgba(255,255,255,0.3); border-radius: 10px; padding: 0 15px;
+            box-shadow: var(--shadow-out);
+        }
+        
+        /* PODŚWIETLANY NAPIS */
+        .header-info { 
+            font-size: 20px; font-weight: 700; color: var(--text-sub); 
+            text-transform: uppercase; letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+        .powered .header-info {
+            color: var(--color-active);
+            text-shadow: 0 0 10px var(--color-active);
         }
 
-        /* Napis z efektem poświaty */
-        .main-title {
-            margin-top: 35px;
-            font-size: 26px;
-            color: #444;
-            letter-spacing: 5px;
-            font-weight: 900;
-            text-transform: uppercase;
-            transition: all 0.5s ease;
+        .clock { color: var(--text-sub); font-size: 20px; font-weight: 600; }
+
+        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; padding: 10px 0; }
+        .grid { 
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 15px; 
         }
 
-        .powered .main-title {
-            color: #000;
-            text-shadow: 0 0 15px rgba(0, 162, 255, 0.4), 0 0 2px rgba(255, 255, 255, 0.8);
+        .tile {
+            background: var(--tile); border-radius: 15px;
+            border: var(--border-light);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; overflow: visible;
+            box-shadow: var(--shadow-out);
+            transition: all 0.2s ease;
+            opacity: 0.6; pointer-events: none; /* Blokada przed Power On */
+        }
+        .powered .tile { opacity: 1; pointer-events: auto; }
+        
+        .tile:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
+        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--text-main); line-height: 1; z-index: 2; transition: color 0.2s; }
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-top: 5px; text-align: center; z-index: 2; }
+
+        .tile.active { 
+            box-shadow: var(--shadow-in);
+            background: #dcdcdc;
+        }
+        .tile.active .t-top { color: var(--color-active); }
+
+        .waves {
+            position: absolute; width: 100%; height: 100%;
+            display: flex; align-items: center; justify-content: center;
+            pointer-events: none; opacity: 0; z-index: 1;
+        }
+        .tile.active .waves { opacity: 0.6; }
+        .wave {
+            position: absolute; border: 2px solid var(--color-wave); border-radius: 50%;
+            width: 10px; height: 10px; opacity: 0;
+            box-shadow: 0 0 10px var(--color-wave);
+            animation: ripple 3s infinite linear;
+        }
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 0.8; }
+            100% { width: 250%; height: 250%; opacity: 0; }
         }
 
-        /* Profesjonalny Wyświetlacz LCD (Zmniejszony) */
-        .lcd-display {
-            width: 220px;
-            height: 135px;
-            background: #0a0a0a;
-            border: 6px solid #1a1a1a;
-            border-radius: 4px;
-            margin-top: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            font-family: 'DS-Digital', monospace;
-            color: #111; 
-            transition: all 0.4s ease;
-            z-index: 2;
-            box-shadow: inset 0 0 20px #000;
+        .sidebar { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            align-items: center; justify-content: flex-start; gap: 3vh;
+            padding: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 20px;
+            box-shadow: var(--shadow-out);
+            border: var(--border-light);
         }
 
-        .powered .lcd-display { 
-            color: #00ff41; 
-            text-shadow: 0 0 10px rgba(0,255,65,0.6);
-            box-shadow: inset 0 0 25px rgba(0,255,65,0.05), 0 0 10px rgba(0,0,0,0.8);
+        .logo-display {
+            width: 100%; max-width: 320px; aspect-ratio: 16/9;
+            border-radius: 15px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            background: #ccc; /* Wyłączony display */
+            box-shadow: var(--shadow-in);
+            position: relative; overflow: hidden; border: 2px solid #fff;
+            transition: all 0.5s;
+        }
+        .powered .logo-display {
+            background: linear-gradient(135deg, #ff9100 0%, #ff4081 50%, #00e5ff 100%);
         }
 
-        .lcd-station { font-size: 18px; margin-bottom: 5px; height: 20px; letter-spacing: 1px; text-align: center; width: 90%; overflow: hidden; white-space: nowrap; }
-        .lcd-time { font-size: 40px; font-weight: bold; letter-spacing: 2px; }
-        .lcd-date { font-size: 13px; margin-top: 5px; opacity: 0.6; }
+        .logo-display h2 { font-size: 40px; color: #999; z-index: 2; position: relative; }
+        .powered .logo-display h2 { color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
 
-        /* Głośniki z chromem */
-        .speaker-mesh {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #222 1.2px, transparent 1.8px);
-            background-size: 5px 5px;
-            background-color: #111;
-            border-radius: 50%;
-            position: absolute;
-            top: 105px;
-            border: 8px solid #dcdcdc;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3), inset 0 0 30px #000;
-        }
-        .spk-l { left: 40px; }
-        .spk-r { right: 40px; }
+        .controls { display: flex; align-items: center; gap: 1vw; background: rgba(255,255,255,0.3); padding: 10px 15px; border-radius: 50px; box-shadow: var(--shadow-in); }
+        .c-svg { width: 24px; height: 24px; fill: #999; cursor: pointer; transition: all 0.2s; }
+        .powered .c-svg { fill: var(--text-sub); }
+        .c-svg:hover { transform: scale(1.1); }
+        
+        .btn-active { fill: var(--color-active) !important; filter: drop-shadow(0 0 5px var(--color-active)); }
 
-        .controls-area {
-            position: absolute;
-            bottom: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        .c-play { 
+            width: 50px; height: 50px; fill: #999; 
+            background: var(--tile); border-radius: 50%; padding: 12px;
+            box-shadow: var(--shadow-out); border: var(--border-light);
         }
 
-        .btn-rack {
-            display: flex;
-            gap: 10px;
-            padding: 15px 25px;
-            border-radius: 12px;
-            background: linear-gradient(180deg, #222 0%, #050505 100%);
-            border: 1px solid #333;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }
+        .vol-btn { 
+            width: 35px; height: 35px; border: var(--border-light); border-radius: 10px; 
+            background: var(--tile); color: #999; cursor: pointer; 
+            font-family: inherit; font-weight: bold; font-size: 18px;
+            box-shadow: var(--shadow-out); transition: all 0.2s;
         }
+        .powered .vol-btn { color: var(--text-main); }
+        .vol-bar { flex: 1; height: 35px; border: var(--border-light); border-radius: 10px; padding: 0 10px; display: flex; align-items: center; background: var(--tile); box-shadow: var(--shadow-in); }
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; opacity: 0.3; }
+        .powered input[type="range"] { opacity: 1; }
+        input[type="range"]::-webkit-slider-thumb { appearance: none; width: 20px; height: 20px; background: var(--tile); border-radius: 50%; border: var(--border-light); box-shadow: 2px 2px 5px #bebebe; }
 
-        .btn-pro {
-            width: 58px;
-            height: 42px;
-            border-radius: 6px;
-            border: 1px solid #333;
-            background: #1a1a1a;
-            color: #555;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; }
+            .sidebar { width: 100%; }
+            .controls { gap: 15px; }
         }
-
-        .btn-pro svg { width: 22px; height: 22px; fill: currentColor; }
-
-        .station-rack { display: flex; gap: 12px; }
-
-        .btn-station-pro {
-            width: 70px;
-            height: 26px;
-            background: linear-gradient(180deg, #ffffff 0%, #d1d1d1 100%);
-            border: 1px solid #aaa;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 900;
-            color: #333;
-            cursor: pointer;
-            text-transform: uppercase;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .powered .btn-pro.active, .powered .btn-pro:active {
-            color: #00ff41 !important;
-            border-color: #00ff41 !important;
-            box-shadow: 0 0 10px rgba(0,255,65,0.4);
-        }
-
-        .vol-wrapper { display: flex; flex-direction: column; gap: 6px; width: 110px; }
-        .vol-bar { width: 100%; height: 6px; background: #000; border-radius: 3px; overflow: hidden; }
-        .vol-fill { height: 100%; width: 50%; background: #00ff41; opacity: 0; transition: width 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .powered .vol-fill { opacity: 1; box-shadow: 0 0 8px #00ff41; }
     </style>
 </head>
 <body>
 
-<div class="case-outer">
-    <div class="radio-front" id="mainPanel">
-        <div class="main-title">MUZYCZNE RADIO</div>
-        
-        <div class="lcd-display">
-            <div id="lcdStation" class="lcd-station"></div>
-            <div id="lcdTime" class="lcd-time">00:00:00</div>
-            <div id="lcdDate" class="lcd-date">05.05.2026</div>
+<header id="main-header">
+    <div class="header-info" id="playing-now">SYSTEM READY</div>
+    <div class="clock" id="timer">00:00</div>
+</header>
+
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="logo-display">
+            <h2 id="side-n">OFF</h2>
+            <p id="side-s">Power to start</p>
         </div>
 
-        <div class="speaker-mesh spk-l"></div>
-        <div class="speaker-mesh spk-r"></div>
-
-        <div class="controls-area">
-            <div class="btn-rack">
-                <button id="pwr" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="stop" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-pro">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M3.27,3L2,4.27l5,5V15h4l5,5V15.27l4.46,4.46l1.27-1.27L3.27,3z M9,13H5v-2h1.73L9,13.27V13z M12,4L9.91,6.09L12,8.18V4z M16.5,12 c0-1.77-1.02-3.29-2.5-4.03V9.18l2.45,2.45C16.47,11.82,16.5,11.91,16.5,12z M19,12c0,0.94-0.2,1.82-0.54,2.64l1.51,1.51 C20.63,14.91,21,13.5,21,12c0-4.28-2.99-7.86-7-8.77v2.06C16.89,6.15,19,8.83,19,12z"/>
-                    </svg>
-                </button>
-                
-                <div class="vol-wrapper">
-                    <div style="display:flex; gap:5px; height:26px;">
-                        <button id="vDown" class="btn-pro" style="width:100%; height:100%"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <button id="vUp" class="btn-pro" style="width:100%; height:100%"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                    </div>
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                </div>
-            </div>
-
-            <div class="station-rack">
-                <button class="btn-station-pro" onclick="changeSt(1)">MR</button>
-                <button class="btn-station-pro" onclick="changeSt(2)">RMF FM</button>
-                <button class="btn-station-pro" onclick="changeSt(3)">ZET</button>
-                <button class="btn-station-pro" onclick="changeSt(4)">ESKA</button>
-                <button class="btn-station-pro" onclick="changeSt(5)">Złote</button>
-                <button class="btn-station-pro" onclick="changeSt(6)">PR 4</button>
-            </div>
+        <div class="controls">
+            <!-- POWER -->
+            <svg class="c-svg" id="btn-pwr" viewBox="0 0 24 24" onclick="togglePower()"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg>
+            <!-- STOP -->
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="stopAudio()"><path d="M6,6H18V18H6V6Z"/></svg>
+            <!-- PLAY/PAUSE -->
+            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            <!-- MUTE -->
+            <svg class="c-svg" id="btn-mute" viewBox="0 0 24 24" onclick="toggleMute()"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
         </div>
-    </div>
+
+        <div class="vol-box">
+            <button class="vol-btn" onclick="adj(-5)">-</button>
+            <div class="vol-bar">
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+            </div>
+            <button class="vol-btn" onclick="adj(5)">+</button>
+        </div>
+    </aside>
 </div>
 
-<audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+<audio id="player"></audio>
 
 <script>
-    const audio = document.getElementById('stream');
-    const panel = document.getElementById('mainPanel');
-    const vFill = document.getElementById('vFill');
-    const lcdStation = document.getElementById('lcdStation');
-    const lcdTime = document.getElementById('lcdTime');
+    const STATIONS = [
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+    ];
 
-    let isPwr = false;
+    const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+    const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
-    const stations = {
-        1: "Muzyczne Radio",
-        2: "RMF FM",
-        3: "Radio ZET",
-        4: "Radio Eska",
-        5: "Radio Złote Przeboje",
-        6: "Polskie Radio Czwórka"
-    };
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
+    let current = -1, isPwr = false;
 
     function clock() {
         const d = new Date();
-        lcdTime.textContent = d.toLocaleTimeString('pl-PL', { hour12: false });
-        document.getElementById('lcdDate').textContent = d.toLocaleDateString('pl-PL');
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
     }
     setInterval(clock, 1000); clock();
 
-    const flash = el => {
-        el.classList.add('active');
-        setTimeout(() => { if(!(el.id === 'play' && !audio.paused)) el.classList.remove('active'); }, 300);
-    };
+    STATIONS.forEach((s, i) => {
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `<div class="waves"><div class="wave"></div><div class="wave"></div></div><div class="t-top">RMF FM</div><div class="t-bottom">${s.s}</div>`;
+        t.onclick = () => { if(isPwr) play(i); };
+        grid.appendChild(t);
+    });
 
-    document.getElementById('pwr').onclick = function() {
+    function togglePower() {
         isPwr = !isPwr;
-        panel.classList.toggle('powered');
-        this.classList.toggle('active', isPwr);
+        document.body.classList.toggle('powered');
+        document.getElementById('btn-pwr').classList.toggle('btn-active');
         if(!isPwr) {
-            audio.pause();
-            document.getElementById('play').classList.remove('active');
-            lcdStation.textContent = "";
+            stopAudio();
+            document.getElementById('playing-now').textContent = "SYSTEM READY";
+            document.getElementById('side-n').textContent = "OFF";
         } else {
-            lcdStation.textContent = "SYSTEM ONLINE";
+            document.getElementById('playing-now').textContent = "SELECT STATION";
         }
-    };
-
-    document.getElementById('play').onclick = function() {
-        if(!isPwr) return;
-        audio.play().catch(() => { lcdStation.textContent = "LINK ERROR"; });
-        this.classList.add('active');
-        lcdStation.textContent = "PLAYING STREAM";
-    };
-
-    document.getElementById('stop').onclick = function() {
-        if(!isPwr) return;
-        audio.pause();
-        audio.currentTime = 0;
-        audio.volume = 0.5;
-        updateVol();
-        document.getElementById('play').classList.remove('active');
-        lcdStation.textContent = "STOP / RESET VOL";
-        flash(this);
-    };
-
-    // MUTE nie działa - usunięto logikę sterowania audio
-    document.getElementById('mute').onclick = function() {
-        if(!isPwr) return;
-        flash(this);
-    };
-
-    function updateVol() { vFill.style.width = (audio.volume * 100) + "%"; }
-
-    document.getElementById('vUp').onclick = function() {
-        if(!isPwr) return;
-        audio.volume = Math.min(1, audio.volume + 0.1);
-        updateVol(); flash(this);
-    };
-
-    document.getElementById('vDown').onclick = function() {
-        if(!isPwr) return;
-        audio.volume = Math.max(0, audio.volume - 0.1);
-        updateVol(); flash(this);
-    };
-
-    function changeSt(n) {
-        if(!isPwr) return;
-        lcdStation.textContent = stations[n];
     }
 
-    audio.volume = 0.5;
-    updateVol();
+    function play(i) {
+        if(!isPwr) return;
+        current = i;
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        document.getElementById('side-n').textContent = STATIONS[i].s;
+        
+        const streamBase = "https://rs201-krk.rmfstream.pl/";
+        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        player.play();
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+    }
+
+    function toggle() {
+        if(!isPwr) return;
+        if(player.paused) { 
+            if(current === -1) play(0); else player.play(); 
+            ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); 
+        } else { 
+            player.pause(); 
+            ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); 
+        }
+    }
+
+    function stopAudio() {
+        player.pause(); player.currentTime = 0;
+        ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z');
+        document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
+    }
+
+    function toggleMute() {
+        if(!isPwr) return;
+        player.muted = !player.muted;
+        document.getElementById('mute-path').setAttribute('d', player.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+        document.getElementById('btn-mute').classList.toggle('btn-active', player.muted);
+    }
+
+    function setV(v) { player.volume = v / 100; }
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
+    setV(vRange.value);
 </script>
 </body>
 </html>
