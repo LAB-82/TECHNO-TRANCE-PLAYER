@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF FM SEKTOR - FINAL AUDIT OK</title>
+    <title>RMF FM SEKTOR - PRO VST EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Montserrat+Alternates:wght@700;800&display=swap');
 
@@ -67,29 +67,43 @@
 
         .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 6px; align-content: stretch; }
 
-        /* KAFELKI - BEZ ŻADNYCH RAMEK */
+        /* KAFELKI - PROFESJONALNE PRZYCISKI BEZ RAMEK */
         .tile {
             flex: 1 1 calc(25% - 6px);
-            background: linear-gradient(to bottom, #2d333b, #1d2127);
-            border: none !important; /* USUNIĘCIE OBRAMOWANIA */
-            border-radius: 3px;
+            background: linear-gradient(180deg, #2d333b 0%, #1d2127 100%);
+            border: none !important;
+            border-radius: 2px;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 13px; 
-            color: var(--white-neon); /* BIAŁY NEON DLA NIEAKTYWNYCH */
-            text-shadow: 0 0 8px rgba(224, 230, 237, 0.4);
+            color: var(--white-neon);
+            text-shadow: 0 0 5px rgba(224, 230, 237, 0.4);
             transition: all 0.2s ease;
             font-weight: 600;
             position: relative;
+            overflow: hidden;
         }
-        
-        .tile:hover { background: #343b44; color: #fff; }
-        
-        /* AKTYWNA STACJA - KOLOR RMF FM + FALA */
+
+        /* EFEKT FALI RADIOWEJ (NADAJNIK) */
+        .tile.active::before {
+            content: '';
+            position: absolute;
+            width: 10px; height: 10px;
+            background: var(--rmf-neon);
+            border-radius: 50%;
+            animation: radio-wave 1.5s infinite linear;
+            opacity: 0;
+            z-index: 0;
+        }
+
+        @keyframes radio-wave {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(15); opacity: 0; }
+        }
+
         .tile.active { 
-            background: radial-gradient(circle, rgba(0, 212, 255, 0.35) 0%, #1a1e23 100%);
-            color: var(--rmf-neon); /* ŻÓŁTY RMF */
+            background: radial-gradient(circle, #2a313a 0%, #161a1f 100%);
+            color: var(--rmf-neon);
             text-shadow: 0 0 15px var(--rmf-neon);
-            box-shadow: inset 0 0 25px rgba(255, 204, 0, 0.5); /* FALA RMF */
             border: none !important;
         }
 
@@ -108,13 +122,12 @@
         }
         .play-btn svg { width: 28px; fill: var(--s-init-blue); filter: drop-shadow(0 0 8px var(--s-init-blue)); }
 
+        /* PROFESJONALNY TOR I SUWAK INITIAL AUDIO */
         .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         
-        /* PROFESJONALNE KÓŁKO INITIAL */
         .knob-base {
             width: 100px; height: 100px; background: #0a0c0e; border-radius: 50%;
-            margin-bottom: 20px; border: 4px solid #111; position: relative;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            margin-bottom: 30px; border: 4px solid #111; position: relative;
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
@@ -124,24 +137,33 @@
             position: absolute; inset: 12px; 
             background: linear-gradient(135deg, #3d444d, #111); 
             border-radius: 50%; border: 1px solid #000; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .knob-center::after {
-            content: ''; width: 3px; height: 10px; background: var(--s-init-blue);
-            position: absolute; top: 5px; border-radius: 2px;
-            box-shadow: 0 0 5px var(--s-init-blue);
         }
 
-        /* PROFESJONALNY SUWAK INITIAL */
-        .vol-slider { 
-            width: 100%; appearance: none; background: #080a0c; height: 4px; 
-            border-radius: 2px; border: 1px solid #333; outline: none;
+        /* TOR SUWAKA (FADER TRACK) */
+        .fader-track {
+            width: 100%; height: 12px; background: #080a0c;
+            border-radius: 10px; position: relative;
+            border: 1px solid #222; box-shadow: inset 0 2px 5px #000;
+            display: flex; align-items: center;
         }
+
+        /* DYNAMICZNE PODŚWIETLENIE TORU */
+        #fader-glow {
+            position: absolute; height: 100%; background: var(--s-init-blue);
+            border-radius: 10px; opacity: 0.3; filter: blur(4px);
+            pointer-events: none;
+        }
+
+        .vol-slider { 
+            width: 100%; appearance: none; background: transparent; 
+            position: absolute; z-index: 5; outline: none;
+        }
+
         .vol-slider::-webkit-slider-thumb {
-            appearance: none; width: 20px; height: 12px; 
-            background: linear-gradient(to bottom, #4d545d, #1a1e24);
-            border: 1px solid #000; border-radius: 1px; cursor: pointer;
-            box-shadow: 0 0 8px var(--s-init-blue);
+            appearance: none; width: 24px; height: 16px; 
+            background: linear-gradient(to bottom, #5d646d, #1a1e24);
+            border: 1px solid #000; border-radius: 2px; cursor: pointer;
+            box-shadow: 0 0 12px var(--s-init-blue);
         }
 
         .footer-logo { 
@@ -183,7 +205,10 @@
                         <div class="knob-turner" id="v-knob"></div>
                         <div class="knob-center" id="v-center" onclick="resetVol()"></div>
                     </div>
-                    <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
+                    <div class="fader-track">
+                        <div id="fader-glow"></div>
+                        <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
+                    </div>
                 </div>
             </div>
             
@@ -213,7 +238,8 @@
           grid = document.getElementById('grid'),
           vKnob = document.getElementById('v-knob'),
           vCenter = document.getElementById('v-center'),
-          vSlider = document.getElementById('v-slider');
+          vSlider = document.getElementById('v-slider'),
+          fGlow = document.getElementById('fader-glow');
 
     let current = -1;
 
@@ -258,6 +284,9 @@
         const fill = v * 0.75; 
         vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #1a1e23 0%)`;
         vCenter.style.transform = `rotate(${(v * 2.7) - 135}deg)`;
+        
+        // Aktualizacja podświetlenia toru suwaka
+        fGlow.style.width = v + "%";
     }
 
     function resetVol() {
