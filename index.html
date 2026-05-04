@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>TECHNO-TRANCE-PLAYER</title>
+    <title>MINI-MUZYCZNE-RADIO-LENCO-STYLE</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -14,149 +14,148 @@
             justify-content: center;
             background: #000;
             font-family: Arial, sans-serif;
-            overflow: hidden;
         }
 
-        /* Profesjonalna obudowa wzorowana na zdjęciu - bez pokręteł */
-        .case-external {
-            width: 850px;
-            height: 480px;
-            background: #1a1a1a;
-            border-radius: 60px; /* Zaokrąglenie krawędzi zewnętrznej */
-            padding: 15px;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
+        /* Zewnętrzna obudowa - Styl Lenco (Drewno) */
+        .lenco-outer {
+            width: 860px;
+            height: 460px;
+            background: #c19a6b; /* Kolor jasnego drewna */
+            background-image: linear-gradient(rgba(0,0,0,0.1) 1px, transparent 1px), 
+                              linear-gradient(90deg, rgba(0,0,0,0.1) 1px, transparent 1px);
+            background-size: 100% 4px; /* Imitacja słojów */
+            border-radius: 40px;
+            padding: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 0 20px rgba(0,0,0,0.2);
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .case-internal {
+        /* Srebrny panel frontowy */
+        .lenco-front {
             width: 100%;
             height: 100%;
-            background: #111;
-            border-radius: 45px; /* Zaokrąglenie panelu frontowego */
-            border: 1px solid #222;
+            background: linear-gradient(180deg, #d1d1d1 0%, #a8a8a8 100%);
+            border-radius: 25px;
+            border: 1px solid #888;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             position: relative;
+            box-shadow: inset 0 2px 5px #fff;
         }
 
-        /* Twoje oryginalne MUZYCZNE RADIO */
-        #title-container {
+        /* Napis górny */
+        #title-led {
             font-family: 'DS-Digital', monospace;
-            font-size: 48px;
-            color: #1a0000;
-            letter-spacing: 5px;
-            margin-bottom: 20px;
-            transition: 0.3s;
+            font-size: 42px;
+            color: #444;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+            z-index: 5;
         }
-        .powered #title-container {
-            color: #e60012;
-            text-shadow: 0 0 20px #e60012;
-        }
+        .powered #title-led { color: #e60012; text-shadow: 0 0 15px #e60012; }
 
-        /* Twoje głośniki - pozycja ze zdjęcia */
+        /* Głośniki po bokach - zgodnie ze zdjęciem */
         .speaker {
-            width: 200px;
-            height: 200px;
+            width: 210px;
+            height: 210px;
             border-radius: 50%;
-            background: radial-gradient(circle, #1a1a1a 0%, #080808 100%);
-            border: 4px solid #181818;
+            background: #333;
+            background-image: radial-gradient(#111 1px, transparent 1px);
+            background-size: 3px 3px;
+            border: 5px solid #999;
             position: absolute;
-            top: 110px;
-            box-shadow: inset 0 0 30px #000;
+            top: 100px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
         .speaker.left { left: 40px; }
         .speaker.right { right: 40px; }
 
-        /* TWÓJ WYŚWIETLACZ - NIETKNIĘTY */
-        .display-frame {
-            width: 280px;
-            height: 140px;
+        /* TWÓJ WYŚWIETLACZ */
+        .display-unit {
+            width: 240px;
+            height: 130px;
             background: #000;
-            border: 2px solid #333;
-            margin-bottom: 25px;
+            border: 3px solid #666;
             z-index: 5;
         }
-        canvas { width: 100%; height: 100%; display: block; }
+        canvas { width: 100%; height: 100%; }
 
-        /* TWOJE PRZYCISKI - IDENTYCZNE JAK W KODZIE */
-        .controls {
+        /* TWOJE PRZYCISKI - PEŁNY WZÓR */
+        .controls-row {
             display: flex;
-            gap: 8px;
+            gap: 5px;
+            margin-top: 20px;
             z-index: 10;
         }
-        .btn {
-            width: 62px;
-            height: 42px;
-            background: linear-gradient(180deg, #2a2a2a 0%, #1a1a1a 100%);
-            border: 1px solid #333;
+        .btn-orig {
+            width: 58px;
+            height: 38px;
+            background: linear-gradient(180deg, #444 0%, #222 100%);
+            border: 1px solid #111;
+            border-radius: 4px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 3px;
         }
-        .btn svg { width: 22px; height: 22px; fill: #444; }
-        .powered .btn:active { background: #333; }
-        .powered .btn.active svg { fill: #e60012; filter: drop-shadow(0 0 5px #e60012); }
+        .btn-orig svg { width: 18px; fill: #666; }
+        .powered .btn-orig:active { background: #555; }
+        .powered .btn-orig.active svg { fill: #e60012; filter: drop-shadow(0 0 5px #e60012); }
 
-        /* Napis L.A.B. i Link - Działający link */
-        .lab-info {
-            margin-top: 35px;
-            text-align: center;
-        }
-        .lab-circle {
-            width: 45px;
-            height: 45px;
+        /* Branding i Link */
+        .l.a.b-container { margin-top: 20px; text-align: center; }
+        .circle-lab {
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
-            border: 1px solid #222;
+            border: 2px solid #666;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
-            color: #222;
+            font-size: 9px;
+            color: #666;
+            font-weight: bold;
         }
-        .powered .lab-circle { color: #e60012; border-color: #e60012; }
+        .powered .circle-lab { color: #e60012; border-color: #e60012; }
 
-        .footer-link {
+        .m-link {
             display: block;
-            margin-top: 15px;
-            font-size: 11px;
-            color: #1a0000;
+            margin-top: 10px;
+            font-size: 10px;
+            color: #666;
             text-decoration: none;
             letter-spacing: 1px;
         }
-        .powered .footer-link { color: #400; }
+        .powered .m-link { color: #800; }
     </style>
 </head>
 <body oncontextmenu="return false;">
 
-<div class="case-external" id="mainCase">
-    <div class="case-internal">
-        <div id="title-container">MUZYCZNE RADIO</div>
+<div class="lenco-outer" id="mainBody">
+    <div class="lenco-front">
+        <div id="title-led">MUZYCZNE RADIO</div>
         
         <div class="speaker left"></div>
         <div class="speaker right"></div>
 
-        <div class="display-frame">
-            <canvas id="viz"></canvas>
+        <div class="display-unit">
+            <canvas id="scope"></canvas>
         </div>
 
-        <div class="controls">
-            <button id="pwr" class="btn"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-            <button id="play" class="btn"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-            <button id="stop" class="btn"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-            <button id="vDn" class="btn"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-            <button id="vUp" class="btn"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+        <div class="controls-row">
+            <button id="pwr" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+            <button id="play" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+            <button id="stop" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+            <button id="mute" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+            <button id="vDn" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+            <button id="vUp" class="btn-orig"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
         </div>
 
-        <div class="lab-info">
-            <div class="lab-circle">L.A.B.</div>
-            <a href="https://www.muzyczneradio.pl" target="_blank" class="footer-link">WWW.MUZYCZNERADIO.PL</a>
+        <div class="l.a.b-container">
+            <div class="circle-lab">L.A.B.</div>
+            <a href="https://www.muzyczneradio.pl" target="_blank" class="m-link">WWW.MUZYCZNERADIO.PL</a>
         </div>
     </div>
 </div>
@@ -165,21 +164,18 @@
 
 <script>
     const audio = document.getElementById('stream');
-    const canvas = document.getElementById('viz');
+    const canvas = document.getElementById('scope');
     const ctx = canvas.getContext('2d');
-    const mainCase = document.getElementById('mainCase');
+    const mainBody = document.getElementById('mainBody');
     const pwrBtn = document.getElementById('pwr');
 
     let audioCtx, analyser, source, dataArray, isOn = false;
 
     pwrBtn.onclick = () => {
         isOn = !isOn;
-        mainCase.classList.toggle('powered');
+        mainBody.classList.toggle('powered');
         pwrBtn.classList.toggle('active');
-        if(!isOn) { 
-            audio.pause(); 
-            renderBars(null); 
-        }
+        if(!isOn) { audio.pause(); render(null); }
     };
 
     document.getElementById('play').onclick = function() {
@@ -195,7 +191,7 @@
         }
         audio.play();
         this.classList.add('active');
-        loop();
+        tick();
     };
 
     document.getElementById('stop').onclick = () => {
@@ -203,17 +199,21 @@
         document.getElementById('play').classList.remove('active');
     };
 
+    document.getElementById('mute').onclick = function() {
+        audio.muted = !audio.muted;
+        this.classList.toggle('active');
+    }
+
     document.getElementById('vUp').onclick = () => { audio.volume = Math.min(1, audio.volume + 0.1); };
     document.getElementById('vDn').onclick = () => { audio.volume = Math.max(0, audio.volume - 0.1); };
 
-    function renderBars(data) {
+    function render(data) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         const bars = 32;
         const w = canvas.width / bars;
         for (let i = 0; i < bars; i++) {
             const h = data ? (data[i] / 255) * canvas.height : 0;
-            ctx.fillStyle = isOn ? '#e60012' : '#111';
-            // Oryginalne parametry wyświetlacza segmentowego
+            ctx.fillStyle = isOn ? '#e60012' : '#333';
             for(let j=0; j<10; j++) {
                 if(j < (h/10)) {
                     ctx.fillRect(i*w + 1, canvas.height - (j*14) - 12, w-2, 10);
@@ -222,19 +222,18 @@
         }
     }
 
-    function loop() {
+    function tick() {
         if(!isOn || audio.paused) return;
-        requestAnimationFrame(loop);
+        requestAnimationFrame(tick);
         analyser.getByteFrequencyData(dataArray);
-        renderBars(dataArray);
+        render(dataArray);
     }
 
     window.onload = () => {
         canvas.width = canvas.clientWidth;
         canvas.height = canvas.clientHeight;
-        renderBars(null);
+        render(null);
     };
 </script>
-
 </body>
 </html>
