@@ -2,243 +2,215 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF ACID V EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHOSCYON 2 RMF EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;700&display=swap');
 
         :root {
-            --acid-silver: #c0c0c0;
-            --acid-dark-silver: #a0a0a0;
-            --acid-accent: #00ffcc; /* Neonowa zieleń Acid V */
-            --acid-red: #ff3300; /* Diody LED */
-            --acid-bg: #1a1a1a;
-            --acid-border: #444;
+            --ph-bg: #d8d8d8;
+            --ph-panel-border: #9b9b9b;
+            --ph-orange: #f39200;
+            --ph-display-bg: #2a2a2a;
+            --ph-display-text: #00ffcc;
+            --ph-text: #333;
+            --ph-shadow: inset 1px 1px 2px #fff, inset -1px -1px 2px #000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; width: 100vw; 
-            background: var(--acid-bg); color: #333; 
-            font-family: 'Roboto Condensed', sans-serif;
-            display: flex; flex-direction: column;
-            padding: 15px; overflow: hidden; 
+            height: 100vh; background: #1a1a1a; 
+            font-family: 'Chakra Petch', sans-serif;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        /* NAGŁÓWEK - TYPOGRAFIA ARTURIA */
-        header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            background: linear-gradient(to bottom, #eee, #ccc);
-            padding: 0 25px; border-radius: 8px 8px 0 0;
-            border: 1px solid #888; border-bottom: 2px solid #555;
-        }
-        .header-info { font-size: 20px; font-weight: 700; color: #222; text-transform: uppercase; letter-spacing: 2px; }
-        .clock { color: #222; font-family: monospace; font-size: 22px; font-weight: bold; background: #bbb; padding: 2px 10px; border-radius: 4px; box-shadow: inset 1px 1px 3px rgba(0,0,0,0.2); }
-
-        /* GŁÓWNY PANEL */
-        .app-content { 
-            display: flex; flex: 1; gap: 15px; padding: 20px; 
-            background: var(--acid-silver);
-            border: 1px solid #888; border-top: none;
-            border-radius: 0 0 8px 8px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.1), 0 10px 30px rgba(0,0,0,0.5);
+        /* GŁÓWNA OBUDOWA */
+        .phoscyon-case {
+            width: 900px; height: 550px;
+            background: var(--ph-bg);
+            border-radius: 4px; border: 2px solid #555;
+            padding: 10px; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
         }
 
-        /* GRID STACJI - STYL SEKWENCERA */
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 12px; 
+        /* GÓRNY PANEL (SCENE / SYNTHESIS) */
+        header {
+            display: flex; height: 100px; border-bottom: 2px solid var(--ph-panel-border);
+            padding-bottom: 10px; margin-bottom: 10px;
         }
-
-        .tile {
-            background: #dcdcdc; 
-            border: 2px solid #999; 
-            border-radius: 4px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            box-shadow: 3px 3px 0px #888;
-            transition: transform 0.05s;
-        }
-        .tile:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0px #888; }
-
-        .tile .t-top { font-size: 10px; font-weight: 700; color: #666; margin-bottom: 5px; }
-        .tile .t-bottom { font-size: 14px; font-weight: 700; color: #222; text-transform: uppercase; }
-
-        /* DIODA LED STACJI */
-        .led {
-            width: 8px; height: 8px; background: #444; border-radius: 50%;
-            position: absolute; top: 10px; border: 1px solid #222;
-        }
-
-        .tile.active { background: #eee; border-color: #777; }
-        .tile.active .led {
-            background: var(--acid-red);
-            box-shadow: 0 0 8px var(--acid-red);
-        }
-
-        /* BOCZNY PANEL - STYL MODUŁU SYNTEZATORA */
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-between; padding: 20px;
-            background: #b8b8b8; border-left: 2px solid #999; border-radius: 4px;
-        }
-
-        .display-vst {
-            width: 100%; height: 100px;
-            background: #222; border-radius: 4px;
-            border: 3px solid #444; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            position: relative; overflow: hidden;
-        }
-        /* Fala w tle wyświetlacza */
-        .display-vst::after {
-            content: ""; position: absolute; width: 200%; height: 100%;
-            background: repeating-linear-gradient(90deg, transparent, var(--acid-accent) 2px, transparent 4px);
-            opacity: 0.1;
-        }
-
-        .display-vst h2 { font-size: 24px; color: var(--acid-accent); text-shadow: 0 0 10px var(--acid-accent); z-index: 1; }
-        .display-vst p { font-size: 9px; color: #888; text-transform: uppercase; letter-spacing: 1px; z-index: 1; }
-
-        .controls { display: flex; align-items: center; gap: 15px; }
-        .c-btn {
-            width: 45px; height: 45px; background: #333; border-radius: 4px;
-            border: 1px solid #000; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; box-shadow: 2px 2px 0px #111;
-        }
-        .c-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #111; }
-        .c-btn svg { width: 20px; fill: var(--acid-accent); }
-        .c-play { width: 60px; height: 60px; border-radius: 50%; background: #444; }
-
-        /* KNOB GŁOŚNOŚCI (JAK W ACID V) */
-        .vol-section { text-align: center; width: 100%; }
-        .vol-label { font-size: 11px; font-weight: 700; text-transform: uppercase; margin-bottom: 10px; color: #555; }
+        .header-section { flex: 1; padding: 5px; border-right: 1px solid var(--ph-panel-border); }
+        .section-label { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #666; margin-bottom: 5px; text-align: center; border-bottom: 1px solid #bbb; }
         
-        .knob-container {
+        .lcd-small {
+            background: #bbb; height: 35px; border-radius: 2px;
+            border: 1px solid #888; display: flex; align-items: center; padding: 0 10px;
+            font-size: 13px; font-weight: 700; color: #222;
+        }
+
+        /* ŚRODKOWY PANEL (CONTROLS) */
+        .controls-row {
+            display: flex; gap: 10px; flex: 1;
+        }
+        .side-panel { width: 220px; border: 1px solid var(--ph-panel-border); padding: 10px; display: flex; flex-direction: column; justify-content: space-between; }
+        
+        /* KLAWIATURA I KROKI (STACJE) */
+        .sequencer-area {
+            flex: 1; display: flex; flex-direction: column; gap: 10px;
+        }
+
+        /* GRID STACJI JAKO KLAWISZE */
+        .station-keys {
+            display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px;
+        }
+        .step-btn {
+            height: 40px; background: #eee; border: 1px solid #999; border-radius: 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            font-size: 9px; cursor: pointer; position: relative; box-shadow: var(--ph-shadow);
+        }
+        .step-btn .led { width: 6px; height: 6px; background: #444; border-radius: 50%; margin-bottom: 4px; }
+        .step-btn.active { background: #fff; }
+        .step-btn.active .led { background: #ff4400; box-shadow: 0 0 5px #ff4400; }
+
+        .keyboard {
+            display: flex; gap: 2px; margin-top: auto; padding: 10px 0;
+        }
+        .key-white { height: 80px; flex: 1; background: #fdfdfd; border: 1px solid #888; border-radius: 0 0 3px 3px; cursor: pointer; box-shadow: 0 2px 2px rgba(0,0,0,0.2); }
+        .key-white.active { background: var(--ph-orange); }
+
+        /* PANEL BOCZNY (TRANSPORT & VOLUME) */
+        .master-lcd {
+            background: var(--ph-display-bg); color: var(--ph-display-text);
+            height: 80px; padding: 10px; border-radius: 4px; border: 3px solid #444;
+            display: flex; flex-direction: column; justify-content: center; text-align: center;
+        }
+        .master-lcd span { font-size: 10px; color: #888; text-transform: uppercase; }
+        .master-lcd h2 { font-size: 18px; letter-spacing: 1px; }
+
+        .btn-orange {
+            background: var(--ph-orange); color: white; border: none; padding: 10px;
+            border-radius: 3px; font-weight: 700; cursor: pointer; text-transform: uppercase;
+            box-shadow: 0 3px 0 #b36b00; margin-top: 10px;
+        }
+        .btn-orange:active { transform: translateY(2px); box-shadow: 0 1px 0 #b36b00; }
+
+        .vol-knob {
             width: 80px; height: 80px; background: #333; border-radius: 50%;
-            margin: 0 auto; position: relative; border: 4px solid #444;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            margin: 20px auto; border: 5px solid #444; position: relative;
         }
-        .knob-indicator {
+        .knob-marker {
             position: absolute; top: 10px; left: 50%; width: 4px; height: 15px;
-            background: var(--acid-accent); transform-origin: bottom center;
-            margin-left: -2px; border-radius: 2px;
+            background: var(--ph-orange); margin-left: -2px; transform-origin: bottom center;
         }
 
-        input[type="range"] { width: 100%; margin-top: 20px; accent-color: var(--acid-accent); cursor: pointer; }
+        input[type="range"] { width: 100%; accent-color: var(--ph-orange); }
 
-        @media (max-width: 800px) {
-            .app-content { flex-direction: column; overflow-y: auto; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
-            .sidebar { width: 100%; border-left: none; border-top: 2px solid #999; }
-        }
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-info" id="playing-now">ACID V // ENGINE: RMF FM</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
-
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
-
-    <aside class="sidebar">
-        <div class="display-vst">
-            <p>Current Patch</p>
-            <h2 id="st-name">RMF FM</h2>
+<div class="phoscyon-case">
+    <header>
+        <div class="header-section">
+            <div class="section-label">Scene / Preset</div>
+            <div class="lcd-small" id="cur-preset">RMF_COLLECTION_01</div>
         </div>
-
-        <div class="controls">
-            <div class="c-btn" onclick="skip(-1)"><svg viewBox="0 0 24 24"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg></div>
-            <div class="c-btn c-play" onclick="toggle()">
-                <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+        <div class="header-section" style="border:none; flex: 1.5; display: flex; align-items: center; justify-content: flex-end;">
+            <div style="text-align: right;">
+                <h1 style="font-size: 24px; color: #444; font-weight: 900;">PHOSCYON <span style="color: var(--ph-orange);">2</span></h1>
+                <p style="font-size: 10px; letter-spacing: 3px; color: #666;">ACID LINE RECEIVER</p>
             </div>
-            <div class="c-btn" onclick="skip(1)"><svg viewBox="0 0 24 24"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg></div>
+        </div>
+    </header>
+
+    <div class="controls-row">
+        <div class="sequencer-area">
+            <div class="section-label">Step Sequencer (Stations)</div>
+            <div class="station-keys" id="grid"></div>
+            
+            <div class="section-label" style="margin-top: 20px;">Manual Trigger</div>
+            <div class="keyboard" id="keyboard"></div>
         </div>
 
-        <div class="vol-section">
-            <div class="vol-label">Master Volume</div>
-            <div class="knob-container">
-                <div class="knob-indicator" id="knob"></div>
+        <aside class="side-panel">
+            <div class="master-lcd">
+                <span>Output Signal</span>
+                <h2 id="st-display">WAITING...</h2>
             </div>
-            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
-        </div>
-    </aside>
+
+            <div style="text-align: center;">
+                <div class="vol-knob"><div class="knob-marker" id="knob"></div></div>
+                <input type="range" min="0" max="100" value="70" oninput="setV(this.value)">
+                <div class="section-label" style="border:none; margin-top:5px;">Master Volume</div>
+            </div>
+
+            <button class="btn-orange" onclick="toggle()" id="play-btn">Start / Stop</button>
+            <div style="display: flex; gap: 5px;">
+                <button class="btn-orange" style="flex:1; background: #666; box-shadow: 0 3px 0 #444;" onclick="skip(-1)">Prev</button>
+                <button class="btn-orange" style="flex:1; background: #666; box-shadow: 0 3px 0 #444;" onclick="skip(1)">Next</button>
+            </div>
+        </aside>
+    </div>
 </div>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', s: 'FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'MAX', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80S', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '90S', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '00S', u: 'rmf_2000' },
+        { n: 'RMF CHILL', s: 'CHL', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'CLA', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'DNC', u: 'rmf_dance' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid');
+    const player = document.getElementById('player'), grid = document.getElementById('grid'), kbd = document.getElementById('keyboard');
     let current = -1;
 
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
-
+    // Renderowanie przycisków kroków (Step Buttons)
     STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `
-            <div class="led"></div>
-            <div class="t-top">STEP ${i+1}</div>
-            <div class="t-bottom">${s.s}</div>
-        `;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+        const btn = document.createElement('div');
+        btn.className = 'step-btn';
+        btn.innerHTML = `<div class="led"></div>${i+1}`;
+        btn.onclick = () => play(i);
+        grid.appendChild(btn);
+
+        const key = document.createElement('div');
+        key.className = 'key-white';
+        key.onclick = () => play(i);
+        kbd.appendChild(key);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "ACID V // ENGINE: " + STATIONS[i].n;
-        document.getElementById('st-name').textContent = STATIONS[i].n;
+        document.querySelectorAll('.step-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        document.querySelectorAll('.key-white').forEach((k, idx) => k.classList.toggle('active', idx === i));
+        
+        document.getElementById('st-display').textContent = STATIONS[i].n;
+        document.getElementById('cur-preset').textContent = "PRST: " + STATIONS[i].u.toUpperCase();
+        
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        document.getElementById('play-btn').textContent = "Stop Engine";
     }
 
     function toggle() {
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(player.paused) { player.play(); document.getElementById('play-btn').textContent = "Stop Engine"; }
+        else { player.pause(); document.getElementById('play-btn').textContent = "Start Engine"; }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
     
     function setV(v) { 
         player.volume = v / 100; 
-        const deg = (v * 2.4) - 120; // Obrót knoba od -120 do +120 stopni
-        document.getElementById('knob').style.transform = `rotate(${deg}deg)`;
+        document.getElementById('knob').style.transform = `rotate(${(v * 2.4) - 120}deg)`;
     }
 
-    // Startowa głośność
-    setV(50);
+    setV(70);
 </script>
 </body>
 </html>
