@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
+    <title>Muzyczne Radio - Classic Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
         body {
@@ -13,196 +13,162 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000;
+            background: #111;
             font-family: Arial, sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        .frame {
-            width: 100%;
-            max-width: 900px;
-            border-radius: 4px;
-            padding: 8px;
-            background: #0a0a0a;
-            background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
-                linear-gradient(180deg, #151515 0%, #050505 100%);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 1);
+        /* Drewniana obudowa zewnętrzna */
+        .wood-frame {
+            padding: 15px;
+            background: linear-gradient(to bottom, #a67c52 0%, #7d5a36 100%);
+            border-radius: 45px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.2);
+            border: 2px solid #5d4329;
+        }
+
+        /* Srebrny panel główny */
+        .radio-panel {
+            width: 850px;
+            height: 480px;
+            background: linear-gradient(180deg, #e0e0e0 0%, #b0b0b0 100%);
+            border-radius: 35px;
             position: relative;
-            border: 1px solid #222;
-            box-sizing: border-box;
-        }
-
-        .frame.powered {
-            background: linear-gradient(90deg, #e60012 0%, #e60012 10px, transparent 10px, transparent calc(100% - 10px), #e60012 calc(100% - 10px)),
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
-                linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
-            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
-        }
-
-        .title {
-            text-align: center;
-            font-size: clamp(28px, 6vw, 48px);
-            font-weight: bold !important;
-            letter-spacing: 10px;
-            color: #2a0000;
-            font-family: 'DS-Digital', monospace !important;
-            margin: 0 auto 16px auto;
-            display: block;
-            width: fit-content;
-        }
-
-        .frame.powered .title {
-            color: #e60012 !important;
-            text-shadow: 0 0 10px #e60012, 0 0 20px #e60012;
-        }
-
-        .display-frame {
-            background: #000;
-            border: 3px solid #333;
-            border-top-color: #000;
-            border-bottom-color: #444;
-            border-radius: 4px;
-            margin: 0.25cm auto 0 auto;
-            box-sizing: border-box;
-            overflow: hidden;
-            width: 600px;
-        }
-
-        canvas { width: 100%; height: 100px; display: block; }
-
-        .main-content {
-            position: relative;
-            width: 100%;
-            min-height: 320px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 0.25cm;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.2);
+            border: 1px solid #999;
         }
 
-        /* Głośniki z teksturą siatki (mesh) zgodnie z drugim zdjęciem */
+        .title {
+            margin-top: 30px;
+            font-family: 'DS-Digital', monospace;
+            font-size: 42px;
+            color: #333;
+            letter-spacing: 5px;
+            transition: 0.3s;
+        }
+
+        .powered .title {
+            color: #ff0000;
+            text-shadow: 0 0 10px rgba(255,0,0,0.5);
+        }
+
+        /* Wyświetlacz EQ */
+        .display-area {
+            width: 240px;
+            height: 110px;
+            background: #000;
+            border: 4px solid #888;
+            border-radius: 4px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        canvas { width: 100%; height: 100%; display: block; }
+
+        /* Głośniki - Mesh jak na zdjęciu */
         .speaker {
-            width: 150px; height: 150px; border-radius: 50%; position: absolute; bottom: 1cm;
-            background: 
-                radial-gradient(circle, transparent 60%, rgba(0,0,0,0.8) 100%),
-                radial-gradient(circle, #222 1px, transparent 1px);
-            background-size: 100% 100%, 4px 4px; /* Efekt dziurek w siatce */
-            border: 8px solid #1a1a1a; 
-            box-shadow: inset 0 0 20px #000, 0 5px 15px rgba(0, 0, 0, 0.8);
-            z-index: 1;
+            width: 200px;
+            height: 200px;
+            background-color: #1a1a1a;
+            background-image: radial-gradient(#333 1px, transparent 1px);
+            background-size: 4px 4px;
+            border-radius: 50%;
+            position: absolute;
+            top: 130px;
+            border: 10px solid #c0c0c0;
+            box-shadow: inset 0 10px 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.1);
         }
-        
-        .speaker.left { left: 1cm; } 
-        .speaker.right { right: 1cm; }
-        
-        .frame.powered .speaker { 
-            border-color: #333; 
-            box-shadow: inset 0 0 30px #000, 0 0 15px rgba(230, 0, 18, 0.2); 
-        }
+        .speaker.left { left: 40px; }
+        .speaker.right { right: 40px; }
 
-        .controls-main {
-            display: flex; gap: 6px; padding: 10px; border-radius: 4px;
-            background: linear-gradient(180deg, #151515 0%, #050505 100%);
-            border: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 20px rgba(0, 0, 0, 0.5);
-            z-index: 10; width: fit-content; align-items: flex-start;
-        }
-
-        .btn-rect, .btn-v {
-            border: 1px solid #222; 
-            background: linear-gradient(180deg, #222 0%, #111 100%); 
-            color: #444;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
-            box-shadow: inset 0 1px 1px rgba(255,255,255,0.05);
+        /* Kontrolki na dole */
+        .controls-row {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 10px;
         }
 
-        .btn-rect { width: 68px; height: 38px; border-radius: 3px; }
-        .btn-rect svg, .btn-v svg { width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
-
-        .vol-wrapper { display: flex; flex-direction: column; gap: 4px; width: 140px; height: 38px; justify-content: flex-start; }
-        .vol-btns { display: flex; gap: 4px; height: 30px; }
-        .btn-v { flex: 1; height: 100%; border-radius: 2px; }
-        
-        .vol-bar { width: 100%; height: 4px; background: #000; border-radius: 2px; position: relative; overflow: hidden; margin-top: 2px; }
-        .vol-fill { height: 100%; width: 50%; background: #e60012; opacity: 0; transition: width 0.1s; }
-
-        .frame.powered .btn-rect, .frame.powered .btn-v { color: #888; border-color: #333; }
-        
-        /* Aktywne stany zgodne z Twoim kodem oryginalnym */
-        .frame.powered .btn-rect.active, .frame.powered .btn-v:active { 
-            color: #ff0000 !important; 
-            border-color: #e60012 !important; 
-            box-shadow: 0 0 15px rgba(230, 0, 18, 0.5); 
+        .btn {
+            width: 65px;
+            height: 45px;
+            background: linear-gradient(180deg, #444 0%, #222 100%);
+            border: 1px solid #111;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+            box-shadow: 0 4px 0 #000;
+            transition: all 0.1s;
         }
-        
-        .frame.powered .vol-fill { opacity: 1; box-shadow: 0 0 8px #e60012; }
 
-        .lab-logo { margin-top: 1.2cm; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; color: #222; font-size: 11px; font-weight: bold; background: linear-gradient(180deg, #151515 0%, #050505 100%); }
-        .frame.powered .lab-logo { color: #e60012; border-color: #e60012; text-shadow: 0 0 5px #e60012; }
-        
-        .link-container { margin-top: auto; padding-bottom: 1cm; text-align: center; z-index: 10; }
-        .link-container a { color: #2a0000; text-decoration: none; font-family: 'DS-Digital'; letter-spacing: 2px; font-size: 14px; }
-        .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
+        .btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #000;
+        }
 
-        @media(max-width:700px) {
+        .btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* Aktywne stany */
+        .powered .btn { color: #aaa; }
+        .powered .btn.active { 
+            color: #ff0000; 
+            box-shadow: 0 0 15px rgba(255,0,0,0.3);
+            background: linear-gradient(180deg, #444 0%, #2a2a2a 100%);
+        }
+
+        .vol-indicator {
+            width: 100%;
+            height: 3px;
+            background: #111;
+            position: absolute;
+            bottom: -8px;
+        }
+        .vol-fill { height: 100%; background: #ff0000; width: 50%; transition: 0.2s; opacity: 0; }
+        .powered .vol-fill { opacity: 1; }
+
+        @media(max-width: 860px) {
+            .wood-frame { transform: scale(0.6); }
             .speaker { display: none; }
-            .display-frame { width: 100% !important; margin-bottom: 20px; }
-            canvas { height: 160px !important; }
-            
-            .controls-main { 
-                display: grid !important; 
-                grid-template-columns: 1fr 1fr; 
-                width: 100% !important; 
-                gap: 12px; 
-                background: transparent; border: none; box-shadow: none; padding: 0;
-            }
-
-            .btn-rect { width: 3.5cm; height: 55px; }
-            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
-            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
-
-            .vol-wrapper { 
-                grid-column: span 2; 
-                width: 100% !important; 
-                padding: 0 7.5mm; 
-                box-sizing: border-box;
-                margin-top: 15px;
-            }
-            .vol-btns { height: 55px; }
-            .btn-v { width: 2cm; height: 55px; flex: none; }
-            .vol-bar { height: 12px; margin-bottom: 10px; }
         }
     </style>
 </head>
 
-<body oncontextmenu="return false;">
-    <div class="frame">
-        <div class="title">MUZYCZNE RADIO</div>
-        <div class="display-frame"><canvas id="eq"></canvas></div>
-        <div class="main-content">
+<body>
+    <div class="wood-frame">
+        <div class="radio-panel" id="panel">
+            <div class="title">MUZYCZNE RADIO</div>
+            
+            <div class="display-area">
+                <canvas id="eq"></canvas>
+            </div>
+
             <div class="speaker left"></div>
             <div class="speaker right"></div>
 
-            <div class="controls-main" id="controls">
-                <!-- Przyciski zgodne z ikonami na zdjęciu -->
-                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
-                
-                <div class="vol-wrapper" id="vol-container">
-                    <div class="vol-btns">
-                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                    </div>
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                </div>
+            <div class="controls-row">
+                <button id="pwr" class="btn"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="stop" class="btn"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn">
+                    <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12"/></svg>
+                </button>
+                <button id="vDown" class="btn"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                <button id="vUp" class="btn" style="position: relative;">
+                    <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
+                    <div class="vol-indicator"><div id="vFill" class="vol-fill"></div></div>
+                </button>
             </div>
-
-            <div class="lab-logo">L.A.B.</div>
-            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
         </div>
     </div>
 
@@ -212,71 +178,46 @@
         const audio = document.getElementById('stream');
         const canvas = document.getElementById('eq');
         const ctx = canvas.getContext('2d');
+        const panel = document.getElementById('panel');
         const pwrBtn = document.getElementById('pwr');
         const playBtn = document.getElementById('play');
-        const stopBtn = document.getElementById('stop');
-        const muteBtn = document.getElementById('mute');
-        const mutePath = document.getElementById('mute-path');
         const vFill = document.getElementById('vFill');
-        const controls = document.getElementById('controls');
-
-        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
-        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
-
+        
         let audioCtx, analyser, source, dataArray, isPwr = false;
 
-        function resize() {
-            const df = document.querySelector('.display-frame');
-            if(window.innerWidth > 700) {
-                df.style.width = "600px";
-            } else {
-                df.style.width = "100%";
-            }
-            canvas.width = df.clientWidth;
-            drawStatic();
-        }
+        // Inicjalizacja Canvas
+        canvas.width = 240;
+        canvas.height = 110;
 
         function drawBars(data) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            const totalBars = 33;
-            const barW = canvas.width / totalBars;
-            for (let i = 0; i < totalBars; i++) {
-                let level = data ? Math.floor(data[i] / 24) : 0;
-                for (let j = 0; j < 10; j++) {
-                    ctx.fillStyle = (j < level) ? "#e60012" : "#120000";
-                    ctx.fillRect(i * barW + 1, canvas.height - (j * 9) - 10, barW - 2, 7);
+            const bars = 25;
+            const barW = canvas.width / bars;
+            for (let i = 0; i < bars; i++) {
+                const val = data ? data[i * 2] / 2.5 : 0;
+                // Segmenty EQ
+                for(let j=0; j<10; j++) {
+                    ctx.fillStyle = (val > j * 10) ? "#ff0000" : "#200";
+                    ctx.fillRect(i * barW + 2, canvas.height - (j * 10) - 10, barW - 4, 8);
                 }
             }
         }
 
-        const flash = el => {
-            el.classList.add('active');
-            setTimeout(() => { 
-                if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === pwrBtn && isPwr)) 
-                el.classList.remove('active'); 
-            }, 300);
-        };
-
-        function drawStatic() { drawBars(null); }
-        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+        drawBars(null);
 
         pwrBtn.onclick = function() {
             isPwr = !isPwr;
-            document.querySelector('.frame').classList.toggle('powered');
-            this.classList.toggle('active', isPwr);
-            if (!isPwr) {
+            panel.classList.toggle('powered');
+            this.classList.toggle('active');
+            if(!isPwr) {
                 audio.pause();
                 playBtn.classList.remove('active');
-                audio.muted = false;
-                muteBtn.classList.remove('active');
-                mutePath.setAttribute('d', ICON_MUTE_OFF);
-                drawStatic();
+                drawBars(null);
             }
-            resize();
         };
 
         playBtn.onclick = function() {
-            if (!isPwr) return;
+            if(!isPwr) return;
             if (!audioCtx) {
                 audioCtx = new(window.AudioContext || window.webkitAudioContext)();
                 analyser = audioCtx.createAnalyser();
@@ -288,49 +229,32 @@
             }
             audio.play();
             this.classList.add('active');
-            updateEQ();
+            render();
         };
 
-        stopBtn.onclick = function() {
-            if (!isPwr) return;
+        document.getElementById('stop').onclick = function() {
             audio.pause(); audio.currentTime = 0;
             playBtn.classList.remove('active');
-            flash(this);
-            drawStatic();
         };
 
-        muteBtn.onclick = function() {
-            if (!isPwr) return;
-            audio.muted = !audio.muted;
-            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
-            this.classList.toggle('active', audio.muted);
+        document.getElementById('vUp').onclick = function() {
+            audio.volume = Math.min(1, audio.volume + 0.1);
+            vFill.style.width = (audio.volume * 100) + "%";
         };
 
-        document.getElementById('vUp').onclick = function() { 
-            if(isPwr) { 
-                audio.volume = Math.min(1, audio.volume + 0.1); 
-                updateVol(); 
-            }
-        };
-        
-        document.getElementById('vDown').onclick = function() { 
-            if(isPwr) { 
-                audio.volume = Math.max(0, audio.volume - 0.1); 
-                updateVol(); 
-            }
+        document.getElementById('vDown').onclick = function() {
+            audio.volume = Math.max(0, audio.volume - 0.1);
+            vFill.style.width = (audio.volume * 100) + "%";
         };
 
-        function updateEQ() {
+        function render() {
             if (!isPwr || audio.paused) return;
-            requestAnimationFrame(updateEQ);
+            requestAnimationFrame(render);
             analyser.getByteFrequencyData(dataArray);
             drawBars(dataArray);
         }
 
-        window.onresize = resize;
-        window.onload = resize;
         audio.volume = 0.5;
-        updateVol();
     </script>
 </body>
 </html>
