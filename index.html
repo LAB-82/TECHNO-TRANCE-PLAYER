@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="utf-8">
-    <title>SERUM WAVEFORM | CRYSTALLINE EDITION</title>
+    <title>SERUM WAVEFORM | CRYSTALLINE ANALYZER</title>
     <style>
         :root {
             --cyan: #00f2ff;
@@ -66,7 +66,6 @@
         #station-name { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px; }
         .powered-on #station-name { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
 
-        /* WYŚWIETLACZ CRYSTALLINE KICKVERB */
         .crystalline-frame {
             width: 320px; height: 120px;
             background: linear-gradient(145deg, #ffffff, #d1d1d1);
@@ -83,19 +82,13 @@
             border: 2px solid #555;
             position: relative; overflow: hidden;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.4);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.3); }
+        body:not(.powered-on) .crystalline-screen { filter: grayscale(1) brightness(0.2); }
 
-        /* Animacja fali (Waveform) */
-        .waveform-svg { width: 80%; height: 60px; opacity: 0.8; stroke: white; stroke-width: 1.5; fill: none; }
-        .powered-on .waveform-path { animation: waveMove 2s infinite linear; }
-
-        @keyframes waveMove {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-20px); }
-        }
+        .waveform-svg { width: 100%; height: 100%; }
+        .waveform-path { stroke: white; stroke-width: 2; fill: none; filter: drop-shadow(0 0 3px white); transition: d 0.05s ease; }
 
         .controls-main { display: flex; gap: 15px; margin-bottom: 20px; }
 
@@ -144,9 +137,8 @@
         
         <div class="crystalline-frame">
             <div class="crystalline-screen">
-                <svg class="waveform-svg" viewBox="0 0 100 40">
-                    <path class="waveform-path" d="M0,20 Q5,5 10,20 T20,20 T30,20 T40,20 T50,20 T60,20 T70,20 T80,20 T90,20 T100,20" />
-                    <path class="waveform-path" d="M0,25 Q5,10 10,25 T20,25 T30,25 T40,25 T50,25 T60,25 T70,25 T80,25 T90,25 T100,25" style="opacity:0.5"/>
+                <svg class="waveform-svg" viewBox="0 0 200 100" preserveAspectRatio="none">
+                    <path id="visualizer-path" class="waveform-path" d="M0,50 L200,50" />
                 </svg>
             </div>
         </div>
@@ -168,7 +160,7 @@
     <div id="goa-panel" class="genre-panel"><div class="genre-title">GOA/PSY</div></div>
 </div>
 
-<audio id="player"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
     const STATIONS = [
@@ -212,15 +204,50 @@
           pwrBtn = document.getElementById('pwrBtn'),
           muteBtn = document.getElementById('muteBtn'),
           stopBtn = document.getElementById('stopBtn'),
-          stationDisplay = document.getElementById('station-name');
+          stationDisplay = document.getElementById('station-name'),
+          vPath = document.getElementById('visualizer-path');
 
     let isPowered = false, dragging = false;
+    let audioCtx, analyzer, dataArray, source;
+
+    // Inicjalizacja Analizatora (wymaga interakcji użytkownika)
+    function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyzer = audioCtx.createAnalyser();
+        analyzer.fftSize = 128;
+        source = audioCtx.createMediaElementSource(player);
+        source.connect(analyzer);
+        analyzer.connect(audioCtx.destination);
+        dataArray = new Uint8Array(analyzer.frequencyBinCount);
+        draw();
+    }
+
+    function draw() {
+        requestAnimationFrame(draw);
+        if (!isPowered || player.paused) {
+            vPath.setAttribute('d', "M0,50 L200,50");
+            return;
+        }
+
+        analyzer.getByteTimeDomainData(dataArray);
+        let d = "M0,50";
+        for (let i = 0; i < dataArray.length; i++) {
+            let x = (i / dataArray.length) * 200;
+            let y = (dataArray[i] / 128.0) * 50;
+            d += ` L${x},${y}`;
+        }
+        vPath.setAttribute('d', d);
+    }
 
     STATIONS.forEach(s => {
         const btn = document.createElement('div');
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
+            initAudio(); // Odpal analyzer przy pierwszym wyborze
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
             stationDisplay.textContent = s.n;
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
@@ -265,10 +292,7 @@
             player.pause(); player.src = ""; 
             stopBtn.classList.add('active'); 
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            // WYGASZANIE STOP PO 1 SEKUNDZIE
-            setTimeout(() => {
-                stopBtn.classList.remove('active');
-            }, 1000);
+            setTimeout(() => { stopBtn.classList.remove('active'); }, 1000);
         } 
     };
     
