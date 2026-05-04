@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>SERUM WAVEFORM | VIRUS EDITION</title>
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
     <style>
         :root {
             --cyan: #00f2ff;
@@ -50,10 +51,7 @@
             text-align: center; border-bottom: 1px solid var(--border-synth);
         }
         
-        .powered-on .genre-title {
-            color: var(--cyan);
-            text-shadow: 0 0 8px var(--cyan-glow);
-        }
+        .powered-on .genre-title { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
 
         .chip {
             background: linear-gradient(180deg, #f9f9f9, #e0e0e0);
@@ -68,56 +66,36 @@
             border-color: var(--cyan); box-shadow: 0 0 8px var(--cyan-glow);
         }
 
-        #center-area {
-            display: flex; flex-direction: column;
-            justify-content: flex-start; align-items: center; padding: 0;
-        }
+        #center-area { display: flex; flex-direction: column; justify-content: flex-start; align-items: center; }
 
         #station-window {
-            background: #bbb;
-            border-bottom: 1px solid var(--border-synth);
-            border-radius: 4px 4px 0 0; width: 100%;
-            height: 29px;
-            display: flex; align-items: center; justify-content: center;
-            margin-bottom: 20px;
+            background: #bbb; border-bottom: 1px solid var(--border-synth);
+            border-radius: 4px 4px 0 0; width: 100%; height: 29px;
+            display: flex; align-items: center; justify-content: center; margin-bottom: 20px;
         }
 
-        #station-name {
-            font-size: 11px; font-weight: bold; color: #444; 
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        .powered-on #station-name { 
-            color: var(--cyan); 
-            text-shadow: 0 0 8px var(--cyan-glow); 
-        }
+        #station-name { font-size: 11px; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 1px; }
+        .powered-on #station-name { color: var(--cyan); text-shadow: 0 0 8px var(--cyan-glow); }
 
         .virus-display-frame {
-            width: 300px; height: 140px;
-            background: #f0f0f0; border: 1px solid #999; border-radius: 4px;
+            width: 300px; height: 140px; background: #f0f0f0; border: 1px solid #999; border-radius: 4px;
             padding: 10px; box-shadow: inset 1px 1px 2px white, 2px 2px 5px rgba(0,0,0,0.1);
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            position: relative; margin-bottom: 20px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center; margin-bottom: 20px;
         }
 
         .lcd-screen {
-            width: 260px; height: 100px;
-            background: var(--lcd-bg); border: 4px solid #1a1a1a;
-            display: flex; flex-direction: column; overflow: hidden;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+            width: 260px; height: 100px; background: var(--lcd-bg); border: 4px solid #1a1a1a;
+            display: flex; flex-direction: column; overflow: hidden; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
         .lcd-header {
-            height: 24px; background: var(--lcd-header);
-            display: flex; align-items: center; padding: 0 10px;
-            color: #ddd; font-family: 'Courier New', monospace; font-size: 10px;
-            letter-spacing: 1px; text-transform: uppercase;
+            height: 24px; background: var(--lcd-header); display: flex; align-items: center; padding: 0 10px;
+            color: #ddd; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
         }
 
         .lcd-main {
             flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 5px; text-align: center;
-            color: var(--lcd-text); font-family: 'Courier New', monospace;
+            padding: 5px; text-align: center; color: var(--lcd-text); font-family: 'Courier New', monospace;
             font-size: 13px; line-height: 1.2;
         }
 
@@ -127,96 +105,54 @@
         .controls-main { display: flex; gap: 15px; margin-bottom: 20px; }
 
         .btn-rect {
-            width: 55px; height: 55px;
-            background: linear-gradient(145deg, #f0f0f0, #cacaca);
-            border: 1px solid #999; border-radius: 50%;
-            cursor: pointer; color: #444;
+            width: 55px; height: 55px; background: linear-gradient(145deg, #f0f0f0, #cacaca);
+            border: 1px solid #999; border-radius: 50%; cursor: pointer; color: #444;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff;
-            transition: all 0.1s ease;
+            box-shadow: 3px 3px 6px #bebebe, -3px -3px 6px #ffffff; transition: all 0.1s ease;
         }
 
-        .btn-rect.active { 
-            color: var(--cyan) !important; 
-            background: #222 !important; 
-            box-shadow: 0 0 15px var(--cyan-glow) !important; 
-            border-color: var(--cyan) !important;
-        }
-        
+        .btn-rect.active { color: var(--cyan) !important; background: #222 !important; box-shadow: 0 0 15px var(--cyan-glow) !important; border-color: var(--cyan) !important; }
         .btn-rect svg { width: 24px; height: 24px; fill: currentColor; }
 
         .fader-area { width: 195px; }
-
-        .fader-track-double {
-            width: 100%; height: 14px; position: relative;
-            display: flex; flex-direction: column; justify-content: space-between;
-        }
-
-        .fader-track-double::before, .fader-track-double::after {
-            content: ""; width: 100%; height: 3px;
-            background: #a8a8a8; border-radius: 1px;
-            transition: 0.3s;
-        }
-
-        .powered-on .fader-track-double::before,
-        .powered-on .fader-track-double::after {
-            background: var(--cyan);
-            box-shadow: 0 0 5px var(--cyan-glow);
-        }
+        .fader-track-double { width: 100%; height: 14px; position: relative; display: flex; flex-direction: column; justify-content: space-between; }
+        .fader-track-double::before, .fader-track-double::after { content: ""; width: 100%; height: 3px; background: #a8a8a8; border-radius: 1px; }
+        .powered-on .fader-track-double::before, .powered-on .fader-track-double::after { background: var(--cyan); box-shadow: 0 0 5px var(--cyan-glow); }
 
         .fader-handle {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 45px; height: 24px;
-            background: linear-gradient(180deg, #e0e0e0 0%, #ffffff 50%, #e0e0e0 100%);
-            border: 1px solid #999; border-radius: 4px;
-            cursor: grab; z-index: 10;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 45px; height: 24px; background: linear-gradient(180deg, #e0e0e0 0%, #ffffff 50%, #e0e0e0 100%);
+            border: 1px solid #999; border-radius: 4px; cursor: grab; z-index: 10; display: flex; align-items: center; justify-content: center;
         }
         
-        .powered-on .fader-handle.center-glow {
-            box-shadow: 0 0 15px var(--cyan), 0px 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .fader-handle-inner {
-            width: 30px; height: 6px;
-            background: #444; border-radius: 1px;
-        }
-
-        .powered-on .fader-handle-inner.glow-active {
-            background: var(--cyan);
-            box-shadow: 0 0 12px var(--cyan);
-        }
+        .powered-on .fader-handle.center-glow { box-shadow: 0 0 15px var(--cyan), 0px 2px 5px rgba(0,0,0,0.2); }
+        .fader-handle-inner { width: 30px; height: 6px; background: #444; border-radius: 1px; }
+        .powered-on .fader-handle-inner.glow-active { background: var(--cyan); box-shadow: 0 0 12px var(--cyan); }
     </style>
 </head>
 <body>
 
 <div id="main">
     <div id="techno-panel" class="genre-panel"><div class="genre-title">TECHNO</div></div>
-    
     <div id="center-area">
         <div id="station-window"><div id="station-name">OFF</div></div>
-        
         <div class="virus-display-frame">
             <div class="lcd-screen">
                 <div class="lcd-header" id="lcd-station-name">SYSTEM READY</div>
                 <div class="lcd-main" id="lcd-track-title">CHOOSE A STATION</div>
             </div>
         </div>
-
         <div class="controls-main">
             <button id="pwrBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M16.56,5.44L15.11,6.89C16.84,7.94 18,9.83 18,12A6,6 0 0,1 12,18A6,6 0 0,1 6,12C6,9.83 7.16,7.94 8.88,6.88L7.44,5.44C5.18,7.03 3.75,9.63 3.75,12.58C3.75,17.14 7.44,20.83 12,20.83C16.56,20.83 20.25,17.14 20.25,12.58C20.25,9.63 18.82,7.03 16.56,5.44M11,2.08V11.08H13V2.08H11Z"/></svg></button>
             <button id="muteBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16.02C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/></svg></button>
             <button id="stopBtn" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M18,18H6V6H18V18Z"/></svg></button>
         </div>
-
         <div class="fader-area">
             <div class="fader-track-double" id="faderTrack">
                 <div class="fader-handle" id="faderHandle"><div class="fader-handle-inner" id="faderGlow"></div></div>
             </div>
         </div>
     </div>
-
     <div id="house-panel" class="genre-panel"><div class="genre-title">HOUSE</div></div>
     <div id="dnb-panel" class="genre-panel"><div class="genre-title">DRUM N BASS</div></div>
     <div id="trance-panel" class="genre-panel"><div class="genre-title">TRANCE</div></div>
@@ -273,26 +209,22 @@
 
     let isPowered = false, dragging = false, currentSlug = '', metaInterval;
 
-    // Funkcja odbierająca dane JSONP
     window.displayMeta = function(data) {
-        if (!isPowered) return;
+        if (!isPowered || !currentSlug) return;
         if (data && data.title) {
             const artist = data.artist ? data.artist.name : "Unknown Artist";
-            const title = data.title;
-            lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${title}</div>`;
+            lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${data.title}</div>`;
         }
     };
 
     function updateMetadata() {
         if (!isPowered || !currentSlug) return;
-        
-        const oldScript = document.getElementById('api-script');
-        if (oldScript) oldScript.remove();
-
-        const script = document.createElement('script');
-        script.id = 'api-script';
-        script.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
-        document.body.appendChild(script);
+        const old = document.getElementById('api-script');
+        if (old) old.remove();
+        const s = document.createElement('script');
+        s.id = 'api-script';
+        s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
+        document.body.appendChild(s);
     }
 
     STATIONS.forEach(s => {
@@ -300,81 +232,62 @@
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            player.pause();
-            player.src = s.u; 
-            player.play().catch(e => console.log("Audio play blocked"));
-            
-            stationDisplay.textContent = "GLOBAL MUSIC PLAYER";
-            lcdStation.textContent = s.n;
+            console.log("Stacja wybrana:", s.n);
             currentSlug = s.s;
-            updateMetadata();
+            
+            // UI Update natychmiastowy
+            lcdStation.textContent = s.n;
+            lcdTrack.textContent = "CONNECTING...";
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
+
+            // Audio
+            player.pause();
+            player.src = s.u;
+            player.play().catch(e => console.log("Błąd autoodtwarzania"));
+            
+            updateMetadata();
         };
-        const panel = document.getElementById(s.cat + '-panel');
-        if(panel) panel.appendChild(btn);
+        document.getElementById(s.cat + '-panel').appendChild(btn);
     });
 
     pwrBtn.onclick = () => {
         isPowered = !isPowered;
-        pwrBtn.classList.toggle('active', isPowered);
         document.body.classList.toggle('powered-on', isPowered);
+        pwrBtn.classList.toggle('active', isPowered);
         stationDisplay.textContent = isPowered ? "GLOBAL MUSIC PLAYER" : "OFF";
         if(isPowered) {
-            faderGlow.classList.add('glow-active');
             lcdStation.textContent = "MODE: READY";
             lcdTrack.textContent = "SELECT STATION";
-            updateHandleGlow(player.volume);
             metaInterval = setInterval(updateMetadata, 10000);
         } else {
-            player.pause(); player.src = ""; resetUI();
+            player.pause(); player.src = ""; currentSlug = "";
             clearInterval(metaInterval);
+            resetUI();
         }
     };
-    
-    function updateHandleGlow(pct) {
-        if(!isPowered) return;
-        if (pct > 0.48 && pct < 0.52) faderHandle.classList.add('center-glow');
-        else faderHandle.classList.remove('center-glow');
-    }
 
     function moveFader(e) {
         if(!isPowered || !dragging) return;
         const rect = faderTrack.getBoundingClientRect();
-        const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-        let pct = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+        const x = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+        let pct = Math.max(0, Math.min(1, (x - rect.left) / rect.width));
         player.volume = pct;
         faderHandle.style.left = (pct * 100) + '%';
-        updateHandleGlow(pct);
+        if (pct > 0.48 && pct < 0.52) faderHandle.classList.add('center-glow');
+        else faderHandle.classList.remove('center-glow');
     }
 
     faderHandle.addEventListener('mousedown', () => dragging = true);
     window.addEventListener('mousemove', moveFader);
     window.addEventListener('mouseup', () => dragging = false);
-    faderHandle.addEventListener('touchstart', () => dragging = true);
-    window.addEventListener('touchmove', moveFader);
-    window.addEventListener('touchend', () => dragging = false);
-
     muteBtn.onclick = () => { if(isPowered) { player.muted = !player.muted; muteBtn.classList.toggle('active', player.muted); } };
-    
-    stopBtn.onclick = () => { 
-        if(isPowered) { 
-            player.pause(); player.src = ""; currentSlug = "";
-            lcdTrack.textContent = "STOPPED";
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); 
-            stopBtn.classList.add('active');
-            setTimeout(() => { stopBtn.classList.remove('active'); }, 1500);
-        } 
-    };
+    stopBtn.onclick = () => { if(isPowered) { player.pause(); player.src = ""; lcdTrack.textContent = "STOPPED"; document.querySelectorAll('.chip').forEach(c => c.classList.remove('active')); } };
     
     function resetUI() {
-        player.muted = false; muteBtn.classList.remove('active');
-        stopBtn.classList.remove('active');
-        faderGlow.classList.remove('glow-active');
-        faderHandle.classList.remove('center-glow');
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
         lcdStation.textContent = "SYSTEM READY";
         lcdTrack.textContent = "CHOOSE A STATION";
-        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
     }
     player.volume = 0.5;
 </script>
