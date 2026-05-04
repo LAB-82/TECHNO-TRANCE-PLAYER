@@ -190,8 +190,8 @@
                 <button id="play" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
                 <button id="stop" class="btn-pro"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
                 <button id="mute" class="btn-pro">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M3.27,3L2,4.27l5,5V15h4l5,5V15.27l4.46,4.46l1.27-1.27L3.27,3z M9,13H5v-2h1.73L9,13.27V13z M12,4L9.91,6.09L12,8.18V4z M16.5,12 c0-1.77-1.02-3.29-2.5-4.03V9.18l2.45,2.45C16.47,11.82,16.5,11.91,16.5,12z M19,12c0,0.94-0.2,1.82-0.54,2.64l1.51,1.51 C20.63,14.91,21,13.5,21,12c0-4.28-2.99-7.86-7-8.77v2.06C16.89,6.15,19,8.83,19,12z"/>
+                    <svg id="mute-svg" viewBox="0 0 24 24">
+                        <path id="mute-path" d="M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02zM14,3.23v2.06c2.89.86,5,3.54,5,6.71s-2.11,5.85-5,6.71v2.06c4.01-.91,7-4.49,7-8.77s-2.99-7.86-7-8.77z"/>
                     </svg>
                 </button>
                 
@@ -207,10 +207,10 @@
             <div class="station-rack">
                 <button class="btn-station-pro" onclick="changeSt(1)">MR</button>
                 <button class="btn-station-pro" onclick="changeSt(2)">RMF FM</button>
-                <button class="btn-station-pro" onclick="changeSt(3)">ZET</button>
-                <button class="btn-station-pro" onclick="changeSt(4)">ESKA</button>
-                <button class="btn-station-pro" onclick="changeSt(5)">Złote</button>
-                <button class="btn-station-pro" onclick="changeSt(6)">PR 4</button>
+                <button class="btn-station-pro" onclick="changeSt(3)">ANTY</button>
+                <button class="btn-station-pro" onclick="changeSt(4)">TOK FM</button>
+                <button class="btn-station-pro" onclick="changeSt(5)">3-KA</button>
+                <button class="btn-station-pro" onclick="changeSt(6)">VOX</button>
             </div>
         </div>
     </div>
@@ -224,16 +224,22 @@
     const vFill = document.getElementById('vFill');
     const lcdStation = document.getElementById('lcdStation');
     const lcdTime = document.getElementById('lcdTime');
+    const mutePath = document.getElementById('mute-path');
 
     let isPwr = false;
 
     const stations = {
         1: { name: "Muzyczne Radio", url: "https://stream.rcs.revma.com/gzwc1xcq042vv" },
         2: { name: "RMF FM", url: "https://rs101-krk.rmfstream.pl/RMFFM48" },
-        3: { name: "Radio ZET", url: "https://r.online.radiozet.pl/zet.mp3" },
-        4: { name: "Radio Eska", url: "https://ext03.polsatmedia.pl/ESKA_WAW" },
-        5: { name: "Radio Złote Przeboje", url: "https://radiostream.polsatmedia.pl/ZŁOTE_PRZEBOJE" },
-        6: { name: "Polskie Radio Czwórka", url: "https://stream85.polskieradio.pl/pr4/direct.mp3" }
+        3: { name: "Antyradio", url: "https://an01.cdn.eurozet.pl/ant-waw.mp3" },
+        4: { name: "TOK FM", url: "https://streaming.eurozet.pl/tok.mp3" },
+        5: { name: "Polskie Radio Trójka", url: "https://stream85.polskieradio.pl/pr3/direct.mp3" },
+        6: { name: "Radio VOX FM", url: "https://waw01.ic.smcdn.pl/2170-1.mp3" }
+    };
+
+    const icons = {
+        unmuted: "M3,9v6h4l5,5V4L7,9H3zm13.5,3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73,2.5-2.25,2.5-4.02zM14,3.23v2.06c2.89.86,5,3.54,5,6.71s-2.11,5.85-5,6.71v2.06c4.01-.91,7-4.49,7-8.77s-2.99-7.86-7-8.77z",
+        muted: "M4.34,2.93L2.86,4.41L8.45,10H5v4h2l5,5V13.55l5.07,5.07c-0.34,0.14-0.7,0.26-1.07,0.34v2.06c1.01-0.21,1.96-0.6,2.82-1.14 l2.1,2.1l1.48-1.48L4.34,2.93z M12,4L9.91,6.09L12,8.18V4z M19,12c0-1.88-0.77-3.58-2-4.79V5.18c2.42,1.38,4,4,4,6.82 c0,1.35-0.35,2.61-0.95,3.71l-1.51-1.51C18.84,13.41,19,12.73,19,12z"
     };
 
     function clock() {
@@ -245,7 +251,7 @@
 
     const flash = el => {
         el.classList.add('active');
-        setTimeout(() => { if(!(el.id === 'play' && !audio.paused)) el.classList.remove('active'); }, 300);
+        setTimeout(() => { if(!(el.id === 'play' && !audio.paused) && !(el.id === 'mute' && audio.muted)) el.classList.remove('active'); }, 300);
     };
 
     document.getElementById('pwr').onclick = function() {
@@ -254,6 +260,9 @@
         this.classList.toggle('active', isPwr);
         if(!isPwr) {
             audio.pause();
+            audio.muted = false;
+            mutePath.setAttribute('d', icons.unmuted);
+            document.getElementById('mute').classList.remove('active');
             document.getElementById('play').classList.remove('active');
             lcdStation.textContent = "";
         } else {
@@ -273,6 +282,9 @@
         audio.pause();
         audio.currentTime = 0;
         audio.volume = 0.5;
+        audio.muted = false;
+        mutePath.setAttribute('d', icons.unmuted);
+        document.getElementById('mute').classList.remove('active');
         updateVol();
         document.getElementById('play').classList.remove('active');
         lcdStation.textContent = "STOP / RESET VOL";
@@ -281,7 +293,10 @@
 
     document.getElementById('mute').onclick = function() {
         if(!isPwr) return;
-        flash(this);
+        audio.muted = !audio.muted;
+        mutePath.setAttribute('d', audio.muted ? icons.muted : icons.unmuted);
+        this.classList.toggle('active', audio.muted);
+        lcdStation.textContent = audio.muted ? "MUTE ON" : "MUTE OFF";
     };
 
     function updateVol() { vFill.style.width = (audio.volume * 100) + "%"; }
