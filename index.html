@@ -273,26 +273,26 @@
 
     let isPowered = false, dragging = false, currentSlug = '', metaInterval;
 
-    async function updateMetadata() {
+    // Funkcja odbierająca dane JSONP
+    window.displayMeta = function(data) {
+        if (!isPowered) return;
+        if (data && data.title) {
+            const artist = data.artist ? data.artist.name : "Unknown Artist";
+            const title = data.title;
+            lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${title}</div>`;
+        }
+    };
+
+    function updateMetadata() {
         if (!isPowered || !currentSlug) return;
         
-        // Próba 1: AllOrigins
-        const url1 = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.laut.fm/station/${currentSlug}/now_playing?t=${Date.now()}`)}`;
+        const oldScript = document.getElementById('api-script');
+        if (oldScript) oldScript.remove();
 
-        try {
-            const response = await fetch(url1);
-            const dataWrap = await response.json();
-            const data = JSON.parse(dataWrap.contents);
-            
-            if (data && data.title) {
-                const artist = data.artist ? data.artist.name : "Unknown Artist";
-                const title = data.title;
-                lcdTrack.innerHTML = `<div style="font-size:1.5em; margin-bottom:5px;">${artist}</div><div>${title}</div>`;
-            }
-        } catch (e) {
-            console.log("Meta fallback...");
-            lcdTrack.innerHTML = "<div>LIVE STREAMING...</div>";
-        }
+        const script = document.createElement('script');
+        script.id = 'api-script';
+        script.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
+        document.body.appendChild(script);
     }
 
     STATIONS.forEach(s => {
@@ -300,12 +300,9 @@
         btn.className = 'chip'; btn.textContent = s.n;
         btn.onclick = () => {
             if(!isPowered) return;
-            // Bardziej agresywne przeładowanie audio
             player.pause();
-            player.removeAttribute('src');
-            player.load();
             player.src = s.u; 
-            player.play().catch(e => console.log("Autoplay blocked or stream error"));
+            player.play().catch(e => console.log("Audio play blocked"));
             
             stationDisplay.textContent = "GLOBAL MUSIC PLAYER";
             lcdStation.textContent = s.n;
