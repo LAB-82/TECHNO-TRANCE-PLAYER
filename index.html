@@ -3,51 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - CRYSTALLINE STYLE</title>
+    <title>RMF POLYPHONIC PRO</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
-            /* Nowa paleta kolorów - jasny skeuomorfizm */
-            --bg: #e0e0e0; /* Jasnoszare tło */
-            --tile: #e0e0e0;
-            --text-main: #333;
-            --text-sub: #666;
-            
-            /* Cienie dla efektu 3D (neumorfizm) */
-            --shadow-out: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
-            --shadow-in: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
-            --border-light: 1px solid rgba(255,255,255,0.5);
-
-            /* Kolory akcentów z obrazka */
-            --color-active: #ff4081; /* Różowy/Magenta dla aktywnego stanu */
-            --color-wave: #00e5ff;   /* Błękitny dla fal w kafelkach */
-            --accent-green: #00e676;
-            --accent-orange: #ff9100;
+            --bg-dark: #0d111a;
+            --panel-bg: #161b26;
+            --accent-blue: #00d2ff;
+            --accent-glow: rgba(0, 210, 255, 0.4);
+            --text-gray: #7d8594;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.05);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body { 
             height: 100vh; width: 100vw; 
-            background: var(--bg); color: var(--text-main); 
+            background: var(--bg-dark); color: #fff; 
             font-family: 'Montserrat Alternates', sans-serif;
             overflow: hidden; 
         }
 
         body { display: flex; flex-direction: column; padding: 2vh; }
 
+        /* HEADER STYLIZOWANY NA TOP BAR PLUGINU */
         header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2vh; flex-shrink: 0;
-            background: rgba(255,255,255,0.3); border-radius: 10px; padding: 0 15px;
-            box-shadow: var(--shadow-out);
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--panel-bg); border-radius: 12px;
+            padding: 0 20px; margin-bottom: 2vh; flex-shrink: 0;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
         }
-        .header-info { font-size: 20px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
-        .clock { color: var(--text-sub); font-size: 20px; font-weight: 600; }
+        .header-info { font-size: 14px; font-weight: 700; color: var(--text-gray); letter-spacing: 2px; }
+        .header-info span { color: var(--accent-blue); }
+        .clock { color: var(--accent-blue); font-size: 18px; font-weight: 700; text-shadow: 0 0 10px var(--accent-glow); }
 
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; padding: 10px 0; }
+        .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
+        /* GRID KAFELKÓW - WYGLĄD PRZYCISKÓW INSTRUMENTÓW */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
@@ -55,174 +50,100 @@
             gap: 15px; 
         }
 
-        /* STYLIZACJA KAFELKÓW - WYPUKŁE PRZYCISKI */
         .tile {
-            background: var(--tile); border-radius: 15px;
-            border: var(--border-light);
+            background: var(--panel-bg); border: 1px solid var(--border); border-radius: 12px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; overflow: visible;
-            box-shadow: var(--shadow-out);
-            transition: all 0.2s ease;
+            cursor: pointer; position: relative; overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
-        .tile:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
 
-        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--text-main); line-height: 1; z-index: 2; transition: color 0.2s; }
-        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-top: 5px; text-align: center; z-index: 2; }
+        .tile .t-top { font-size: 12px; font-weight: 700; color: var(--text-gray); text-transform: uppercase; margin-bottom: 5px; z-index: 2; }
+        .tile .t-bottom { font-size: 16px; font-weight: 600; color: #fff; text-align: center; z-index: 2; }
 
-        /* AKTYWNA STACJA - WKLĘSŁY PRZYCISK Z RÓŻOWYM AKCENTEM */
+        /* AKTYWNY KAFELEK - STYLIZACJA 2/3 ZE ZDJĘCIA */
         .tile.active { 
-            box-shadow: var(--shadow-in);
-            background: #dcdcdc;
+            background: linear-gradient(180deg, #1e2636 0%, #161b26 100%);
+            border: 1px solid var(--accent-blue);
+            box-shadow: inset 0 0 15px var(--accent-glow), 0 0 20px rgba(0,0,0,0.4);
         }
-        .tile.active .t-top { color: var(--color-active); }
-
-        /* FALE BŁĘKITNE - SUBTELNIEJSZE NA JASNYM TLE */
-        .waves {
-            position: absolute; width: 100%; height: 100%;
-            display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; z-index: 1;
-        }
-        .tile.active .waves { opacity: 0.6; }
-        .wave {
-            position: absolute; border: 2px solid var(--color-wave); border-radius: 50%;
-            width: 10px; height: 10px; opacity: 0;
-            box-shadow: 0 0 10px var(--color-wave);
-            animation: ripple 3s infinite linear;
-        }
-        .wave:nth-child(2) { animation-delay: 1s; }
-        .wave:nth-child(3) { animation-delay: 2s; }
-
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.8; }
-            100% { width: 250%; height: 250%; opacity: 0; }
+        .tile.active .t-top { color: var(--accent-blue); }
+        .tile.active::before {
+            content: ''; position: absolute; bottom: 0; width: 40%; height: 2px;
+            background: var(--accent-blue); box-shadow: 0 0 10px var(--accent-blue);
         }
 
-        /* PANEL BOCZNY */
+        /* SIDEBAR - STYLIZACJA KONTROLEK KNOB I EQ */
         .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-start; gap: 3vh;
-            padding: 20px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 20px;
-            box-shadow: var(--shadow-out);
-            border: var(--border-light);
+            flex: 0.8; display: flex; flex-direction: column; 
+            background: var(--panel-bg); border-radius: 20px;
+            padding: 25px; gap: 30px; border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
 
-        /* STYLIZACJA WYŚWIETLACZA LOGO - NAWZÓR "CRYSTALLINE" */
         .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/9;
-            border-radius: 15px;
+            width: 100%; height: 120px; border-radius: 15px;
+            background: #090c12; border: 1px solid var(--border);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            /* Gradient tła jak na obrazku */
-            background: linear-gradient(135deg, #ff9100 0%, #ff4081 50%, #00e5ff 100%);
-            box-shadow: var(--shadow-in), 0 0 20px rgba(255, 64, 129, 0.3);
-            position: relative;
-            overflow: hidden;
-            border: 2px solid #fff;
+            position: relative; overflow: hidden;
         }
-        
-        /* Animowana fala wewnątrz wyświetlacza */
-        .logo-display::after {
-            content: '';
-            position: absolute; width: 200%; height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".1" fill="%23fff"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.6,28.28,22.62,59.13,44.76,94.71,54.11,31.76,8.35,65.65,11.8,99.52,11.79,34.91,0,69.59-3.66,102.46-9.52,68.51-12.21,121.14-53.51,170.83-93.18C1071,11.67,1146.45,13.88,1200,32.47V0Z" opacity=".15" fill="%23fff"></path></svg>');
-            background-size: 50% 100%;
-            animation: waveMove 10s linear infinite;
-            opacity: 0.8;
+        /* Efekt siatki EQ w tle logo */
+        .logo-display::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 10px 10px; opacity: 0.2;
         }
-
-        @keyframes waveMove {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-
-        .logo-display h2 { font-size: 40px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; position: relative; }
-        .logo-display p { font-size: 10px; color: rgba(255,255,255,0.8); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; z-index: 2; position: relative; }
+        .logo-display h2 { font-size: 32px; color: var(--accent-blue); text-shadow: 0 0 15px var(--accent-glow); z-index: 2; }
+        .logo-display p { font-size: 10px; color: var(--text-gray); letter-spacing: 3px; text-transform: uppercase; z-index: 2; }
 
         /* KONTROLKI ODTWARZANIA */
-        .controls { display: flex; align-items: center; gap: 2.5vw; background: rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow-in); }
+        .controls { display: flex; align-items: center; justify-content: center; gap: 20px; }
         .c-svg { 
-            width: 30px; height: 30px; fill: var(--text-sub); cursor: pointer; 
-            transition: all 0.2s;
+            width: 30px; height: 30px; fill: var(--text-gray); cursor: pointer; 
+            transition: 0.2s; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));
         }
-        .c-svg:hover { fill: var(--text-main); transform: scale(1.1); }
-        
+        .c-svg:hover { fill: var(--accent-blue); }
         .c-play { 
-            width: 60px; height: 60px; fill: var(--text-main); 
-            background: var(--tile); border-radius: 50%; padding: 15px;
-            box-shadow: var(--shadow-out);
-            border: var(--border-light);
+            width: 60px; height: 60px; fill: #fff; padding: 15px;
+            background: #1e2636; border-radius: 50%;
+            border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .c-play:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
-        .c-play:active { box-shadow: var(--shadow-in); }
 
-        /* SEKCJA GŁOŚNOŚCI */
-        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }
+        /* STYLIZACJA GŁOŚNOŚCI NA KNOB (POKRĘTŁO) */
+        .vol-box { 
+            display: flex; flex-direction: column; align-items: center; gap: 15px; 
+            padding: 20px; background: var(--glass); border-radius: 15px;
+        }
+        .vol-label { font-size: 10px; color: var(--text-gray); text-transform: uppercase; letter-spacing: 2px; }
         
-        .vol-btn { 
-            width: 35px; height: 35px; border: var(--border-light); border-radius: 10px; 
-            background: var(--tile); color: var(--text-main); cursor: pointer; 
-            font-family: inherit; font-weight: bold; font-size: 18px;
-            box-shadow: var(--shadow-out);
-            transition: all 0.2s;
-        }
-        .vol-btn:active { box-shadow: var(--shadow-in); }
-
         .vol-bar { 
-            flex: 1; height: 35px; border: var(--border-light); border-radius: 10px; 
-            padding: 0 10px; display: flex; align-items: center; 
-            background: var(--tile);
-            box-shadow: var(--shadow-in); /* Wklęsły pasek */
+            width: 100%; display: flex; align-items: center; gap: 10px;
         }
-        
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
-        
-        /* PROWADNICA SŁABO WIDOCZNA NA JASNYM */
-        input[type="range"]::-webkit-slider-runnable-track { background: rgba(0,0,0,0.05); height: 4px; border-radius: 2px; }
-        
-        /* GAŁKA - WYPUKŁY PRZYCISK JAK NA ZDJĘCIU */
+        .vol-btn { 
+            width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 6px; 
+            background: #1e2636; color: var(--text-gray); cursor: pointer; font-weight: bold;
+        }
+
+        input[type="range"] { flex: 1; appearance: none; background: #090c12; height: 6px; border-radius: 3px; }
         input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 22px; height: 22px; 
-            background: var(--tile); border-radius: 50%; 
-            margin-top: -9px;
-            border: var(--border-light);
-            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff;
-            transition: box-shadow 0.2s;
+            appearance: none; width: 16px; height: 16px; background: var(--accent-blue);
+            border-radius: 50%; border: 3px solid #161b26; cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-glow);
         }
-        
-        /* Niebieska poświata z obrazka dla suwaka */
-        input[type="range"].at-mid::-webkit-slider-thumb {
-            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff, 0 0 15px rgba(0, 229, 255, 0.6);
-            border-color: var(--color-wave);
-        }
+
+        /* FALE (DOPASOWANE DO STYLU NEON) */
+        .wave { border: 1.5px solid var(--accent-blue) !important; box-shadow: 0 0 10px var(--accent-glow) !important; }
 
         @media (max-width: 600px) {
-            body { padding: 1vh; }
-            header { height: 40px; margin-bottom: 1vh; }
-            .header-info, .clock { font-size: 16px; }
-            .app-content { flex-direction: column; gap: 1vh; }
-            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 55vh; flex: none; gap: 8px; }
-            .sidebar { width: 100%; height: auto; border-left: none; padding: 15px; gap: 15px; flex: 1; justify-content: center; }
-            .logo-display { width: 100%; height: 70px; aspect-ratio: auto; }
-            .logo-display h2 { font-size: 28px; }
-            .logo-display p { font-size: 8px; letter-spacing: 1px; }
-            .controls { gap: 15px; padding: 5px 15px; }
-            .c-play { width: 45px; height: 45px; padding: 10px; }
-            .c-svg { width: 22px; height: 22px; }
-            .tile .t-top { font-size: 16px; }
-            .tile .t-bottom { font-size: 10px; margin-top: 2px; }
-            .vol-box { max-width: 100%; }
-            .vol-bar { height: 30px; }
-            .vol-btn { width: 30px; height: 30px; }
-            input[type="range"]::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; }
+            .app-content { flex-direction: column; overflow-y: auto; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: auto; flex: none; }
+            .sidebar { flex: none; border-left: none; border-top: 1px solid var(--border); }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">GRA: RMF FM</div>
+    <div class="header-info">ES <span>RMF POLYPHONIC</span> PRO</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -232,7 +153,7 @@
     <aside class="sidebar">
         <div class="logo-display">
             <h2>RMF FM</h2>
-            <p>Najlepsza muzyka</p>
+            <p>Master Output</p>
         </div>
 
         <div class="controls">
@@ -242,11 +163,12 @@
         </div>
 
         <div class="vol-box">
-            <button class="vol-btn" onclick="adj(-5)">-</button>
+            <div class="vol-label">Volume Level</div>
             <div class="vol-bar">
-                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">
+                <button class="vol-btn" onclick="adj(-5)">-</button>
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+                <button class="vol-btn" onclick="adj(5)">+</button>
             </div>
-            <button class="vol-btn" onclick="adj(5)">+</button>
         </div>
     </aside>
 </div>
@@ -254,7 +176,6 @@
 <audio id="player"></audio>
 
 <script>
-    // Generator HTML kafelków z JS, dostosowany do nowej struktury CSS (RMF FM na górze)
     const STATIONS = [
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
@@ -287,7 +208,7 @@
         t.className = 'tile';
         t.innerHTML = `
             <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">RMF FM</div>
+            <div class="t-top">Inst 0${i+1}</div>
             <div class="t-bottom">${s.s}</div>
         `;
         t.onclick = () => play(i);
@@ -297,46 +218,29 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        document.getElementById('playing-now-text')?.remove(); // Clean up if exists
         
-        // Aktualizacja panelu bocznego
-        const sideDisplay = document.querySelector('.logo-display h2');
-        const sideSub = document.querySelector('.logo-display p');
-        sideDisplay.textContent = "RMF " + STATIONS[i].s;
+        // Update Sidebar
+        document.querySelector('.logo-display h2').textContent = STATIONS[i].n;
         
-        // Prosta logika opisu pod logo w panelu
-        if(STATIONS[i].s === 'RMF FM') sideSub.textContent = 'Najlepsza muzyka';
-        else if(STATIONS[i].s === 'Maxxx') sideSub.textContent = 'Hity są Maxxx';
-        else sideSub.textContent = 'Stacja tematyczna';
-
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); // Ikona Pause
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(player.paused) { 
-            if(current === -1) play(0); // Odpal pierwszą jeśli nic nie gra
-            else player.play(); 
-            ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); 
-        }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); } // Ikona Play
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
     
     function setV(v) { 
         player.volume = v / 100;
-        // Specjalna poświata dla gałki na środku (jak na zdjęciu)
-        if(parseInt(v) > 40 && parseInt(v) < 60) vRange.classList.add('at-mid');
-        else vRange.classList.remove('at-mid');
     }
     
     function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
-    
-    // Inicjalizacja głośności
-    setV(vRange.value);
 </script>
 </body>
 </html>
