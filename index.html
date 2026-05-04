@@ -50,7 +50,7 @@
             border: 1px solid #bbb; border-radius: 2px;
             height: 32px; display: flex; align-items: center; justify-content: center;
             font-size: 9px; color: #444; font-weight: 600;
-            text-align: center; cursor: pointer; text-transform: uppercase;
+            text-align: center; cursor: pointer; text-transform: uppercase; padding: 2px;
         }
 
         .powered-on .chip.active {
@@ -154,16 +154,43 @@
 <audio id="player"></audio>
 
 <script>
-    // UWAGA: s to slug z adresu URL po laut.fm/
     const STATIONS = [
+        // TECHNO
         { n: 'TECH 88 TECHNO', u: 'https://stream.laut.fm/tech88', s: 'tech88', cat: 'techno' },
         { n: 'HR3 CLUBNIGHT', u: 'https://stream.laut.fm/hr3_clubnight', s: 'hr3_clubnight', cat: 'techno' },
         { n: '1000 TECHNO FM', u: 'https://stream.laut.fm/1000techno', s: '1000techno', cat: 'techno' },
+        { n: 'BEST OF TECHNO', u: 'https://stream.laut.fm/best-of-techno', s: 'best-of-techno', cat: 'techno' },
+        { n: 'CHRIS BURN TECHNO', u: 'https://stream.laut.fm/chris_burn', s: 'chris_burn', cat: 'techno' },
+        { n: 'RETRO ELECTRONIC', u: 'https://stream.laut.fm/retroelectronicmusic', s: 'retroelectronicmusic', cat: 'techno' },
+        { n: 'GEHIRN TREIBER', u: 'https://stream.laut.fm/gehirn-treiber-beat-radio', s: 'gehirn-treiber-beat-radio', cat: 'techno' },
+        // HOUSE
         { n: 'DEEP HOUSE SOUNDS', u: 'https://stream.laut.fm/deep-house-sounds', s: 'deep-house-sounds', cat: 'house' },
+        { n: 'HOUSEBOMB FM', u: 'https://stream.laut.fm/housebomb-fn', s: 'housebomb-fn', cat: 'house' },
+        { n: 'SYMBIOTIC BEATS', u: 'https://stream.laut.fm/symbiotic-beats', s: 'symbiotic-beats', cat: 'house' },
         { n: 'HOUSE MUSIC FM', u: 'https://stream.laut.fm/house', s: 'house', cat: 'house' },
+        { n: 'FAF RECORDS 979', u: 'https://stream.laut.fm/faf-records-979', s: 'faf-records-979', cat: 'house' },
+        { n: 'TORNADO RADIO', u: 'https://stream.laut.fm/tornadofm', s: 'tornadofm', cat: 'house' },
+        // DNB
         { n: 'DRUM AND BASS FM', u: 'https://stream.laut.fm/drumandbass_fm', s: 'drumandbass_fm', cat: 'dnb' },
+        { n: 'FMBASE DNB', u: 'https://stream.laut.fm/fmbase', s: 'fmbase', cat: 'dnb' },
+        { n: 'DNBZONE RADIO', u: 'https://stream.laut.fm/dnbzone', s: 'dnbzone', cat: 'dnb' },
+        { n: 'DNB BASE GERMANY', u: 'https://stream.laut.fm/dnb-base', s: 'dnb-base', cat: 'dnb' },
+        { n: 'A5 RECORDINGS', u: 'https://stream.laut.fm/a5recordings', s: 'a5recordings', cat: 'dnb' },
+        { n: 'DJMO DNB', u: 'https://stream.laut.fm/djmo', s: 'djmo', cat: 'dnb' },
+        // TRANCE
         { n: 'TRANCEMOTION FM', u: 'https://stream.laut.fm/trancemotionfm', s: 'trancemotionfm', cat: 'trance' },
-        { n: 'GOAFM PSYCHEDELIC', u: 'https://stream.laut.fm/goafm', s: 'goafm', cat: 'goa' }
+        { n: 'TRANCE BEATS FM', u: 'https://stream.laut.fm/trancebeats', s: 'trancebeats', cat: 'trance' },
+        { n: 'YOUR TRANCE RADIO', u: 'https://stream.laut.fm/yourtranceradio', s: 'yourtranceradio', cat: 'trance' },
+        { n: 'TRANCE WORLD FM', u: 'https://stream.laut.fm/trance', s: 'trance', cat: 'trance' },
+        { n: 'CLUBNIGHT TRANCE', u: 'https://stream.laut.fm/clubnight', s: 'clubnight', cat: 'trance' },
+        { n: 'TRANCE 02 RADIO', u: 'https://stream.laut.fm/trance02', s: 'trance02', cat: 'trance' },
+        // GOA
+        { n: 'GOAFM PSYCHEDELIC', u: 'https://stream.laut.fm/goafm', s: 'goafm', cat: 'goa' },
+        { n: 'GOA BASE RADIO', u: 'https://stream.laut.fm/goa-base', s: 'goa-base', cat: 'goa' },
+        { n: 'GOA CHANNEL ONE', u: 'https://stream.laut.fm/goa-channel-one', s: 'goa-channel-one', cat: 'goa' },
+        { n: 'PSY-GOA DARKSPY', u: 'https://stream.laut.fm/psychedelic_goa_trance_pro_darkspy', s: 'psychedelic_goa_trance_pro_darkspy', cat: 'goa' },
+        { n: 'PSYCORE RADIO', u: 'https://stream.laut.fm/psycore', s: 'psycore', cat: 'goa' },
+        { n: 'PSYTRANCELICIOUS', u: 'https://stream.laut.fm/psytrancelicious', s: 'psytrancelicious', cat: 'goa' }
     ];
 
     const player = document.getElementById('player'),
@@ -178,31 +205,34 @@
 
     let isPowered = false, dragging = false, currentSlug = '', metaInterval;
 
-    // JSONP CALLBACK
+    // OBSŁUGA METADANYCH (Tytuły piosenek)
     window.displayMeta = function(data) {
         if (!isPowered || !currentSlug) return;
         
         const stationObj = STATIONS.find(s => s.s === currentSlug);
-        const fallback = stationObj ? stationObj.n : "RADIO";
+        const stationName = stationObj ? stationObj.n : "STATION";
 
         if (!data || !data.artist) {
-            lcdTrack.innerHTML = `<div style="font-size:1.1em; color:var(--cyan); opacity:0.8;">STATION:</div><div>${fallback}</div>`;
+            lcdTrack.innerHTML = `<div style="font-size:1.1em; color:var(--cyan);">STATION:</div><div>${stationName}</div>`;
             return;
         }
 
         const artist = data.artist.name || "LIVE";
-        const title = data.title || "MUSIC";
+        const title = data.title || "NON-STOP MUSIC";
 
-        lcdTrack.innerHTML = `<div style="font-size:1.4em; margin-bottom:4px;">${artist}</div><div style="font-size:0.9em; opacity:0.9;">${title}</div>`;
+        lcdTrack.innerHTML = `
+            <div style="font-size:1.4em; margin-bottom:5px;">${artist}</div>
+            <div style="font-size:0.9em; opacity:0.8;">${title}</div>
+        `;
     };
 
     function updateMetadata() {
         if (!isPowered || !currentSlug) return;
-        
-        // Animacja ładowania tylko jeśli wyświetlacz jest pusty
-        if (lcdTrack.textContent === "CONNECTING...") {
+
+        // Tymczasowy placeholder przed załadowaniem danych
+        if (lcdTrack.textContent === "CONNECTING..." || lcdTrack.textContent === "SELECT CHANNEL") {
              const sObj = STATIONS.find(s => s.s === currentSlug);
-             lcdTrack.innerHTML = `<div style="font-size:0.8em; opacity:0.5;">LOADING DATA...</div><div>${sObj.n}</div>`;
+             lcdTrack.innerHTML = `<div style="font-size:0.8em; opacity:0.5;">LOADING...</div><div>${sObj.n}</div>`;
         }
 
         const old = document.getElementById('api-script');
@@ -211,6 +241,8 @@
         const s = document.createElement('script');
         s.id = 'api-script';
         s.src = `https://api.laut.fm/station/${currentSlug}/now_playing?callback=displayMeta&t=${Date.now()}`;
+        
+        // Jeśli stacja nie zostanie znaleziona w API, wyświetlamy jej nazwę
         s.onerror = () => {
             const sObj = STATIONS.find(s => s.s === currentSlug);
             lcdTrack.innerHTML = `<div style="color:var(--cyan);">STATION:</div><div>${sObj ? sObj.n : "ONLINE"}</div>`;
@@ -218,6 +250,7 @@
         document.body.appendChild(s);
     }
 
+    // GENEROWANIE PRZYCISKÓW
     STATIONS.forEach(s => {
         const btn = document.createElement('div');
         btn.className = 'chip'; btn.textContent = s.n;
@@ -232,9 +265,11 @@
             player.play().catch(() => {});
             updateMetadata();
         };
-        document.getElementById(s.cat + '-panel').appendChild(btn);
+        const panel = document.getElementById(s.cat + '-panel');
+        if (panel) panel.appendChild(btn);
     });
 
+    // STEROWANIE
     pwrBtn.onclick = () => {
         isPowered = !isPowered;
         document.body.classList.toggle('powered-on', isPowered);
@@ -248,6 +283,8 @@
             player.pause(); player.src = ""; currentSlug = "";
             clearInterval(metaInterval);
             document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            lcdStation.textContent = "SYSTEM READY";
+            lcdTrack.textContent = "CHOOSE A STATION";
         }
     };
 
