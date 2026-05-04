@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEKTOR RMF - MASTER EDITION</title>
+    <title>SEKTOR RMF - FULL GRID EDITION</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
 
@@ -14,7 +14,6 @@
             --s-blue: #3a86ff;
             --s-border: #0a0c0e;
             --s-text: #9097a0;
-            --s-led: #15181c;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -25,7 +24,7 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* OBUDOWA VST */
+        /* OBUDOWA VST - STAŁY ROZMIAR */
         .sektor-vst {
             width: 1000px; height: 600px;
             background: var(--s-bg);
@@ -35,13 +34,7 @@
             position: relative;
         }
 
-        /* DEKORACYJNE ŚRUBY */
-        .sektor-vst::before, .sektor-vst::after {
-            content: '⊕'; position: absolute; font-size: 10px; color: #444; top: 5px;
-        }
-        .sektor-vst::before { left: 5px; } .sektor-vst::after { right: 5px; }
-
-        /* GÓRNY PASEK - PRESET BROWSER (STYL INITIAL) */
+        /* PRESET BROWSER BAR */
         .top-nav {
             height: 60px; background: #1a1e24;
             display: flex; align-items: center; justify-content: center;
@@ -61,96 +54,79 @@
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; text-transform: uppercase;
         }
-        .p-btn:hover { background: #333; color: var(--s-green); }
         .p-name { 
             flex: 1; text-align: center; color: var(--s-green); 
             font-weight: 700; letter-spacing: 1px; font-size: 14px;
             text-shadow: 0 0 8px rgba(36, 255, 36, 0.4);
         }
 
-        /* GŁÓWNY PANEL KONTROLNY */
-        .main-frame {
-            display: flex; flex: 1; padding: 15px; gap: 15px;
-        }
+        .main-frame { display: flex; flex: 1; padding: 15px; gap: 15px; overflow: hidden; }
 
-        /* LEWA STRONA - GRID STACJI (BROWSER) */
+        /* BROWSER SECTION - WYPEŁNIANIE KAFELKAMI */
         .browser-section {
             flex: 1.6; background: var(--s-panel);
             border-radius: 3px; border: 1px solid var(--s-border);
-            padding: 15px; display: flex; flex-direction: column;
+            padding: 10px; display: flex; flex-direction: column;
         }
-        .section-hdr { 
-            font-size: 11px; color: #fff; text-transform: uppercase; 
-            margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
-        }
+        .section-hdr { font-size: 11px; color: #fff; text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
         .section-hdr span { color: var(--s-blue); }
 
+        /* DYNAMICZNA SIATKA WYPEŁNIAJĄCA CAŁE POLE */
         .grid { 
-            display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; 
-            overflow-y: auto; padding-right: 5px;
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            align-content: stretch; /* Rozciąga rzędy by wypełnić wysokość */
         }
-        .grid::-webkit-scrollbar { width: 4px; }
-        .grid::-webkit-scrollbar-thumb { background: #444; }
 
         .tile {
-            height: 45px; background: #1a1e23; border: 1px solid #111;
-            display: flex; align-items: center; padding: 0 10px;
+            flex: 1 1 calc(25% - 4px); /* Bazowo 4 kolumny, ale rosną */
+            min-width: 100px;
+            background: #1a1e23; border: 1px solid #111;
+            display: flex; align-items: center; justify-content: center;
             cursor: pointer; font-size: 12px; color: var(--s-text);
-            position: relative; transition: 0.1s;
+            transition: 0.1s;
+            text-align: center;
+            padding: 5px;
         }
         .tile:hover { background: #23282e; color: #fff; }
         .tile.active { 
             background: #2a3138; color: var(--s-green); 
-            border-left: 3px solid var(--s-green);
+            border: 1px solid var(--s-green);
+            box-shadow: inset 0 0 10px rgba(36, 255, 36, 0.1);
         }
 
-        /* PRAWA STRONA - MASTER & FX */
-        .master-section {
-            flex: 0.4; display: flex; flex-direction: column; gap: 15px;
-        }
-        .control-box {
-            background: var(--s-panel); border: 1px solid var(--s-border);
-            border-radius: 3px; padding: 15px; flex: 1;
-        }
+        /* PANEL STEROWANIA */
+        .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 15px; }
+        .control-box { background: var(--s-panel); border: 1px solid var(--s-border); padding: 15px; flex: 1; display: flex; flex-direction: column; }
 
-        /* KNOB - VOLUME */
-        .vol-container { text-align: center; margin-top: 20px; }
+        .play-btn {
+            width: 100%; height: 60px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
+            border: 1px solid #000; border-radius: 3px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 0 #000; margin-bottom: 20px;
+        }
+        .play-btn svg { width: 28px; fill: var(--s-blue); filter: drop-shadow(0 0 5px var(--s-blue)); }
+
+        .vol-container { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; }
         .knob-base {
-            width: 80px; height: 80px; background: #0a0c0e; border-radius: 50%;
-            margin: 0 auto 10px; border: 4px solid #333; position: relative;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            width: 90px; height: 90px; background: #0a0c0e; border-radius: 50%;
+            margin-bottom: 15px; border: 4px solid #333; position: relative;
         }
         .knob-turner {
             width: 100%; height: 100%; border-radius: 50%;
             background: conic-gradient(from -135deg, var(--s-blue) 0%, #111 0%);
-            transform: rotate(0deg); transition: 0.1s;
         }
-        .knob-center {
-            position: absolute; inset: 10px; background: radial-gradient(circle, #444, #111);
-            border-radius: 50%; border: 1px solid #000;
-        }
+        .knob-center { position: absolute; inset: 12px; background: radial-gradient(circle, #444, #111); border-radius: 50%; }
 
-        /* PRZYCISK PLAY (Sektor Style) */
-        .play-btn {
-            width: 100%; height: 50px; background: linear-gradient(to bottom, #3a414a, #1a1e23);
-            border: 1px solid #000; border-radius: 3px; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 0 #000; margin-bottom: 15px;
-        }
-        .play-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #000; }
-        .play-btn svg { width: 24px; fill: var(--s-blue); filter: drop-shadow(0 0 5px var(--s-blue)); }
-
-        .vol-slider {
-            width: 100%; appearance: none; background: #111; height: 5px;
-            border-radius: 10px; accent-color: var(--s-blue);
-        }
+        .vol-slider { width: 100%; appearance: none; background: #111; height: 6px; border-radius: 10px; accent-color: var(--s-blue); }
 
     </style>
 </head>
 <body>
 
 <div class="sektor-vst">
-    <!-- SEKTOR TOP DISPLAY -->
     <div class="top-nav">
         <div class="patch-display">
             <div class="p-btn" onclick="skip(-1)">PREV</div>
@@ -160,36 +136,27 @@
     </div>
 
     <div class="main-frame">
-        <!-- BROWSER AREA -->
         <div class="browser-section">
             <div class="section-hdr"><span>OSC</span> BROADCAST BROWSER</div>
             <div class="grid" id="grid"></div>
         </div>
 
-        <!-- CONTROL AREA -->
         <div class="master-section">
             <div class="control-box">
-                <div class="section-hdr"><span>MASTER</span> OUTPUT</div>
-                
+                <div class="section-hdr"><span>MASTER</span> CONTROL</div>
                 <button class="play-btn" onclick="toggle()">
                     <svg viewBox="0 0 24 24"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
                 </button>
-
                 <div class="vol-container">
                     <div class="knob-base">
                         <div class="knob-turner" id="v-knob"></div>
                         <div class="knob-center"></div>
                     </div>
                     <input type="range" class="vol-slider" min="0" max="100" value="70" oninput="setV(this.value)">
-                    <div style="font-size: 10px; margin-top: 8px; color: #555; text-transform: uppercase;">Volume Level</div>
                 </div>
             </div>
-
-            <div class="control-box" style="flex: 0.6; display: flex; align-items: center; justify-content: center; background: #0b0d0f;">
-                <div style="text-align: center;">
-                    <div style="font-size: 24px; color: #333; font-weight: 700; letter-spacing: 2px;">SEKTOR</div>
-                    <div style="font-size: 9px; color: #555;">SIGNATURE EDITION</div>
-                </div>
+            <div class="control-box" style="flex: 0.3; background: #0b0d0f; justify-content: center; align-items: center;">
+                <div style="font-size: 24px; color: #222; font-weight: 700; letter-spacing: 3px;">SEKTOR</div>
             </div>
         </div>
     </div>
@@ -199,21 +166,14 @@
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', u: 'rmf_classic' },
-        { n: 'RMF DANCE', u: 'rmf_dance' },
-        { n: 'RMF GOLD', u: 'rmf_gold' },
-        { n: 'RMF PARTY', u: 'rmf_party' },
-        { n: 'RMF ROCK', u: 'rmf_rock' },
-        { n: 'RMF LOVE', u: 'rmf_love' },
-        { n: 'RMF POP', u: 'rmf_pop_lista' },
-        { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
-        { n: 'RMF HOP HOP', u: 'rmf_hip_hop' }
+        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', u: 'rmf_80s' }, { n: 'RMF 90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILLOUT', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' },
+        { n: 'RMF GOLD', u: 'rmf_gold' }, { n: 'RMF PARTY', u: 'rmf_party' },
+        { n: 'RMF ROCK', u: 'rmf_rock' }, { n: 'RMF LOVE', u: 'rmf_love' },
+        { n: 'RMF POP', u: 'rmf_pop_lista' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
+        { n: 'RMF HIP HOP', u: 'rmf_hip_hop' }, { n: 'RMF RELAX', u: 'rmf_relax' }
     ];
 
     const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('grid');
@@ -231,10 +191,8 @@
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
         document.getElementById('patch-name').textContent = STATIONS[i].n.toUpperCase();
-        
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
-        
         player.play();
         ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
@@ -246,15 +204,12 @@
     }
 
     function skip(d) {
-        let n = current + d;
-        if (n < 0) n = STATIONS.length - 1;
-        if (n >= STATIONS.length) n = 0;
+        let n = (current + d + STATIONS.length) % STATIONS.length;
         play(n);
     }
 
     function setV(v) {
         player.volume = v / 100;
-        const deg = (v * 2.7); // wizualny obrót
         document.getElementById('v-knob').style.background = `conic-gradient(from -135deg, var(--s-blue) ${v}%, #111 0%)`;
     }
 
