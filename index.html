@@ -23,7 +23,8 @@
 
         .frame {
             width: 100%;
-            max-width: 900px;
+            /* Zmniejszono szerokość, aby zewnętrzna krawędź przylegała do czerwonych pasków */
+            max-width: 700px;
             border-radius: 4px;
             padding: 8px;
             background: #0a0a0a;
@@ -35,10 +36,10 @@
             box-sizing: border-box;
         }
 
-        /* Przybliżenie krawędzi (pasy 10px przesunięte do środka) */
+        /* Czerwone krawędzie przybliżone do panelu (odstęp ok. 1cm) */
         .frame.powered {
             background: 
-                linear-gradient(90deg, transparent 110px, #e60012 110px, #e60012 120px, transparent 120px, transparent calc(100% - 120px), #e60012 calc(100% - 120px), #e60012 calc(100% - 110px), transparent calc(100% - 110px)),
+                linear-gradient(90deg, #e60012 0%, #e60012 10px, transparent 10px, transparent calc(100% - 10px), #e60012 calc(100% - 10px)),
                 repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
                 linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
             box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
@@ -51,7 +52,7 @@
             letter-spacing: 10px;
             color: #2a0000;
             font-family: 'DS-Digital', monospace !important;
-            margin: 0 auto 1cm auto; /* Podniesienie o 1cm */
+            margin: 0 auto 1cm auto; /* Podniesienie o 1cm od LCD */
             display: block;
             width: fit-content;
         }
@@ -105,7 +106,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 1cm; /* Obniżenie o 1cm */
+            padding-top: 1cm; /* Obniżenie panelu o 1cm od LCD */
         }
 
         .controls-main {
@@ -144,6 +145,7 @@
         .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
 
         @media(max-width:700px) {
+            .frame { max-width: 95%; }
             .display-frame { width: 90% !important; margin-bottom: 20px; }
             .controls-main { 
                 display: grid !important; 
@@ -319,8 +321,7 @@
             if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
             audio.pause(); 
             audio.currentTime = 0;
-            // Przycisk stop zeruje do 0.5 (stan początkowy)
-            audio.volume = 0.5;
+            audio.volume = 0.5; // Przywrócenie do wartości domyślnej
             updateVol();
             playBtn.classList.remove('active');
             flash(this);
