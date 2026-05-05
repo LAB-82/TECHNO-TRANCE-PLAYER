@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF DUNE 3 - VST INTERFACE</title>
+    <title>RMF DUNE 3 EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap');
         
         :root {
-            --dune-main: #2b2b2b;
+            --dune-bg: #2b2b2b;
             --dune-panel: #3a3a3a;
             --dune-border: #1a1a1a;
-            --dune-accent: #ff453a; /* Czerwone akcenty Dune */
-            --dune-screen: #e6e6e6; /* Jasny ekran centralny */
-            --wood-trim: #5d3a24;
+            --dune-accent: #ff453a; 
+            --dune-screen: #e6e6e6;
+            --wood: #5d3a24;
+            --text-gray: #aaa;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -24,163 +25,150 @@
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* Główna obudowa z drewnianymi bokami */
-        .vst-chassis {
-            width: 1050px; height: 720px;
-            background: var(--dune-main);
-            border-left: 15px solid var(--wood-trim);
-            border-right: 15px solid var(--wood-trim);
+        /* Główna obudowa - Zachowany rozmiar i proporcje */
+        .synth-chassis {
+            width: 1100px; height: 550px;
+            background: var(--dune-bg);
+            border-left: 15px solid var(--wood);
+            border-right: 15px solid var(--wood);
             border-top: 2px solid #444;
-            border-bottom: 5px solid #111;
-            box-shadow: 0 50px 100px rgba(0,0,0,0.9);
+            border-bottom: 8px solid #1a1a1a;
+            border-radius: 4px; padding: 15px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
             display: flex; flex-direction: column;
-            padding: 10px; position: relative;
         }
 
-        /* Ekran centralny */
-        .central-display {
-            background: var(--dune-screen);
-            border: 4px solid var(--dune-border);
-            height: 220px; width: 420px;
-            margin: 0 auto 15px;
-            padding: 15px;
-            display: flex; flex-direction: column;
-            color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
-        }
-        .screen-header { font-weight: 700; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; color: #666; text-align: center; }
-        .patch-info { flex: 1; font-weight: 600; font-size: 22px; color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .patch-desc { font-size: 11px; color: #666; text-align: center; margin-top: 5px; line-height: 1.4; }
+        /* Układ rzędów z oryginalnego kodu */
+        .top-row { display: flex; gap: 15px; flex: 1.2; margin-bottom: 15px; }
+        .bottom-row { display: flex; gap: 15px; flex: 0.8; }
 
-        .vst-grid { display: grid; grid-template-columns: 280px 1fr 280px; gap: 10px; flex: 1; }
-
-        .side-panel { display: flex; flex-direction: column; gap: 10px; }
-        
-        .module-box {
+        .section-box {
             background: var(--dune-panel);
-            border: 1px solid var(--dune-border);
-            border-radius: 2px; padding: 10px;
-            position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+            border-radius: 3px; border: 1px solid var(--dune-border);
+            padding: 15px; position: relative;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .module-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; border-bottom: 1px solid #222; margin-bottom: 8px; }
 
-        /* Przyciski stacji - Matrix Style */
-        .station-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
-        .matrix-btn {
-            height: 35px; background: #222; border: 1px solid #111;
-            color: #888; font-size: 10px; font-weight: 700;
+        .section-label {
+            position: absolute; top: 5px; left: 10px;
+            font-size: 10px; font-weight: 700; color: var(--text-gray);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        /* Kolumna funkcyjna (lewa) */
+        .func-column { display: flex; flex-direction: column; gap: 8px; width: 80px; justify-content: center; }
+        .func-btn {
+            height: 30px; background: #222; border: 1px solid #000;
+            border-radius: 2px; color: #888; font-size: 9px;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s;
+            cursor: pointer; font-weight: 700; text-transform: uppercase;
+            transition: 0.2s;
         }
-        .matrix-btn:hover { background: #333; }
-        .matrix-btn.active {
-            background: #2a2a2a; border-color: var(--dune-accent);
-            color: var(--dune-accent); box-shadow: 0 0 8px rgba(255, 69, 58, 0.3);
+        .func-btn:hover { color: #fff; background: #2a2a2a; }
+        .func-btn.active-led { border-color: var(--dune-accent); color: var(--dune-accent); }
+
+        /* Siatka stacji (środek) */
+        .patch-grid {
+            flex: 2; display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 8px; padding-top: 15px;
+        }
+        .patch-btn {
+            background: #222; border: 1px solid #111;
+            border-radius: 2px; color: #777; font-size: 11px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-weight: 600; transition: 0.2s;
+        }
+        .patch-btn.active {
+            background: #2d2d2d; color: var(--dune-accent);
+            border-color: var(--dune-accent);
+            box-shadow: 0 0 10px rgba(255, 69, 58, 0.2);
         }
 
-        /* Pokrętła DUNE (Knobs) */
-        .knob-group { display: flex; justify-content: space-around; padding: 10px 0; }
-        .knob-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; }
-        .knob-cap {
-            width: 45px; height: 45px; background: #1a1a1a;
-            border-radius: 50%; border: 2px solid #000;
-            position: relative; box-shadow: 0 4px 5px rgba(0,0,0,0.4);
-            cursor: pointer;
+        /* Sekcja Master (prawa) */
+        .master-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        .knob-outer {
+            width: 90px; height: 90px; background: #1a1a1a;
+            border-radius: 50%; border: 3px solid #000;
+            position: relative; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
         }
-        .knob-cap::after {
-            content: ""; position: absolute; top: 5px; left: 50%; width: 2px; height: 10px;
+        .knob-indicator {
+            position: absolute; top: 8px; left: 50%; width: 3px; height: 12px;
             background: var(--dune-accent); transform: translateX(-50%);
-        }
-        .knob-val { font-size: 9px; color: #ccc; font-weight: 600; text-transform: uppercase; }
-
-        /* Klawiatura na dole */
-        .keyboard {
-            height: 140px; background: #fff;
-            margin-top: 15px; display: flex;
-            border-top: 5px solid #000; position: relative;
-        }
-        .white-key { flex: 1; border: 1px solid #ccc; background: #fff; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
-        .black-key { 
-            position: absolute; width: 2.5%; height: 60%; background: #222; 
-            z-index: 2; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+            border-radius: 2px;
         }
 
-        /* Logo Synapse/Dune */
-        .vst-brand { text-align: center; padding: 10px; }
-        .vst-brand h2 { font-size: 18px; letter-spacing: 4px; color: #fff; font-weight: 600; text-transform: uppercase; }
-        .vst-brand h2 span { color: var(--dune-accent); }
+        /* Dolny biały wyświetlacz (Dune Screen) */
+        .main-status {
+            flex: 2; background: var(--dune-screen); border: 3px solid var(--dune-border);
+            display: flex; flex-direction: column; justify-content: center;
+            padding: 0 25px; border-radius: 3px; color: #333;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        }
+        .status-line { color: #888; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
+        .status-big { 
+            color: #000; font-size: 26px; font-weight: 700; 
+            letter-spacing: -0.5px; border-bottom: 1px solid #ccc;
+        }
+
+        .brand-area {
+            flex: 1; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+        }
+        .brand-area h1 { color: #fff; font-size: 24px; letter-spacing: 3px; font-weight: 600; }
+        .brand-area h1 span { color: var(--dune-accent); }
+
+        /* Suwak - ukryty technicznie, ale steruje głośnością */
+        input[type="range"] {
+            width: 100%; margin-top: 15px; accent-color: var(--dune-accent);
+        }
 
     </style>
 </head>
 <body>
 
-<div class="vst-chassis">
-    <div class="vst-brand">
-        <h2>SYNAPSE <span>RMF RADIO 3</span></h2>
-    </div>
+<div class="synth-chassis">
+    <!-- GÓRNY RZĄD: Oryginalny układ 3-kolumnowy -->
+    <div class="top-row">
+        <div class="section-box func-column">
+            <div class="section-label">System</div>
+            <div class="func-btn" onclick="toggle()">Play</div>
+            <div class="func-btn">Menu</div>
+            <div class="func-btn">Multi</div>
+            <div class="func-btn active-led">Solo</div>
+        </div>
 
-    <div class="central-display">
-        <div class="screen-header">Differential Radio Engine</div>
-        <div class="patch-info">
-            <div id="patch-num">001</div>
-            <div id="patch-name">Adrenaline FM</div>
-            <div class="patch-desc">
-                Source: 48kHz Digital Stream<br>
-                Mode: Stereo HQ / No Latency
+        <div class="section-box" style="flex: 2.5;">
+            <div class="section-label">Differential Oscillator / Station Select</div>
+            <div class="patch-grid" id="grid"></div>
+        </div>
+
+        <div class="section-box master-section">
+            <div class="section-label">Master Volume</div>
+            <div class="knob-outer" id="v-knob" onclick="resetVol()">
+                <div class="knob-indicator" id="v-ptr"></div>
             </div>
+            <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
+            <div style="color: var(--text-gray); font-size: 10px; margin-top: 5px; font-weight: 700;">VALUE: <span id="vol-val" style="color: #fff;">50</span>%</div>
         </div>
     </div>
 
-    <div class="vst-grid">
-        <div class="side-panel">
-            <div class="module-box" style="flex: 1;">
-                <div class="module-label">Oscillator / Station</div>
-                <div class="station-matrix" id="grid"></div>
-            </div>
-            <div class="module-box">
-                <div class="module-label">Master Controls</div>
-                <div class="knob-group">
-                    <div class="knob-wrap">
-                        <div class="knob-cap" id="v-knob" style="transform: rotate(0deg);"></div>
-                        <div class="knob-val">Volume</div>
-                    </div>
-                    <div class="knob-wrap">
-                        <div class="knob-cap" style="transform: rotate(-45deg);"></div>
-                        <div class="knob-val">Limit</div>
-                    </div>
-                </div>
-            </div>
+    <!-- DOLNY RZĄD -->
+    <div class="bottom-row">
+        <div class="section-box" style="flex: 0.4; display: flex; align-items: center; justify-content: center;">
+            <div class="section-label">Bank</div>
+            <div style="font-family: 'Orbitron', sans-serif; font-size: 24px; color: var(--dune-accent); text-shadow: 0 0 10px rgba(255,69,58,0.3);" id="bank-num">A</div>
         </div>
 
-        <div class="main-panel">
-            <div class="module-box" style="height: 100%;">
-                <div class="module-label">Filter & Amp Envelope</div>
-                <div class="knob-group">
-                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Attack</div></div>
-                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Decay</div></div>
-                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Sustain</div></div>
-                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Release</div></div>
-                </div>
-                <div style="margin-top: 20px; text-align: center;">
-                    <button id="p-btn" onclick="toggle()" style="background: #222; border: 1px solid var(--dune-accent); color: #fff; padding: 10px 30px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase;">Power / Play</button>
-                </div>
-            </div>
+        <div class="section-box main-status">
+            <div class="status-line">PATCH DESCRIPTION // ACTIVE STREAM</div>
+            <div class="status-big" id="patch-name">001: RMF FM INITIAL</div>
         </div>
 
-        <div class="side-panel">
-            <div class="module-box" style="flex: 1;">
-                <div class="module-label">Output Level</div>
-                <div style="height: 180px; width: 100%; background: #111; position: relative; border-radius: 2px; overflow: hidden;">
-                    <div id="v-meter" style="position: absolute; bottom: 0; width: 100%; height: 50%; background: linear-gradient(to top, var(--dune-accent), #ffcc00); transition: 0.1s;"></div>
-                </div>
-                <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)" style="width: 100%; margin-top: 10px; accent-color: var(--dune-accent);">
-            </div>
+        <div class="brand-area">
+            <h1>SYNAPSE <span>DUNE 3</span></h1>
+            <div style="color: #666; font-size: 9px; font-weight: 700; letter-spacing: 1px;">RADIO STREAMING SYNTHESIZER</div>
         </div>
-    </div>
-
-    <div class="keyboard">
-        <!-- Generowane klawisze -->
-        <div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div>
-        <div class="black-key" style="left: 4.5%;"></div><div class="black-key" style="left: 10.5%;"></div><div class="black-key" style="left: 23%;"></div><div class="black-key" style="left: 29.5%;"></div><div class="black-key" style="left: 36%;"></div>
     </div>
 </div>
 
@@ -200,16 +188,17 @@
 
     const player = document.getElementById('player'), 
           grid = document.getElementById('grid'),
-          vKnob = document.getElementById('v-knob'),
-          vMeter = document.getElementById('v-meter'),
+          vPtr = document.getElementById('v-ptr'),
+          vSlider = document.getElementById('v-slider'),
+          volVal = document.getElementById('vol-val'),
           patchName = document.getElementById('patch-name'),
-          patchNum = document.getElementById('patch-num');
+          bankNum = document.getElementById('bank-num');
 
     let current = -1;
 
     STATIONS.forEach((s, i) => {
         const btn = document.createElement('div');
-        btn.className = 'matrix-btn';
+        btn.className = 'patch-btn';
         btn.textContent = (i + 1).toString().padStart(3, '0');
         btn.onclick = () => play(i);
         grid.appendChild(btn);
@@ -217,41 +206,29 @@
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.matrix-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        patchName.textContent = STATIONS[i].n;
-        patchNum.textContent = (i + 1).toString().padStart(3, '0');
+        document.querySelectorAll('.patch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        patchName.textContent = (i + 1).toString().padStart(3, '0') + ": " + STATIONS[i].n.toUpperCase();
+        bankNum.textContent = String.fromCharCode(65 + Math.floor(i/4)); // Dynamiczne banki A, B, C...
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        document.getElementById('p-btn').style.borderColor = "var(--dune-accent)";
     }
 
     function toggle() {
         if(current === -1) { play(0); return; }
-        if(!player.paused) {
-            player.pause();
-            document.getElementById('p-btn').style.borderColor = "#444";
-        } else {
-            player.play();
-            document.getElementById('p-btn').style.borderColor = "var(--dune-accent)";
-        }
+        if(!player.paused) player.pause(); else player.play();
     }
 
     function setV(v) {
         player.volume = v / 100;
-        vMeter.style.height = v + "%";
-        // Obrót pokrętła od -150 do 150 stopni
-        vKnob.style.transform = `rotate(${(v * 3) - 150}deg)`;
+        volVal.textContent = v;
+        // Obrót od -150 do +150 stopni
+        const rot = (v * 3) - 150;
+        vPtr.parentElement.style.transform = `rotate(${rot}deg)`;
     }
 
-    // Prosta wizualizacja mrugania miernika
-    setInterval(() => {
-        if(!player.paused) {
-            let flicker = (Math.random() * 10) - 5;
-            vMeter.style.opacity = 0.8 + (Math.random() * 0.2);
-        }
-    }, 100);
+    function resetVol() { vSlider.value = 50; setV(50); }
 
     setV(50);
 </script>
