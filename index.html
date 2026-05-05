@@ -12,8 +12,10 @@
             --led-red: #ff0000;
             --led-bg: #400000;
             --lcd-green: #a4f000;
-            --btn-metal: linear-gradient(180deg, #ffffff 0%, #e0e0e0 45%, #999 50%, #ccc 100%);
-            --panel-bg: #8a8a8a;
+            /* Kolor kafelka z Twojego zdjęcia */
+            --tile-metal: #c2c2c2; 
+            /* Tekstura panelu z Twojego drugiego zdjęcia (symulowana CSS) */
+            --panel-texture: repeating-linear-gradient(135deg, #444 0px, #555 1px, #444 2px);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -45,58 +47,63 @@
             background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2);
         }
 
-        /* Styl kafelków ze zdjęcia */
+        /* Kafelki dokładnie jak na zdjęciu 1 */
         .bt-303 {
-            background: var(--btn-metal); border: 2px solid #555; border-radius: 2px;
+            background: var(--tile-metal); 
+            border: 1px solid #999;
+            border-bottom: 4px solid #666; /* Krawędź 3D z dołu */
+            border-radius: 3px;
             display: flex; align-items: center; justify-content: center; padding: 10px;
-            position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); transition: 0.05s;
+            position: relative; transition: 0.05s;
         }
-        .bt-303::before { content: ""; position: absolute; top: 4px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
         .bt-303.active .st-label { color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 14px; color: #222; text-transform: uppercase; pointer-events: none; }
+        .bt-303 .st-label { font-weight: 800; font-size: 14px; color: #1a3a5a; text-transform: uppercase; pointer-events: none; }
+        .bt-303:active { transform: translateY(2px); border-bottom-width: 2px; }
 
-        /* Panel boczny - tło i styl ze zdjęcia */
+        /* Panel sterowania dokładnie jak na zdjęciu 2 (kolor i tekstura) */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
-            background: #999; background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            padding: 20px; border: 2px solid #666; border-radius: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+            background-color: #555;
+            background-image: var(--panel-texture);
+            padding: 20px; border: 3px solid #333; border-radius: 10px; 
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.6), 5px 5px 15px rgba(0,0,0,0.5);
         }
 
-        .lcd-display { background: #0a0c0a; height: 110px; border: 4px solid #444; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; }
+        .lcd-display { background: #0a0c0a; height: 110px; border: 4px solid #222; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 15px #000; }
         .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; }
         #st-name { font-size: 26px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
         .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        .step-sequencer { background: #1a1a1a; border: 2px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
+        .step-sequencer { background: rgba(0,0,0,0.8); border: 2px solid #222; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
         .step-row { display: flex; gap: 2px; height: 20px; }
         .step { flex: 1; background: #333; }
         .step.on { background: #ff4400; box-shadow: 0 0 8px #ff4400; }
 
         .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         
-        /* Sekcja PAN ze zdjęcia */
         .pan-section { text-align: center; }
         .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 10px; height: 10px; background: var(--led-bg); border-radius: 50%; border: 1px solid #222; }
+        .pan-led { width: 10px; height: 10px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
         .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .knob-volume { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #eee 0%, #999 100%); border: 2px solid #555; position: relative; box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        .knob-volume { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #fff 0%, #aaa 100%); border: 2px solid #333; position: relative; box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
         .knob-volume::before { content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 20px; background: #111; transform: translateX(-50%); border-radius: 2px; }
 
         .volume-row { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
 
-        /* Przyciski UP/DOWN ze zdjęcia */
-        .sq-btn { width: 55px; height: 50px; background: var(--btn-metal); border: 2px solid #444; border-radius: 3px; box-shadow: 1px 3px 0 #333; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        /* Przyciski UP/DOWN w stylu kafelka ze zdjęcia 1 */
+        .sq-btn { width: 55px; height: 50px; background: var(--tile-metal); border: 1px solid #999; border-bottom: 3px solid #666; border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .sq-btn .dot { width: 5px; height: 5px; background: #400; border-radius: 50%; margin-bottom: 5px; }
-        .sq-btn span { font-size: 9px; font-weight: 900; color: #000; }
+        .sq-btn span { font-size: 9px; font-weight: 900; color: #111; }
 
-        .fader-track { background: #000; height: 45px; flex: 1; border: 2px solid #444; display: flex; align-items: center; padding: 0 5px; }
+        .fader-track { background: #000; height: 45px; flex: 1; border: 2px solid #222; display: flex; align-items: center; padding: 0 5px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 38px; background: #eee; border: 1px solid #444; box-shadow: inset 0 0 8px #fff; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 38px; background: #eee; border: 1px solid #333; box-shadow: inset 0 0 8px #fff; }
 
-        /* Przycisk RUN/STOP ze zdjęcia */
-        .btn-run-stop { width: 130px; height: 60px; background: var(--btn-metal); border: 2px solid #444; border-radius: 4px; box-shadow: 0 5px 0 #333; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #000; text-transform: uppercase; }
-        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
+        /* RUN/STOP w stylu kafelka */
+        .btn-run-stop { width: 130px; height: 60px; background: var(--tile-metal); border: 1px solid #999; border-bottom: 4px solid #666; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #000; text-transform: uppercase; }
+        .btn-run-stop:active { transform: translateY(3px); border-bottom-width: 1px; }
     </style>
 </head>
 <body>
@@ -123,7 +130,7 @@
                 <div class="pan-section">
                     <div class="pan-leds"><div class="pan-led" id="l-led"></div><div class="pan-led active" id="c-led"></div><div class="pan-led" id="r-led"></div></div>
                     <div class="knob-volume" id="pan-knob"></div>
-                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #111;">PAN L/R</div>
+                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #eee; text-shadow: 1px 1px 2px #000;">PAN L/R</div>
                 </div>
                 <div class="volume-row">
                     <div class="sq-btn" id="vol-down-btn"><div class="dot"></div><span>DOWN</span></div>
