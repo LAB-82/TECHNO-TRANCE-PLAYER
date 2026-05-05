@@ -9,12 +9,12 @@
 
         :root {
             --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
-            --led-red: #ff3333;
+            --led-red: #ff0000;
             --led-bg: #400000;
             --lcd-green: #a4f000;
-            --btn-metal: #c2c2c2;
-            /* Tekstura panelu sterowania z Twojego zdjęcia */
-            --panel-texture: repeating-linear-gradient(135deg, #444 0px, #555 1px, #444 2px);
+            --tile-metal: #c2c2c2; 
+            /* Nowa tekstura dla prawego panelu - jasne szczotkowane aluminium */
+            --panel-bg: linear-gradient(135deg, #a8a8a8 0%, #d1d1d1 50%, #a8a8a8 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -43,59 +43,88 @@
 
         .grid-stations { 
             flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; 
-            background: rgba(0,0,0,0.15); padding: 20px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2); border-radius: 10px;
         }
 
-        /* Kafelki stacji - styl z Twojego zdjęcia */
         .bt-303 {
-            background: var(--btn-metal); border: 1px solid #777; border-bottom: 4px solid #555; border-radius: 4px;
-            display: flex; align-items: center; justify-content: center; padding: 10px;
-            position: relative; box-shadow: 0 6px 10px rgba(0,0,0,0.4); transition: 0.05s;
+            background: var(--tile-metal); 
+            border: 1px solid #999;
+            border-bottom: 4px solid #666;
+            border-radius: 3px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
+            position: relative; transition: 0.05s;
         }
-        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
-        .bt-303.active .st-label { color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); }
+        .bt-303::before { content: ""; position: absolute; top: 8px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        .bt-303.active .st-label { color: #000; font-weight: 900; }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 14px; color: #222; text-transform: uppercase; pointer-events: none; }
+        .bt-303 .st-label { font-weight: 800; font-size: 12px; color: #333; text-transform: uppercase; pointer-events: none; margin-top: 10px; }
         .bt-303:active { transform: translateY(2px); border-bottom-width: 2px; }
 
-        /* Prawy panel sterowania - styl i tekstura z Twojego zdjęcia */
+        /* POPRAWIONY PANEL STEROWANIA */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
-            background-color: #555; background-image: var(--panel-texture);
-            padding: 20px; border: 3px solid #888; border-radius: 8px; 
-            box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            background: var(--panel-bg);
+            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            padding: 20px; border: 2px solid #666; border-radius: 10px; 
+            box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 5px 5px 15px rgba(0,0,0,0.3);
         }
 
-        .lcd-display { background: #0a0c0a; height: 100px; border: 3px solid #333; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 15px #000; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; font-weight: bold; }
-        #st-name { font-size: 24px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
-        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
+        .lcd-display { background: #000; height: 110px; border: 5px solid #444; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; }
+        .lcd-label { color: var(--lcd-green); font-size: 10px; font-weight: bold; }
+        #st-name { font-size: 28px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
+        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        .step-sequencer { background: #111; border: 1px solid #333; padding: 8px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
+        .step-sequencer { background: #111; border: 3px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
         .step-row { display: flex; gap: 2px; height: 18px; }
-        .step { flex: 1; background: #222; }
-        .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.8); }
+        .step { flex: 1; background: #222; border: 1px solid #000; }
+        .step.on { background: #ff4400; box-shadow: 0 0 8px #ff4400; }
 
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        
         .pan-section { text-align: center; }
-        .pan-leds { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 8px; height: 8px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
-        .pan-led.active { background: var(--led-red); box-shadow: 0 0 5px var(--led-red); }
-        .knob-volume { width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #eee 0%, #aaa 100%); border: 2px solid #666; position: relative; box-shadow: 0 6px 12px rgba(0,0,0,0.4); transition: transform 0.2s; }
-        .knob-volume::before { content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 18px; background: #222; transform: translateX(-50%); border-radius: 2px; }
+        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+        .pan-led { width: 8px; height: 8px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
+        .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
+        
+        /* Pokrętło jak na zdjęciu */
+        .knob-volume { 
+            width: 70px; height: 70px; border-radius: 50%; 
+            background: linear-gradient(145deg, #ffffff, #bcbcbc);
+            border: 2px solid #888; position: relative; 
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.4);
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .knob-volume::before { 
+            content: ""; position: absolute; top: 4px; left: 50%; 
+            width: 4px; height: 15px; background: #111; 
+            transform: translateX(-50%); border-radius: 2px; 
+        }
 
         .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
-        .sq-btn { width: 45px; height: 45px; background: var(--btn-metal); border: 1px solid #777; border-bottom: 4px solid #555; border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+        /* Przyciski UP/DOWN/RUN białe jak na foto */
+        .sq-btn { 
+            width: 45px; height: 45px; background: #fff; border: 2px solid #000; 
+            border-radius: 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: 2px 2px 0px #666;
+        }
         .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
-        .sq-btn span { font-size: 8px; font-weight: bold; color: #111; }
-        .sq-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .sq-btn span { font-size: 8px; font-weight: 900; color: #000; }
 
-        .fader-track { background: #000; height: 40px; flex: 1; border: 1px solid #444; display: flex; align-items: center; padding: 0 5px; }
+        .fader-track { background: #000; height: 35px; flex: 1; border: 1px solid #444; display: flex; align-items: center; padding: 0 2px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 34px; background: #ccc; border: 1px solid #333; box-shadow: inset 0 0 5px #fff; }
+        input[type="range"]::-webkit-slider-thumb { 
+            -webkit-appearance: none; width: 20px; height: 30px; 
+            background: #eee; border: 2px solid #333; cursor: pointer;
+        }
 
-        .btn-run-stop { width: 110px; height: 55px; background: var(--btn-metal); border: 1px solid #777; border-bottom: 5px solid #555; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase; }
-        .btn-run-stop:active { transform: translateY(3px); border-bottom-width: 2px; }
+        .btn-run-stop { 
+            width: 110px; height: 45px; background: #eee; border: 2px solid #000; 
+            border-radius: 4px; display: flex; align-items: center; justify-content: center; 
+            font-weight: 900; font-size: 13px; color: #000; text-transform: uppercase;
+            box-shadow: 3px 3px 0px #666;
+        }
+        .btn-run-stop:active, .sq-btn:active { transform: translate(1px, 1px); box-shadow: 1px 1px 0px #666; }
     </style>
 </head>
 <body>
@@ -120,9 +149,9 @@
             <div class="step-sequencer"><div class="step-row" id="r1"></div><div class="step-row" id="r2"></div><div class="step-row" id="r3"></div></div>
             <div class="analog-controls">
                 <div class="pan-section">
-                    <div class="pan-leds"><div class="pan-led" id="led-l"></div><div class="pan-led active" id="led-c"></div><div class="pan-led" id="led-r"></div></div>
+                    <div class="pan-leds"><div class="pan-led" id="l-led"></div><div class="pan-led active" id="c-led"></div><div class="pan-led" id="r-led"></div></div>
                     <div class="knob-volume" id="pan-knob"></div>
-                    <div style="font-size: 9px; font-weight: bold; margin-top: 5px; color: #222;">PAN L/R</div>
+                    <div style="font-size: 9px; font-weight: bold; margin-top: 5px; color: #111;">PAN L/R</div>
                 </div>
                 <div class="volume-row">
                     <div class="sq-btn" id="vol-down-btn"><div class="dot"></div><span>DOWN</span></div>
@@ -135,10 +164,9 @@
     </div>
 </div>
 
-<audio id="player"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
-    // TWOJA ORYGINALNA LOGIKA - BEZ ZMIAN
     const STATIONS = [
         { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' }, { n: 'RMF 80s', u: 'rmf_80s' },
         { n: 'RMF 90s', u: 'rmf_90s' }, { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILL', u: 'rmf_chillout' },
@@ -152,23 +180,16 @@
     const stName = document.getElementById('st-name');
     const vRange = document.getElementById('v-range');
     const panKnob = document.getElementById('pan-knob');
-    
-    let audioCtx, source, gainL, gainR, merger;
 
+    let audioCtx, source, panner;
     function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             source = audioCtx.createMediaElementSource(player);
-            gainL = audioCtx.createGain();
-            gainR = audioCtx.createGain();
-            merger = audioCtx.createChannelMerger(2);
-            source.connect(gainL, 0); 
-            source.connect(gainR, 0);
-            gainL.connect(merger, 0, 0);
-            gainR.connect(merger, 0, 1);
-            merger.connect(audioCtx.destination);
-            applyPan(panState);
+            panner = audioCtx.createStereoPanner();
+            source.connect(panner).connect(audioCtx.destination);
         }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     STATIONS.forEach((s, i) => {
@@ -191,57 +212,30 @@
 
     function play(i) {
         initAudio();
-        if (audioCtx.state === 'suspended') audioCtx.resume();
         document.querySelectorAll('.bt-303').forEach((b, idx) => b.classList.toggle('active', idx === i));
         stName.textContent = STATIONS[i].n;
-        player.src = (STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u) + "?t=" + new Date().getTime();
+        player.src = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
         player.play();
     }
 
-    function stopRadio() { 
-        player.pause(); 
-        player.src = ""; 
-        stName.textContent = "STATION STOPPED";
-        document.querySelectorAll('.bt-303').forEach(b => b.classList.remove('active'));
-    }
-
-    function setV(v) { 
-        player.volume = v/100; 
-        document.getElementById('v-val').textContent = `VOL: ${v}%`; 
-    }
-
-    function adj(d) { 
-        let newVal = parseInt(vRange.value) + d;
-        if(newVal > 100) newVal = 100;
-        if(newVal < 0) newVal = 0;
-        vRange.value = newVal; 
-        setV(newVal); 
-    }
+    function stopRadio() { player.pause(); player.src = ""; stName.textContent = "STATION STOPPED"; document.querySelectorAll('.bt-303').forEach(b => b.classList.remove('active')); }
+    function setV(v) { player.volume = v/100; document.getElementById('v-val').textContent = `VOL: ${v}%`; }
+    function adj(d) { let newVal = Math.min(100, Math.max(0, parseInt(vRange.value) + d)); vRange.value = newVal; setV(newVal); }
 
     document.getElementById('vol-down-btn').addEventListener('click', () => adj(-5));
     document.getElementById('vol-up-btn').addEventListener('click', () => adj(5));
     document.getElementById('run-stop-btn').addEventListener('click', stopRadio);
     vRange.addEventListener('input', (e) => setV(e.target.value));
 
-    let panState = 0; 
-    const panAngles = { "-1": -45, "0": 0, "1": 45 };
-
-    function applyPan(state) {
-        if (!audioCtx) return;
-        if (state === -1) { gainL.gain.value = 1; gainR.gain.value = 0; }
-        else if (state === 0) { gainL.gain.value = 1; gainR.gain.value = 1; }
-        else if (state === 1) { gainL.gain.value = 0; gainR.gain.value = 1; }
-    }
-
-    panKnob.addEventListener('click', function() {
+    let panPos = 0; 
+    panKnob.addEventListener('click', () => {
         initAudio();
-        panState++;
-        if (panState > 1) panState = -1;
-        applyPan(panState);
-        this.style.transform = `rotate(${panAngles[panState]}deg)`;
-        document.getElementById('led-l').classList.toggle('active', panState === -1);
-        document.getElementById('led-c').classList.toggle('active', panState === 0);
-        document.getElementById('led-r').classList.toggle('active', panState === 1);
+        panPos = panPos === 1 ? -1 : panPos + 1;
+        panner.pan.setValueAtTime(panPos, audioCtx.currentTime);
+        panKnob.style.transform = `rotate(${panPos * 45}deg)`;
+        document.getElementById('l-led').classList.toggle('active', panPos === -1);
+        document.getElementById('c-led').classList.toggle('active', panPos === 0);
+        document.getElementById('r-led').classList.toggle('active', panPos === 1);
     });
 
     setInterval(() => {
