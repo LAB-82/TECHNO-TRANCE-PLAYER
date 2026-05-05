@@ -3,44 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF NITHONAT 2 EDITION</title>
+    <title>RMF VCM EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;600&display=swap');
 
         :root {
-            /* KOLORYSTYKA NITHONAT 2 */
-            --nit-bg: #e6e4e0;
-            --nit-panel: #f2f1ee;
-            --nit-border: #b8b6b2;
-            --nit-accent: #ff8a00; /* Pomarańczowe LEDy/przyciski */
-            --nit-dark: #333333;
-            --blue-wave: #00ccff;
+            --vcm-black: #0d0d0f;
+            --vcm-panel: #1a1a1c;
+            --vcm-neon: #39ff14; /* Neonowa zieleń z foto */
+            --vcm-silver: #d1d1d1;
+            --vcm-wood: #a67c52; /* Drewniany bok obudowy */
+            --blue-wave: #39ff14; /* Zmienione na zielone dla spójności */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body { 
             height: 100vh; width: 100vw; 
-            background: #d4d2ce; color: var(--nit-dark); 
-            font-family: 'Archivo Narrow', sans-serif;
+            background: #050505; color: #fff; 
+            font-family: 'Inter', sans-serif;
             overflow: hidden; 
+            border-left: 8px solid var(--vcm-wood); /* Akcent drewna */
+            border-right: 8px solid var(--vcm-wood);
         }
 
         body { display: flex; flex-direction: column; padding: 1.5vh; }
 
-        /* GÓRNY PASEK - Styl Preset Browser z Nithonat */
+        /* GÓRNY WYŚWIETLACZ - Styl Wireframe */
         header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            background: var(--nit-bg); padding: 0 20px; margin-bottom: 1.5vh; flex-shrink: 0;
-            border: 1px solid var(--nit-border); border-radius: 4px;
-            box-shadow: inset 0 1px 3px rgba(255,255,255,0.8);
+            height: 60px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--vcm-black); padding: 0 25px; margin-bottom: 2vh; flex-shrink: 0;
+            border: 1px solid #333; border-bottom: 2px solid var(--vcm-neon);
         }
         .header-info { 
-            background: #cbd0d1; border: 1px solid #9ea3a4; padding: 4px 15px;
-            font-size: 14px; font-weight: 700; color: #111; border-radius: 2px;
-            min-width: 250px; text-transform: uppercase;
+            font-family: 'Space Mono', monospace; font-size: 18px; 
+            color: var(--vcm-neon); text-transform: uppercase; letter-spacing: 2px;
         }
-        .clock { color: #555; font-size: 18px; font-weight: 700; letter-spacing: 1px; }
+        .clock { color: #555; font-size: 20px; font-weight: 300; font-family: 'Space Mono'; }
 
         .app-content { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
@@ -49,124 +48,94 @@
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 10px; 
-            padding: 15px;
-            background: var(--nit-panel);
-            border: 1px solid var(--nit-border);
-            border-radius: 4px;
+            gap: 12px; 
         }
 
         .tile {
-            background: #e6e4e0; border: 1px solid #c8c6c2;
+            background: var(--vcm-panel); border: 1px solid #2a2a2e;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative; overflow: visible;
-            border-radius: 3px;
-            box-shadow: 1px 1px 0px #fff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .tile .t-top { font-size: 10px; font-weight: 700; color: #888; text-transform: uppercase; z-index: 2; }
-        .tile .t-bottom { font-size: 15px; font-weight: 700; color: #333; margin-top: 2px; text-align: center; z-index: 2; }
+        .tile .t-top { font-size: 9px; color: #666; letter-spacing: 1px; z-index: 2; margin-bottom: 4px; }
+        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #aaa; text-align: center; z-index: 2; }
 
-        /* LED INDYKATOR STYLU NITHONAT */
-        .tile::before {
-            content: ""; position: absolute; top: 6px; left: 6px;
-            width: 6px; height: 6px; background: #555; border-radius: 50%;
-        }
-
-        /* AKTYWNA STACJA */
+        /* AKTYWNA STACJA - Styl VCM */
         .tile.active { 
-            background: #fff;
-            border-color: #999;
+            border-color: var(--vcm-neon);
+            background: #121214;
+            box-shadow: inset 0 0 15px rgba(57, 255, 20, 0.1);
         }
-        .tile.active::before {
-            background: var(--nit-accent);
-            box-shadow: 0 0 5px var(--nit-accent);
-        }
-        .tile.active .t-bottom { color: #000; }
+        .tile.active .t-bottom { color: var(--vcm-neon); }
 
-        /* FALE BŁĘKITNE - ZACHOWANE */
+        /* FALE (RIPPLE) - Zielone jak na foto */
         .waves {
             position: absolute; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
             pointer-events: none; opacity: 0; z-index: 1;
         }
-        .tile.active .waves { opacity: 0.5; }
+        .tile.active .waves { opacity: 0.4; }
         .wave {
-            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;
+            position: absolute; border: 1px solid var(--vcm-neon); border-radius: 50%;
             width: 10px; height: 10px; opacity: 0;
-            animation: ripple 3s infinite linear;
+            animation: ripple 4s infinite ease-out;
         }
-        .wave:nth-child(2) { animation-delay: 1s; }
-        .wave:nth-child(3) { animation-delay: 2s; }
+        .wave:nth-child(2) { animation-delay: 1.3s; }
+        .wave:nth-child(3) { animation-delay: 2.6s; }
 
         @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.9; }
-            100% { width: 280%; height: 280%; opacity: 0; }
+            0% { width: 0; height: 0; opacity: 0.8; border-width: 2px; }
+            100% { width: 350%; height: 350%; opacity: 0; border-width: 0.5px; }
         }
 
-        /* SIDEBAR - ORYGINALNY UKŁAD */
+        /* SIDEBAR - Jasny panel dolny/boczny z foto */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; gap: 4vh;
-            border-left: 1px solid var(--nit-border); padding-left: 3vw;
+            background: var(--vcm-silver); padding: 20px;
+            border-radius: 4px; color: #111;
         }
 
-        /* LOGO DISPLAY - Styl Nithonat */
         .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/9;
-            background: var(--nit-bg);
-            border: 1px solid var(--nit-border);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative;
+            width: 100%; text-align: center; padding: 20px;
+            border-bottom: 2px solid #999;
         }
-        .logo-display h2 { font-size: 32px; color: #222; font-weight: 700; letter-spacing: -1px; }
-        .logo-display p { font-size: 11px; color: #666; font-weight: 700; text-transform: uppercase; margin-top: -5px; }
-        
-        /* Pomarańczowy przełącznik w logo */
-        .nit-switch {
-            width: 12px; height: 18px; background: var(--nit-accent);
-            border: 1px solid #cc6e00; position: absolute; top: 10px; left: 10px;
-        }
+        .logo-display h2 { font-family: 'Space Mono', monospace; font-size: 32px; color: #000; letter-spacing: -2px; }
+        .logo-display p { font-size: 10px; font-weight: 700; text-transform: uppercase; color: #444; }
 
         .controls { display: flex; align-items: center; gap: 3vw; }
         .c-svg { 
-            width: 35px; height: 35px; fill: #444; cursor: pointer; 
+            width: 32px; height: 32px; fill: #222; cursor: pointer; 
         }
         .c-play { 
-            width: 60px; height: 60px; fill: #222; 
-            background: #fff; padding: 12px; border-radius: 4px;
-            border: 1px solid var(--nit-border);
-            box-shadow: 0 2px 0px #bbb;
+            width: 60px; height: 60px; fill: #000; border: 2px solid #000; border-radius: 50%;
+            padding: 12px;
         }
 
-        /* VOLUME BOX */
-        .vol-box { display: flex; align-items: center; gap: 15px; width: 320px; }
-        .vol-btn { 
-            width: 35px; height: 35px; border: 1px solid var(--nit-border); 
-            background: var(--nit-panel); color: #333; cursor: pointer; font-weight: bold; 
-        }
-        .vol-bar { 
-            flex: 1; height: 35px; border: 1px solid var(--nit-border); 
-            background: #cbd0d1; border-radius: 2px; padding: 0 10px; display: flex; align-items: center; 
-        }
+        /* VOLUME */
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; }
+        .vol-btn { width: 35px; height: 35px; border: 1px solid #999; background: #eee; color: #000; font-weight: bold; cursor: pointer; }
+        .vol-bar { flex: 1; height: 30px; border: 1px solid #999; background: #bbb; display: flex; align-items: center; padding: 0 5px; }
         
-        input[type="range"] { flex: 1; appearance: none; background: #9ea3a4; height: 4px; }
+        input[type="range"] { flex: 1; appearance: none; background: #444; height: 2px; }
         input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 14px; height: 24px; 
-            background: #fff; border: 1px solid #666; cursor: pointer;
+            appearance: none; width: 12px; height: 20px; 
+            background: #000; border-radius: 2px; cursor: pointer;
         }
 
         @media (max-width: 600px) {
+            body { border: none; }
             .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; flex: none; }
-            .sidebar { width: 100%; height: 40vh; border-left: none; border-top: 1px solid var(--nit-border); }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; flex: none; }
+            .sidebar { width: 100%; height: 45vh; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">PRESET: RMF FM</div>
+    <div class="header-info" id="playing-now">CORE_SYSTEM: RMF FM</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -175,9 +144,8 @@
 
     <aside class="sidebar">
         <div class="logo-display">
-            <div class="nit-switch"></div>
-            <h2>NITHONAT<span>2</span></h2>
-            <p>Drum Machine / RMF Radio</p>
+            <h2>VCM-R1</h2>
+            <p>RMF Radio Hybrid Controller</p>
         </div>
 
         <div class="controls">
@@ -231,7 +199,7 @@
         t.className = 'tile';
         t.innerHTML = `
             <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">INST ${(i + 1).toString().padStart(2, '0')}</div>
+            <div class="t-top">PATCH ${(i + 1).toString().padStart(2, '0')}</div>
             <div class="t-bottom">${s.s.toUpperCase()}</div>
         `;
         t.onclick = () => play(i);
@@ -241,7 +209,7 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "PRESET: " + STATIONS[i].n;
+        document.getElementById('playing-now').textContent = "CORE_SYSTEM: " + STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
