@@ -3,175 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF DISCOVERY PRO - VIRTUAL ANALOG INTERFACE</title>
+    <title>RMF DUNE 3 - VST INTERFACE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&display=swap');
         
         :root {
-            --synth-red: #a81d1d;
-            --panel-dark: #2a2a2a;
-            --led-red: #ff0000;
-            --led-dim: #440000;
-            --label-white: #d1d1d1;
-            --knob-bg: #1a1a1a;
+            --dune-main: #2b2b2b;
+            --dune-panel: #3a3a3a;
+            --dune-border: #1a1a1a;
+            --dune-accent: #ff453a; /* Czerwone akcenty Dune */
+            --dune-screen: #e6e6e6; /* Jasny ekran centralny */
+            --wood-trim: #5d3a24;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; background: #0a0a0a; 
-            font-family: 'Rajdhani', sans-serif;
+            height: 100vh; background: #121212; 
+            font-family: 'Saira', sans-serif;
             display: flex; align-items: center; justify-content: center;
         }
 
-        /* Obudowa syntezatora */
-        .synth-chassis {
-            width: 1100px; height: 550px;
-            background: var(--synth-red);
-            border-radius: 4px; padding: 15px;
-            box-shadow: inset 0 2px 10px rgba(255,255,255,0.2), 0 30px 60px rgba(0,0,0,0.8);
+        /* Główna obudowa z drewnianymi bokami */
+        .vst-chassis {
+            width: 1050px; height: 720px;
+            background: var(--dune-main);
+            border-left: 15px solid var(--wood-trim);
+            border-right: 15px solid var(--wood-trim);
+            border-top: 2px solid #444;
+            border-bottom: 5px solid #111;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9);
             display: flex; flex-direction: column;
-            border-bottom: 8px solid #6b1212;
-            position: relative;
-        }
-
-        /* Sekcje paneli */
-        .top-row { display: flex; gap: 10px; flex: 1.2; margin-bottom: 10px; }
-        .bottom-row { display: flex; gap: 10px; flex: 0.8; }
-
-        .section-box {
-            background: var(--panel-dark);
-            border-radius: 3px; border: 1px solid #000;
             padding: 10px; position: relative;
         }
 
-        .section-label {
-            position: absolute; top: 5px; left: 10px;
-            font-size: 10px; font-weight: 700; color: var(--synth-red);
-            text-transform: uppercase; letter-spacing: 1px;
+        /* Ekran centralny */
+        .central-display {
+            background: var(--dune-screen);
+            border: 4px solid var(--dune-border);
+            height: 220px; width: 420px;
+            margin: 0 auto 15px;
+            padding: 15px;
+            display: flex; flex-direction: column;
+            color: #333; box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
+        .screen-header { font-weight: 700; border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-bottom: 10px; font-size: 14px; text-transform: uppercase; color: #666; text-align: center; }
+        .patch-info { flex: 1; font-weight: 600; font-size: 22px; color: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .patch-desc { font-size: 11px; color: #666; text-align: center; margin-top: 5px; line-height: 1.4; }
 
-        /* Wyświetlacz LED (Program/Bank) */
-        .led-display {
-            background: #150000; border: 2px solid #333;
-            padding: 5px 15px; border-radius: 2px;
-            display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 10px #000;
-        }
-        .led-text {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--led-red); font-size: 18px;
-            text-shadow: 0 0 8px var(--led-red);
-        }
+        .vst-grid { display: grid; grid-template-columns: 280px 1fr 280px; gap: 10px; flex: 1; }
 
-        /* Siatka stacji jako przyciski wyboru Patchy */
-        .patch-grid {
-            flex: 2; display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 6px; padding-top: 15px;
-        }
-        .patch-btn {
-            background: #1f1f1f; border: 1px solid #000;
-            border-radius: 2px; color: #888; font-size: 11px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: 600; text-transform: uppercase;
-            box-shadow: 0 2px 0 #000;
-        }
-        .patch-btn.active {
-            background: #333; color: #fff; border-color: var(--led-red);
-            box-shadow: 0 0 5px var(--led-red);
-        }
-
-        /* Master Control Section */
-        .master-section { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .side-panel { display: flex; flex-direction: column; gap: 10px; }
         
-        /* Pokrętła (Knobs) */
-        .knob-container {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            flex: 1;
+        .module-box {
+            background: var(--dune-panel);
+            border: 1px solid var(--dune-border);
+            border-radius: 2px; padding: 10px;
+            position: relative; box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
-        .knob-outer {
-            width: 80px; height: 80px; background: var(--knob-bg);
-            border-radius: 50%; border: 3px solid #000;
-            position: relative; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-        }
-        .knob-indicator {
-            position: absolute; top: 10px; left: 50%; width: 4px; height: 20px;
-            background: var(--led-red); transform: translateX(-50%);
-            border-radius: 2px; transform-origin: center 30px;
-        }
+        .module-label { font-size: 10px; font-weight: 700; color: #aaa; text-transform: uppercase; border-bottom: 1px solid #222; margin-bottom: 8px; }
 
-        /* Przyciski funkcyjne (jak te po lewej na obrazku) */
-        .func-column { display: flex; flex-direction: column; gap: 8px; width: 60px; }
-        .func-btn {
-            height: 25px; background: #222; border: 1px solid #000;
-            border-radius: 2px; color: #fff; font-size: 9px;
+        /* Przyciski stacji - Matrix Style */
+        .station-matrix { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+        .matrix-btn {
+            height: 35px; background: #222; border: 1px solid #111;
+            color: #888; font-size: 10px; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: 700; box-shadow: 0 2px 0 #000;
+            cursor: pointer; transition: 0.2s;
         }
-        .func-btn.red { background: #600; color: #ff9999; }
+        .matrix-btn:hover { background: #333; }
+        .matrix-btn.active {
+            background: #2a2a2a; border-color: var(--dune-accent);
+            color: var(--dune-accent); box-shadow: 0 0 8px rgba(255, 69, 58, 0.3);
+        }
 
-        /* Dolny główny wyświetlacz Programu */
-        .main-status {
-            flex: 2; background: #1a0000; border: 2px solid #444;
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 0 20px; border-radius: 3px;
+        /* Pokrętła DUNE (Knobs) */
+        .knob-group { display: flex; justify-content: space-around; padding: 10px 0; }
+        .knob-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .knob-cap {
+            width: 45px; height: 45px; background: #1a1a1a;
+            border-radius: 50%; border: 2px solid #000;
+            position: relative; box-shadow: 0 4px 5px rgba(0,0,0,0.4);
+            cursor: pointer;
         }
-        .status-line { color: var(--led-red); font-family: 'Orbitron', sans-serif; font-size: 12px; }
-        .status-big { color: var(--led-red); font-family: 'Orbitron', sans-serif; font-size: 22px; text-shadow: 0 0 10px var(--led-red); }
+        .knob-cap::after {
+            content: ""; position: absolute; top: 5px; left: 50%; width: 2px; height: 10px;
+            background: var(--dune-accent); transform: translateX(-50%);
+        }
+        .knob-val { font-size: 9px; color: #ccc; font-weight: 600; text-transform: uppercase; }
 
-        /* Logo Discovery Pro */
-        .brand-logo {
-            flex: 1; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
-            color: #fff; text-align: right;
+        /* Klawiatura na dole */
+        .keyboard {
+            height: 140px; background: #fff;
+            margin-top: 15px; display: flex;
+            border-top: 5px solid #000; position: relative;
         }
-        .brand-logo h1 { font-size: 28px; font-weight: 700; font-style: italic; letter-spacing: -1px; }
-        .brand-logo p { font-size: 9px; color: #ffaa00; font-weight: 600; text-transform: uppercase; }
+        .white-key { flex: 1; border: 1px solid #ccc; background: #fff; border-bottom-left-radius: 3px; border-bottom-right-radius: 3px; }
+        .black-key { 
+            position: absolute; width: 2.5%; height: 60%; background: #222; 
+            z-index: 2; border-bottom-left-radius: 2px; border-bottom-right-radius: 2px;
+        }
+
+        /* Logo Synapse/Dune */
+        .vst-brand { text-align: center; padding: 10px; }
+        .vst-brand h2 { font-size: 18px; letter-spacing: 4px; color: #fff; font-weight: 600; text-transform: uppercase; }
+        .vst-brand h2 span { color: var(--dune-accent); }
 
     </style>
 </head>
 <body>
 
-<div class="synth-chassis">
-    <div class="top-row">
-        <div class="section-box func-column" style="background: transparent; border: none;">
-            <div class="func-btn">ASSIGN</div>
-            <div class="func-btn red">PANIC</div>
-            <div class="func-btn">MENU</div>
-            <div class="func-btn" style="margin-top: 20px;" onclick="toggle()">PLAY</div>
-        </div>
+<div class="vst-chassis">
+    <div class="vst-brand">
+        <h2>SYNAPSE <span>RMF RADIO 3</span></h2>
+    </div>
 
-        <div class="section-box" style="flex: 2.5;">
-            <div class="section-label">Oscillators / Station Select</div>
-            <div class="patch-grid" id="grid"></div>
-        </div>
-
-        <div class="section-box master-section">
-            <div class="section-label">Master Volume</div>
-            <div class="knob-container">
-                <div class="knob-outer" id="v-knob" onclick="resetVol()">
-                    <div class="knob-indicator" id="v-ptr"></div>
-                </div>
-                <div style="color: #fff; font-size: 10px; margin-top: 10px; font-weight: 700;">GAIN: <span id="vol-val">50</span>%</div>
+    <div class="central-display">
+        <div class="screen-header">Differential Radio Engine</div>
+        <div class="patch-info">
+            <div id="patch-num">001</div>
+            <div id="patch-name">Adrenaline FM</div>
+            <div class="patch-desc">
+                Source: 48kHz Digital Stream<br>
+                Mode: Stereo HQ / No Latency
             </div>
-            <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)" style="width: 100%; accent-color: var(--led-red);">
         </div>
     </div>
 
-    <div class="bottom-row">
-        <div class="section-box led-display" style="flex: 0.5;">
-            <div class="led-text" id="bank-num">01</div>
+    <div class="vst-grid">
+        <div class="side-panel">
+            <div class="module-box" style="flex: 1;">
+                <div class="module-label">Oscillator / Station</div>
+                <div class="station-matrix" id="grid"></div>
+            </div>
+            <div class="module-box">
+                <div class="module-label">Master Controls</div>
+                <div class="knob-group">
+                    <div class="knob-wrap">
+                        <div class="knob-cap" id="v-knob" style="transform: rotate(0deg);"></div>
+                        <div class="knob-val">Volume</div>
+                    </div>
+                    <div class="knob-wrap">
+                        <div class="knob-cap" style="transform: rotate(-45deg);"></div>
+                        <div class="knob-val">Limit</div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="section-box main-status">
-            <div class="status-line">PROGRAM NAME / BANK</div>
-            <div class="status-big" id="patch-name">RMF FM - INITIAL</div>
+        <div class="main-panel">
+            <div class="module-box" style="height: 100%;">
+                <div class="module-label">Filter & Amp Envelope</div>
+                <div class="knob-group">
+                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Attack</div></div>
+                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Decay</div></div>
+                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Sustain</div></div>
+                    <div class="knob-wrap"><div class="knob-cap"></div><div class="knob-val">Release</div></div>
+                </div>
+                <div style="margin-top: 20px; text-align: center;">
+                    <button id="p-btn" onclick="toggle()" style="background: #222; border: 1px solid var(--dune-accent); color: #fff; padding: 10px 30px; cursor: pointer; font-family: inherit; font-weight: 700; text-transform: uppercase;">Power / Play</button>
+                </div>
+            </div>
         </div>
 
-        <div class="brand-logo">
-            <h1>DISCOVERY <span>PRO</span></h1>
-            <p>128 Voice Multilayer Virtual Analog Radio Engine</p>
+        <div class="side-panel">
+            <div class="module-box" style="flex: 1;">
+                <div class="module-label">Output Level</div>
+                <div style="height: 180px; width: 100%; background: #111; position: relative; border-radius: 2px; overflow: hidden;">
+                    <div id="v-meter" style="position: absolute; bottom: 0; width: 100%; height: 50%; background: linear-gradient(to top, var(--dune-accent), #ffcc00); transition: 0.1s;"></div>
+                </div>
+                <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)" style="width: 100%; margin-top: 10px; accent-color: var(--dune-accent);">
+            </div>
         </div>
+    </div>
+
+    <div class="keyboard">
+        <!-- Generowane klawisze -->
+        <div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div><div class="white-key"></div>
+        <div class="black-key" style="left: 4.5%;"></div><div class="black-key" style="left: 10.5%;"></div><div class="black-key" style="left: 23%;"></div><div class="black-key" style="left: 29.5%;"></div><div class="black-key" style="left: 36%;"></div>
     </div>
 </div>
 
@@ -191,49 +200,59 @@
 
     const player = document.getElementById('player'), 
           grid = document.getElementById('grid'),
-          vPtr = document.getElementById('v-ptr'),
-          vSlider = document.getElementById('v-slider'),
-          volVal = document.getElementById('vol-val'),
+          vKnob = document.getElementById('v-knob'),
+          vMeter = document.getElementById('v-meter'),
           patchName = document.getElementById('patch-name'),
-          bankNum = document.getElementById('bank-num');
+          patchNum = document.getElementById('patch-num');
 
     let current = -1;
 
     STATIONS.forEach((s, i) => {
         const btn = document.createElement('div');
-        btn.className = 'patch-btn';
-        btn.textContent = `P-${(i+1).toString().padStart(2,'0')}`;
+        btn.className = 'matrix-btn';
+        btn.textContent = (i + 1).toString().padStart(3, '0');
         btn.onclick = () => play(i);
         grid.appendChild(btn);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.patch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        document.querySelectorAll('.matrix-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
         patchName.textContent = STATIONS[i].n;
-        bankNum.textContent = (i + 1).toString().padStart(2, '0');
+        patchNum.textContent = (i + 1).toString().padStart(3, '0');
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
+        document.getElementById('p-btn').style.borderColor = "var(--dune-accent)";
     }
 
     function toggle() {
         if(current === -1) { play(0); return; }
-        if(!player.paused) player.pause(); else player.play();
+        if(!player.paused) {
+            player.pause();
+            document.getElementById('p-btn').style.borderColor = "#444";
+        } else {
+            player.play();
+            document.getElementById('p-btn').style.borderColor = "var(--dune-accent)";
+        }
     }
 
     function setV(v) {
         player.volume = v / 100;
-        volVal.textContent = v;
-        // Obrót wskaźnika pokrętła (od -150 do +150 stopni)
-        const rot = (v * 3) - 150;
-        vPtr.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+        vMeter.style.height = v + "%";
+        // Obrót pokrętła od -150 do 150 stopni
+        vKnob.style.transform = `rotate(${(v * 3) - 150}deg)`;
     }
 
-    function resetVol() { vSlider.value = 50; setV(50); }
+    // Prosta wizualizacja mrugania miernika
+    setInterval(() => {
+        if(!player.paused) {
+            let flicker = (Math.random() * 10) - 5;
+            vMeter.style.opacity = 0.8 + (Math.random() * 0.2);
+        }
+    }, 100);
 
-    // Init
     setV(50);
 </script>
 
