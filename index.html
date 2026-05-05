@@ -35,9 +35,10 @@
             box-sizing: border-box;
         }
 
-        /* Zbliżenie bocznych linii ramki do przycisków (odstęp ok. 1cm) */
+        /* Przybliżenie krawędzi (pasy 10px przesunięte do środka) */
         .frame.powered {
-            background: linear-gradient(90deg, #e60012 0%, #e60012 38px, transparent 38px, transparent calc(100% - 38px), #e60012 calc(100% - 38px)),
+            background: 
+                linear-gradient(90deg, transparent 110px, #e60012 110px, #e60012 120px, transparent 120px, transparent calc(100% - 120px), #e60012 calc(100% - 120px), #e60012 calc(100% - 110px), transparent calc(100% - 110px)),
                 repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
                 linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
             box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
@@ -50,8 +51,7 @@
             letter-spacing: 10px;
             color: #2a0000;
             font-family: 'DS-Digital', monospace !important;
-            /* Podniesienie o 1cm od wyświetlacza */
-            margin: 0 auto 1cm auto;
+            margin: 0 auto 1cm auto; /* Podniesienie o 1cm */
             display: block;
             width: fit-content;
         }
@@ -105,8 +105,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* Obniżenie o 1cm od wyświetlacza */
-            padding-top: 1cm;
+            padding-top: 1cm; /* Obniżenie o 1cm */
         }
 
         .controls-main {
@@ -320,8 +319,8 @@
             if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
             audio.pause(); 
             audio.currentTime = 0;
-            // POPRAWKA: Zerowanie paska głośności
-            audio.volume = 0;
+            // Przycisk stop zeruje do 0.5 (stan początkowy)
+            audio.volume = 0.5;
             updateVol();
             playBtn.classList.remove('active');
             flash(this);
