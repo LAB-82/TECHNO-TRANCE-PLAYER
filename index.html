@@ -1,159 +1,383 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
-    <title>Muzyczne Radio - MSI Dragon PRO v11</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
+    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <style>
-        body { margin: 0; background: black; color: white; text-align: center; font-family: 'Orbitron', sans-serif; overflow: hidden; }
-        #title { font-size: 50px; color: #ff2a2a; margin-top: 20px; text-shadow: 0 0 12px red; }
-        
-        #trackBox {
-            margin: 30px auto;
-            width: 580px;
-            padding: 20px;
-            background: #050505;
-            border: 2px solid #ff2a2a;
-            box-shadow: 0 0 25px rgba(255, 0, 0, 0.4) inset;
-            border-radius: 8px;
-            position: relative;
-            overflow: hidden;
-            height: 60px;
+        body {
+            margin: 0;
+            height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
+            background: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
         }
 
-        #trackDisplay {
-            font-size: 24px;
-            color: #ff4444;
-            white-space: nowrap;
-            display: block;
-            position: absolute;
+        .frame {
             width: 100%;
+            max-width: 900px;
+            border-radius: 4px;
+            padding: 8px;
+            background: #0a0a0a;
+            background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
+                linear-gradient(180deg, #151515 0%, #050505 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 1);
+            position: relative;
+            border: 1px solid #222;
+            box-sizing: border-box;
+        }
+
+        .frame.powered {
+            background: linear-gradient(90deg, #e60012 0%, #e60012 10px, transparent 10px, transparent calc(100% - 10px), #e60012 calc(100% - 10px)),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
+                linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
+            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
+        }
+
+        .title {
             text-align: center;
+            font-size: clamp(28px, 6vw, 48px);
+            font-weight: bold !important;
+            letter-spacing: 10px;
+            color: #2a0000;
+            font-family: 'DS-Digital', monospace !important;
+            margin: 0 auto 16px auto;
+            display: block;
+            width: fit-content;
         }
 
-        /* Klasa dla długich tekstów - włącza się automatycznie w JS */
-        .marquee {
-            padding-left: 100%;
-            animation: scrollText 15s linear infinite;
+        .frame.powered .title {
+            color: #e60012 !important;
+            text-shadow: 0 0 10px #e60012, 0 0 20px #e60012;
         }
 
-        @keyframes scrollText {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-180%); }
+        .display-frame {
+            background: #000;
+            border: 3px solid #333;
+            border-top-color: #000;
+            border-bottom-color: #444;
+            border-radius: 4px;
+            margin: 0.25cm auto 0 auto;
+            box-sizing: border-box;
+            overflow: hidden;
+            width: 600px;
         }
 
-        .label { font-size: 10px; color: #444; letter-spacing: 4px; position: absolute; top: 5px; left: 10px; }
-        
-        button {
-            padding: 15px 40px;
-            background: #111;
-            border: 1px solid #444;
-            color: #888;
-            font-family: 'Orbitron';
-            cursor: pointer;
-            margin: 20px;
-            transition: 0.3s;
-            font-weight: bold;
+        canvas { width: 100%; height: 100px; display: block; }
+
+        .main-content {
+            position: relative;
+            width: 100%;
+            min-height: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 0.25cm;
         }
 
-        button:hover { border-color: #ff2a2a; color: #ff2a2a; }
-        button.active { background: #200; border-color: red; color: white; box-shadow: 0 0 20px red; }
+        .speaker {
+            width: 150px; height: 150px; border-radius: 50%; position: absolute; bottom: 1cm;
+            background: radial-gradient(circle, #1a1a1a 0%, #0a0a0a 40%, #000 70%);
+            border: 5px solid #1a1a1a; box-shadow: inset 0 0 40px #000, 0 5px 15px rgba(0, 0, 0, 0.8);
+            z-index: 1; display: flex; align-items: center; justify-content: center;
+        }
+        .speaker::after { content: ''; width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #222 0%, #050505 100%); border: 1px solid #222; box-shadow: 0 0 10px #000; }
+        .speaker.left { left: 1cm; } .speaker.right { right: 1cm; }
+        .frame.powered .speaker { border-color: #e60012; box-shadow: inset 0 0 30px #000, 0 0 15px rgba(230, 0, 18, 0.3); }
 
-        #clock { position: absolute; top: 20px; right: 20px; color: #555; font-size: 18px; }
-        #signature { position: absolute; bottom: 20px; width: 100%; font-size: 10px; color: #222; letter-spacing: 2px; }
+        .controls-main {
+            display: flex; gap: 6px; padding: 10px; border-radius: 4px;
+            background: linear-gradient(180deg, #151515 0%, #050505 100%);
+            border: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10; width: fit-content; align-items: flex-start;
+        }
+
+        .btn-rect, .btn-v {
+            border: 1px solid #222; background: #111; color: #444;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.2s;
+        }
+
+        .btn-rect { width: 68px; height: 38px; border-radius: 3px; }
+        .btn-rect svg, .btn-v svg { width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
+
+        .vol-wrapper { display: flex; flex-direction: column; gap: 4px; width: 100px; height: 38px; justify-content: flex-start; }
+        .vol-btns { display: flex; gap: 4px; height: 30px; }
+        .btn-v { flex: 1; height: 100%; border-radius: 2px; }
+        .vol-label { display: none; } /* Ukryte na desktop */
+        .vol-bar { width: 100%; height: 4px; background: #000; border-radius: 2px; position: relative; overflow: hidden; }
+        .vol-fill { height: 100%; width: 50%; background: #e60012; opacity: 0; transition: width 0.1s; }
+
+        .frame.powered .btn-rect, .frame.powered .btn-v { color: #777; border-color: #333; }
+        .frame.powered .btn-rect.active, .frame.powered .btn-v.active { 
+            color: #e60012 !important; border-color: #e60012 !important; box-shadow: 0 0 12px #e60012 !important; 
+        }
+        .frame.powered .vol-fill { opacity: 1; box-shadow: 0 0 5px #e60012; }
+
+        .lab-logo { margin-top: 1.2cm; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; color: #222; font-size: 11px; font-weight: bold; background: linear-gradient(180deg, #151515 0%, #050505 100%); }
+        .frame.powered .lab-logo { color: #e60012; border-color: #e60012; text-shadow: 0 0 5px #e60012; }
+        .link-container { margin-top: auto; padding-bottom: 1cm; text-align: center; z-index: 10; }
+        .link-container a { color: #2a0000; text-decoration: none; font-family: 'DS-Digital'; letter-spacing: 2px; font-size: 14px; }
+        .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
+
+        /* --- MOBILE --- */
+        @media(max-width:700px) {
+            .speaker { display: none; }
+            .display-frame { width: 100% !important; margin-bottom: 20px; }
+            canvas { height: 160px !important; }
+            
+            .controls-main { 
+                display: grid !important; 
+                grid-template-columns: 1fr 1fr; 
+                width: 100% !important; 
+                gap: 12px; 
+                background: transparent; border: none; box-shadow: none; padding: 0;
+                box-sizing: border-box;
+            }
+
+            .btn-rect { 
+                width: 3.5cm; 
+                height: 55px; 
+            }
+            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
+            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
+
+            .vol-wrapper { 
+                grid-column: span 2; 
+                width: 100% !important; 
+                height: auto !important; 
+                margin-top: 15px; 
+                padding: 0 7.5mm; 
+                box-sizing: border-box;
+            }
+            
+            .vol-btns { 
+                height: 55px; 
+                order: 2; 
+                display: flex; 
+                justify-content: space-between;
+                align-items: center;
+                width: 100%;
+            }
+
+            .btn-v { 
+                width: 2cm; 
+                height: 55px; 
+                flex: none;
+            }
+
+            .vol-label { 
+                display: block; 
+                color: #444; 
+                font-family: 'DS-Digital'; 
+                font-size: 16px; 
+                letter-spacing: 2px;
+            }
+            .frame.powered .vol-label { color: #e60012; text-shadow: 0 0 5px #e60012; }
+
+            .vol-bar { 
+                height: 12px; 
+                order: 1; 
+                margin-bottom: 10px; 
+                width: 100%;
+            }
+
+            .link-container { margin-top: 2cm; }
+        }
     </style>
 </head>
-<body>
 
-    <div id="clock">00:00:00</div>
-    <div id="title">Muzyczne Radio</div>
+<body oncontextmenu="return false;">
+    <div class="frame">
+        <div class="title">MUZYCZNE RADIO</div>
+        <div class="display-frame"><canvas id="eq"></canvas></div>
+        <div class="main-content">
+            <div class="speaker left"></div>
+            <div class="speaker right"></div>
 
-    <div id="trackBox">
-        <div class="label">RDS MULTI-SOURCE ENGINE</div>
-        <div id="trackDisplay">ŁĄCZENIE...</div>
+            <div class="controls-main" id="controls">
+                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                
+                <div class="vol-wrapper" id="vol-container">
+                    <div class="vol-btns">
+                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                        <div class="vol-label">VOLUME</div>
+                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+                    </div>
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                </div>
+            </div>
+
+            <div class="lab-logo">L.A.B.</div>
+            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+        </div>
     </div>
 
-    <div class="controls">
-        <button id="playBtn" onclick="toggleRadio()">PLAY / STOP</button>
-    </div>
-
-    <audio id="audio" crossorigin="anonymous"></audio>
-    <div id="signature">SYSTEM DESIGN BY ŁUKASZ.B // MULTI-PROXY V11.0</div>
+    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
     <script>
-        const audio = document.getElementById("audio");
-        const trackDisplay = document.getElementById("trackDisplay");
-        const playBtn = document.getElementById("playBtn");
-        let isPlaying = false;
+        const audio = document.getElementById('stream');
+        const canvas = document.getElementById('eq');
+        const ctx = canvas.getContext('2d');
+        const pwrBtn = document.getElementById('pwr');
+        const playBtn = document.getElementById('play');
+        const recBtn = document.getElementById('rec');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const controls = document.getElementById('controls');
 
-        function toggleRadio() {
-            if (!isPlaying) {
-                audio.src = "https://stream.rcs.revma.com/gzwc1xcq042vv";
-                audio.play();
-                playBtn.classList.add("active");
-                isPlaying = true;
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+
+        let audioCtx, analyser, source, dataArray, isPwr = false;
+        let mediaRecorder, chunks = [];
+
+        function resize() {
+            const df = document.querySelector('.display-frame');
+            if(window.innerWidth > 700) {
+                df.style.width = controls.offsetWidth + "px";
             } else {
-                audio.pause();
-                audio.src = "";
-                playBtn.classList.remove("active");
-                isPlaying = false;
+                df.style.width = "100%";
             }
+            canvas.width = df.clientWidth;
+            drawStatic();
         }
 
-        async function getRDS() {
-            const time = new Date().toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'});
-            
-            // Definiujemy źródła danych (API)
-            const sources = [
-                "https://stats.revma.com/v1/stats/s/gzwc1xcq042vv",
-                "https://onlineradiobox.com/json/pl/muzyczneradio/play"
-            ];
-
-            // Próbujemy pobrać dane z kolejnych źródeł
-            for (let url of sources) {
-                try {
-                    const proxy = "https://api.allorigins.win/get?url=";
-                    const response = await fetch(`${proxy}${encodeURIComponent(url)}&t=${Date.now()}`);
-                    const data = await response.json();
-                    const json = JSON.parse(data.contents);
-
-                    let title = "";
-                    if (json.current_track) title = json.current_track.title; // Format Revma
-                    else if (json.title) title = json.title; // Format OnlineRadioBox
-
-                    if (title && title.length > 3 && !title.toLowerCase().includes("muzyczne radio")) {
-                        displayRDS(title.toUpperCase());
-                        return; // Udało się, przerywamy pętlę
-                    }
-                } catch (e) {
-                    continue; // Błąd w jednym źródle? Sprawdzamy następne
+        function drawBars(data) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const totalBars = 33;
+            const barW = canvas.width / totalBars;
+            for (let i = 0; i < totalBars; i++) {
+                let level = data ? Math.floor(data[i] / 24) : 0;
+                for (let j = 0; j < 10; j++) {
+                    ctx.fillStyle = (j < level) ? "#e60012" : "#120000";
+                    ctx.fillRect(i * barW + 1, canvas.height - (j * 9) - 10, barW - 2, 7);
                 }
             }
-
-            // Jeśli nic nie zadziałało - tryb nocny / zegar
-            displayRDS(`MUZYCZNE RADIO | JELENIA GÓRA | ${time}`);
         }
 
-        function displayRDS(text) {
-            trackDisplay.innerText = "+++ " + text + " +++";
-            // Jeśli tekst jest długi, włączamy przewijanie (marquee)
-            if (text.length > 30) {
-                trackDisplay.classList.add("marquee");
-            } else {
-                trackDisplay.classList.remove("marquee");
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
+        };
+
+        function drawStatic() { drawBars(null); }
+        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+                drawStatic();
+            }
+            resize();
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                analyser.fftSize = 128;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                source.connect(audioCtx.destination);
             }
         }
 
-        // Zegar górny
-        setInterval(() => {
-            document.getElementById("clock").innerText = new Date().toLocaleTimeString();
-        }, 1000);
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            initAudio();
+            audio.play();
+            this.classList.add('active');
+            updateEQ();
+        };
 
-        // Odświeżanie RDS co 20 sekund
-        setInterval(getRDS, 20000);
-        getRDS();
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start();
+            recBtn.classList.add('active');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder) mediaRecorder.stop();
+            recBtn.classList.remove('active');
+            flash(recBtn);
+        }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            audio.pause(); audio.currentTime = 0;
+            audio.volume = 0.5;
+            playBtn.classList.remove('active');
+            updateVol();
+            flash(this);
+            drawStatic();
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        function updateEQ() {
+            if (!isPwr || audio.paused) return;
+            requestAnimationFrame(updateEQ);
+            analyser.getByteFrequencyData(dataArray);
+            drawBars(dataArray);
+        }
+
+        window.onresize = resize;
+        window.onload = resize;
+        audio.volume = 0.5;
+        updateVol();
     </script>
 </body>
 </html>
