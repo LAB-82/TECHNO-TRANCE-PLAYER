@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -67,15 +68,17 @@
             margin: 0.25cm auto 0 auto;
             box-sizing: border-box;
             overflow: hidden;
-            width: 600px;
-            height: 100px;
+            width: fit-content;
+            min-width: 320px;
+            height: 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-family: 'DS-Digital', monospace;
+            font-family: 'Digital Numbers', sans-serif;
             color: #120000;
             transition: color 0.3s;
+            padding: 0 20px;
         }
 
         .frame.powered .display-frame {
@@ -86,11 +89,12 @@
         .display-line {
             line-height: 1.2;
             text-align: center;
+            white-space: nowrap;
         }
 
-        .station-name { font-size: 24px; }
-        .time-display { font-size: 32px; }
-        .date-display { font-size: 18px; }
+        .station-name { font-size: 20px; margin-bottom: 5px; }
+        .time-display { font-size: 28px; }
+        .date-display { font-size: 16px; margin-top: 5px; }
 
         .main-content {
             position: relative;
@@ -138,7 +142,7 @@
         .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
 
         @media(max-width:700px) {
-            .display-frame { width: 100% !important; margin-bottom: 20px; }
+            .display-frame { width: 90% !important; margin-bottom: 20px; }
             .controls-main { 
                 display: grid !important; 
                 grid-template-columns: 1fr 1fr; 
@@ -162,7 +166,7 @@
 
 <body oncontextmenu="return false;">
     <div class="frame">
-        <div class="title">L.A.B.AUDIO</div>
+        <div class="title" id="main-title">L.A.B.AUDIO</div>
         <div class="display-frame" id="display">
             <div class="display-line station-name">Muzyczne Radio</div>
             <div class="display-line time-display" id="clock">00:00:00</div>
@@ -204,12 +208,22 @@
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
+        const displayEl = document.getElementById('display');
+        const titleEl = document.getElementById('main-title');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
         let audioCtx, analyser, source, isPwr = false;
         let mediaRecorder, chunks = [];
+
+        function syncDisplayWidth() {
+            if (window.innerWidth > 700) {
+                displayEl.style.width = titleEl.offsetWidth + "px";
+            } else {
+                displayEl.style.width = "90%";
+            }
+        }
 
         function updateDateTime() {
             const now = new Date();
@@ -223,6 +237,7 @@
             clockEl.textContent = `${h}:${m}:${s}`;
             dateEl.textContent = `${day}:${mo}:${yr}`;
         }
+
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
@@ -315,8 +330,12 @@
         document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
         document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
 
-        audio.volume = 0.5;
-        updateVol();
+        window.addEventListener('resize', syncDisplayWidth);
+        window.addEventListener('load', () => {
+            syncDisplayWidth();
+            audio.volume = 0.5;
+            updateVol();
+        });
     </script>
 </body>
 </html>
