@@ -68,9 +68,7 @@
             margin: 0.25cm auto 0 auto;
             box-sizing: border-box;
             overflow: hidden;
-            width: fit-content;
-            min-width: 320px;
-            height: 110px;
+            height: 120px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -78,7 +76,7 @@
             font-family: 'Digital Numbers', sans-serif;
             color: #120000;
             transition: color 0.3s;
-            padding: 0 20px;
+            text-transform: uppercase;
         }
 
         .frame.powered .display-frame {
@@ -89,17 +87,16 @@
         .display-line {
             line-height: 1.2;
             text-align: center;
-            white-space: nowrap;
         }
 
-        .station-name { font-size: 20px; margin-bottom: 5px; }
-        .time-display { font-size: 28px; }
-        .date-display { font-size: 16px; margin-top: 5px; }
+        .station-name { font-size: 22px; letter-spacing: 2px; }
+        .time-display { font-size: 30px; margin: 4px 0; }
+        .date-display { font-size: 16px; letter-spacing: 1px; }
 
         .main-content {
             position: relative;
             width: 100%;
-            min-height: 200px;
+            min-height: 220px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -135,31 +132,25 @@
         }
         .frame.powered .vol-fill { opacity: 1; box-shadow: 0 0 5px #e60012; }
 
-        .lab-logo { margin-top: 0.5cm; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; color: #222; font-size: 11px; font-weight: bold; background: linear-gradient(180deg, #151515 0%, #050505 100%); }
+        .lab-logo { margin-top: 0.8cm; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; color: #222; font-size: 11px; font-weight: bold; background: linear-gradient(180deg, #151515 0%, #050505 100%); }
         .frame.powered .lab-logo { color: #e60012; border-color: #e60012; text-shadow: 0 0 5px #e60012; }
         .link-container { margin-top: auto; padding-bottom: 0.5cm; text-align: center; z-index: 10; }
         .link-container a { color: #2a0000; text-decoration: none; font-family: 'DS-Digital'; letter-spacing: 2px; font-size: 14px; }
         .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
 
         @media(max-width:700px) {
-            .display-frame { width: 90% !important; margin-bottom: 20px; }
+            .display-frame { width: 95% !important; margin-bottom: 20px; height: 140px; }
             .controls-main { 
                 display: grid !important; 
                 grid-template-columns: 1fr 1fr; 
                 width: 100% !important; 
                 gap: 12px; 
                 background: transparent; border: none; box-shadow: none; padding: 0;
-                box-sizing: border-box;
             }
-            .btn-rect { width: 3.5cm; height: 55px; }
-            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
-            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
-            .vol-wrapper { grid-column: span 2; width: 100% !important; height: auto !important; margin-top: 15px; padding: 0 7.5mm; box-sizing: border-box; }
-            .vol-btns { height: 55px; order: 2; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-            .btn-v { width: 2cm; height: 55px; flex: none; }
-            .vol-label { display: block; color: #444; font-family: 'DS-Digital'; font-size: 16px; letter-spacing: 2px; }
-            .frame.powered .vol-label { color: #e60012; text-shadow: 0 0 5px #e60012; }
-            .vol-bar { height: 12px; order: 1; margin-bottom: 10px; width: 100%; }
+            .btn-rect { width: 100%; height: 55px; }
+            .vol-wrapper { grid-column: span 2; width: 100% !important; height: auto !important; padding: 0 10px; box-sizing: border-box; }
+            .vol-btns { height: 55px; }
+            .btn-v { height: 55px; flex: 1; }
         }
     </style>
 </head>
@@ -208,8 +199,8 @@
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
-        const displayEl = document.getElementById('display');
-        const titleEl = document.getElementById('main-title');
+        const displayFrame = document.getElementById('display');
+        const mainTitle = document.getElementById('main-title');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
@@ -217,11 +208,12 @@
         let audioCtx, analyser, source, isPwr = false;
         let mediaRecorder, chunks = [];
 
-        function syncDisplayWidth() {
+        function resizeDisplay() {
             if (window.innerWidth > 700) {
-                displayEl.style.width = titleEl.offsetWidth + "px";
+                // Dopasowanie szerokości wyświetlacza do napisu tytułowego
+                displayFrame.style.width = mainTitle.offsetWidth + "px";
             } else {
-                displayEl.style.width = "90%";
+                displayFrame.style.width = "95%";
             }
         }
 
@@ -261,6 +253,7 @@
                 muteBtn.classList.remove('active');
                 mutePath.setAttribute('d', ICON_MUTE_OFF);
             }
+            resizeDisplay();
         };
 
         function initAudio() {
@@ -330,12 +323,12 @@
         document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
         document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
 
-        window.addEventListener('resize', syncDisplayWidth);
-        window.addEventListener('load', () => {
-            syncDisplayWidth();
+        window.onresize = resizeDisplay;
+        window.onload = () => {
+            resizeDisplay();
             audio.volume = 0.5;
             updateVol();
-        });
+        };
     </script>
 </body>
 </html>
