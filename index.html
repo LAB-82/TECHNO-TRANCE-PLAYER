@@ -3,167 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - ULTIMATE REALISM</title>
+    <title>RMF TB-303 PRO TERMINAL</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Share+Tech+Mono&family=Montserrat:wght@800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@700&display=swap');
 
         :root {
-            --panel-gradient: linear-gradient(180deg, #d8d8d8 0%, #b0b0b0 48%, #8a8a8a 52%, #b5b5b5 100%);
-            --btn-plastic: linear-gradient(145deg, #f0f0f0, #bebebe);
-            --led-on: #ff1a1a;
-            --led-glow: 0 0 12px 2px rgba(255, 26, 26, 0.7);
-            --industrial-border: #222;
+            --metal-base: #c0c0c0;
+            --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
+            --led-red: #ff3333;
+            --led-bg: #400000;
+            --lcd-green: #a4f000;
+            --acid-bg: #1a1a1c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         
         body { 
             height: 100vh; width: 100vw; 
-            background: #080808; 
+            background: #0a0a0a; 
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Montserrat', sans-serif;
+            font-family: 'Roboto Condensed', sans-serif;
             overflow: hidden;
         }
 
-        /* GŁÓWNA OBUDOWA VST */
-        .vst-container {
+        /* OBUDOWA ANALOGOWA */
+        .vst-chassis {
             width: 98vw; height: 96vh;
-            background: var(--panel-gradient);
-            border: 6px solid #1a1a1a;
-            border-radius: 10px;
-            padding: 30px;
-            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9), inset 0 2px 2px rgba(255,255,255,0.6);
-            display: flex; flex-direction: column;
+            background: var(--metal-shine);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            border: 5px solid #222;
+            border-radius: 8px;
+            box-shadow: 0 40px 100px rgba(0,0,0,1), inset 0 2px 4px rgba(255,255,255,0.7);
+            padding: 25px;
+            display: flex; flex-direction: column;
+            position: relative;
         }
 
         header { 
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 30px; border-bottom: 3px solid rgba(0,0,0,0.2); padding-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px;
         }
-        .logo-section h2 { font-family: 'Orbitron'; font-size: 38px; color: #1a1a1a; letter-spacing: -2px; }
-        .logo-section span { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 5px; color: #444; }
+        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; }
+        .logo span { font-size: 11px; letter-spacing: 4px; color: #444; font-weight: bold; }
 
-        .app-body { display: flex; flex: 1; gap: 30px; min-height: 0; }
+        .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GRID - TWOJA STRUKTURA */
-        .grid { 
-            flex: 1.6; display: grid; 
+        /* LEWA STRONA - GRID STACJI (UKŁAD ZACHOWANY) */
+        .grid-stations { 
+            flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 20px; 
-            background: rgba(0,0,0,0.08); padding: 25px; border-radius: 6px;
-            box-shadow: inset 5px 5px 15px rgba(0,0,0,0.2);
-            border: 2px solid rgba(0,0,0,0.1);
+            gap: 15px; 
+            background: rgba(0,0,0,0.1); padding: 20px; border-radius: 10px;
+            box-shadow: inset 2px 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,0,0,0.15);
         }
 
-        /* PRZYCISK FIZYCZNY */
-        .tile {
-            background: var(--btn-plastic);
-            border: 1px solid #999;
+        .bt-303 {
+            background: linear-gradient(145deg, #eeeeee, #bcbcbc);
+            border: 1px solid #888;
             border-radius: 4px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative;
-            box-shadow: 
-                0 6px 0 #777, 
-                0 8px 15px rgba(0,0,0,0.4),
-                inset 0 1px 1px rgba(255,255,255,0.8);
-            transition: all 0.05s ease;
+            box-shadow: 0 5px 0 #777, 0 8px 15px rgba(0,0,0,0.3);
+            transition: 0.05s;
         }
 
-        /* DIODA LED */
-        .tile::after {
-            content: ""; position: absolute; top: 8px; width: 8px; height: 8px;
-            background: #300; border-radius: 50%; border: 1px solid #000;
+        .bt-303::before { /* LED */
+            content: ""; position: absolute; top: 8px; width: 7px; height: 7px;
+            background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
         }
 
-        .tile:active { 
-            transform: translateY(4px); 
-            box-shadow: 0 2px 0 #555, 0 4px 8px rgba(0,0,0,0.3);
-        }
+        .bt-303:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
+        .bt-303.active { background: #fff; }
+        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 10px var(--led-red); }
 
-        .tile.active { background: #fff; border-color: #222; }
-        .tile.active::after { background: var(--led-on); box-shadow: var(--led-glow); }
+        .bt-303 .n-top { font-weight: 800; font-size: 20px; margin-top: 10px; color: #111; }
+        .bt-303 .n-bot { font-size: 10px; color: #555; text-transform: uppercase; }
 
-        .tile .t-top { font-weight: 900; font-size: 20px; margin-top: 10px; color: #222; }
-        .tile .t-bottom { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; }
-
-        /* SIDEBAR - INDUSTRIALNY PANEL */
-        .sidebar { 
-            flex: 0.5; display: flex; flex-direction: column; 
-            background: #151518; border-radius: 8px; padding: 25px;
-            border: 2px solid #282828; box-shadow: 10px 10px 20px rgba(0,0,0,0.5);
+        /* PRAWY PANEL - BOGATE DETALE (INSPIROWANE IMAGE_CC663B.JPG) */
+        .pro-panel { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            background: #2a2a2e; border-radius: 8px; padding: 20px;
+            border: 3px solid #1a1a1a; box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            gap: 15px;
         }
 
         .lcd-display {
-            background: #050805; flex: 0.8; border-radius: 4px; border: 4px solid #222;
-            padding: 15px; font-family: 'Share Tech Mono', monospace; color: #00ff41;
-            text-shadow: 0 0 5px rgba(0,255,65,0.5);
-            box-shadow: inset 0 0 20px #000;
-            display: flex; flex-direction: column; justify-content: space-around;
+            background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #444;
+            padding: 10px; font-family: 'Share Tech Mono', monospace; color: var(--lcd-green);
+            box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between;
         }
 
-        .knob-row { display: flex; justify-content: space-around; margin: 25px 0; }
-        .knob-outer {
-            width: 65px; height: 65px; background: #000; border-radius: 50%;
-            display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+        /* SEKWENCER KROKOWY */
+        .step-sequencer {
+            flex: 1; background: #111; border-radius: 4px; border: 1px solid #444;
+            padding: 10px; display: flex; flex-direction: column; gap: 5px;
         }
-        .knob-inner {
-            width: 50px; height: 50px; border-radius: 50%;
-            background: conic-gradient(from 0deg, #444, #eee, #444, #eee, #444);
-            border: 2px solid #222; position: relative;
+        .step-row { display: flex; gap: 2px; height: 25px; }
+        .step { flex: 1; background: #222; border-radius: 2px; border-bottom: 2px solid #000; }
+        .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.5); }
+
+        .knob-bank { display: flex; justify-content: space-around; padding: 10px 0; }
+        .knob-pro {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: radial-gradient(circle, #888 0%, #333 100%);
+            border: 2px solid #000; position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
         }
-        .knob-inner::before {
-            content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 12px;
-            background: #ff0000; transform: translateX(-50%); border-radius: 2px;
+        .knob-pro::after {
+            content: ""; position: absolute; top: 4px; left: 50%; width: 3px; height: 12px;
+            background: #fff; transform: translateX(-50%); border-radius: 2px;
         }
 
-        .master-vol { width: 100%; margin-top: auto; }
-        .master-vol label { font-size: 10px; color: #888; display: block; text-align: center; margin-bottom: 10px; font-family: 'Orbitron'; }
-
-        input[type="range"] { -webkit-appearance: none; background: #000; height: 10px; border-radius: 5px; border: 1px solid #333; }
+        .master-fader { 
+            background: #000; height: 40px; border-radius: 4px; border: 1px solid #333; 
+            display: flex; align-items: center; padding: 0 10px;
+        }
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 30px; height: 40px; 
-            background: linear-gradient(180deg, #ccc, #888); 
-            border: 1px solid #222; border-radius: 3px; cursor: pointer;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            -webkit-appearance: none; width: 25px; height: 34px; background: #ccc;
+            border: 1px solid #111; border-radius: 2px; box-shadow: inset 0 0 8px #fff;
         }
 
     </style>
 </head>
 <body>
 
-<div class="vst-container">
+<div class="vst-chassis">
     <header>
-        <div class="logo-section">
-            <h2>RMF<span>SYSTEM-303</span></h2>
+        <div class="logo">
+            <h1>RMF TB-303</h1>
+            <span>COMPUTER CONTROLLED // ACID ENGINE</span>
         </div>
-        <div id="timer" style="font-family: 'Share Tech Mono'; font-size: 32px; color: #222;">00:00</div>
+        <div id="clock" style="font-family: 'Share Tech Mono'; font-size: 32px; color: #1a1a1a; text-shadow: 1px 1px 0 #fff;">00:00:00</div>
     </header>
 
-    <div class="app-body">
-        <div class="grid" id="station-grid"></div>
+    <div class="main-workspace">
+        <!-- GRID STACJI -->
+        <div class="grid-stations" id="grid"></div>
 
-        <aside class="sidebar">
+        <!-- PRAWY PANEL - DOPRACOWANY -->
+        <aside class="pro-panel">
             <div class="lcd-display">
-                <div style="font-size: 12px; color: #00661a;">STATUS: OPERATIONAL</div>
-                <div id="playing-now" style="font-size: 22px; color: #fff;">READY...</div>
-                <div style="height: 2px; background: #00330d; width: 100%;"></div>
-                <div style="font-size: 14px;">SIGNAL: 100% DIGITAL</div>
+                <div style="font-size: 10px; opacity: 0.5;">BANK: A1 / PATTERN: 08</div>
+                <div id="st-name" style="font-size: 20px; letter-spacing: 1px; color: #fff; text-shadow: 0 0 10px var(--lcd-green);">STATION IDLE</div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span>BITRATE: 128KBPS</span>
+                    <span id="v-val">VOL: 50%</span>
+                </div>
             </div>
 
-            <div class="knob-row">
-                <div class="knob-outer"><div class="knob-inner" onclick="adj(-5)" style="transform: rotate(-45deg)"></div></div>
-                <div class="knob-outer"><div class="knob-inner" onclick="adj(5)" style="transform: rotate(45deg)"></div></div>
+            <div class="step-sequencer">
+                <div style="font-size: 8px; color: #444; margin-bottom: 2px;">STEP SEQUENCER VISUALIZER</div>
+                <div class="step-row" id="r1"></div>
+                <div class="step-row" id="r2"></div>
+                <div class="step-row" id="r3"></div>
             </div>
 
-            <div class="master-vol">
-                <label>MASTER OUTPUT</label>
+            <div class="knob-bank">
+                <div class="knob-pro" onclick="adj(-5)" style="transform: rotate(-30deg);"></div>
+                <div class="knob-pro" onclick="adj(5)" style="transform: rotate(30deg);"></div>
+                <div class="knob-pro" style="transform: rotate(110deg); filter: hue-rotate(90deg);"></div>
+            </div>
+
+            <div class="master-fader">
                 <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
             </div>
 
-            <button onclick="toggle()" style="margin-top: 25px; height: 50px; background: #333; color: #fff; border: 1px solid #000; border-radius: 4px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 0 #000;">START / STOP</button>
+            <button onclick="toggle()" style="height: 50px; background: #444; color: #fff; border: 1px solid #000; border-radius: 4px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; box-shadow: 0 4px 0 #222; active: transform: translateY(2px);">RUN / STOP</button>
         </aside>
     </div>
 </div>
@@ -177,51 +185,59 @@
         { n: 'RMF 80s', s: '03', u: 'rmf_80s' },
         { n: 'RMF 90s', s: '04', u: 'rmf_90s' },
         { n: 'RMF 2000', s: '05', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: '06', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: '07', u: 'rmf_classic' },
+        { n: 'RMF CHILL', s: '06', u: 'rmf_chillout' },
+        { n: 'RMF CLASS', s: '07', u: 'rmf_classic' },
         { n: 'RMF DANCE', s: '08', u: 'rmf_dance' },
         { n: 'RMF GOLD', s: '09', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: '10', u: 'rmf_latino' },
+        { n: 'RMF LATIN', s: '10', u: 'rmf_latino' },
         { n: 'RMF LOVE', s: '11', u: 'rmf_love' },
         { n: 'RMF PARTY', s: '12', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: '13', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: '14', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: '15', u: 'rmf_smooth_jazz' }
+        { n: 'RMF ROCK', s: '13', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK+', s: '14', u: 'rmf_rock' },
+        { n: 'RMF JAZZ', s: '15', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
-    let current = -1;
+    const grid = document.getElementById('grid');
+    const player = document.getElementById('player');
+    const stName = document.getElementById('st-name');
 
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
-
+    // Generowanie przycisków
     STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `<div class="t-top">${s.s}</div><div class="t-bottom">${s.n.split(' ')[1] || 'FM'}</div>`;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+        const b = document.createElement('div');
+        b.className = 'bt-303';
+        b.innerHTML = `<div class="n-top">${s.s}</div><div class="n-bot">${s.n.split(' ')[1] || 'FM'}</div>`;
+        b.onclick = () => play(i);
+        grid.appendChild(b);
+    });
+
+    // Sekwencer Visualizer
+    [1, 2, 3].forEach(r => {
+        const row = document.getElementById('r'+r);
+        for(let i=0; i<16; i++) {
+            const s = document.createElement('div');
+            s.className = 'step';
+            if(Math.random() > 0.8) s.classList.add('on');
+            row.appendChild(s);
+        }
     });
 
     function play(i) {
-        current = i;
-        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = STATIONS[i].n;
-        const streamBase = "https://rs201-krk.rmfstream.pl/";
-        player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
+        document.querySelectorAll('.bt-303').forEach((b, idx) => b.classList.toggle('active', idx === i));
+        stName.textContent = STATIONS[i].n;
+        player.src = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
         player.play();
     }
 
-    function toggle() {
-        if(player.paused) player.play();
-        else player.pause();
-    }
+    function toggle() { player.paused ? player.play() : player.pause(); }
+    function setV(v) { player.volume = v/100; document.getElementById('v-val').textContent = `VOL: ${v}%`; }
+    function adj(d) { const r = document.getElementById('v-range'); r.value = parseInt(r.value)+d; setV(r.value); }
 
-    function setV(v) { player.volume = v / 100; }
-    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
+    setInterval(() => {
+        const d = new Date();
+        document.getElementById('clock').textContent = d.toTimeString().split(' ')[0];
+        // Losowe miganie sekwencera dla efektu "życia" urządzenia
+        document.querySelectorAll('.step').forEach(s => { if(Math.random()>0.95) s.classList.toggle('on'); });
+    }, 1000);
 </script>
 </body>
 </html>
