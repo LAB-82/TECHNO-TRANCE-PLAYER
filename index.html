@@ -23,207 +23,326 @@
 
         .frame {
             width: 100%;
-            max-width: 850px;
+            max-width: 900px;
             border-radius: 4px;
-            padding: 12px;
+            padding: 8px;
             background: #0a0a0a;
-            background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 3px),
+            background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
                 linear-gradient(180deg, #151515 0%, #050505 100%);
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 1);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 1);
             position: relative;
-            border: 1px solid #1a1a1a;
+            border: 1px solid #222;
             box-sizing: border-box;
         }
 
+        /* Zbliżenie bocznych linii ramki do przycisków (odstęp ok. 1cm) */
         .frame.powered {
-            background: linear-gradient(90deg, #e60012 0%, #e60012 4px, transparent 4px, transparent calc(100% - 4px), #e60012 calc(100% - 4px)),
-                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.01) 0px, rgba(255, 255, 255, 0.01) 1px, transparent 1px, transparent 3px),
+            background: linear-gradient(90deg, #e60012 0%, #e60012 38px, transparent 38px, transparent calc(100% - 38px), #e60012 calc(100% - 38px)),
+                repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px),
                 linear-gradient(180deg, #1a1a1a 0%, #050505 100%);
-            box-shadow: 0 0 40px rgba(230, 0, 18, 0.2), 0 8px 30px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
         }
 
         .title {
             text-align: center;
-            font-size: clamp(24px, 5vw, 42px);
+            font-size: clamp(28px, 6vw, 48px);
             font-weight: bold !important;
-            letter-spacing: 12px;
-            color: #1a0000;
+            letter-spacing: 10px;
+            color: #2a0000;
             font-family: 'DS-Digital', monospace !important;
-            margin: 10px auto 25px auto;
+            /* Podniesienie o 1cm od wyświetlacza */
+            margin: 0 auto 1cm auto;
             display: block;
             width: fit-content;
-            transition: 0.3s;
         }
 
         .frame.powered .title {
             color: #e60012 !important;
-            text-shadow: 0 0 15px rgba(230, 0, 18, 0.8);
+            text-shadow: 0 0 10px #e60012, 0 0 20px #e60012;
         }
 
         .display-frame {
-            background: #050505;
-            border: 2px solid #222;
-            border-radius: 2px;
+            background: #000;
+            border: 3px solid #333;
+            border-top-color: #000;
+            border-bottom-color: #444;
+            border-radius: 4px;
             margin: 0 auto;
             box-sizing: border-box;
-            height: 130px;
+            overflow: hidden;
+            width: fit-content;
+            min-width: 320px;
+            height: 110px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             font-family: 'Digital Numbers', sans-serif;
-            color: #0a0000;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-            text-transform: uppercase;
+            color: #120000;
             transition: color 0.3s;
+            padding: 0 20px;
         }
 
         .frame.powered .display-frame {
             color: #e60012;
-            text-shadow: 0 0 12px rgba(230, 0, 18, 0.7);
-            border-color: #333;
+            text-shadow: 0 0 10px #e60012;
         }
 
-        .display-line { text-align: center; line-height: 1.1; }
-        .station-name { font-size: 18px; letter-spacing: 3px; margin-bottom: 8px; }
-        .time-display { font-size: 36px; margin-bottom: 5px; }
-        .date-display { font-size: 14px; letter-spacing: 2px; opacity: 0.8; }
+        .display-line {
+            line-height: 1.2;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .station-name { font-size: 20px; margin-bottom: 5px; }
+        .time-display { font-size: 28px; }
+        .date-display { font-size: 16px; margin-top: 5px; }
 
         .main-content {
+            position: relative;
             width: 100%;
+            min-height: 200px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 30px;
+            /* Obniżenie o 1cm od wyświetlacza */
+            padding-top: 1cm;
         }
 
         .controls-main {
-            display: flex; gap: 8px; padding: 12px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 4px;
-            border: 1px solid #111;
-            margin-bottom: 20px;
+            display: flex; gap: 6px; padding: 10px; border-radius: 4px;
+            background: linear-gradient(180deg, #151515 0%, #050505 100%);
+            border: 1px solid #000; box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 10px 20px rgba(0, 0, 0, 0.5);
+            z-index: 10; width: fit-content; align-items: flex-start;
         }
 
         .btn-rect, .btn-v {
-            border: 1px solid #222; background: #0c0c0c; color: #333;
+            border: 1px solid #222; background: #111; color: #444;
             display: flex; align-items: center; justify-content: center;
             cursor: pointer; transition: 0.2s;
         }
 
-        .btn-rect { width: 65px; height: 42px; border-radius: 2px; }
-        .btn-v { width: 45px; height: 42px; border-radius: 2px; }
-        
-        .vol-group { display: flex; position: relative; gap: 2px; }
-        /* Czerwona linia pod głośnością ze zdjęcia */
-        .vol-indicator {
-            position: absolute; bottom: -4px; left: 0; width: 0%; height: 2px;
-            background: #e60012; transition: width 0.2s; box-shadow: 0 0 5px #e60012;
-        }
+        .btn-rect { width: 68px; height: 38px; border-radius: 3px; }
+        .btn-rect svg, .btn-v svg { width: 20px; height: 20px; fill: currentColor; pointer-events: none; }
 
-        .frame.powered .btn-rect, .frame.powered .btn-v { color: #666; }
-        .frame.powered .active { 
-            color: #e60012 !important; border-color: #e60012 !important; 
-            box-shadow: 0 0 10px rgba(230, 0, 18, 0.5); 
-        }
+        .vol-wrapper { display: flex; flex-direction: column; gap: 4px; width: 100px; height: 38px; justify-content: flex-start; }
+        .vol-btns { display: flex; gap: 4px; height: 30px; }
+        .btn-v { flex: 1; height: 100%; border-radius: 2px; }
+        .vol-label { display: none; }
+        .vol-bar { width: 100%; height: 4px; background: #000; border-radius: 2px; position: relative; overflow: hidden; }
+        .vol-fill { height: 100%; width: 50%; background: #e60012; opacity: 0; transition: width 0.1s; }
 
-        .lab-logo { 
-            margin: 15px 0; width: 55px; height: 55px; border-radius: 50%; 
-            border: 1px solid #1a1a1a; display: flex; align-items: center; 
-            justify-content: center; color: #1a0000; font-size: 10px; 
-            font-weight: bold; transition: 0.3s;
+        .frame.powered .btn-rect, .frame.powered .btn-v { color: #777; border-color: #333; }
+        .frame.powered .btn-rect.active, .frame.powered .btn-v.active { 
+            color: #e60012 !important; border-color: #e60012 !important; box-shadow: 0 0 12px #e60012 !important; 
         }
-        .frame.powered .lab-logo { color: #e60012; border-color: #e60012; box-shadow: 0 0 10px rgba(230, 0, 18, 0.3); }
+        .frame.powered .vol-fill { opacity: 1; box-shadow: 0 0 5px #e60012; }
 
-        .link-container a { 
-            color: #1a0000; text-decoration: none; font-family: 'Digital Numbers'; 
-            font-size: 11px; letter-spacing: 2px; transition: 0.3s;
-        }
-        .frame.powered .link-container a { color: #e60012; opacity: 0.7; }
+        .lab-logo { margin-top: 0.5cm; width: 52px; height: 52px; border-radius: 50%; border: 1px solid #222; display: flex; align-items: center; justify-content: center; color: #222; font-size: 11px; font-weight: bold; background: linear-gradient(180deg, #151515 0%, #050505 100%); }
+        .frame.powered .lab-logo { color: #e60012; border-color: #e60012; text-shadow: 0 0 5px #e60012; }
+        .link-container { margin-top: auto; padding-bottom: 0.5cm; text-align: center; z-index: 10; }
+        .link-container a { color: #2a0000; text-decoration: none; font-family: 'DS-Digital'; letter-spacing: 2px; font-size: 14px; }
+        .frame.powered .link-container a { color: #e60012; text-shadow: 0 0 10px #e60012; }
 
         @media(max-width:700px) {
-            .display-frame { width: 90% !important; }
-            .controls-main { scale: 0.9; }
+            .display-frame { width: 90% !important; margin-bottom: 20px; }
+            .controls-main { 
+                display: grid !important; 
+                grid-template-columns: 1fr 1fr; 
+                width: 100% !important; 
+                gap: 12px; 
+                background: transparent; border: none; box-shadow: none; padding: 0;
+                box-sizing: border-box;
+            }
+            .btn-rect { width: 3.5cm; height: 55px; }
+            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
+            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
+            .vol-wrapper { grid-column: span 2; width: 100% !important; height: auto !important; margin-top: 15px; padding: 0 7.5mm; box-sizing: border-box; }
+            .vol-btns { height: 55px; order: 2; display: flex; justify-content: space-between; align-items: center; width: 100%; }
+            .btn-v { width: 2cm; height: 55px; flex: none; }
+            .vol-label { display: block; color: #444; font-family: 'DS-Digital'; font-size: 16px; letter-spacing: 2px; }
+            .frame.powered .vol-label { color: #e60012; text-shadow: 0 0 5px #e60012; }
+            .vol-bar { height: 12px; order: 1; margin-bottom: 10px; width: 100%; }
         }
     </style>
 </head>
 
-<body>
+<body oncontextmenu="return false;">
     <div class="frame">
-        <div class="title" id="main-title">L.A.B.AUDIO</div>
-        
+        <div class="title" id="main-title">L.A.B. AUDIO</div>
         <div class="display-frame" id="display">
             <div class="display-line station-name">Muzyczne Radio</div>
             <div class="display-line time-display" id="clock">00:00:00</div>
             <div class="display-line date-display" id="date">00:00:0000</div>
         </div>
-
         <div class="main-content">
-            <div class="controls-main">
-                <button id="pwr" class="btn-rect"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-rect"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="rec" class="btn-rect"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="8"/></svg></button>
-                <button id="stop" class="btn-rect"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-rect"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12Z"/></svg></button>
+            <div class="controls-main" id="controls">
+                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
                 
-                <div class="vol-group">
-                    <button id="vDown" class="btn-v"><b>-</b></button>
-                    <button id="vUp" class="btn-v"><b>+</b></button>
-                    <div id="vLine" class="vol-indicator"></div>
+                <div class="vol-wrapper" id="vol-container">
+                    <div class="vol-btns">
+                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                        <div class="vol-label">VOLUME</div>
+                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+                    </div>
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
                 </div>
             </div>
 
             <div class="lab-logo">L.A.B.</div>
-            <div class="link-container"><a href="#">WWW.MUZYCZNERADIO.PL</a></div>
+            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
         </div>
     </div>
 
-    <audio id="stream" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
     <script>
         const audio = document.getElementById('stream');
         const pwrBtn = document.getElementById('pwr');
-        const vLine = document.getElementById('vLine');
-        const display = document.getElementById('display');
-        const mainTitle = document.getElementById('main-title');
-        let isPwr = false;
+        const playBtn = document.getElementById('play');
+        const recBtn = document.getElementById('rec');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        const displayEl = document.getElementById('display');
+        const titleEl = document.getElementById('main-title');
 
-        function syncLayout() {
-            if(window.innerWidth > 700) {
-                display.style.width = (mainTitle.offsetWidth - 20) + "px";
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+
+        let audioCtx, analyser, source, isPwr = false;
+        let mediaRecorder, chunks = [];
+
+        function syncDisplayWidth() {
+            if (window.innerWidth > 700) {
+                displayEl.style.width = titleEl.offsetWidth + "px";
+            } else {
+                displayEl.style.width = "90%";
             }
         }
 
-        function updateClock() {
+        function updateDateTime() {
             const now = new Date();
-            document.getElementById('clock').textContent = now.toTimeString().split(' ')[0];
-            const d = String(now.getDate()).padStart(2,'0');
-            const m = String(now.getMonth()+1).padStart(2,'0');
-            document.getElementById('date').textContent = `${d}:${m}:${now.getFullYear()}`;
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const mo = String(now.getMonth() + 1).padStart(2, '0');
+            const yr = now.getFullYear();
+            
+            clockEl.textContent = `${h}:${m}:${s}`;
+            dateEl.textContent = `${day}:${mo}:${yr}`;
         }
 
-        pwrBtn.onclick = () => {
-            isPwr = !isPwr;
-            document.querySelector('.frame').classList.toggle('powered', isPwr);
-            pwrBtn.classList.toggle('active', isPwr);
-            if(!isPwr) { audio.pause(); vLine.style.width = "0%"; }
-            else { updateVolLine(); }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
         };
 
-        function updateVolLine() {
-            if(isPwr) vLine.style.width = (audio.volume * 100) + "%";
+        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+            }
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                source.connect(audioCtx.destination);
+            }
         }
 
-        document.getElementById('play').onclick = () => { if(isPwr) audio.play(); };
-        document.getElementById('stop').onclick = () => { if(isPwr) { audio.pause(); audio.currentTime = 0; } };
-        document.getElementById('vUp').onclick = () => { audio.volume = Math.min(1, audio.volume + 0.1); updateVolLine(); };
-        document.getElementById('vDown').onclick = () => { audio.volume = Math.max(0, audio.volume - 0.1); updateVolLine(); };
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            initAudio();
+            audio.play();
+            this.classList.add('active');
+        };
 
-        setInterval(updateClock, 1000);
-        updateClock();
-        window.onresize = syncLayout;
-        window.onload = syncLayout;
-        audio.volume = 0.5;
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start();
+            recBtn.classList.add('active');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder) mediaRecorder.stop();
+            recBtn.classList.remove('active');
+            flash(recBtn);
+        }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            audio.pause(); 
+            audio.currentTime = 0;
+            // POPRAWKA: Zerowanie paska głośności
+            audio.volume = 0;
+            updateVol();
+            playBtn.classList.remove('active');
+            flash(this);
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        window.addEventListener('resize', syncDisplayWidth);
+        window.addEventListener('load', () => {
+            syncDisplayWidth();
+            audio.volume = 0.5;
+            updateVol();
+        });
     </script>
 </body>
 </html>
