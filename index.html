@@ -2,245 +2,227 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF TETRAD EDITION</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RMF TETRAD - ORIGINAL STRUCTURE</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Syncopate:wght@700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&family=Syncopate:wght@700&display=swap');
+
         :root {
-            --tetrad-light: #d1d6dc;
+            /* KOLORYSTYKA TETRAD */
+            --tetrad-bg: #d1d6dc;
             --tetrad-panel: #e2e6eb;
-            --tetrad-dark: #1a1a1a;
-            --tetrad-accent: #ff7e33; /* Pomarańczowy akcent z Tetrad */
             --tetrad-border: #aeb5bc;
-            --tetrad-text: #2c3136;
+            --tetrad-accent: #ff7e33; /* Pomarańczowy przycisk */
+            --tetrad-dark: #1a1a1a;
+            --blue-wave: #00ccff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        body { 
-            height: 100vh; background: #222; 
-            font-family: 'Roboto Condensed', sans-serif;
-            display: flex; align-items: center; justify-content: center;
+        html, body { 
+            height: 100vh; width: 100vw; 
+            background: var(--tetrad-bg); color: var(--tetrad-dark); 
+            font-family: 'Montserrat Alternates', sans-serif;
+            overflow: hidden; 
         }
 
-        /* GŁÓWNA OBUDOWA - Układ LA XLIMIT */
-        .vst-main-frame {
-            width: 1100px; height: 580px;
-            background: var(--tetrad-light);
-            border: 2px solid #000;
-            display: flex; flex-direction: column;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-            padding: 2px;
+        body { display: flex; flex-direction: column; padding: 1vh; }
+
+        /* GÓRNY PASEK ZGODNY Z TETRAD */
+        header { 
+            height: 40px; display: flex; justify-content: space-between; align-items: center;
+            background: #000; color: #fff; padding: 0 20px; margin-bottom: 1vh; flex-shrink: 0;
+            border-bottom: 2px solid var(--tetrad-accent);
+        }
+        .header-info { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .clock { color: var(--tetrad-accent); font-size: 16px; font-weight: 700; font-family: monospace; }
+
+        .app-content { display: flex; flex: 1; gap: 10px; min-height: 0; padding: 5px; background: #adb4bc; }
+
+        /* SIATKA 5x3 - ORYGINALNY UKŁAD */
+        .grid { 
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 8px; 
         }
 
-        /* GÓRNY PASEK - Styl Tetrad Header */
-        .vst-top-nav {
-            height: 35px; background: #000; color: #fff;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 15px; font-size: 11px; letter-spacing: 1px;
-        }
-
-        /* UKŁAD TRZYKOLUMNOWY (Zgodnie z Twoim pierwotnym kodem) */
-        .vst-content {
-            display: flex; flex: 1; gap: 4px; padding: 4px;
-            background: #adb4bc;
-        }
-
-        .column-box {
-            background: var(--tetrad-panel);
-            border: 1px solid var(--tetrad-border);
-            display: flex; flex-direction: column;
-            position: relative;
-        }
-
-        .mod-label {
-            background: #c6cbd2; color: var(--tetrad-text);
-            font-size: 10px; font-weight: 700; padding: 4px 8px;
-            text-transform: uppercase; border-bottom: 1px solid var(--tetrad-border);
-        }
-
-        /* LEWA KOLUMNA: Funkcje */
-        .left-functions { width: 100px; gap: 4px; }
-        .t-btn {
-            height: 35px; background: #ced3d9; border: 1px solid #b1b7be;
-            color: #444; font-size: 9px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; text-transform: uppercase; margin: 0 5px;
-        }
-        .t-btn:hover { background: #fff; }
-        .t-btn.active { background: var(--tetrad-accent); color: #fff; border-color: #d45f1b; }
-
-        /* ŚRODKOWA KOLUMNA: Grid stacji */
-        .station-matrix { flex: 2; padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .cell {
-            background: #f0f2f5; border: 1px solid #b1b7be;
+        .tile {
+            background: var(--tetrad-panel); border: 1px solid var(--tetrad-border);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.2s; position: relative;
+            cursor: pointer; position: relative; overflow: visible;
+            transition: all 0.2s;
         }
-        .cell:hover { background: #fff; }
-        .cell.active { border: 2px solid #000; background: #fff; }
-        .cell.active::after {
-            content: ""; position: absolute; width: 6px; height: 6px; background: var(--tetrad-accent); bottom: 4px;
-        }
-        .cell-id { font-size: 14px; font-weight: 700; color: #000; }
 
-        /* PRAWA KOLUMNA: Master Volume */
-        .master-section { width: 280px; align-items: center; padding-top: 40px; }
-        .tetrad-knob-area {
-            width: 120px; height: 120px; background: #d1d6dc;
-            border-radius: 50%; border: 1px solid #a1a8b0;
+        .tile .t-top { font-size: 11px; font-weight: 700; color: #888; text-transform: uppercase; z-index: 2; }
+        .tile .t-bottom { font-size: 16px; font-weight: 700; color: #000; margin-top: 2px; text-align: center; z-index: 2; }
+
+        /* AKTYWNA STACJA - STYL TETRAD */
+        .tile.active { 
+            border: 2px solid #000; 
+            background: #fff;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        .tile.active .t-bottom { color: var(--tetrad-accent); }
+
+        /* FALE BŁĘKITNE - ZACHOWANE Z ORYGINAŁU */
+        .waves {
+            position: absolute; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
-            position: relative;
+            pointer-events: none; opacity: 0; z-index: 1;
         }
-        .knob-inner {
-            width: 80px; height: 80px; background: #fff; border: 2px solid #000;
-            border-radius: 50%; position: relative; cursor: pointer;
+        .tile.active .waves { opacity: 0.6; }
+        .wave {
+            position: absolute; border: 2px solid var(--blue-wave); border-radius: 50%;
+            width: 10px; height: 10px; opacity: 0;
+            animation: ripple 3s infinite linear;
         }
-        .knob-line {
-            position: absolute; top: 5px; left: 50%; width: 3px; height: 15px;
-            background: #000; transform: translateX(-50%);
+        .wave:nth-child(2) { animation-delay: 1s; }
+        .wave:nth-child(3) { animation-delay: 2s; }
+
+        @keyframes ripple {
+            0% { width: 0; height: 0; opacity: 0.9; }
+            100% { width: 250%; height: 250%; opacity: 0; }
         }
 
-        /* DOLNY PANEL: Wyświetlacz */
-        .vst-bottom {
-            height: 180px; background: #000; display: flex;
-            border-top: 4px solid var(--tetrad-border);
-        }
-        .status-display {
-            flex: 2; display: flex; flex-direction: column; justify-content: center;
-            padding: 0 30px; border-right: 1px solid #333;
-        }
-        .tetrad-logo {
-            font-family: 'Syncopate', sans-serif; font-size: 42px; color: #fff;
-            letter-spacing: -2px; line-height: 1; margin-bottom: 5px;
-        }
-        .patch-name-kafel {
-            color: var(--tetrad-accent); font-size: 18px; font-weight: 700;
-            text-transform: uppercase; letter-spacing: 2px;
-        }
-        .brand-info {
-            flex: 1; padding: 20px; color: #666; font-size: 10px;
-            display: flex; flex-direction: column; justify-content: center; align-items: flex-end;
+        /* SIDEBAR - ORYGINALNY UKŁAD */
+        .sidebar { 
+            flex: 0.6; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; gap: 3vh;
+            border-left: 2px solid #999; padding-left: 2vw;
+            background: var(--tetrad-panel);
         }
 
-        input[type="range"] {
-            width: 80%; margin-top: 20px; accent-color: #000;
+        /* WYŚWIETLACZ - STYL TETRAD */
+        .logo-display {
+            width: 100%; max-width: 320px; aspect-ratio: 16/9;
+            border: 3px solid #000; background: #fff;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .logo-display h2 { font-family: 'Syncopate', sans-serif; font-size: 38px; color: #000; }
+        .logo-display p { font-size: 10px; color: var(--tetrad-accent); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+
+        .controls { display: flex; align-items: center; gap: 2vw; }
+        .c-svg { 
+            width: 40px; height: 40px; fill: #000; cursor: pointer; 
+        }
+        .c-play { 
+            width: 70px; height: 70px; fill: #fff; background: #000; padding: 15px; border-radius: 50%;
+            border: 3px solid var(--tetrad-accent);
+        }
+
+        .vol-box { display: flex; align-items: center; gap: 10px; width: 320px; }
+        .vol-btn { width: 35px; height: 35px; border: 2px solid #000; background: #fff; color: #000; cursor: pointer; font-weight: bold; }
+        .vol-bar { flex: 1; height: 40px; border: 2px solid #000; background: #fff; padding: 0 10px; display: flex; align-items: center; }
+        
+        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
+        input[type="range"]::-webkit-slider-runnable-track { background: #ccc; height: 4px; }
+        input[type="range"]::-webkit-slider-thumb { 
+            appearance: none; width: 20px; height: 20px; 
+            background: var(--tetrad-accent); border: 2px solid #000; border-radius: 0; /* Kwadratowy suwak Tetrad */
+            margin-top: -8px;
+        }
+
+        @media (max-width: 600px) {
+            .app-content { flex-direction: column; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; }
+            .sidebar { width: 100%; border-left: none; border-top: 2px solid #999; }
         }
     </style>
 </head>
 <body>
 
-<div class="vst-main-frame">
-    <div class="vst-top-nav">
-        <div>MOD MATRIX</div>
-        <div>THINK IN FOURS</div>
-        <div>INFO</div>
-    </div>
+<header>
+    <div class="header-info" id="playing-now">ENGINE: RMF FM // READY</div>
+    <div class="clock" id="timer">00:00</div>
+</header>
 
-    <div class="vst-content">
-        <!-- LEWA SEKCOJA (LA Style) -->
-        <div class="column-box left-functions">
-            <div class="mod-label">Core</div>
-            <div style="flex:1; display:flex; flex-direction:column; gap:5px; padding-top:10px;">
-                <div class="t-btn active" onclick="toggle()">Play</div>
-                <div class="t-btn">Mute</div>
-                <div class="t-btn">Solo</div>
-                <div class="t-btn">Config</div>
+<div class="app-content">
+    <div class="grid" id="station-grid"></div>
+
+    <aside class="sidebar">
+        <div class="logo-display">
+            <h2>TETRAD</h2>
+            <p id="sub-label">SAMPLER ACTIVE</p>
+        </div>
+
+        <div class="controls">
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
+            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+        </div>
+
+        <div class="vol-box">
+            <button class="vol-btn" onclick="adj(-5)">-</button>
+            <div class="vol-bar">
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
             </div>
+            <button class="vol-btn" onclick="adj(5)">+</button>
         </div>
-
-        <!-- ŚRODKOWA SEKCOJA (Radio Grid) -->
-        <div class="column-box" style="flex:2;">
-            <div class="mod-label">4x4 Radio Matrix Mixer</div>
-            <div class="station-matrix" id="grid"></div>
-        </div>
-
-        <!-- PRAWA SEKCOJA (Output) -->
-        <div class="column-box master-section">
-            <div class="mod-label">Output Gain</div>
-            <div class="tetrad-knob-area">
-                <div class="knob-inner" id="v-knob" onclick="resetVol()">
-                    <div class="knob-line" id="v-ptr"></div>
-                </div>
-            </div>
-            <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
-            <div style="margin-top: 10px; font-weight: 700; font-size: 12px;">LEVEL: <span id="vol-val">50</span>%</div>
-        </div>
-    </div>
-
-    <!-- DOLNY PANEL (Nazwa stacji i Logo) -->
-    <div class="vst-bottom">
-        <div class="status-display">
-            <div class="tetrad-logo">TETRAD</div>
-            <div class="patch-name-kafel" id="active-station-display">SELECT_STATION_INPUT</div>
-        </div>
-        <div class="brand-info">
-            <div style="color:#fff; font-size: 14px; margin-bottom:5px;">GLITCHMACHINES</div>
-            <div>QUAD MULTI-STAGE PROCESSOR</div>
-            <div>VERSION 2.0.4 // RMF ENGINE</div>
-        </div>
-    </div>
+    </aside>
 </div>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', u: 'rmf_80s' }, { n: 'RMF 90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILLOUT', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' },
-        { n: 'RMF GOLD', u: 'rmf_gold' }, { n: 'RMF PARTY', u: 'rmf_party' },
-        { n: 'RMF ROCK', u: 'rmf_rock' }, { n: 'RMF LOVE', u: 'rmf_love' },
-        { n: 'RMF POLSKI ROCK', u: 'rmf_polski_rock' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
-        { n: 'RMF HIP HOP', u: 'rmf_hip_hop' }, { n: 'RMF GROOVE', u: 'rmf_groove' }
+        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), 
-          grid = document.getElementById('grid'),
-          vPtr = document.getElementById('v-ptr'),
-          vSlider = document.getElementById('v-slider'),
-          volVal = document.getElementById('vol-val'),
-          stationDisplay = document.getElementById('active-station-display');
-
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range'), subLabel = document.getElementById('sub-label');
     let current = -1;
 
+    function clock() {
+        const d = new Date();
+        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
+    }
+    setInterval(clock, 1000); clock();
+
     STATIONS.forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'cell';
-        div.innerHTML = `<span class="cell-id">${(i + 1).toString().padStart(2, '0')}</span>`;
-        div.onclick = () => play(i);
-        grid.appendChild(div);
+        const t = document.createElement('div');
+        t.className = 'tile';
+        t.innerHTML = `
+            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
+            <div class="t-top">STATION ${(i+1).toString().padStart(2,'0')}</div>
+            <div class="t-bottom">${s.s.toUpperCase()}</div>
+        `;
+        t.onclick = () => play(i);
+        grid.appendChild(t);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.cell').forEach((c, idx) => c.classList.toggle('active', idx === i));
-        stationDisplay.textContent = STATIONS[i].n.replace(/\s+/g, '_').toUpperCase();
-        
+        document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
+        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
+        subLabel.textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
+        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(current === -1) { play(0); return; }
-        if(!player.paused) player.pause(); else player.play();
+        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
+        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
     }
 
-    function setV(v) {
-        player.volume = v / 100;
-        volVal.textContent = v;
-        const rot = (v * 3) - 150;
-        vPtr.parentElement.style.transform = `rotate(${rot}deg)`;
-    }
-
-    function resetVol() { vSlider.value = 50; setV(50); }
-
-    setV(50);
+    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
+    function setV(v) { player.volume = v / 100; }
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
 </script>
-
 </body>
 </html>
