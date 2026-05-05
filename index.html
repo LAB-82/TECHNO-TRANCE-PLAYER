@@ -3,181 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF POLYGON 2 EDITION</title>
+    <title>RMF TETRAD EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Syncopate:wght@700&display=swap');
         
         :root {
-            --poly-bg: #0a0a0c;
-            --poly-panel: #141417;
-            --poly-border: #252529;
-            --neon-purple: #bc26ff;
-            --neon-blue: #00f2ff;
-            --neon-green: #39ff14;
-            --text-dim: #666670;
+            --tetrad-light: #d1d6dc;
+            --tetrad-panel: #e2e6eb;
+            --tetrad-dark: #1a1a1a;
+            --tetrad-accent: #ff7e33; /* Pomarańczowy akcent z Tetrad */
+            --tetrad-border: #aeb5bc;
+            --tetrad-text: #2c3136;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; background: #050505; 
-            font-family: 'JetBrains Mono', monospace;
+            height: 100vh; background: #222; 
+            font-family: 'Roboto Condensed', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            color: #fff;
         }
 
-        /* Główny interfejs Polygon 2 */
-        .vst-container {
-            width: 1100px; height: 550px;
-            background: var(--poly-bg);
-            border: 1px solid var(--poly-border);
-            padding: 20px;
+        /* GŁÓWNA OBUDOWA - Układ LA XLIMIT */
+        .vst-main-frame {
+            width: 1100px; height: 580px;
+            background: var(--tetrad-light);
+            border: 2px solid #000;
             display: flex; flex-direction: column;
-            box-shadow: 0 0 40px rgba(0,0,0,1);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
+            padding: 2px;
+        }
+
+        /* GÓRNY PASEK - Styl Tetrad Header */
+        .vst-top-nav {
+            height: 35px; background: #000; color: #fff;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 15px; font-size: 11px; letter-spacing: 1px;
+        }
+
+        /* UKŁAD TRZYKOLUMNOWY (Zgodnie z Twoim pierwotnym kodem) */
+        .vst-content {
+            display: flex; flex: 1; gap: 4px; padding: 4px;
+            background: #adb4bc;
+        }
+
+        .column-box {
+            background: var(--tetrad-panel);
+            border: 1px solid var(--tetrad-border);
+            display: flex; flex-direction: column;
             position: relative;
-            overflow: hidden;
         }
 
-        /* Dekoracyjne linie w tle (Glitch Style) */
-        .vst-container::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-                        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
-            background-size: 20px 20px; pointer-events: none;
+        .mod-label {
+            background: #c6cbd2; color: var(--tetrad-text);
+            font-size: 10px; font-weight: 700; padding: 4px 8px;
+            text-transform: uppercase; border-bottom: 1px solid var(--tetrad-border);
         }
 
-        .top-row { display: flex; gap: 20px; flex: 1.2; margin-bottom: 20px; z-index: 1; }
-        .bottom-row { display: flex; gap: 20px; flex: 0.8; z-index: 1; }
-
-        .module {
-            background: var(--poly-panel);
-            border: 1px solid var(--poly-border);
-            padding: 15px; position: relative;
-        }
-
-        .mod-header {
-            font-family: 'Syncopate', sans-serif;
-            font-size: 9px; font-weight: 700; color: var(--text-dim);
-            text-transform: uppercase; letter-spacing: 2px;
-            margin-bottom: 15px; display: flex; justify-content: space-between;
-        }
-
-        /* Kolumna funkcyjna - Przyciski Glitch */
-        .sidebar { width: 90px; display: flex; flex-direction: column; gap: 10px; }
-        .g-btn {
-            height: 32px; background: #1c1c21; border: 1px solid #333;
-            color: #888; font-size: 8px; font-weight: 700;
+        /* LEWA KOLUMNA: Funkcje */
+        .left-functions { width: 100px; gap: 4px; }
+        .t-btn {
+            height: 35px; background: #ced3d9; border: 1px solid #b1b7be;
+            color: #444; font-size: 9px; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.1s; text-transform: uppercase;
+            cursor: pointer; text-transform: uppercase; margin: 0 5px;
         }
-        .g-btn:hover { background: #25252b; color: var(--neon-blue); }
-        .g-btn.active { border-color: var(--neon-purple); color: var(--neon-purple); box-shadow: inset 0 0 5px rgba(188, 38, 255, 0.2); }
+        .t-btn:hover { background: #fff; }
+        .t-btn.active { background: var(--tetrad-accent); color: #fff; border-color: #d45f1b; }
 
-        /* Matryca stacji (Polygon Grids) */
-        .station-grid {
-            flex: 2; display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-        }
-        .node {
-            background: #0f0f12; border: 1px solid #1f1f24;
+        /* ŚRODKOWA KOLUMNA: Grid stacji */
+        .station-matrix { flex: 2; padding: 10px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .cell {
+            background: #f0f2f5; border: 1px solid #b1b7be;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; transition: 0.3s; position: relative;
+            cursor: pointer; transition: 0.2s; position: relative;
         }
-        .node::after { content: ""; position: absolute; width: 4px; height: 4px; background: #333; top: 5px; right: 5px; }
-        .node:hover { border-color: #444; }
-        .node.selected { border-color: var(--neon-blue); }
-        .node.selected::after { background: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); }
-        .node-id { font-size: 10px; color: #555; }
+        .cell:hover { background: #fff; }
+        .cell.active { border: 2px solid #000; background: #fff; }
+        .cell.active::after {
+            content: ""; position: absolute; width: 6px; height: 6px; background: var(--tetrad-accent); bottom: 4px;
+        }
+        .cell-id { font-size: 14px; font-weight: 700; color: #000; }
 
-        /* Master Section - Neon Knob */
-        .master-ctrl { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .ring-container {
-            width: 100px; height: 100px; position: relative;
+        /* PRAWA KOLUMNA: Master Volume */
+        .master-section { width: 280px; align-items: center; padding-top: 40px; }
+        .tetrad-knob-area {
+            width: 120px; height: 120px; background: #d1d6dc;
+            border-radius: 50%; border: 1px solid #a1a8b0;
             display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+            position: relative;
         }
-        .outer-ring {
-            position: absolute; inset: 0; border: 2px solid #1f1f24; border-radius: 50%;
-        }
-        .neon-knob {
-            width: 70px; height: 70px; background: #000; border: 2px solid #222;
+        .knob-inner {
+            width: 80px; height: 80px; background: #fff; border: 2px solid #000;
             border-radius: 50%; position: relative; cursor: pointer;
         }
-        .neon-indicator {
-            position: absolute; top: 5px; left: 50%; width: 2px; height: 15px;
-            background: var(--neon-blue); transform-origin: center 30px;
+        .knob-line {
+            position: absolute; top: 5px; left: 50%; width: 3px; height: 15px;
+            background: #000; transform: translateX(-50%);
         }
 
-        /* Dolny panel - Waveform / Display */
-        .data-screen {
-            flex: 2.5; display: flex; flex-direction: column; justify-content: center;
+        /* DOLNY PANEL: Wyświetlacz */
+        .vst-bottom {
+            height: 180px; background: #000; display: flex;
+            border-top: 4px solid var(--tetrad-border);
         }
-        .viz-box {
-            height: 60px; border-left: 2px solid var(--neon-purple);
-            margin-bottom: 10px; position: relative; overflow: hidden;
-            background: rgba(188, 38, 255, 0.03);
+        .status-display {
+            flex: 2; display: flex; flex-direction: column; justify-content: center;
+            padding: 0 30px; border-right: 1px solid #333;
         }
-        .status-title { font-family: 'Syncopate', sans-serif; font-size: 18px; color: #fff; margin-bottom: 5px; }
-        .status-sub { color: var(--neon-purple); font-size: 10px; letter-spacing: 2px; }
-
-        .logo-box {
-            flex: 1; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
-            opacity: 0.8;
+        .tetrad-logo {
+            font-family: 'Syncopate', sans-serif; font-size: 42px; color: #fff;
+            letter-spacing: -2px; line-height: 1; margin-bottom: 5px;
         }
-        .logo-box h1 { font-family: 'Syncopate', sans-serif; font-size: 22px; letter-spacing: -1px; }
-        .logo-box span { color: var(--neon-blue); }
+        .patch-name-kafel {
+            color: var(--tetrad-accent); font-size: 18px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 2px;
+        }
+        .brand-info {
+            flex: 1; padding: 20px; color: #666; font-size: 10px;
+            display: flex; flex-direction: column; justify-content: center; align-items: flex-end;
+        }
 
         input[type="range"] {
-            width: 100%; margin-top: 15px; appearance: none; background: #1c1c21; height: 2px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 12px; height: 12px; background: var(--neon-blue); border-radius: 50%; cursor: pointer;
+            width: 80%; margin-top: 20px; accent-color: #000;
         }
     </style>
 </head>
 <body>
 
-<div class="vst-container">
-    <div class="top-row">
-        <div class="module sidebar">
-            <div class="mod-header">CORE</div>
-            <div class="g-btn" onclick="toggle()">PLAY/STOP</div>
-            <div class="g-btn active">HYBRID</div>
-            <div class="g-btn">GLITCH</div>
-            <div class="g-btn">SHIFT</div>
+<div class="vst-main-frame">
+    <div class="vst-top-nav">
+        <div>MOD MATRIX</div>
+        <div>THINK IN FOURS</div>
+        <div>INFO</div>
+    </div>
+
+    <div class="vst-content">
+        <!-- LEWA SEKCOJA (LA Style) -->
+        <div class="column-box left-functions">
+            <div class="mod-label">Core</div>
+            <div style="flex:1; display:flex; flex-direction:column; gap:5px; padding-top:10px;">
+                <div class="t-btn active" onclick="toggle()">Play</div>
+                <div class="t-btn">Mute</div>
+                <div class="t-btn">Solo</div>
+                <div class="t-btn">Config</div>
+            </div>
         </div>
 
-        <div class="module station-grid" id="grid">
-            <!-- Wygenerowane węzły stacji -->
+        <!-- ŚRODKOWA SEKCOJA (Radio Grid) -->
+        <div class="column-box" style="flex:2;">
+            <div class="mod-label">4x4 Radio Matrix Mixer</div>
+            <div class="station-matrix" id="grid"></div>
         </div>
 
-        <div class="module master-ctrl">
-            <div class="mod-header">OUTPUT</div>
-            <div class="ring-container">
-                <div class="outer-ring"></div>
-                <div class="neon-knob" id="v-knob" onclick="resetVol()">
-                    <div class="neon-indicator" id="v-ptr"></div>
+        <!-- PRAWA SEKCOJA (Output) -->
+        <div class="column-box master-section">
+            <div class="mod-label">Output Gain</div>
+            <div class="tetrad-knob-area">
+                <div class="knob-inner" id="v-knob" onclick="resetVol()">
+                    <div class="knob-line" id="v-ptr"></div>
                 </div>
             </div>
             <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
-            <div style="font-size: 9px; margin-top: 10px; color: var(--text-dim);">GAIN // <span id="vol-val" style="color: var(--neon-blue);">50</span></div>
+            <div style="margin-top: 10px; font-weight: 700; font-size: 12px;">LEVEL: <span id="vol-val">50</span>%</div>
         </div>
     </div>
 
-    <div class="bottom-row">
-        <div class="module" style="flex: 0.5; display: flex; align-items: center; justify-content: center;">
-            <div class="mod-header" style="position: absolute; top: 5px;">BANK</div>
-            <div id="bank-id" style="font-size: 32px; font-weight: 300; color: var(--neon-green);">01</div>
+    <!-- DOLNY PANEL (Nazwa stacji i Logo) -->
+    <div class="vst-bottom">
+        <div class="status-display">
+            <div class="tetrad-logo">TETRAD</div>
+            <div class="patch-name-kafel" id="active-station-display">SELECT_STATION_INPUT</div>
         </div>
-
-        <div class="module data-screen">
-            <div class="viz-box" id="viz"></div>
-            <div class="status-sub">SAMPLER SOURCE // STREAM ACTIVE</div>
-            <div class="status-title" id="patch-name">READY_PLAYER_ONE</div>
-        </div>
-
-        <div class="logo-box">
-            <h1>POLY<span>GON</span></h1>
-            <div style="font-size: 8px; letter-spacing: 4px; color: var(--text-dim);">HYBRID SAMPLER // RMF FM</div>
+        <div class="brand-info">
+            <div style="color:#fff; font-size: 14px; margin-bottom:5px;">GLITCHMACHINES</div>
+            <div>QUAD MULTI-STAGE PROCESSOR</div>
+            <div>VERSION 2.0.4 // RMF ENGINE</div>
         </div>
     </div>
 </div>
@@ -201,25 +203,22 @@
           vPtr = document.getElementById('v-ptr'),
           vSlider = document.getElementById('v-slider'),
           volVal = document.getElementById('vol-val'),
-          patchName = document.getElementById('patch-name'),
-          bankId = document.getElementById('bank-id'),
-          viz = document.getElementById('viz');
+          stationDisplay = document.getElementById('active-station-display');
 
     let current = -1;
 
     STATIONS.forEach((s, i) => {
-        const node = document.createElement('div');
-        node.className = 'node';
-        node.innerHTML = `<div class="node-id">${(i + 1).toString().padStart(2, '0')}</div>`;
-        node.onclick = () => play(i);
-        grid.appendChild(node);
+        const div = document.createElement('div');
+        div.className = 'cell';
+        div.innerHTML = `<span class="cell-id">${(i + 1).toString().padStart(2, '0')}</span>`;
+        div.onclick = () => play(i);
+        grid.appendChild(div);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.node').forEach((n, idx) => n.classList.toggle('selected', idx === i));
-        patchName.textContent = STATIONS[i].n.replace(/\s+/g, '_').toUpperCase();
-        bankId.textContent = (i + 1).toString().padStart(2, '0');
+        document.querySelectorAll('.cell').forEach((c, idx) => c.classList.toggle('active', idx === i));
+        stationDisplay.textContent = STATIONS[i].n.replace(/\s+/g, '_').toUpperCase();
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
@@ -235,23 +234,10 @@
         player.volume = v / 100;
         volVal.textContent = v;
         const rot = (v * 3) - 150;
-        vPtr.style.transform = `translateX(-50%) rotate(${rot}deg)`;
+        vPtr.parentElement.style.transform = `rotate(${rot}deg)`;
     }
 
     function resetVol() { vSlider.value = 50; setV(50); }
-
-    // Prosta animacja "glitch" dla wizualizacji
-    setInterval(() => {
-        if(!player.paused) {
-            viz.innerHTML = '';
-            for(let i=0; i<30; i++) {
-                const bar = document.createElement('div');
-                const h = Math.random() * 60;
-                bar.style.cssText = `position:absolute; left:${i*3.4}%; bottom:0; width:2px; height:${h}px; background:var(--neon-purple); opacity:${Math.random()}`;
-                viz.appendChild(bar);
-            }
-        }
-    }, 100);
 
     setV(50);
 </script>
