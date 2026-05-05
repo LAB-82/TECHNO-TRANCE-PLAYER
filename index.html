@@ -3,209 +3,244 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF MUZE ELEMENTS - ULTRA COLOR</title>
+    <title>RMF HIVE 2 EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Roboto:wght@300;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
 
         :root {
-            --bg-dark: #0a0a0c;
-            --panel-steel: linear-gradient(145deg, #232526, #414345);
-            --neon-cyan: #00f2ff;
-            --neon-pink: #ff00ea;
-            --neon-lime: #bcff00;
-            --gold: #ffcc00;
+            --hive-bg: #1a1d23;
+            --hive-panel: #252a32;
+            --hive-cyan: #47d1ff;
+            --hive-dark-cyan: #0088b3;
+            --hive-text: #a0aab2;
+            --hive-border: #000000;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; width: 100vw; background: var(--bg-dark); color: #fff; 
-            font-family: 'Roboto', sans-serif; overflow: hidden; padding: 15px;
-            background-image: radial-gradient(circle at center, #1b1e2a 0%, #050505 100%);
+            height: 100vh; width: 100vw; background: var(--hive-bg); 
+            font-family: 'Rajdhani', sans-serif; color: var(--hive-text);
+            display: flex; align-items: center; justify-content: center;
+            background-image: repeating-linear-gradient(45deg, #16191e 0px, #16191e 2px, #1a1d23 2px, #1a1d23 4px);
         }
 
-        /* NAGŁÓWEK - Styl Rack Mount */
-        header { 
-            height: 60px; display: flex; justify-content: space-between; align-items: center;
-            background: #111; padding: 0 30px; margin-bottom: 15px;
-            border: 2px solid #333; border-radius: 4px;
-            box-shadow: inset 0 2px 10px #000;
-        }
-        .logo-area { font-family: 'Orbitron', sans-serif; font-weight: 900; color: var(--gold); font-size: 20px; letter-spacing: 2px; }
-        .vst-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 4px; }
-
-        .app-content { display: flex; flex: 1; gap: 20px; height: calc(100vh - 100px); }
-
-        /* SIATKA 5x3 - Fotorealistyczne Przyciski */
-        .grid { 
-            flex: 1.5; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 15px; 
+        /* GŁÓWNY KONSTRUKCJA VST */
+        #vst-container {
+            width: 98vw; height: 95vh; background: #2c323c;
+            border: 4px solid #111; border-radius: 8px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1);
+            display: flex; flex-direction: column; padding: 15px; position: relative;
         }
 
-        .tile {
-            background: var(--panel-steel);
-            border-radius: 6px; border: 1px solid #111;
+        /* GÓRNY PASEK - Wyświetlacz Presetu */
+        header {
+            height: 50px; background: #111; margin-bottom: 15px; border-radius: 4px;
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+            border: 1px solid #444; box-shadow: inset 0 2px 10px #000;
+        }
+        .vst-title { color: var(--hive-cyan); font-weight: 700; font-size: 24px; letter-spacing: 2px; }
+        .preset-display { 
+            background: #1d2127; border: 1px solid #333; padding: 5px 40px; 
+            color: #fff; border-radius: 3px; font-size: 14px; box-shadow: inset 0 0 5px #000;
+        }
+
+        .main-layout { display: flex; flex: 1; gap: 15px; min-height: 0; }
+
+        /* LEWA I PRAWA SEKCJA PRZYCISKÓW (2 KOLUMNY PO 7 + 1) */
+        .grid-container {
+            flex: 1.5; display: grid; grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); gap: 10px;
+        }
+
+        .hive-pad {
+            background: linear-gradient(145deg, #323944, #21262d);
+            border: 1px solid var(--hive-border); border-radius: 5px;
+            position: relative; cursor: pointer; transition: 0.1s;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            box-shadow: 4px 4px 8px #000, inset 1px 1px 1px rgba(255,255,255,0.1);
-            transition: all 0.1s;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
         }
 
-        /* Kolory dla wierszy */
-        .grid .tile:nth-child(-n+5) { border-top: 3px solid var(--neon-cyan); }
-        .grid .tile:nth-child(n+6):nth-child(-n+10) { border-top: 3px solid var(--neon-pink); }
-        .grid .tile:nth-child(n+11) { border-top: 3px solid var(--neon-lime); }
-
-        .tile:active { transform: translateY(2px); box-shadow: 1px 1px 2px #000; }
-
-        .tile .t-top { font-size: 9px; font-weight: 700; color: #aaa; margin-bottom: 5px; text-shadow: 1px 1px #000; }
-        .tile .t-bottom { font-family: 'Orbitron', sans-serif; font-size: 13px; color: #fff; text-align: center; }
-
-        /* AKTYWNY PRZYCISK - Neonowy "Glow" */
-        .tile.active {
-            background: #222;
-            border: 1px solid var(--gold);
-            box-shadow: 0 0 20px rgba(255, 204, 0, 0.4), inset 0 0 10px #000;
-        }
-        .tile.active .t-bottom { color: var(--gold); text-shadow: 0 0 8px var(--gold); }
-
-        /* BOCZNY PANEL - Kontroler Master */
-        .sidebar { 
-            flex: 0.5; background: #151515; border-radius: 10px;
-            border: 2px solid #222; padding: 25px;
-            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
-            box-shadow: 10px 10px 20px #000;
+        .hive-pad::before {
+            content: ""; position: absolute; top: 5px; left: 5px; width: 6px; height: 6px;
+            background: #444; border-radius: 50%; box-shadow: inset 0 1px 1px #000;
         }
 
-        /* Duże Pokrętło (Analog Knob) */
-        .knob-container {
-            width: 120px; height: 120px; border-radius: 50%;
-            background: conic-gradient(from 180deg, var(--neon-cyan), var(--neon-pink), var(--neon-lime), var(--neon-cyan));
-            padding: 5px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        .hive-pad .label-id { font-size: 10px; color: #555; position: absolute; top: 5px; right: 8px; font-weight: 700; }
+        .hive-pad .st-name { font-size: 14px; font-weight: 600; color: #cbd5e0; text-shadow: 1px 1px #000; text-align: center; padding: 0 5px; }
+
+        /* STAN AKTYWNY - Podświetlenie HIVE */
+        .hive-pad.active {
+            background: #2d3640; border-color: var(--hive-cyan);
+            box-shadow: 0 0 15px rgba(71, 209, 255, 0.3), inset 0 0 10px rgba(0,0,0,0.5);
         }
-        .knob-inner {
-            width: 100%; height: 100%; background: radial-gradient(circle, #444, #111);
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            position: relative; border: 2px solid #333;
-        }
-        .knob-indicator {
-            position: absolute; width: 4px; height: 40px; background: var(--gold);
-            top: 10px; border-radius: 2px; box-shadow: 0 0 10px var(--gold);
-            transform-origin: 50% 50px; transition: transform 0.3s;
+        .hive-pad.active .st-name { color: var(--hive-cyan); text-shadow: 0 0 10px var(--hive-cyan); }
+        .hive-pad.active::before { background: var(--hive-cyan); box-shadow: 0 0 8px var(--hive-cyan); }
+
+        /* CENTRALNY MODUŁ HEX & OSCILLOSCOPE */
+        .center-module {
+            flex: 1; display: flex; flex-direction: column; gap: 15px;
         }
 
-        /* VU METER */
-        .vu-meter {
-            width: 100%; height: 150px; background: #000; border-radius: 5px;
-            display: flex; gap: 3px; padding: 10px; align-items: flex-end;
-            border: 1px solid #333;
-        }
-        .vu-bar { flex: 1; background: #1a1a1a; height: 10%; position: relative; }
-        .vu-bar::after {
-            content: ""; position: absolute; bottom: 0; width: 100%;
-            background: linear-gradient(to top, #0f0, #ff0, #f00);
-            height: var(--h, 20%);
+        .hex-display {
+            flex: 1; background: #000; border: 3px solid #111; border-radius: 20px;
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+            box-shadow: inset 0 0 30px rgba(71, 209, 255, 0.1);
         }
 
-        .vol-slider { width: 100%; }
-        input[type="range"] {
-            width: 100%; appearance: none; background: #333; height: 8px; border-radius: 4px;
+        canvas { width: 100%; height: 100%; }
+
+        /* PANEL KONTROLNY (FADERY I POKRĘTŁA) */
+        .controls-panel {
+            flex: 0.5; background: var(--hive-panel); border-radius: 8px; border: 1px solid #111;
+            padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
         }
-        input[type="range"]::-webkit-slider-thumb {
-            appearance: none; width: 25px; height: 25px; background: var(--panel-steel);
-            border: 2px solid #555; border-radius: 4px; cursor: pointer; box-shadow: 2px 2px 5px #000;
+
+        .fader-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .fader-track { 
+            width: 10px; height: 150px; background: #111; border-radius: 5px; position: relative; 
+            border: 1px solid #444; box-shadow: inset 2px 0 5px #000;
         }
+        .fader-knob {
+            position: absolute; width: 30px; height: 50px; background: linear-gradient(to bottom, #666, #333, #666);
+            left: -10px; top: 50%; border-radius: 3px; border: 1px solid #111;
+            box-shadow: 0 5px 10px #000; cursor: pointer;
+        }
+        .fader-knob::after { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: var(--hive-cyan); }
+
+        .knob {
+            width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #444, #111);
+            border: 3px solid #222; position: relative; box-shadow: 0 5px 15px #000;
+        }
+        .knob-dot {
+            position: absolute; width: 4px; height: 15px; background: var(--hive-cyan);
+            top: 5px; left: calc(50% - 2px); border-radius: 2px; transform-origin: 2px 25px;
+        }
+
     </style>
 </head>
 <body>
 
-<header>
-    <div class="logo-area">BASS ELEMENTS // RMF</div>
-    <div class="vst-label">Multi-Channel Digital Streamer</div>
-    <div id="clock" style="color: var(--neon-cyan); font-family: monospace; font-size: 20px;">00:00:00</div>
-</header>
+<div id="vst-container">
+    <header>
+        <div class="vst-title">HIVE 2 <span style="color:#fff; font-weight:300;">RMF</span></div>
+        <div class="preset-display" id="current-patch">INIT STATION...</div>
+        <div style="display:flex; gap:10px;">
+            <div style="width:10px; height:10px; border-radius:50%; background:var(--hive-cyan);"></div>
+            <div style="width:10px; height:10px; border-radius:50%; background:#444;"></div>
+        </div>
+    </header>
 
-<div class="app-content">
-    <div class="grid" id="main-grid"></div>
+    <div class="main-layout">
+        <div class="grid-container" id="pads"></div>
 
-    <aside class="sidebar">
-        <div style="color: #666; font-size: 10px; text-transform: uppercase;">Master Output Gain</div>
-        
-        <div class="knob-container">
-            <div class="knob-inner">
-                <div class="knob-indicator" id="knob"></div>
+        <div class="center-module">
+            <div class="hex-display">
+                <canvas id="osc"></canvas>
+                <div style="position:absolute; top:10px; left:10px; font-size:10px; color:var(--hive-cyan);">WAVETABLE A</div>
+            </div>
+            
+            <div style="height:100px; background:#111; border-radius:4px; display:flex; align-items:center; justify-content:center; gap:20px; border:1px solid #444;">
+                <div class="knob"><div class="knob-dot" id="k1"></div></div>
+                <div class="knob"><div class="knob-dot" id="k2"></div></div>
+                <div class="knob"><div class="knob-dot" id="k3"></div></div>
             </div>
         </div>
 
-        <div class="vu-meter" id="vu">
-            <!-- Dynamiczne słupki -->
-            <div class="vu-bar" style="--h: 40%"></div>
-            <div class="vu-bar" style="--h: 60%"></div>
-            <div class="vu-bar" style="--h: 80%"></div>
-            <div class="vu-bar" style="--h: 30%"></div>
-            <div class="vu-bar" style="--h: 90%"></div>
-        </div>
-
-        <div class="vol-slider">
-            <input type="range" min="0" max="100" value="70" oninput="updateMaster(this.value)">
-        </div>
-        
-        <div id="station-name" style="color: var(--gold); font-size: 12px; font-weight: bold;">NO SIGNAL</div>
-    </aside>
+        <aside class="controls-panel">
+            <div class="fader-container">
+                <div style="font-size:10px; margin-bottom:10px;">MASTER VOL</div>
+                <div class="fader-track">
+                    <div class="fader-knob" id="master-vol" style="top: 30%;"></div>
+                </div>
+            </div>
+            
+            <div style="text-align:center;">
+                <div id="status-led" style="width:15px; height:15px; border-radius:50%; background:#300; margin:0 auto 5px; border:2px solid #111;"></div>
+                <div style="font-size:9px; font-weight:700;">ENGINE ACTIVE</div>
+            </div>
+        </aside>
+    </div>
 </div>
 
-<audio id="core-player"></audio>
+<audio id="audio"></audio>
 
 <script>
-    const DATA = [
-        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'MAXXX', u: 'RMFMAXXX48' }, { n: '80s', u: 'rmf_80s' },
-        { n: '90s', u: 'rmf_90s' }, { n: '2000', u: 'rmf_2000' }, { n: 'CHILLOUT', u: 'rmf_chillout' },
+    const STATIONS = [
+        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' }, { n: 'RMF 80s', u: 'rmf_80s' },
+        { n: 'RMF 90s', u: 'rmf_90s' }, { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'CHILLOUT', u: 'rmf_chillout' },
         { n: 'CLASSIC', u: 'rmf_classic' }, { n: 'DANCE', u: 'rmf_dance' }, { n: 'GOLD', u: 'rmf_gold' },
         { n: 'LATINO', u: 'rmf_latino' }, { n: 'LOVE', u: 'rmf_love' }, { n: 'PARTY', u: 'rmf_party' },
         { n: 'P-ROCK', u: 'rmf_polski_rock' }, { n: 'ROCK', u: 'rmf_rock' }, { n: 'S-JAZZ', u: 'rmf_smooth_jazz' }
     ];
 
-    const grid = document.getElementById('main-grid');
-    const player = document.getElementById('core-player');
-    const knob = document.getElementById('knob');
+    const padsContainer = document.getElementById('pads');
+    const player = document.getElementById('audio');
+    const canvas = document.getElementById('osc');
+    const ctx = canvas.getContext('2d');
+    let analyzerData = new Uint8Array(128);
 
-    DATA.forEach((st, i) => {
-        const d = document.createElement('div');
-        d.className = 'tile';
-        d.innerHTML = `<div class="t-top">CH-${(i+1)}</div><div class="t-bottom">${st.n}</div>`;
-        d.onclick = () => {
-            document.querySelectorAll('.tile').forEach(t => t.classList.remove('active'));
-            d.classList.add('active');
-            document.getElementById('station-name').textContent = "LOCKED: " + st.n;
-            const url = st.n === 'MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : 'https://rs201-krk.rmfstream.pl/' + st.u;
-            player.src = url;
-            player.play();
-            // Animacja knobu
-            knob.style.transform = `rotate(${Math.random() * 360}deg)`;
-        };
-        grid.appendChild(d);
+    // INICJALIZACJA PADÓW
+    STATIONS.forEach((st, i) => {
+        const div = document.createElement('div');
+        div.className = 'hive-pad';
+        div.innerHTML = `<span class="label-id">OSC${i+1}</span><span class="st-name">${st.n}</span>`;
+        div.onclick = () => playStation(i, div);
+        padsContainer.appendChild(div);
     });
 
-    function updateMaster(v) {
-        player.volume = v / 100;
-        // Symulacja skoków VU
-        document.querySelectorAll('.vu-bar').forEach(b => {
-            b.style.setProperty('--h', (Math.random() * v) + '%');
-        });
+    function playStation(i, el) {
+        document.querySelectorAll('.hive-pad').forEach(p => p.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('current-patch').textContent = "HS " + STATIONS[i].n.replace(' ', '_');
+        document.getElementById('status-led').style.background = '#0f0';
+        document.getElementById('status-led').style.boxShadow = '0 0 10px #0f0';
+
+        const url = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : 'https://rs201-krk.rmfstream.pl/' + STATIONS[i].u;
+        player.src = url;
+        player.play();
+        
+        // Animacja pokręteł przy zmianie
+        document.querySelectorAll('.knob-dot').forEach(k => k.style.transform = `rotate(${Math.random()*300-150}deg)`);
     }
 
-    setInterval(() => {
-        const d = new Date();
-        document.getElementById('clock').textContent = d.toLocaleTimeString();
-        if(!player.paused) {
-            document.querySelectorAll('.vu-bar').forEach(b => {
-                b.style.setProperty('--h', (Math.random() * 100) + '%');
-            });
+    // RYSOWANIE OSCYLOSKOPU (SIMULATED)
+    function draw() {
+        requestAnimationFrame(draw);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#47d1ff';
+        ctx.beginPath();
+
+        const sliceWidth = canvas.width / 128;
+        let x = 0;
+
+        for(let i = 0; i < 128; i++) {
+            let v = player.paused ? 128 : (Math.random() * 64 + 96);
+            let y = (v / 255) * canvas.height;
+            if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            x += sliceWidth;
         }
-    }, 100);
+        ctx.lineTo(canvas.width, canvas.height/2);
+        ctx.stroke();
+    }
+
+    // Obsługa głośności faderem
+    const fader = document.getElementById('master-vol');
+    let isDragging = false;
+    fader.onmousedown = () => isDragging = true;
+    window.onmouseup = () => isDragging = false;
+    window.onmousemove = (e) => {
+        if(!isDragging) return;
+        let rect = fader.parentElement.getBoundingClientRect();
+        let y = Math.max(0, Math.min(e.clientY - rect.top, 150));
+        fader.style.top = (y - 25) + 'px';
+        player.volume = 1 - (y / 150);
+    };
+
+    draw();
 </script>
 </body>
 </html>
