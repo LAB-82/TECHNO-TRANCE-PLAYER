@@ -12,12 +12,12 @@
             --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
             --led-red: #ff3333;
             --led-bg: #400000;
-            --lcd-green: #a4f000; /* Kolor RMF FM / Acid Green */
+            --lcd-green: #a4f000;
             --acid-bg: #1a1a1c;
             --btn-metal: linear-gradient(145deg, #d1d1d1, #a1a1a1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default; }
         
         body { 
             height: 100vh; width: 100vw; 
@@ -27,7 +27,6 @@
             overflow: hidden;
         }
 
-        /* OBUDOWA ANALOGOWA */
         .vst-chassis {
             width: 98vw; height: 96vh;
             background: var(--metal-shine);
@@ -41,10 +40,10 @@
         }
 
         header { 
-            display: flex; justify-content: space-between; align-items: flex-end;
+            display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px;
         }
-        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; }
+        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; line-height: 1; }
         .logo span { font-size: 11px; letter-spacing: 4px; color: #444; font-weight: bold; }
 
         #clock {
@@ -52,11 +51,11 @@
             font-size: 32px;
             color: var(--lcd-green);
             text-shadow: 0 0 15px var(--lcd-green);
+            line-height: 1;
         }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* LEWA STRONA - GRID STACJI */
         .grid-stations { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
@@ -85,11 +84,10 @@
         }
 
         .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
+        .bt-303:active *, .bt-303 * { cursor: pointer; }
         
         .bt-303.active { 
-            background: #eee; 
-            color: var(--lcd-green);
-            text-shadow: 0 0 8px var(--lcd-green);
+            background: var(--btn-metal); 
             border-color: var(--lcd-green);
         }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
@@ -98,89 +96,87 @@
             font-weight: 800; font-size: 14px; color: #222; 
             text-transform: uppercase; pointer-events: none;
         }
-        .bt-303.active .st-label { color: #000; }
+        .bt-303.active .st-label { 
+            color: var(--lcd-green); 
+            text-shadow: 0 0 10px var(--lcd-green);
+        }
 
-        /* PRAWY PANEL */
+        /* PRAWY PANEL - WEDŁUG ZDJĘCIA */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; 
             background: var(--metal-shine);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
             border-radius: 8px; padding: 20px;
-            border: 2px solid #888; box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
-            gap: 20px;
+            border: 1px solid #888; box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            gap: 15px;
         }
 
         .lcd-display {
-            background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #444;
+            background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #333;
             padding: 10px; font-family: 'Share Tech Mono', monospace; color: var(--lcd-green);
             box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between;
         }
 
         .step-sequencer {
-            flex: 0.6; background: #111; border-radius: 4px; border: 1px solid #444;
-            padding: 10px; display: flex; flex-direction: column; gap: 5px;
+            background: #111; border-radius: 4px; border: 1px solid #333;
+            padding: 8px; display: flex; flex-direction: column; gap: 4px;
         }
-        .step-row { display: flex; gap: 2px; height: 20px; }
+        .step-row { display: flex; gap: 2px; height: 18px; }
         .step { flex: 1; background: #222; border-radius: 1px; }
         .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.8); }
 
-        /* UKŁAD PRZYCISKÓW I POTENCJOMETRU TB-303 */
         .analog-controls {
-            display: grid;
-            grid-template-columns: 1fr 1.5fr 1fr;
-            align-items: center;
-            gap: 15px;
-            padding: 10px 0;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
         }
 
-        .edit-btn-group { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+        .pan-section { text-align: center; }
+        .pan-leds { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
+        .pan-led { width: 8px; height: 8px; background: var(--led-red); border-radius: 50%; box-shadow: 0 0 5px var(--led-red); border: 1px solid #000; }
 
-        .edit-button {
-            width: 40px; height: 35px;
-            background: #fdfdfd; border: 1px solid #999;
-            border-radius: 2px; cursor: pointer;
-            box-shadow: 0 4px 0 #888;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.1s;
-        }
-        .edit-button:active { transform: translateY(2px); box-shadow: 0 2px 0 #888; }
-        .edit-button .led-mini { width: 5px; height: 5px; background: var(--led-bg); border-radius: 50%; margin-bottom: 3px; }
-        .edit-button:active .led-mini { background: var(--led-red); box-shadow: 0 0 5px var(--led-red); }
-        .edit-label { font-size: 8px; font-weight: bold; color: #333; }
-
-        .knob-container { text-align: center; }
         .knob-volume {
-            width: 70px; height: 70px; border-radius: 50%;
-            background: radial-gradient(circle, #ddd 0%, #888 100%);
-            border: 3px solid #555; position: relative; margin: 0 auto;
-            box-shadow: 0 8px 15px rgba(0,0,0,0.5);
+            width: 75px; height: 75px; border-radius: 50%;
+            background: radial-gradient(circle, #eee 0%, #aaa 100%);
+            border: 2px solid #666; position: relative; margin: 0 auto;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
             cursor: crosshair; transition: transform 0.2s;
         }
         .knob-volume::before {
-            content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 20px;
+            content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 18px;
             background: #222; transform: translateX(-50%); border-radius: 2px;
         }
 
-        .run-stop-container { display: flex; justify-content: center; padding-top: 10px; }
-        .btn-run-stop {
-            width: 100px; height: 50px;
-            background: #e0e0e0; border: 2px solid #777;
-            border-radius: 4px; cursor: pointer;
-            box-shadow: 0 6px 0 #999;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 900; font-size: 14px; color: #111;
+        .volume-row {
+            display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center;
         }
-        .btn-run-stop:active { transform: translateY(4px); box-shadow: 0 2px 0 #999; }
 
-        .master-fader { 
-            background: #000; height: 35px; border-radius: 4px; border: 1px solid #333; 
-            display: flex; align-items: center; padding: 0 10px;
+        .sq-btn {
+            width: 45px; height: 45px; background: #fff; border: 1px solid #ccc;
+            box-shadow: 0 4px 0 #999; cursor: pointer; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; border-radius: 2px;
         }
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
+        .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #999; }
+        .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
+        .sq-btn span { font-size: 8px; font-weight: bold; color: #000; }
+
+        .fader-track { 
+            background: #000; height: 40px; flex: 1; border-radius: 2px; border: 1px solid #444;
+            display: flex; align-items: center; padding: 0 5px;
+        }
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
         input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 30px; background: #ccc;
-            border: 1px solid #111; border-radius: 2px; box-shadow: inset 0 0 8px #fff;
+            -webkit-appearance: none; width: 22px; height: 34px; background: #ccc;
+            border: 1px solid #333; border-radius: 2px; box-shadow: inset 0 0 5px #fff;
         }
+
+        .btn-run-stop {
+            width: 110px; height: 55px;
+            background: #e0e0e0; border: 1px solid #999;
+            border-radius: 4px; cursor: pointer;
+            box-shadow: 0 5px 0 #aaa, 0 8px 15px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase;
+        }
+        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #aaa; }
 
     </style>
 </head>
@@ -200,9 +196,9 @@
 
         <aside class="pro-panel">
             <div class="lcd-display">
-                <div style="font-size: 10px; opacity: 0.5;">BANK: A1 / PATTERN: 08</div>
-                <div id="st-name" style="font-size: 22px; letter-spacing: 1px; color: #fff; text-shadow: 0 0 10px var(--lcd-green);">STATION IDLE</div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                <div style="font-size: 10px; opacity: 0.6; font-weight: bold;">BANK: A1 / PATTERN: 08</div>
+                <div id="st-name" style="font-size: 24px; color: #fff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold;">STATION IDLE</div>
+                <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
                     <span>BITRATE: 128KBPS</span>
                     <span id="v-val">VOL: 50%</span>
                 </div>
@@ -215,39 +211,26 @@
             </div>
 
             <div class="analog-controls">
-                <div class="edit-btn-group">
-                    <div class="edit-button" onclick="adj(-5)">
-                        <div class="led-mini"></div>
-                        <div class="edit-label">DOWN</div>
+                <div class="pan-section">
+                    <div class="pan-leds"><div class="pan-led"></div><div class="pan-led"></div><div class="pan-led"></div></div>
+                    <div class="knob-volume" id="pan-knob"></div>
+                    <div style="font-size: 9px; font-weight: bold; margin-top: 5px; color: #222;">PAN L/R</div>
+                </div>
+
+                <div class="volume-row">
+                    <div class="sq-btn" onclick="adj(-5)">
+                        <div class="dot"></div>
+                        <span>DOWN</span>
                     </div>
-                    <div class="edit-button" onclick="adj(5)">
-                        <div class="led-mini"></div>
-                        <div class="edit-label">UP</div>
+                    <div class="fader-track">
+                        <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+                    </div>
+                    <div class="sq-btn" onclick="adj(5)">
+                        <div class="dot"></div>
+                        <span>UP</span>
                     </div>
                 </div>
 
-                <div class="knob-container">
-                    <div class="knob-volume" id="pan-knob" style="transform: rotate(0deg);"></div>
-                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #333;">PAN L/R</div>
-                </div>
-
-                <div class="edit-btn-group">
-                    <div class="edit-button" onclick="play(Math.floor(Math.random()*STATIONS.length))">
-                        <div class="led-mini"></div>
-                        <div class="edit-label">RANDOM</div>
-                    </div>
-                    <div class="edit-button" onclick="location.reload()">
-                        <div class="led-mini"></div>
-                        <div class="edit-label">RESET</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="master-fader">
-                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
-            </div>
-
-            <div class="run-stop-container">
                 <div class="btn-run-stop" onclick="stopRadio()">
                     RUN / STOP
                 </div>
