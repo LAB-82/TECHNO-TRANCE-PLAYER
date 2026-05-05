@@ -35,7 +35,7 @@
 
         header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px; }
         .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; margin: 0; }
-        /* Zadanie 4: Kolor napisu taki sam jak RMF TB-303 */
+        /* Zadanie 4: Poprawiony kolor napisu pod logo */
         .logo span { font-size: 11px; letter-spacing: 4px; color: #1a1a1a; font-weight: bold; }
 
         #clock { font-family: 'Share Tech Mono'; font-size: 32px; color: #ffffff; text-shadow: 0 0 15px var(--lcd-green); }
@@ -56,14 +56,15 @@
         .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
         .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
         
-        /* Zadanie 3: Kolor aktywnej stacji taki sam jak zegarka */
+        /* Zadanie 3: Aktywna stacja ze świeceniem jak zegar */
         .bt-303.active .st-label { color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); }
         .bt-303.active { border-color: var(--lcd-green); }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
 
         .bt-303 .st-label { font-weight: 800; font-size: 14px; color: #222; text-transform: uppercase; pointer-events: none; }
 
-        .pro-panel { flex: 0.6; display: flex; flex-direction: column; background: var(--metal-shine); border-radius: 8px; padding: 20px; border: 1px solid #888; gap: 15px; }
+        /* Przywrócone oryginalne tło panelu (bez dodatkowych ramek i ciemnych teł) */
+        .pro-panel { flex: 0.6; display: flex; flex-direction: column; gap: 15px; }
 
         .lcd-display { background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #333; padding: 10px; font-family: 'Share Tech Mono'; box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between; }
         .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; font-weight: bold; }
@@ -86,7 +87,7 @@
 
         .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
 
-        /* Zadanie 2: Kolor przycisków taki sam jak kafelków */
+        /* Zadanie 2: Przyciski sterujące w kolorze szary metalik (jak kafelki) */
         .sq-btn { width: 45px; height: 45px; background: var(--btn-metal); border: 1px solid #777; box-shadow: 0 4px 0 #555; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 2px; }
         .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #555; }
         .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
@@ -96,7 +97,7 @@
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 34px; background: #ccc; border: 1px solid #333; border-radius: 2px; box-shadow: inset 0 0 5px #fff; }
 
-        /* Zadanie 2: Kolor RUN/STOP taki sam jak kafelków */
+        /* Zadanie 2: RUN/STOP w kolorze szary metalik */
         .btn-run-stop { width: 110px; height: 55px; background: var(--btn-metal); border: 1px solid #777; border-radius: 4px; box-shadow: 0 5px 0 #555; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase; }
         .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
     </style>
@@ -155,7 +156,7 @@
     const vRange = document.getElementById('v-range');
     const panKnob = document.getElementById('pan-knob');
 
-    // Zadanie 1: Obsługa AudioContext dla Panoramy (L/R)
+    // Zadanie 1: Panorama L/R
     let audioCtx, source, panner;
     function initAudio() {
         if (!audioCtx) {
@@ -202,8 +203,8 @@
     document.getElementById('run-stop-btn').addEventListener('click', stopRadio);
     vRange.addEventListener('input', (e) => setV(e.target.value));
 
-    // Zadanie 1: Logika Panoramy i Diody
-    let panVal = 0; // -1: L, 0: C, 1: R
+    // Zadanie 1: Obsługa balansu L/R
+    let panVal = 0; 
     panKnob.addEventListener('click', () => {
         initAudio();
         panVal = panVal === 1 ? -1 : panVal + 1;
