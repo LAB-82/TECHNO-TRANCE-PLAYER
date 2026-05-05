@@ -2,245 +2,269 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF HIVE 2 EDITION</title>
+    <title>CYCLOP RMF - HYPER-REALISM</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
 
         :root {
-            --hive-bg: #1a1d23;
-            --hive-panel: #252a32;
-            --hive-cyan: #47d1ff;
-            --hive-dark-cyan: #0088b3;
-            --hive-text: #a0aab2;
-            --hive-border: #000000;
+            --panel-bg: #1e1e1e;
+            --metal-shine: linear-gradient(145deg, #2a2a2a, #151515);
+            --neon-magenta: #ff00ff;
+            --neon-cyan: #00ffff;
+            --neon-lime: #32ff00;
+            --neon-orange: #ffaa00;
+            --screen-glass: rgba(0, 20, 0, 0.9);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            height: 100vh; width: 100vw; background: var(--hive-bg); 
-            font-family: 'Rajdhani', sans-serif; color: var(--hive-text);
-            display: flex; align-items: center; justify-content: center;
-            background-image: repeating-linear-gradient(45deg, #16191e 0px, #16191e 2px, #1a1d23 2px, #1a1d23 4px);
+        * { margin: 0; padding: 0; box-sizing: border-box; cursor: crosshair; }
+
+        body {
+            background: #050505;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
         }
 
-        /* GŁÓWNY KONSTRUKCJA VST */
-        #vst-container {
-            width: 98vw; height: 95vh; background: #2c323c;
-            border: 4px solid #111; border-radius: 8px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 2px 2px rgba(255,255,255,0.1);
-            display: flex; flex-direction: column; padding: 15px; position: relative;
+        /* GŁÓWNA OBUDOWA */
+        #cyclop-rack {
+            width: 95vw;
+            height: 90vh;
+            background: var(--panel-bg);
+            border: 6px solid #111;
+            border-radius: 12px;
+            box-shadow: 0 50px 100px rgba(0,0,0,0.9), inset 0 2px 5px rgba(255,255,255,0.1);
+            display: grid;
+            grid-template-rows: 60px 1fr 180px;
+            padding: 10px;
+            gap: 10px;
+            position: relative;
         }
 
-        /* GÓRNY PASEK - Wyświetlacz Presetu */
+        /* HEADER - C4CLOP STYLE */
         header {
-            height: 50px; background: #111; margin-bottom: 15px; border-radius: 4px;
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-            border: 1px solid #444; box-shadow: inset 0 2px 10px #000;
-        }
-        .vst-title { color: var(--hive-cyan); font-weight: 700; font-size: 24px; letter-spacing: 2px; }
-        .preset-display { 
-            background: #1d2127; border: 1px solid #333; padding: 5px 40px; 
-            color: #fff; border-radius: 3px; font-size: 14px; box-shadow: inset 0 0 5px #000;
-        }
-
-        .main-layout { display: flex; flex: 1; gap: 15px; min-height: 0; }
-
-        /* LEWA I PRAWA SEKCJA PRZYCISKÓW (2 KOLUMNY PO 7 + 1) */
-        .grid-container {
-            flex: 1.5; display: grid; grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); gap: 10px;
+            background: #111;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+            border-radius: 5px;
+            border-bottom: 2px solid #333;
         }
 
-        .hive-pad {
-            background: linear-gradient(145deg, #323944, #21262d);
-            border: 1px solid var(--hive-border); border-radius: 5px;
-            position: relative; cursor: pointer; transition: 0.1s;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05);
+        .logo { font-family: 'Orbitron'; color: #fff; font-weight: 700; font-size: 24px; letter-spacing: 5px; }
+        .logo span { color: var(--neon-magenta); }
+
+        /* GŁÓWNY PANEL ROBOCZY */
+        .main-engine {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            gap: 15px;
         }
 
-        .hive-pad::before {
-            content: ""; position: absolute; top: 5px; left: 5px; width: 6px; height: 6px;
-            background: #444; border-radius: 50%; box-shadow: inset 0 1px 1px #000;
+        /* SEKACJA BOCZNA - POKRĘTŁA */
+        .side-module {
+            background: var(--metal-shine);
+            border: 2px solid #111;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            padding: 15px;
         }
 
-        .hive-pad .label-id { font-size: 10px; color: #555; position: absolute; top: 5px; right: 8px; font-weight: 700; }
-        .hive-pad .st-name { font-size: 14px; font-weight: 600; color: #cbd5e0; text-shadow: 1px 1px #000; text-align: center; padding: 0 5px; }
-
-        /* STAN AKTYWNY - Podświetlenie HIVE */
-        .hive-pad.active {
-            background: #2d3640; border-color: var(--hive-cyan);
-            box-shadow: 0 0 15px rgba(71, 209, 255, 0.3), inset 0 0 10px rgba(0,0,0,0.5);
+        .big-knob {
+            width: 100px; height: 100px;
+            background: radial-gradient(circle, #444 0%, #111 70%);
+            border-radius: 50%;
+            border: 4px solid #222;
+            position: relative;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        .hive-pad.active .st-name { color: var(--hive-cyan); text-shadow: 0 0 10px var(--hive-cyan); }
-        .hive-pad.active::before { background: var(--hive-cyan); box-shadow: 0 0 8px var(--hive-cyan); }
-
-        /* CENTRALNY MODUŁ HEX & OSCILLOSCOPE */
-        .center-module {
-            flex: 1; display: flex; flex-direction: column; gap: 15px;
-        }
-
-        .hex-display {
-            flex: 1; background: #000; border: 3px solid #111; border-radius: 20px;
-            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
-            box-shadow: inset 0 0 30px rgba(71, 209, 255, 0.1);
+        .knob-marker {
+            position: absolute; width: 6px; height: 30px; 
+            background: var(--neon-cyan); top: 10px; left: 47px;
+            border-radius: 3px; box-shadow: 0 0 15px var(--neon-cyan);
+            transform-origin: 3px 40px;
         }
 
-        canvas { width: 100%; height: 100%; }
-
-        /* PANEL KONTROLNY (FADERY I POKRĘTŁA) */
-        .controls-panel {
-            flex: 0.5; background: var(--hive-panel); border-radius: 8px; border: 1px solid #111;
-            padding: 20px; display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+        /* CENTRALNY WYŚWIETLACZ MULTI-KOLOR */
+        .center-screen {
+            background: var(--screen-glass);
+            border: 8px solid #222;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .fader-container { width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .fader-track { 
-            width: 10px; height: 150px; background: #111; border-radius: 5px; position: relative; 
-            border: 1px solid #444; box-shadow: inset 2px 0 5px #000;
+        .analyser {
+            flex: 1;
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            padding: 20px;
+            background: repeating-linear-gradient(0deg, rgba(0,255,0,0.05) 0px, transparent 2px);
         }
-        .fader-knob {
-            position: absolute; width: 30px; height: 50px; background: linear-gradient(to bottom, #666, #333, #666);
-            left: -10px; top: 50%; border-radius: 3px; border: 1px solid #111;
-            box-shadow: 0 5px 10px #000; cursor: pointer;
-        }
-        .fader-knob::after { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: var(--hive-cyan); }
 
-        .knob {
-            width: 60px; height: 60px; border-radius: 50%; background: radial-gradient(circle, #444, #111);
-            border: 3px solid #222; position: relative; box-shadow: 0 5px 15px #000;
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, var(--neon-magenta), var(--neon-cyan), var(--neon-lime));
+            height: 50%;
+            transition: height 0.1s ease;
+            box-shadow: 0 0 10px rgba(0,255,255,0.2);
         }
-        .knob-dot {
-            position: absolute; width: 4px; height: 15px; background: var(--hive-cyan);
-            top: 5px; left: calc(50% - 2px); border-radius: 2px; transform-origin: 2px 25px;
+
+        /* DOLNE PAD-Y (STACJE) */
+        .station-bay {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
         }
+
+        .pad {
+            background: #252525;
+            border: 2px solid #000;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: 0.2s;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+        }
+
+        .pad::after {
+            content: ""; position: absolute; bottom: 5px; width: 80%; height: 4px;
+            background: #444; border-radius: 2px;
+        }
+
+        .pad.active {
+            background: #333;
+            border-color: var(--neon-lime);
+            box-shadow: 0 0 20px rgba(50, 255, 0, 0.2);
+        }
+
+        .pad.active::after { background: var(--neon-lime); box-shadow: 0 0 10px var(--neon-lime); }
+        .pad .name { font-size: 11px; color: #aaa; text-transform: uppercase; font-weight: bold; }
+        .pad.active .name { color: #fff; }
+
+        /* TEKSTURY I ELEMENTY DEKORACYJNE */
+        .screw {
+            width: 12px; height: 12px; background: #333; border-radius: 50%;
+            position: absolute; box-shadow: inset 1px 1px 2px #000;
+        }
+        .top-l { top: 5px; left: 5px; } .top-r { top: 5px; right: 5px; }
+        .bot-l { bottom: 5px; left: 5px; } .bot-r { bottom: 5px; right: 5px; }
 
     </style>
 </head>
 <body>
 
-<div id="vst-container">
+<div id="cyclop-rack">
+    <div class="screw top-l"></div><div class="screw top-r"></div>
+    <div class="screw bot-l"></div><div class="screw bot-r"></div>
+
     <header>
-        <div class="vst-title">HIVE 2 <span style="color:#fff; font-weight:300;">RMF</span></div>
-        <div class="preset-display" id="current-patch">INIT STATION...</div>
-        <div style="display:flex; gap:10px;">
-            <div style="width:10px; height:10px; border-radius:50%; background:var(--hive-cyan);"></div>
-            <div style="width:10px; height:10px; border-radius:50%; background:#444;"></div>
-        </div>
+        <div class="logo">C<span>4</span>CLOP RMF</div>
+        <div id="patch-name" style="color: var(--neon-cyan); letter-spacing: 2px;">STATION: READY</div>
+        <div style="color: #666; font-size: 12px;">CPU: 12% | RAM: 1.2GB</div>
     </header>
 
-    <div class="main-layout">
-        <div class="grid-container" id="pads"></div>
+    <div class="main-engine">
+        <div class="side-module">
+            <div style="font-size: 10px; color: var(--neon-magenta);">WOBBLE AMT</div>
+            <div class="big-knob" id="knob1"><div class="knob-marker"></div></div>
+            <div style="font-size: 10px; color: var(--neon-cyan);">DISTORTION</div>
+            <div class="big-knob" id="knob2"><div class="knob-marker"></div></div>
+        </div>
 
-        <div class="center-module">
-            <div class="hex-display">
-                <canvas id="osc"></canvas>
-                <div style="position:absolute; top:10px; left:10px; font-size:10px; color:var(--hive-cyan);">WAVETABLE A</div>
+        <div class="center-screen">
+            <div style="padding: 10px; background: #222; font-size: 10px; display: flex; justify-content: space-between;">
+                <span>OSCILLOSCOPE v2.0</span>
+                <span id="hz-val">44.1 kHz</span>
             </div>
-            
-            <div style="height:100px; background:#111; border-radius:4px; display:flex; align-items:center; justify-content:center; gap:20px; border:1px solid #444;">
-                <div class="knob"><div class="knob-dot" id="k1"></div></div>
-                <div class="knob"><div class="knob-dot" id="k2"></div></div>
-                <div class="knob"><div class="knob-dot" id="k3"></div></div>
+            <div class="analyser" id="bars-container">
+                <!-- Słupki generowane przez JS -->
+            </div>
+            <div style="height: 40px; background: #111; display: flex; align-items: center; padding: 0 20px; gap: 20px;">
+                <div style="width: 100%; height: 4px; background: #333; position: relative;">
+                    <div style="position: absolute; left: 30%; width: 20px; height: 12px; background: var(--neon-lime); top: -4px;"></div>
+                </div>
             </div>
         </div>
 
-        <aside class="controls-panel">
-            <div class="fader-container">
-                <div style="font-size:10px; margin-bottom:10px;">MASTER VOL</div>
-                <div class="fader-track">
-                    <div class="fader-knob" id="master-vol" style="top: 30%;"></div>
-                </div>
-            </div>
-            
-            <div style="text-align:center;">
-                <div id="status-led" style="width:15px; height:15px; border-radius:50%; background:#300; margin:0 auto 5px; border:2px solid #111;"></div>
-                <div style="font-size:9px; font-weight:700;">ENGINE ACTIVE</div>
-            </div>
-        </aside>
+        <div class="side-module">
+            <div style="font-size: 10px; color: var(--neon-lime);">RESONANCE</div>
+            <div class="big-knob" id="knob3"><div class="knob-marker"></div></div>
+            <div style="font-size: 10px; color: var(--neon-orange);">MASTER VOL</div>
+            <div class="big-knob" id="knob4"><div class="knob-marker"></div></div>
+        </div>
     </div>
+
+    <div class="station-bay" id="station-grid"></div>
 </div>
 
-<audio id="audio"></audio>
+<audio id="core-audio"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' }, { n: 'RMF 80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', u: 'rmf_90s' }, { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'CHILLOUT', u: 'rmf_chillout' },
-        { n: 'CLASSIC', u: 'rmf_classic' }, { n: 'DANCE', u: 'rmf_dance' }, { n: 'GOLD', u: 'rmf_gold' },
-        { n: 'LATINO', u: 'rmf_latino' }, { n: 'LOVE', u: 'rmf_love' }, { n: 'PARTY', u: 'rmf_party' },
-        { n: 'P-ROCK', u: 'rmf_polski_rock' }, { n: 'ROCK', u: 'rmf_rock' }, { n: 'S-JAZZ', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'MAXXX', u: 'RMFMAXXX48' }, { n: '80s', u: 'rmf_80s' },
+        { n: '90s', u: 'rmf_90s' }, { n: '2000', u: 'rmf_2000' }, { n: 'ROCK', u: 'rmf_rock' },
+        { n: 'DANCE', u: 'rmf_dance' }, { n: 'CLASSIC', u: 'rmf_classic' }
     ];
 
-    const padsContainer = document.getElementById('pads');
-    const player = document.getElementById('audio');
-    const canvas = document.getElementById('osc');
-    const ctx = canvas.getContext('2d');
-    let analyzerData = new Uint8Array(128);
+    const audio = document.getElementById('core-audio');
+    const grid = document.getElementById('station-grid');
+    const barsContainer = document.getElementById('bars-container');
 
-    // INICJALIZACJA PADÓW
+    // Tworzenie słupków analizatora
+    for(let i=0; i<40; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'bar';
+        barsContainer.appendChild(bar);
+    }
+
+    // Tworzenie Padów
     STATIONS.forEach((st, i) => {
-        const div = document.createElement('div');
-        div.className = 'hive-pad';
-        div.innerHTML = `<span class="label-id">OSC${i+1}</span><span class="st-name">${st.n}</span>`;
-        div.onclick = () => playStation(i, div);
-        padsContainer.appendChild(div);
+        const p = document.createElement('div');
+        p.className = 'pad';
+        p.innerHTML = `<span style="font-size:8px; color:#555;">0${i+1}</span><span class="name">${st.n}</span>`;
+        p.onclick = () => {
+            document.querySelectorAll('.pad').forEach(x => x.classList.remove('active'));
+            p.classList.add('active');
+            document.getElementById('patch-name').textContent = "PATCH: " + st.n;
+            
+            const url = st.n === 'MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : 'https://rs201-krk.rmfstream.pl/' + st.u;
+            audio.src = url;
+            audio.play();
+
+            // Losowe ustawienie pokręteł przy zmianie
+            document.querySelectorAll('.knob-marker').forEach(m => {
+                m.style.transform = `rotate(${Math.random() * 260 - 130}deg)`;
+            });
+        };
+        grid.appendChild(p);
     });
 
-    function playStation(i, el) {
-        document.querySelectorAll('.hive-pad').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('current-patch').textContent = "HS " + STATIONS[i].n.replace(' ', '_');
-        document.getElementById('status-led').style.background = '#0f0';
-        document.getElementById('status-led').style.boxShadow = '0 0 10px #0f0';
-
-        const url = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : 'https://rs201-krk.rmfstream.pl/' + STATIONS[i].u;
-        player.src = url;
-        player.play();
-        
-        // Animacja pokręteł przy zmianie
-        document.querySelectorAll('.knob-dot').forEach(k => k.style.transform = `rotate(${Math.random()*300-150}deg)`);
+    // Animacja widma
+    function animateBars() {
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach(b => {
+            let h = audio.paused ? Math.random() * 5 : Math.random() * 90 + 10;
+            b.style.height = h + '%';
+            // Zmiana odcienia w zależności od wysokości
+            b.style.filter = `hue-rotate(${h}deg) brightness(${h/50})`;
+        });
+        requestAnimationFrame(animateBars);
     }
+    animateBars();
 
-    // RYSOWANIE OSCYLOSKOPU (SIMULATED)
-    function draw() {
-        requestAnimationFrame(draw);
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = '#47d1ff';
-        ctx.beginPath();
-
-        const sliceWidth = canvas.width / 128;
-        let x = 0;
-
-        for(let i = 0; i < 128; i++) {
-            let v = player.paused ? 128 : (Math.random() * 64 + 96);
-            let y = (v / 255) * canvas.height;
-            if(i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-            x += sliceWidth;
-        }
-        ctx.lineTo(canvas.width, canvas.height/2);
-        ctx.stroke();
-    }
-
-    // Obsługa głośności faderem
-    const fader = document.getElementById('master-vol');
-    let isDragging = false;
-    fader.onmousedown = () => isDragging = true;
-    window.onmouseup = () => isDragging = false;
-    window.onmousemove = (e) => {
-        if(!isDragging) return;
-        let rect = fader.parentElement.getBoundingClientRect();
-        let y = Math.max(0, Math.min(e.clientY - rect.top, 150));
-        fader.style.top = (y - 25) + 'px';
-        player.volume = 1 - (y / 150);
-    };
-
-    draw();
 </script>
 </body>
 </html>
