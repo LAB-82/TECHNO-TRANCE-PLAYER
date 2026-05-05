@@ -3,141 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - HYPER-REAL REALISM</title>
+    <title>RMF TERMINAL - HYPER-REAL COSMETICS</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat+Alternates:wght@400;600;700&display=swap');
 
         :root {
             --yellow: #fce300;
             --yellow-neon: #fffb00;
-            --bg: #121214;
-            --tile: linear-gradient(145deg, #23272e, #1a1d22);
+            --bg: #0d0d0f;
+            --tile-base: linear-gradient(145deg, #2a2e35, #14161a);
             --border: #000;
-            --blue-wave: #00ccff;
-            /* Nowe kolory dla wierszy */
-            --row1: #ff007f; /* Magenta */
-            --row2: #00e5ff; /* Cyan */
-            --row3: #a2ff00; /* Lime */
+            --blue-wave: #00eaff;
+            /* Paleta barw dla wierszy */
+            --row-1: #ff007f; /* Cyber Pink */
+            --row-2: #00ccff; /* Electric Blue */
+            --row-3: #39ff14; /* Neon Lime */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body { 
             height: 100vh; width: 100vw; 
-            background: radial-gradient(circle at center, #222 0%, #000 100%);
-            color: #fff; 
+            background: var(--bg); color: #fff; 
             font-family: 'Montserrat Alternates', sans-serif;
             overflow: hidden; 
         }
 
         body { 
             display: flex; flex-direction: column; padding: 2vh; 
-            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(40, 44, 52, 0.3) 0%, #000 100%),
+                url('https://www.transparenttextures.com/patterns/carbon-fibre.png');
         }
 
         header { 
             height: 60px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 3px solid #1a1a1a; margin-bottom: 2vh; flex-shrink: 0;
-            background: rgba(0,0,0,0.4); padding: 0 20px; border-radius: 10px;
+            border-bottom: 2px solid #222; margin-bottom: 2vh; flex-shrink: 0;
+            background: rgba(0,0,0,0.5); padding: 0 20px; border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
-        .header-info { font-family: 'Orbitron'; font-size: 20px; font-weight: 700; color: var(--yellow); text-transform: uppercase; letter-spacing: 2px; }
-        .clock { color: var(--yellow); font-size: 24px; font-weight: 700; text-shadow: 0 0 10px rgba(252, 227, 0, 0.5); }
+        .header-info { font-family: 'Orbitron'; font-size: 22px; font-weight: 700; color: var(--yellow); letter-spacing: 2px; }
+        .clock { color: var(--yellow); font-size: 26px; font-weight: 700; text-shadow: 0 0 10px var(--yellow); }
 
         .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; }
 
-        /* GRID - WŁÓKNO WĘGLOWE W TLE */
+        /* GRID - NIEZMIENIONY UKŁAD */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
             gap: 15px; 
-            background: #0a0a0a; padding: 20px; border-radius: 15px;
-            box-shadow: inset 0 0 30px #000, 0 5px 15px rgba(0,0,0,0.5);
-            border: 2px solid #222;
         }
 
-        /* FOTOREALISTYCZNY PRZYCISK */
+        /* FOTOREALISTYCZNY KAFELEK */
         .tile {
-            background: var(--tile); border: 2px solid #111; border-radius: 12px;
+            background: var(--tile-base); 
+            border: 2px solid #111; 
+            border-radius: 14px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative; overflow: visible;
-            box-shadow: 6px 6px 12px #000, inset 1px 1px 2px rgba(255,255,255,0.1);
-            transition: all 0.1s ease;
+            box-shadow: 8px 8px 16px #000, inset 1px 1px 2px rgba(255,255,255,0.05);
+            transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .tile:active { transform: translateY(3px); box-shadow: 2px 2px 5px #000; }
+        .tile:hover { filter: brightness(1.2); }
+        .tile:active { transform: translateY(4px) scale(0.98); box-shadow: 2px 2px 5px #000; }
 
-        /* KOLORY DLA WIERSZY - ZGODNIE Z PROŚBĄ O OBFITOŚĆ BARW */
-        .tile:nth-child(-n+5) { border-bottom: 4px solid var(--row1); }
-        .tile:nth-child(n+6):nth-child(-n+10) { border-bottom: 4px solid var(--row2); }
-        .tile:nth-child(n+11) { border-bottom: 4px solid var(--row3); }
+        /* KOLOROWE AKCENTY DLA WIERSZY */
+        .tile:nth-child(-n+5) { border-top: 3px solid var(--row-1); box-shadow: 0 0 15px rgba(255, 0, 127, 0.1), 8px 8px 16px #000; }
+        .tile:nth-child(n+6):nth-child(-n+10) { border-top: 3px solid var(--row-2); box-shadow: 0 0 15px rgba(0, 204, 255, 0.1), 8px 8px 16px #000; }
+        .tile:nth-child(n+11) { border-top: 3px solid var(--row-3); box-shadow: 0 0 15px rgba(57, 255, 20, 0.1), 8px 8px 16px #000; }
 
-        .tile .t-top { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; z-index: 2; text-shadow: 2px 2px 4px #000; }
-        .tile .t-bottom { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.6); margin-top: 4px; text-align: center; z-index: 2; }
+        .tile .t-top { font-size: 24px; font-weight: 700; color: #eee; line-height: 1; z-index: 2; text-shadow: 2px 2px 4px #000; }
+        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--yellow); margin-top: 6px; text-transform: uppercase; z-index: 2; }
 
+        /* AKTYWNA STACJA */
         .tile.active { 
-            background: #1a1c22;
-            box-shadow: 0 0 25px rgba(255, 251, 0, 0.4), inset 0 0 10px #000;
-            border: 2px solid var(--yellow-neon);
+            border: 2px solid var(--yellow-neon); 
+            background: #1a1a1a;
+            box-shadow: 0 0 30px rgba(255, 251, 0, 0.3), inset 0 0 15px #000;
         }
         .tile.active .t-top { color: var(--yellow-neon); }
 
-        /* SIDEBAR - CHROM I SZKŁO */
+        /* SIDEBAR - INDUSTRIAL GLASS */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
             align-items: center; justify-content: center; gap: 4vh;
-            border-left: 2px solid #222; padding-left: 3vw;
-            background: linear-gradient(to right, rgba(0,0,0,0.2), transparent);
+            border-left: 1px solid #222; padding-left: 3vw;
         }
 
         .logo-display {
             width: 100%; max-width: 320px; aspect-ratio: 16/10;
-            border: 4px solid #333; border-radius: 20px;
+            border: 3px solid #333; border-radius: 25px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #111 0%, #000 100%);
+            background: linear-gradient(135deg, #111, #000);
             box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(252, 227, 0, 0.1);
             position: relative;
         }
-        .logo-display::before {
-            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 50%;
+        .logo-display::after {
+            content: ""; position: absolute; top: 0; width: 100%; height: 50%;
             background: linear-gradient(to bottom, rgba(255,255,255,0.05), transparent);
-            border-radius: 20px 20px 0 0;
+            border-radius: 25px 25px 0 0;
         }
-        .logo-display h2 { font-family: 'Orbitron'; font-size: 46px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }
+        .logo-display h2 { font-family: 'Orbitron'; font-size: 50px; color: var(--yellow); text-shadow: 0 0 20px var(--yellow); }
 
         .controls { display: flex; align-items: center; gap: 3vw; }
-        .c-svg { 
-            width: 45px; height: 45px; fill: #555; cursor: pointer; 
-            filter: drop-shadow(2px 2px 2px #000); transition: 0.2s;
-        }
-        .c-svg:hover { fill: var(--yellow); scale: 1.1; }
-        .c-play { width: 80px; height: 80px; fill: var(--yellow); filter: drop-shadow(0 0 15px var(--yellow)); }
+        .c-svg { width: 40px; height: 40px; fill: #444; cursor: pointer; transition: 0.2s; }
+        .c-svg:hover { fill: var(--yellow); filter: drop-shadow(0 0 8px var(--yellow)); }
+        .c-play { width: 85px; height: 85px; fill: var(--yellow); filter: drop-shadow(0 0 20px var(--yellow)); }
 
         .vol-box { 
-            display: flex; align-items: center; gap: 15px; width: 320px; 
-            background: #000; padding: 15px; border-radius: 12px; border: 1px solid #222;
+            background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222;
+            display: flex; align-items: center; gap: 15px; width: 320px;
+            box-shadow: 0 10px 20px #000;
         }
-        .vol-btn { 
-            width: 40px; height: 40px; border: none; border-radius: 8px; 
-            background: linear-gradient(145deg, #333, #111); color: var(--yellow); 
-            cursor: pointer; font-weight: bold; box-shadow: 2px 2px 5px #000;
-        }
+        .vol-btn { width: 40px; height: 40px; border: none; border-radius: 10px; background: #222; color: var(--yellow); cursor: pointer; font-size: 20px; font-weight: bold; box-shadow: 3px 3px 6px #000; }
         
-        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 6px; border-radius: 3px; box-shadow: inset 0 1px 3px #000; }
+        input[type="range"]::-webkit-slider-runnable-track { background: #000; height: 8px; border-radius: 4px; border: 1px solid #333; }
         input[type="range"]::-webkit-slider-thumb { 
             appearance: none; width: 24px; height: 24px; 
-            background: radial-gradient(circle, #fce300, #b8a600); 
+            background: radial-gradient(circle, #fff, var(--yellow)); 
             border-radius: 50%; margin-top: -9px; border: 2px solid #111;
-            box-shadow: 0 2px 5px #000;
+            box-shadow: 0 0 10px var(--yellow);
         }
 
-        /* ANIMACJA FAL - ULEPSZONA */
-        .waves { position: absolute; width: 100%; height: 100%; overflow: hidden; border-radius: 10px; }
+        /* FALE */
+        .waves { position: absolute; width: 100%; height: 100%; overflow: hidden; border-radius: 14px; }
         .wave { border: 2px solid var(--blue-wave); box-shadow: 0 0 20px var(--blue-wave); }
 
         @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 400%; height: 400%; opacity: 0; }
+            0% { width: 0; height: 0; opacity: 1; transform: scale(0.1); }
+            100% { width: 400%; height: 400%; opacity: 0; transform: scale(1); }
         }
 
     </style>
@@ -145,7 +141,7 @@
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">GRA: RMF FM</div>
+    <div class="header-info" id="playing-now">RMF TERMINAL // FM</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -154,8 +150,8 @@
 
     <aside class="sidebar">
         <div class="logo-display">
-            <h2>RMF FM</h2>
-            <p style="letter-spacing: 3px;">LIVE TERMINAL</p>
+            <h2>RMF</h2>
+            <p style="font-size: 10px; color: #555; letter-spacing: 4px;">ANALOG PRECISION</p>
         </div>
 
         <div class="controls">
@@ -177,7 +173,7 @@
 <audio id="player"></audio>
 
 <script>
-    // Logika pozostaje identyczna z Twoim oryginałem
+    // Logika Twojego oryginalnego kodu bez zmian
     const STATIONS = [
         { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
         { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
