@@ -12,12 +12,16 @@
             --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
             --led-red: #ff3333;
             --led-bg: #400000;
-            --lcd-green: #a4f000;
+            --lcd-green: #a4f000; /* Acid Green glow */
             --acid-bg: #1a1a1c;
             --btn-metal: linear-gradient(145deg, #d1d1d1, #a1a1a1);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default; }
+        /* Twarde ustawienie kursora domyślnego dla wszystkiego */
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; outline: none; 
+            cursor: default !important; 
+        }
         
         body { 
             height: 100vh; width: 100vw; 
@@ -39,23 +43,25 @@
             position: relative;
         }
 
+        /* WYRÓWNANIE ZEGARA DO NAPISU RMF TB-303 */
         header { 
-            display: flex; justify-content: space-between; align-items: center;
+            display: flex; justify-content: space-between; align-items: baseline;
             margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px;
         }
-        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; line-height: 1; }
+        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; margin: 0; }
         .logo span { font-size: 11px; letter-spacing: 4px; color: #444; font-weight: bold; }
 
+        /* ZEGAR - BIAŁY RDZEŃ + ZIELONA POŚWIATA */
         #clock {
             font-family: 'Share Tech Mono';
             font-size: 32px;
-            color: var(--lcd-green);
+            color: #ffffff;
             text-shadow: 0 0 15px var(--lcd-green);
-            line-height: 1;
         }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
+        /* LEWA STRONA - SZARE METALICZNE KAFELKI */
         .grid-stations { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
@@ -72,7 +78,7 @@
             border-radius: 4px;
             display: flex; align-items: center; justify-content: center;
             padding: 10px;
-            cursor: pointer; position: relative;
+            position: relative;
             box-shadow: 0 4px 0 #555, 0 6px 10px rgba(0,0,0,0.4);
             transition: 0.05s;
             text-align: center;
@@ -84,8 +90,8 @@
         }
 
         .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
-        .bt-303:active *, .bt-303 * { cursor: pointer; }
         
+        /* AKTYWNA STACJA - USUNIĘTY BIAŁY, TYLKO ZIELONY ŚWIECĄCY */
         .bt-303.active { 
             background: var(--btn-metal); 
             border-color: var(--lcd-green);
@@ -101,7 +107,7 @@
             text-shadow: 0 0 10px var(--lcd-green);
         }
 
-        /* PRAWY PANEL - WEDŁUG ZDJĘCIA */
+        /* PRAWY PANEL - UKŁAD ZE ZDJĘCIA */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; 
             background: var(--metal-shine);
@@ -111,11 +117,15 @@
             gap: 15px;
         }
 
+        /* RMF FM - BIAŁY RDZEŃ + ZIELONA POŚWIATA */
         .lcd-display {
             background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #333;
-            padding: 10px; font-family: 'Share Tech Mono', monospace; color: var(--lcd-green);
+            padding: 10px; font-family: 'Share Tech Mono', monospace;
             box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between;
         }
+        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; font-weight: bold; }
+        #st-name { font-size: 24px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
+        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
 
         .step-sequencer {
             background: #111; border-radius: 4px; border: 1px solid #333;
@@ -138,7 +148,7 @@
             background: radial-gradient(circle, #eee 0%, #aaa 100%);
             border: 2px solid #666; position: relative; margin: 0 auto;
             box-shadow: 0 6px 12px rgba(0,0,0,0.4);
-            cursor: crosshair; transition: transform 0.2s;
+            transition: transform 0.2s;
         }
         .knob-volume::before {
             content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 18px;
@@ -151,7 +161,7 @@
 
         .sq-btn {
             width: 45px; height: 45px; background: #fff; border: 1px solid #ccc;
-            box-shadow: 0 4px 0 #999; cursor: pointer; display: flex; flex-direction: column;
+            box-shadow: 0 4px 0 #999; display: flex; flex-direction: column;
             align-items: center; justify-content: center; border-radius: 2px;
         }
         .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #999; }
@@ -162,7 +172,7 @@
             background: #000; height: 40px; flex: 1; border-radius: 2px; border: 1px solid #444;
             display: flex; align-items: center; padding: 0 5px;
         }
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; cursor: pointer; }
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none; width: 22px; height: 34px; background: #ccc;
             border: 1px solid #333; border-radius: 2px; box-shadow: inset 0 0 5px #fff;
@@ -171,7 +181,7 @@
         .btn-run-stop {
             width: 110px; height: 55px;
             background: #e0e0e0; border: 1px solid #999;
-            border-radius: 4px; cursor: pointer;
+            border-radius: 4px;
             box-shadow: 0 5px 0 #aaa, 0 8px 15px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase;
@@ -196,9 +206,9 @@
 
         <aside class="pro-panel">
             <div class="lcd-display">
-                <div style="font-size: 10px; opacity: 0.6; font-weight: bold;">BANK: A1 / PATTERN: 08</div>
-                <div id="st-name" style="font-size: 24px; color: #fff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold;">STATION IDLE</div>
-                <div style="display: flex; justify-content: space-between; font-size: 11px; font-weight: bold;">
+                <div class="lcd-label">BANK: A1 / PATTERN: 08</div>
+                <div id="st-name">STATION IDLE</div>
+                <div class="lcd-sub">
                     <span>BITRATE: 128KBPS</span>
                     <span id="v-val">VOL: 50%</span>
                 </div>
@@ -218,20 +228,20 @@
                 </div>
 
                 <div class="volume-row">
-                    <div class="sq-btn" onclick="adj(-5)">
+                    <div class="sq-btn" id="vol-down-btn">
                         <div class="dot"></div>
                         <span>DOWN</span>
                     </div>
                     <div class="fader-track">
-                        <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+                        <input type="range" id="v-range" min="0" max="100" value="50">
                     </div>
-                    <div class="sq-btn" onclick="adj(5)">
+                    <div class="sq-btn" id="vol-up-btn">
                         <div class="dot"></div>
                         <span>UP</span>
                     </div>
                 </div>
 
-                <div class="btn-run-stop" onclick="stopRadio()">
+                <div class="btn-run-stop" id="run-stop-btn">
                     RUN / STOP
                 </div>
             </div>
@@ -263,12 +273,13 @@
     const grid = document.getElementById('grid');
     const player = document.getElementById('player');
     const stName = document.getElementById('st-name');
+    const vRange = document.getElementById('v-range');
 
     STATIONS.forEach((s, i) => {
         const b = document.createElement('div');
         b.className = 'bt-303';
         b.innerHTML = `<div class="st-label">${s.n}</div>`;
-        b.onclick = () => play(i);
+        b.addEventListener('click', () => play(i));
         grid.appendChild(b);
     });
 
@@ -302,20 +313,24 @@
     }
 
     function adj(d) { 
-        const r = document.getElementById('v-range'); 
-        let newVal = parseInt(r.value) + d;
+        let newVal = parseInt(vRange.value) + d;
         if(newVal > 100) newVal = 100;
         if(newVal < 0) newVal = 0;
-        r.value = newVal; 
+        vRange.value = newVal; 
         setV(newVal); 
     }
 
+    document.getElementById('vol-down-btn').addEventListener('click', () => adj(-5));
+    document.getElementById('vol-up-btn').addEventListener('click', () => adj(5));
+    document.getElementById('run-stop-btn').addEventListener('click', stopRadio);
+    vRange.addEventListener('input', (e) => setV(e.target.value));
+
     let panPos = 0;
-    document.getElementById('pan-knob').onclick = function() {
+    document.getElementById('pan-knob').addEventListener('click', function() {
         panPos = (panPos + 45);
         if(panPos > 135) panPos = -135;
         this.style.transform = `rotate(${panPos}deg)`;
-    };
+    });
 
     setInterval(() => {
         const d = new Date();
