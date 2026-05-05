@@ -2,302 +2,322 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - CRYSTALLINE STYLE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RMF FM SEKTOR - PRO VST EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Montserrat+Alternates:wght@700;800&display=swap');
         
         :root {
-            --bg: #e0e0e0;
-            --tile: #e0e0e0;
-            --text-main: #333;
-            --text-sub: #666;
-            --shadow-out: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
-            --shadow-in: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
-            --border-light: 1px solid rgba(255,255,255,0.5);
-            --color-active: #ff4081;
-            --color-wave: #00e5ff;
-            --accent-green: #00e676;
-            --accent-orange: #ff9100;
+            /* Nowa paleta na podstawie zdjęcia */
+            --s-bg: #050a12; 
+            --s-panel: rgba(11, 19, 31, 0.85);
+            --s-init-blue: #70d8ff; 
+            --rmf-neon: #ff9d23; /* Pomarańczowy jak ścieżki na zdjęciu */
+            --white-neon: #e0e6ed;
+            --s-border: #1a2a3a;
+            --path-orange: #ff9d23;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html, body { 
-            height: 100vh; width: 100vw; 
-            background: var(--bg); color: var(--text-main); 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden; 
-        }
-
-        body { display: flex; flex-direction: column; padding: 2vh; }
-
-        header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid rgba(0,0,0,0.05); margin-bottom: 2vh; flex-shrink: 0;
-            background: rgba(255,255,255,0.3); border-radius: 10px; padding: 0 15px;
-            box-shadow: var(--shadow-out);
-        }
-
-        .header-info { font-size: 20px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px; }
-        .clock { color: var(--text-sub); font-size: 20px; font-weight: 600; }
-
-        .app-content { display: flex; flex: 1; gap: 3vw; min-height: 0; padding: 10px 0; }
-
-        .grid { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 15px; 
-        }
-
-        .tile {
-            background: var(--tile); border-radius: 15px;
-            border: var(--border-light);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative; overflow: visible;
-            box-shadow: var(--shadow-out);
-            transition: all 0.2s ease;
-        }
-        
-        .tile:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
-        .tile .t-top { font-size: 20px; font-weight: 700; color: var(--text-main); line-height: 1; z-index: 2; transition: color 0.2s; }
-        .tile .t-bottom { font-size: 13px; font-weight: 600; color: var(--text-sub); margin-top: 5px; text-align: center; z-index: 2; }
-
-        .tile.active { 
-            box-shadow: var(--shadow-in);
-            background: #dcdcdc;
-        }
-        .tile.active .t-top { color: var(--color-active); }
-
-        .waves {
-            position: absolute; width: 100%; height: 100%;
+        body { 
+            height: 100vh; 
+            background: #000; 
+            font-family: 'Rajdhani', sans-serif;
             display: flex; align-items: center; justify-content: center;
-            pointer-events: none; opacity: 0; z-index: 1;
-        }
-        .tile.active .waves { opacity: 0.6; }
-        .wave {
-            position: absolute; border: 2px solid var(--color-wave); border-radius: 50%;
-            width: 10px; height: 10px; opacity: 0;
-            box-shadow: 0 0 10px var(--color-wave);
-            animation: ripple 3s infinite linear;
-        }
-        .wave:nth-child(2) { animation-delay: 1s; }
-        .wave:nth-child(3) { animation-delay: 2s; }
-
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.8; }
-            100% { width: 250%; height: 250%; opacity: 0; }
+            /* Subtelny wzór linii w tle */
+            background-image: 
+                radial-gradient(circle at 50% 50%, #0a1628 0%, #000 100%);
         }
 
-        .sidebar { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: flex-start; gap: 3vh;
-            padding: 20px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 20px;
-            box-shadow: var(--shadow-out);
-            border: var(--border-light);
-        }
-
-        .logo-display {
-            width: 100%; max-width: 320px; aspect-ratio: 16/9;
-            border-radius: 15px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            background: linear-gradient(135deg, #ff9100 0%, #ff4081 50%, #00e5ff 100%);
-            box-shadow: var(--shadow-in), 0 0 20px rgba(255, 64, 129, 0.3);
+        .sektor-vst {
+            width: 1000px; height: 600px;
+            background: var(--s-bg);
+            border: 2px solid #111; border-radius: 8px;
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 100px rgba(0, 212, 255, 0.15);
             position: relative;
             overflow: hidden;
-            border: 2px solid #fff;
         }
+
+        /* Dekoracyjne linie sygnałowe ze zdjęcia */
+        .sektor-vst::before {
+            content: "";
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                linear-gradient(90deg, transparent 95%, rgba(255,157,35,0.05) 95%),
+                linear-gradient(0deg, transparent 95%, rgba(255,157,35,0.05) 95%);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        /* Pomarańczowa ramka/ścieżka jak na zdjęciu */
+        .main-frame::after {
+            content: "";
+            position: absolute;
+            top: 80px; right: 30px; bottom: 100px; left: 30px;
+            border: 2px solid var(--path-orange);
+            border-radius: 4px;
+            opacity: 0.3;
+            pointer-events: none;
+            clip-path: polygon(0 0, 60% 0, 70% 5%, 100% 5%, 100% 100%, 0 100%);
+        }
+
+        .top-nav {
+            height: 65px; background: rgba(0,0,0,0.4);
+            display: flex; align-items: center; justify-content: center;
+            border-bottom: 2px solid var(--s-border);
+            padding: 0 20px; z-index: 10;
+        }
+
+        .patch-display {
+            width: 520px; height: 42px; background: #000;
+            border: 1px solid var(--s-init-blue); border-radius: 4px;
+            display: flex; align-items: center; justify-content: space-between;
+            box-shadow: inset 0 0 15px rgba(112, 216, 255, 0.2);
+        }
+
+        .p-btn { 
+            width: 50px; height: 100%; background: transparent; 
+            color: var(--s-init-blue); font-size: 10px; border: none;
+            cursor: pointer; text-transform: uppercase; font-weight: 700;
+            transition: 0.2s;
+        }
+        .p-btn:hover { background: rgba(112, 216, 255, 0.1); }
+
+        .p-name { 
+            flex: 1; text-align: center; color: #fff; 
+            font-weight: 600; letter-spacing: 1px; font-size: 14px;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        .main-frame { display: flex; flex: 1; padding: 25px; gap: 20px; overflow: hidden; position: relative; z-index: 5; }
+
+        .browser-section {
+            flex: 1.6; background: var(--s-panel);
+            border-radius: 8px; border: 1px solid #2a3a4a;
+            padding: 15px; display: flex; flex-direction: column;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .grid { flex: 1; display: flex; flex-wrap: wrap; gap: 8px; align-content: stretch; }
+
+        .tile {
+            flex: 1 1 calc(25% - 8px);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(112, 216, 255, 0.1) !important;
+            border-radius: 4px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; font-size: 12px; 
+            color: #99aab5;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .tile:hover { background: rgba(112, 216, 255, 0.08); color: #fff; }
+
+        .tile.active { 
+            background: rgba(112, 216, 255, 0.15);
+            color: var(--s-init-blue);
+            text-shadow: 0 0 10px var(--s-init-blue);
+            border: 1px solid var(--s-init-blue) !important;
+        }
+
+        .master-section { flex: 0.4; display: flex; flex-direction: column; gap: 20px; }
         
-        .logo-display::after {
-            content: '';
-            position: absolute; width: 200%; height: 100%;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".1" fill="%23fff"></path><path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.6,28.28,22.62,59.13,44.76,94.71,54.11,31.76,8.35,65.65,11.8,99.52,11.79,34.91,0,69.59-3.66,102.46-9.52,68.51-12.21,121.14-53.51,170.83-93.18C1071,11.67,1146.45,13.88,1200,32.47V0Z" opacity=".15" fill="%23fff"></path></svg>');
-            background-size: 50% 100%;
-            animation: waveMove 10s linear infinite;
-            opacity: 0.8;
+        .control-box { 
+            background: var(--s-panel); border: 1px solid #2a3a4a;
+            padding: 20px; flex: 1; display: flex; flex-direction: column; align-items: center;
+            border-radius: 8px;
         }
 
-        @keyframes waveMove {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        .play-btn {
+            width: 70px; height: 70px; background: #000;
+            border: 2px solid var(--s-init-blue); border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 20px rgba(112, 216, 255, 0.3); margin-bottom: 30px;
+            transition: 0.3s;
+        }
+        .play-btn:hover { transform: scale(1.05); box-shadow: 0 0 30px rgba(112, 216, 255, 0.5); }
+        .play-btn svg { width: 30px; fill: var(--s-init-blue); }
+
+        .vol-container { width: 100%; flex: 1; display: flex; flex-direction: column; align-items: center; }
+
+        .knob-base {
+            width: 110px; height: 110px; background: #000; border-radius: 50%;
+            margin-bottom: 30px; border: 2px solid #222; position: relative;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
         }
 
-        .logo-display h2 { font-size: 40px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 2; position: relative; }
-        .logo-display p { font-size: 10px; color: rgba(255,255,255,0.8); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; z-index: 2; position: relative; }
-
-        .controls { display: flex; align-items: center; gap: 2.5vw; background: rgba(255,255,255,0.3); padding: 10px 20px; border-radius: 50px; box-shadow: var(--shadow-in); }
-        .c-svg { width: 30px; height: 30px; fill: var(--text-sub); cursor: pointer; transition: all 0.2s; }
-        .c-svg:hover { fill: var(--text-main); transform: scale(1.1); }
-        
-        .c-play { 
-            width: 60px; height: 60px; fill: var(--text-main); 
-            background: var(--tile); border-radius: 50%; padding: 15px;
-            box-shadow: var(--shadow-out);
-            border: var(--border-light);
-        }
-        .c-play:hover { box-shadow: 4px 4px 8px #bebebe, -4px -4px 8px #ffffff; }
-        .c-play:active { box-shadow: var(--shadow-in); }
-
-        .vol-box { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 320px; }
-        .vol-btn { 
-            width: 35px; height: 35px; border: var(--border-light); border-radius: 10px; 
-            background: var(--tile); color: var(--text-main); cursor: pointer; 
-            font-family: inherit; font-weight: bold; font-size: 18px;
-            box-shadow: var(--shadow-out);
-            transition: all 0.2s;
-        }
-        .vol-btn:active { box-shadow: var(--shadow-in); }
-        .vol-bar { 
-            flex: 1; height: 35px; border: var(--border-light); border-radius: 10px; 
-            padding: 0 10px; display: flex; align-items: center; 
-            background: var(--tile);
-            box-shadow: var(--shadow-in);
+        /* Wygląd knoba ze zdjęcia */
+        .knob-turner {
+            width: 100%; height: 100%; border-radius: 50%;
+            background: conic-gradient(from -135deg, var(--s-init-blue) 0%, #111 0%);
+            mask: radial-gradient(transparent 55%, black 56%);
+            -webkit-mask: radial-gradient(transparent 55%, black 56%);
         }
 
-        input[type="range"] { flex: 1; appearance: none; background: transparent; cursor: pointer; }
-        input[type="range"]::-webkit-slider-runnable-track { background: rgba(0,0,0,0.05); height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 22px; height: 22px; 
-            background: var(--tile); border-radius: 50%; 
-            margin-top: -9px;
-            border: var(--border-light);
-            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff;
-            transition: box-shadow 0.2s;
+        .knob-center { 
+            position: absolute; inset: 15px; 
+            background: radial-gradient(circle, #2a3340, #050a12); 
+            border-radius: 50%; border: 1px solid #000; cursor: pointer;
+        }
+        .knob-center::after {
+            content: ""; position: absolute; top: 10%; left: 50%; width: 3px; height: 15px;
+            background: var(--s-init-blue); transform: translateX(-50%); border-radius: 2px;
         }
 
-        input[type="range"].at-mid::-webkit-slider-thumb {
-            box-shadow: 2px 2px 5px #bebebe, -2px -2px 5px #ffffff, 0 0 15px rgba(0, 229, 255, 0.6);
-            border-color: var(--color-wave);
+        .fader-track {
+            width: 100%; height: 6px; background: #000;
+            border-radius: 3px; position: relative;
+            border: 1px solid #222; display: flex; align-items: center;
         }
 
-        @media (max-width: 600px) {
-            body { padding: 1vh; }
-            header { height: 40px; margin-bottom: 1vh; }
-            .header-info, .clock { font-size: 16px; }
-            .app-content { flex-direction: column; gap: 1vh; }
-            .grid { grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(5, 1fr); height: 55vh; flex: none; gap: 8px; }
-            .sidebar { width: 100%; height: auto; border-left: none; padding: 15px; gap: 15px; flex: 1; justify-content: center; }
-            .logo-display { width: 100%; height: 70px; aspect-ratio: auto; }
-            .logo-display h2 { font-size: 28px; }
-            .logo-display p { font-size: 8px; letter-spacing: 1px; }
-            .controls { gap: 15px; padding: 5px 15px; }
-            .c-play { width: 45px; height: 45px; padding: 10px; }
-            .c-svg { width: 22px; height: 22px; }
-            .tile .t-top { font-size: 16px; }
-            .tile .t-bottom { font-size: 10px; margin-top: 2px; }
-            .vol-box { max-width: 100%; }
-            .vol-bar { height: 30px; }
-            .vol-btn { width: 30px; height: 30px; }
-            input[type="range"]::-webkit-slider-thumb { width: 18px; height: 18px; margin-top: -7px; }
+        #fader-glow {
+            position: absolute; height: 100%; background: var(--s-init-blue);
+            border-radius: 3px; opacity: 0.5; box-shadow: 0 0 10px var(--s-init-blue);
+            pointer-events: none;
+        }
+
+        .vol-slider { 
+            width: 100%; appearance: none; background: transparent; 
+            position: absolute; z-index: 5; outline: none;
+        }
+        .vol-slider::-webkit-slider-thumb {
+            appearance: none; width: 14px; height: 24px; 
+            background: #fff; border-radius: 2px; cursor: pointer;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .footer-logo { 
+            height: 60px; background: rgba(0,0,0,0.3); display: flex; 
+            justify-content: center; align-items: center; border-radius: 8px;
+            border: 1px solid #2a3a4a;
+        }
+        .footer-logo span { 
+            font-family: 'Montserrat Alternates', sans-serif;
+            font-size: 24px; color: var(--rmf-neon); font-weight: 800; 
+            text-shadow: 0 0 15px rgba(255, 157, 35, 0.5);
         }
     </style>
 </head>
 <body>
-<header>
-    <div class="header-info" id="playing-now">GRA: RMF FM</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
-    <aside class="sidebar">
-        <div class="logo-display">
-            <h2>RMF FM</h2>
-            <p>Najlepsza muzyka</p>
+
+<div class="sektor-vst">
+    <div class="top-nav">
+        <div class="patch-display">
+            <button class="p-btn" onclick="skip(-1)">Prev</button>
+            <div class="p-name" id="patch-name">OTHERWORLDLY // RMF FM</div>
+            <button class="p-btn" onclick="skip(1)">Next</button>
         </div>
-        <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
+    </div>
+    
+    <div class="main-frame">
+        <div class="browser-section">
+            <div class="grid" id="grid"></div>
         </div>
-        <div class="vol-box">
-            <button class="vol-btn" onclick="adj(-5)">-</button>
-            <div class="vol-bar">
-                <input type="range" id="v-range" class="at-mid" min="0" max="100" value="50" oninput="setV(this.value)">
+        
+        <div class="master-section">
+            <div class="control-box">
+                <button class="play-btn" onclick="toggle()">
+                    <svg id="svg-ico" viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+                </button>
+                
+                <div class="vol-container">
+                    <div class="knob-base">
+                        <div class="knob-turner" id="v-knob"></div>
+                        <div class="knob-center" id="v-center" onclick="resetVol()"></div>
+                    </div>
+                    <div class="fader-track">
+                        <div id="fader-glow"></div>
+                        <input type="range" class="vol-slider" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
+                    </div>
+                </div>
             </div>
-            <button class="vol-btn" onclick="adj(5)">+</button>
+            
+            <div class="footer-logo">
+                <span>RMF FM</span>
+            </div>
         </div>
-    </aside>
+    </div>
 </div>
+
 <audio id="player"></audio>
+
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', u: 'rmf_80s' }, { n: 'RMF 90s', u: 'rmf_90s' },
+        { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILLOUT', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' },
+        { n: 'RMF GOLD', u: 'rmf_gold' }, { n: 'RMF PARTY', u: 'rmf_party' },
+        { n: 'RMF ROCK', u: 'rmf_rock' }, { n: 'RMF LOVE', u: 'rmf_love' },
+        { n: 'RMF POLSKI ROCK', u: 'rmf_polski_rock' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' },
+        { n: 'RMF HIP HOP', u: 'rmf_hip_hop' }, { n: 'RMF GROOVE', u: 'rmf_groove' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
+    const player = document.getElementById('player'), 
+          svgIco = document.getElementById('svg-ico'),
+          grid = document.getElementById('grid'),
+          vKnob = document.getElementById('v-knob'),
+          vCenter = document.getElementById('v-center'),
+          vSlider = document.getElementById('v-slider'),
+          fGlow = document.getElementById('fader-glow');
+
     let current = -1;
 
-    function clock() {
-        const d = new Date();
-        document.getElementById('timer').textContent = d.getHours().toString().padStart(2,'0') + ":" + d.getMinutes().toString().padStart(2,'0');
-    }
-    setInterval(clock, 1000); clock();
-
     STATIONS.forEach((s, i) => {
-        const t = document.createElement('div');
-        t.className = 'tile';
-        t.innerHTML = `
-            <div class="waves"><div class="wave"></div><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">RMF FM</div>
-            <div class="t-bottom">${s.s}</div>
-        `;
-        t.onclick = () => play(i);
-        grid.appendChild(t);
+        const div = document.createElement('div');
+        div.className = 'tile';
+        div.textContent = s.n;
+        div.onclick = () => play(i);
+        grid.appendChild(div);
     });
 
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "GRA: " + STATIONS[i].n;
-        
-        // Wyświetlacz w panelu bocznym - zawsze stały tekst
-        const sideDisplay = document.querySelector('.logo-display h2');
-        const sideSub = document.querySelector('.logo-display p');
-        sideDisplay.textContent = "RMF FM";
-        sideSub.textContent = "Najlepsza muzyka";
-
+        document.getElementById('patch-name').textContent = "CURRENT PATCH // " + STATIONS[i].n.toUpperCase();
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
+        updateIcon(true);
+        resetVol(); 
     }
 
     function toggle() {
-        if(player.paused) { 
-            if(current === -1) play(0);
-            else player.play(); 
-            ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); 
-        }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(current === -1) { play(0); return; }
+        if(player.src && !player.paused) {
+            player.pause(); player.src = ""; 
+            updateIcon(false);
+        } else { play(current); }
     }
 
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
-    
-    function setV(v) { 
-        player.volume = v / 100;
-        if(parseInt(v) > 40 && parseInt(v) < 60) vRange.classList.add('at-mid');
-        else vRange.classList.remove('at-mid');
+    function updateIcon(isPlaying) {
+        svgIco.innerHTML = isPlaying ? '<path d="M6,6H18V18H6V6Z"/>' : '<path d="M8,5.14V19.14L19,12.14L8,5.14Z"/>';
     }
-    
-    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
-    setV(vRange.value);
+
+    function skip(d) {
+        let n = (current + d + STATIONS.length) % STATIONS.length;
+        play(n);
+    }
+
+    function setV(v) {
+        player.volume = v / 100;
+        const fill = v * 0.75; 
+        vKnob.style.background = `conic-gradient(from -135deg, var(--s-init-blue) ${fill}%, #111 0%)`;
+        vCenter.style.transform = `rotate(${(v * 2.7) - 135}deg)`;
+        fGlow.style.width = v + "%";
+    }
+
+    function resetVol() {
+        vSlider.value = 50;
+        setV(50);
+    }
+
+    setV(50);
 </script>
+
 </body>
 </html>
