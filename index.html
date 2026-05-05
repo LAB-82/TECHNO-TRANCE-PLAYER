@@ -3,178 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TERMINAL - NEON REALISM MIX</title>
+    <title>RMF TB-303 COMPUTER CONTROLLED</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Montserrat+Alternates:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&display=swap');
 
         :root {
-            --yellow: #fce300;
-            --pink-neon: #ff007f;
-            --cyan-neon: #00e5ff;
-            --purple-neon: #a020f0;
-            --bg-dark: #0a0a0c;
-            --tile-bg: #1a1a1e;
-            --panel-bg: rgba(25, 25, 30, 0.85);
+            --silver-bg: linear-gradient(180deg, #e0e0e0 0%, #b0b0b0 45%, #888 50%, #b0b0b0 55%, #d0d0d0 100%);
+            --button-bg: linear-gradient(145deg, #ffffff, #d1d1d1);
+            --led-red: #ff0000;
+            --led-off: #440000;
+            --yellow-accent: #fce300;
+            --text-black: #1a1a1a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        html, body { 
+        body { 
             height: 100vh; width: 100vw; 
-            background: var(--bg-dark); 
-            color: #fff; 
-            font-family: 'Montserrat Alternates', sans-serif;
-            overflow: hidden; 
+            background: #121212; 
+            display: flex; flex-direction: column; padding: 1.5vh;
+            font-family: 'Share Tech Mono', monospace;
+            color: var(--text-black);
+            overflow: hidden;
         }
 
-        body { 
-            display: flex; flex-direction: column; padding: 2vh; 
-            background-image: 
-                radial-gradient(circle at top left, rgba(160, 32, 240, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at bottom right, rgba(0, 229, 255, 0.1) 0%, transparent 40%);
+        /* OBUDOWA URZĄDZENIA */
+        .chassis {
+            flex: 1;
+            background: var(--silver-bg);
+            border: 4px solid #444;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.8);
+            display: flex; flex-direction: column;
+            padding: 20px;
+            position: relative;
         }
 
         header { 
-            height: 50px; display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #222; margin-bottom: 2vh; flex-shrink: 0;
-            padding: 0 15px; background: rgba(0,0,0,0.3); border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: flex-end;
+            border-bottom: 2px solid #555; padding-bottom: 10px; margin-bottom: 20px;
         }
-        .header-info { font-family: 'Orbitron'; font-size: 18px; color: #aaa; letter-spacing: 1px; }
-        .clock { color: #fff; font-size: 22px; font-weight: 700; font-family: 'Orbitron'; }
+        .brand { font-family: 'Orbitron'; font-weight: 700; font-size: 28px; letter-spacing: -1px; }
+        .model-name { text-align: right; line-height: 1; }
+        .model-name h1 { font-size: 32px; font-weight: 400; }
+        .model-name p { font-size: 12px; font-weight: bold; text-transform: uppercase; }
 
-        .app-content { display: flex; flex: 1; gap: 2vw; min-height: 0; }
+        .main-engine { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GRID - TWOJA LOGIKA UKŁADU */
+        /* GRID STACJI - UKŁAD ZACHOWANY */
         .grid { 
-            flex: 1.5; display: grid; 
+            flex: 1.6; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
             gap: 12px; 
-            background: #111114; padding: 15px; border-radius: 12px;
-            box-shadow: inset 0 0 40px #000;
-            border: 1px solid #1f1f23;
+            background: rgba(0,0,0,0.05); padding: 15px; border-radius: 8px;
+            border: 1px solid rgba(0,0,0,0.2);
         }
 
-        /* HYBRYDOWY KAFELEK */
+        /* PRZYCISK TB-303 */
         .tile {
-            background: var(--tile-bg);
-            border-radius: 8px;
+            background: var(--button-bg);
+            border: 1px solid #777;
+            border-radius: 4px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative;
-            transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
-            border: 1px solid #25252a;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            box-shadow: 2px 4px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.9);
+            transition: 0.1s;
         }
 
-        .tile:active { transform: scale(0.96); filter: brightness(1.5); }
-
-        /* KOLORYSTYKA MIX: REALIZM + NEON */
-        .tile:nth-child(-n+5) { border-bottom: 2px solid var(--pink-neon); }
-        .tile:nth-child(n+6):nth-child(-n+10) { border-bottom: 2px solid var(--purple-neon); }
-        .tile:nth-child(n+11) { border-bottom: 2px solid var(--cyan-neon); }
-
-        .tile .t-top { font-size: 22px; font-weight: 700; color: #fff; text-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .tile .t-bottom { font-size: 11px; font-weight: 600; color: #666; margin-top: 4px; text-transform: uppercase; letter-spacing: 1px; }
-
-        .tile.active { 
-            background: #25252b;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
-            border: 1px solid #fff;
+        .tile::before { /* Dioda LED */
+            content: ""; position: absolute; top: 6px; width: 6px; height: 6px;
+            background: var(--led-off); border-radius: 50%; border: 1px solid rgba(0,0,0,0.5);
         }
-        .tile.active .t-top { color: var(--yellow); }
-        .tile.active .t-bottom { color: #fff; }
 
-        /* SIDEBAR - MODERNISED REALISM */
+        .tile:active { transform: translateY(2px); box-shadow: 1px 1px 2px rgba(0,0,0,0.4); }
+
+        .tile.active { background: #eee; border-color: #444; }
+        .tile.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
+
+        .tile .t-top { font-weight: bold; font-size: 16px; margin-top: 10px; color: #333; }
+        .tile .t-bottom { font-size: 10px; font-weight: bold; color: #555; text-transform: uppercase; }
+
+        /* PANEL KONTROLNY (SIDEBAR) */
         .sidebar { 
-            flex: 0.5; display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-between; padding: 20px 0;
-            background: var(--panel-bg); border-radius: 16px;
-            backdrop-filter: blur(10px); border: 1px solid #2a2a30;
+            flex: 0.4; display: flex; flex-direction: column; gap: 20px;
+            background: #222; border-radius: 8px; padding: 20px;
+            color: var(--yellow-accent); border: 3px solid #444;
+            box-shadow: inset 0 0 20px #000;
         }
 
-        .logo-display { text-align: center; }
-        .logo-display h2 { font-family: 'Orbitron'; font-size: 40px; background: linear-gradient(to bottom, #fff, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .logo-display p { font-size: 10px; letter-spacing: 5px; color: var(--cyan-neon); font-weight: bold; }
-
-        .controls { display: flex; align-items: center; gap: 20px; }
-        .c-svg { width: 35px; height: 35px; fill: #777; cursor: pointer; transition: 0.3s; }
-        .c-svg:hover { fill: #fff; }
-        .c-play { width: 70px; height: 70px; fill: #fff; filter: drop-shadow(0 0 10px rgba(255,255,255,0.4)); }
-
-        .vol-box { 
-            width: 80%; background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px;
-            display: flex; flex-direction: column; gap: 10px; align-items: center;
+        .display-vst {
+            background: #000; flex: 1; border-radius: 4px; border: 2px solid #444;
+            padding: 15px; display: flex; flex-direction: column; justify-content: center;
+            font-family: 'Share Tech Mono'; position: relative;
         }
-        
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-runnable-track { background: #333; height: 4px; border-radius: 2px; }
-        input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 16px; height: 16px; background: #fff; 
-            border-radius: 50%; margin-top: -6px; box-shadow: 0 0 10px var(--cyan-neon);
+        .display-vst::after {
+            content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 110, 0.03));
+            background-size: 100% 2px, 3px 100%; pointer-events: none;
         }
 
-        /* WAVE ANIMATION - SUBTLE DARK VERSION */
-        .waves { position: absolute; width: 100%; height: 100%; overflow: hidden; opacity: 0.2; }
-        .wave { border: 1px solid #fff; }
-
-        @keyframes ripple {
-            0% { width: 0; height: 0; opacity: 0.5; }
-            100% { width: 250%; height: 250%; opacity: 0; }
+        .knob-container { display: flex; justify-content: space-around; margin-top: 10px; }
+        .knob {
+            width: 50px; height: 50px; background: radial-gradient(circle, #ddd 0%, #888 100%);
+            border-radius: 50%; border: 2px solid #333; position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
+        .knob::after {
+            content: ""; position: absolute; top: 5px; left: 50%; width: 3px; height: 12px;
+            background: #333; transform: translateX(-50%);
+        }
+
+        .vol-slider { width: 100%; }
+        input[type="range"] {
+            -webkit-appearance: none; width: 100%; background: #000; height: 30px; border: 1px solid #444;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 40px; height: 26px; background: #ddd; border-radius: 2px;
+            cursor: pointer; border: 1px solid #666; box-shadow: inset 0 0 5px #fff;
+        }
+
+        .status-led { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--led-off); margin-right: 5px; }
+        .playing .status-led { background: var(--led-red); box-shadow: 0 0 10px var(--led-red); }
 
     </style>
 </head>
 <body>
 
-<header>
-    <div class="header-info" id="playing-now">RMF // VST-ENGINE</div>
-    <div class="clock" id="timer">00:00</div>
-</header>
-
-<div class="app-content">
-    <div class="grid" id="station-grid"></div>
-
-    <aside class="sidebar">
-        <div class="logo-display">
-            <h2>RMF</h2>
-            <p>SUB.FACTORY</p>
+<div class="chassis">
+    <header>
+        <div class="brand">@RMF Roland</div>
+        <div class="model-name">
+            <h1>TB-303</h1>
+            <p>Computer Controlled</p>
         </div>
+    </header>
 
-        <div class="controls">
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(-1)"><path d="M6,18V6H8V18H6M9.5,12L18,6V18L9.5,12Z"/></svg>
-            <svg class="c-svg c-play" viewBox="0 0 24 24" onclick="toggle()"><path id="p-ico" d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-            <svg class="c-svg" viewBox="0 0 24 24" onclick="skip(1)"><path d="M16,18H18V6H16M6,18L14.5,12L6,6V18Z"/></svg>
-        </div>
+    <div class="main-engine">
+        <div class="grid" id="station-grid"></div>
 
-        <div class="vol-box">
-            <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
-            <span style="font-size: 10px; color: #555; font-family: 'Orbitron';">MASTER VOLUME</span>
-        </div>
-    </aside>
+        <aside class="sidebar">
+            <div class="display-vst" id="vst-screen">
+                <div style="font-size: 12px; opacity: 0.6;">PATTERN MODE</div>
+                <div id="playing-now" style="font-size: 20px; margin: 10px 0;">IDLE...</div>
+                <div id="timer" style="font-size: 24px; color: #fff;">00:00</div>
+            </div>
+
+            <div class="knob-container">
+                <div class="knob" onclick="adj(-5)"></div>
+                <div class="knob" onclick="adj(5)"></div>
+            </div>
+
+            <div class="vol-control">
+                <p style="font-size: 10px; margin-bottom: 5px; text-align: center;">VOLUME</p>
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+            </div>
+
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button onclick="toggle()" style="background: #444; color: #fff; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">RUN/STOP</button>
+            </div>
+        </aside>
+    </div>
 </div>
 
 <audio id="player"></audio>
 
 <script>
     const STATIONS = [
-        { n: 'RMF FM', s: 'RMF FM', u: 'rmf_fm' },
-        { n: 'RMF MAXXX', s: 'Maxxx', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', s: '80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', s: '90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', s: '2000', u: 'rmf_2000' },
-        { n: 'RMF CHILLOUT', s: 'Chillout', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', s: 'Classic', u: 'rmf_classic' },
-        { n: 'RMF DANCE', s: 'Dance', u: 'rmf_dance' },
-        { n: 'RMF GOLD', s: 'Gold', u: 'rmf_gold' },
-        { n: 'RMF LATINO', s: 'Latino', u: 'rmf_latino' },
-        { n: 'RMF LOVE', s: 'Love', u: 'rmf_love' },
-        { n: 'RMF PARTY', s: 'Party', u: 'rmf_party' },
-        { n: 'RMF POLSKI ROCK', s: 'Polski Rock', u: 'rmf_polski_rock' },
-        { n: 'RMF ROCK', s: 'Rock', u: 'rmf_rock' },
-        { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', s: '1', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: '2', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '3', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '4', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '5', u: 'rmf_2000' },
+        { n: 'RMF CHILLOUT', s: '6', u: 'rmf_chillout' },
+        { n: 'RMF CLASSIC', s: '7', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: '8', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: '9', u: 'rmf_gold' },
+        { n: 'RMF LATINO', s: '10', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: '11', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: '12', u: 'rmf_party' },
+        { n: 'RMF POLSKI ROCK', s: '13', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK', s: '14', u: 'rmf_rock' },
+        { n: 'RMF SMOOTH JAZZ', s: '15', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
+    const player = document.getElementById('player'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
     let current = -1;
 
     function clock() {
@@ -187,9 +200,8 @@
         const t = document.createElement('div');
         t.className = 'tile';
         t.innerHTML = `
-            <div class="waves"><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">RMF</div>
-            <div class="t-bottom">${s.s}</div>
+            <div class="t-top">${s.s}</div>
+            <div class="t-bottom">${s.n.split(' ')[1] || 'FM'}</div>
         `;
         t.onclick = () => play(i);
         grid.appendChild(t);
@@ -198,20 +210,20 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "SOURCE: " + STATIONS[i].n;
+        document.getElementById('vst-screen').classList.add('playing');
+        document.getElementById('playing-now').textContent = STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
-        ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z');
     }
 
     function toggle() {
-        if(player.paused) { player.play(); ico.setAttribute('d', 'M14,19H18V5H14M6,19H10V5H6V19Z'); }
-        else { player.pause(); ico.setAttribute('d', 'M8,5.14V19.14L19,12.14L8,5.14Z'); }
+        if(player.paused) { player.play(); document.getElementById('vst-screen').classList.add('playing'); }
+        else { player.pause(); document.getElementById('vst-screen').classList.remove('playing'); }
     }
 
-    function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
     function setV(v) { player.volume = v / 100; }
+    function adj(d) { vRange.value = parseInt(vRange.value) + d; setV(vRange.value); }
 </script>
 </body>
 </html>
