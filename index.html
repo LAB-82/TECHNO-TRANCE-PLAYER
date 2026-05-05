@@ -17,7 +17,7 @@
             --btn-metal: linear-gradient(145deg, #d1d1d1, #a1a1a1);
         }
 
-        /* Twarde ustawienie kursora domyślnego dla wszystkiego */
+        /* Przywrócenie domyślnego kursora systemowego */
         * { 
             margin: 0; padding: 0; box-sizing: border-box; outline: none; 
             cursor: default !important; 
@@ -49,7 +49,9 @@
             margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px;
         }
         .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; margin: 0; }
-        .logo span { font-size: 11px; letter-spacing: 4px; color: #444; font-weight: bold; }
+        
+        /* ZADANIE: Kolor napisu COMPUTER CONTROLLED taki sam jak RMF TB-303 (#1a1a1a) */
+        .logo span { font-size: 11px; letter-spacing: 4px; color: #1a1a1a; font-weight: bold; }
 
         /* ZEGAR - BIAŁY RDZEŃ + ZIELONA POŚWIATA */
         #clock {
@@ -61,7 +63,6 @@
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* LEWA STRONA - SZARE METALICZNE KAFELKI */
         .grid-stations { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
@@ -72,6 +73,7 @@
             border: 1px solid rgba(0,0,0,0.2);
         }
 
+        /* KAFELKI - SZARY METALIK */
         .bt-303 {
             background: var(--btn-metal);
             border: 1px solid #777;
@@ -91,7 +93,7 @@
 
         .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
         
-        /* AKTYWNA STACJA - USUNIĘTY BIAŁY, TYLKO ZIELONY ŚWIECĄCY */
+        /* ZADANIE: Aktywna stacja świeci tak samo jak zegarek (Biały rdzeń + Zielona poświata) */
         .bt-303.active { 
             background: var(--btn-metal); 
             border-color: var(--lcd-green);
@@ -103,11 +105,10 @@
             text-transform: uppercase; pointer-events: none;
         }
         .bt-303.active .st-label { 
-            color: var(--lcd-green); 
-            text-shadow: 0 0 10px var(--lcd-green);
+            color: #ffffff; 
+            text-shadow: 0 0 12px var(--lcd-green);
         }
 
-        /* PRAWY PANEL - UKŁAD ZE ZDJĘCIA */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; 
             background: var(--metal-shine);
@@ -117,7 +118,6 @@
             gap: 15px;
         }
 
-        /* RMF FM - BIAŁY RDZEŃ + ZIELONA POŚWIATA */
         .lcd-display {
             background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #333;
             padding: 10px; font-family: 'Share Tech Mono', monospace;
@@ -141,7 +141,8 @@
 
         .pan-section { text-align: center; }
         .pan-leds { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 8px; height: 8px; background: var(--led-red); border-radius: 50%; box-shadow: 0 0 5px var(--led-red); border: 1px solid #000; }
+        .pan-led { width: 8px; height: 8px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; transition: background 0.2s; }
+        .pan-led.active { background: var(--led-red); box-shadow: 0 0 5px var(--led-red); }
 
         .knob-volume {
             width: 75px; height: 75px; border-radius: 50%;
@@ -159,14 +160,17 @@
             display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center;
         }
 
+        /* ZADANIE: Kolor przycisków Up, Down, Run/Stop taki jak kafelków (Szary metalik) */
         .sq-btn {
-            width: 45px; height: 45px; background: #fff; border: 1px solid #ccc;
-            box-shadow: 0 4px 0 #999; display: flex; flex-direction: column;
+            width: 45px; height: 45px; 
+            background: var(--btn-metal); 
+            border: 1px solid #777;
+            box-shadow: 0 4px 0 #555; display: flex; flex-direction: column;
             align-items: center; justify-content: center; border-radius: 2px;
         }
-        .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #999; }
+        .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #555; }
         .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
-        .sq-btn span { font-size: 8px; font-weight: bold; color: #000; }
+        .sq-btn span { font-size: 8px; font-weight: bold; color: #111; }
 
         .fader-track { 
             background: #000; height: 40px; flex: 1; border-radius: 2px; border: 1px solid #444;
@@ -180,13 +184,14 @@
 
         .btn-run-stop {
             width: 110px; height: 55px;
-            background: #e0e0e0; border: 1px solid #999;
+            background: var(--btn-metal); 
+            border: 1px solid #777;
             border-radius: 4px;
-            box-shadow: 0 5px 0 #aaa, 0 8px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 5px 0 #555, 0 8px 15px rgba(0,0,0,0.3);
             display: flex; align-items: center; justify-content: center;
             font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase;
         }
-        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #aaa; }
+        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
 
     </style>
 </head>
@@ -222,7 +227,11 @@
 
             <div class="analog-controls">
                 <div class="pan-section">
-                    <div class="pan-leds"><div class="pan-led"></div><div class="pan-led"></div><div class="pan-led"></div></div>
+                    <div class="pan-leds">
+                        <div class="pan-led" id="led-l"></div>
+                        <div class="pan-led active" id="led-c"></div>
+                        <div class="pan-led" id="led-r"></div>
+                    </div>
                     <div class="knob-volume" id="pan-knob"></div>
                     <div style="font-size: 9px; font-weight: bold; margin-top: 5px; color: #222;">PAN L/R</div>
                 </div>
@@ -274,6 +283,14 @@
     const player = document.getElementById('player');
     const stName = document.getElementById('st-name');
     const vRange = document.getElementById('v-range');
+    const panKnob = document.getElementById('pan-knob');
+    
+    // Inicjalizacja Pan (Panner)
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const source = audioCtx.createMediaElementSource(player);
+    const panner = audioCtx.createStereoPanner();
+    source.connect(panner);
+    panner.connect(audioCtx.destination);
 
     STATIONS.forEach((s, i) => {
         const b = document.createElement('div');
@@ -294,6 +311,7 @@
     });
 
     function play(i) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
         document.querySelectorAll('.bt-303').forEach((b, idx) => b.classList.toggle('active', idx === i));
         stName.textContent = STATIONS[i].n;
         player.src = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
@@ -325,11 +343,22 @@
     document.getElementById('run-stop-btn').addEventListener('click', stopRadio);
     vRange.addEventListener('input', (e) => setV(e.target.value));
 
-    let panPos = 0;
-    document.getElementById('pan-knob').addEventListener('click', function() {
-        panPos = (panPos + 45);
-        if(panPos > 135) panPos = -135;
-        this.style.transform = `rotate(${panPos}deg)`;
+    // LOGIKA PAN (Lewy/Środek/Prawy)
+    let panState = 0; // -1: Left, 0: Center, 1: Right
+    const panAngles = { "-1": -45, "0": 0, "1": 45 };
+
+    panKnob.addEventListener('click', function() {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        panState++;
+        if (panState > 1) panState = -1;
+        
+        panner.pan.value = panState; // Zmiana w Web Audio API
+        this.style.transform = `rotate(${panAngles[panState]}deg)`;
+        
+        // ZADANIE: Diody wskazują aktywny kanał
+        document.getElementById('led-l').classList.toggle('active', panState === -1);
+        document.getElementById('led-c').classList.toggle('active', panState === 0);
+        document.getElementById('led-r').classList.toggle('active', panState === 1);
     });
 
     setInterval(() => {
