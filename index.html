@@ -3,171 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RMF DUNE 3 EDITION</title>
+    <title>RMF POLYGON 2 EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Saira:wght@400;500;600;700&family=Orbitron:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=JetBrains+Mono:wght@300;500&display=swap');
         
         :root {
-            --dune-bg: #2b2b2b;
-            --dune-panel: #3a3a3a;
-            --dune-border: #1a1a1a;
-            --dune-accent: #ff453a; 
-            --dune-screen: #e6e6e6;
-            --wood: #5d3a24;
-            --text-gray: #aaa;
+            --poly-bg: #0a0a0c;
+            --poly-panel: #141417;
+            --poly-border: #252529;
+            --neon-purple: #bc26ff;
+            --neon-blue: #00f2ff;
+            --neon-green: #39ff14;
+            --text-dim: #666670;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         body { 
-            height: 100vh; background: #121212; 
-            font-family: 'Saira', sans-serif;
+            height: 100vh; background: #050505; 
+            font-family: 'JetBrains Mono', monospace;
             display: flex; align-items: center; justify-content: center;
+            color: #fff;
         }
 
-        /* Główna obudowa - Zachowany rozmiar i proporcje */
-        .synth-chassis {
+        /* Główny interfejs Polygon 2 */
+        .vst-container {
             width: 1100px; height: 550px;
-            background: var(--dune-bg);
-            border-left: 15px solid var(--wood);
-            border-right: 15px solid var(--wood);
-            border-top: 2px solid #444;
-            border-bottom: 8px solid #1a1a1a;
-            border-radius: 4px; padding: 15px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            background: var(--poly-bg);
+            border: 1px solid var(--poly-border);
+            padding: 20px;
             display: flex; flex-direction: column;
+            box-shadow: 0 0 40px rgba(0,0,0,1);
+            position: relative;
+            overflow: hidden;
         }
 
-        /* Układ rzędów z oryginalnego kodu */
-        .top-row { display: flex; gap: 15px; flex: 1.2; margin-bottom: 15px; }
-        .bottom-row { display: flex; gap: 15px; flex: 0.8; }
+        /* Dekoracyjne linie w tle (Glitch Style) */
+        .vst-container::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
+                        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 20px 20px; pointer-events: none;
+        }
 
-        .section-box {
-            background: var(--dune-panel);
-            border-radius: 3px; border: 1px solid var(--dune-border);
+        .top-row { display: flex; gap: 20px; flex: 1.2; margin-bottom: 20px; z-index: 1; }
+        .bottom-row { display: flex; gap: 20px; flex: 0.8; z-index: 1; }
+
+        .module {
+            background: var(--poly-panel);
+            border: 1px solid var(--poly-border);
             padding: 15px; position: relative;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
         }
 
-        .section-label {
-            position: absolute; top: 5px; left: 10px;
-            font-size: 10px; font-weight: 700; color: var(--text-gray);
-            text-transform: uppercase; letter-spacing: 1px;
+        .mod-header {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 9px; font-weight: 700; color: var(--text-dim);
+            text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 15px; display: flex; justify-content: space-between;
         }
 
-        /* Kolumna funkcyjna (lewa) */
-        .func-column { display: flex; flex-direction: column; gap: 8px; width: 80px; justify-content: center; }
-        .func-btn {
-            height: 30px; background: #222; border: 1px solid #000;
-            border-radius: 2px; color: #888; font-size: 9px;
+        /* Kolumna funkcyjna - Przyciski Glitch */
+        .sidebar { width: 90px; display: flex; flex-direction: column; gap: 10px; }
+        .g-btn {
+            height: 32px; background: #1c1c21; border: 1px solid #333;
+            color: #888; font-size: 8px; font-weight: 700;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: 700; text-transform: uppercase;
-            transition: 0.2s;
+            cursor: pointer; transition: 0.1s; text-transform: uppercase;
         }
-        .func-btn:hover { color: #fff; background: #2a2a2a; }
-        .func-btn.active-led { border-color: var(--dune-accent); color: var(--dune-accent); }
+        .g-btn:hover { background: #25252b; color: var(--neon-blue); }
+        .g-btn.active { border-color: var(--neon-purple); color: var(--neon-purple); box-shadow: inset 0 0 5px rgba(188, 38, 255, 0.2); }
 
-        /* Siatka stacji (środek) */
-        .patch-grid {
+        /* Matryca stacji (Polygon Grids) */
+        .station-grid {
             flex: 2; display: grid; grid-template-columns: repeat(4, 1fr);
-            gap: 8px; padding-top: 15px;
+            gap: 10px;
         }
-        .patch-btn {
-            background: #222; border: 1px solid #111;
-            border-radius: 2px; color: #777; font-size: 11px;
+        .node {
+            background: #0f0f12; border: 1px solid #1f1f24;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; transition: 0.3s; position: relative;
+        }
+        .node::after { content: ""; position: absolute; width: 4px; height: 4px; background: #333; top: 5px; right: 5px; }
+        .node:hover { border-color: #444; }
+        .node.selected { border-color: var(--neon-blue); }
+        .node.selected::after { background: var(--neon-blue); box-shadow: 0 0 8px var(--neon-blue); }
+        .node-id { font-size: 10px; color: #555; }
+
+        /* Master Section - Neon Knob */
+        .master-ctrl { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .ring-container {
+            width: 100px; height: 100px; position: relative;
             display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-weight: 600; transition: 0.2s;
         }
-        .patch-btn.active {
-            background: #2d2d2d; color: var(--dune-accent);
-            border-color: var(--dune-accent);
-            box-shadow: 0 0 10px rgba(255, 69, 58, 0.2);
+        .outer-ring {
+            position: absolute; inset: 0; border: 2px solid #1f1f24; border-radius: 50%;
         }
-
-        /* Sekcja Master (prawa) */
-        .master-section { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        
-        .knob-outer {
-            width: 90px; height: 90px; background: #1a1a1a;
-            border-radius: 50%; border: 3px solid #000;
-            position: relative; cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        .neon-knob {
+            width: 70px; height: 70px; background: #000; border: 2px solid #222;
+            border-radius: 50%; position: relative; cursor: pointer;
         }
-        .knob-indicator {
-            position: absolute; top: 8px; left: 50%; width: 3px; height: 12px;
-            background: var(--dune-accent); transform: translateX(-50%);
-            border-radius: 2px;
+        .neon-indicator {
+            position: absolute; top: 5px; left: 50%; width: 2px; height: 15px;
+            background: var(--neon-blue); transform-origin: center 30px;
         }
 
-        /* Dolny biały wyświetlacz (Dune Screen) */
-        .main-status {
-            flex: 2; background: var(--dune-screen); border: 3px solid var(--dune-border);
-            display: flex; flex-direction: column; justify-content: center;
-            padding: 0 25px; border-radius: 3px; color: #333;
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.1);
+        /* Dolny panel - Waveform / Display */
+        .data-screen {
+            flex: 2.5; display: flex; flex-direction: column; justify-content: center;
         }
-        .status-line { color: #888; font-size: 10px; font-weight: 700; text-transform: uppercase; margin-bottom: 5px; }
-        .status-big { 
-            color: #000; font-size: 26px; font-weight: 700; 
-            letter-spacing: -0.5px; border-bottom: 1px solid #ccc;
+        .viz-box {
+            height: 60px; border-left: 2px solid var(--neon-purple);
+            margin-bottom: 10px; position: relative; overflow: hidden;
+            background: rgba(188, 38, 255, 0.03);
         }
+        .status-title { font-family: 'Syncopate', sans-serif; font-size: 18px; color: #fff; margin-bottom: 5px; }
+        .status-sub { color: var(--neon-purple); font-size: 10px; letter-spacing: 2px; }
 
-        .brand-area {
+        .logo-box {
             flex: 1; display: flex; flex-direction: column; align-items: flex-end; justify-content: center;
+            opacity: 0.8;
         }
-        .brand-area h1 { color: #fff; font-size: 24px; letter-spacing: 3px; font-weight: 600; }
-        .brand-area h1 span { color: var(--dune-accent); }
+        .logo-box h1 { font-family: 'Syncopate', sans-serif; font-size: 22px; letter-spacing: -1px; }
+        .logo-box span { color: var(--neon-blue); }
 
-        /* Suwak - ukryty technicznie, ale steruje głośnością */
         input[type="range"] {
-            width: 100%; margin-top: 15px; accent-color: var(--dune-accent);
+            width: 100%; margin-top: 15px; appearance: none; background: #1c1c21; height: 2px;
         }
-
+        input[type="range"]::-webkit-slider-thumb {
+            appearance: none; width: 12px; height: 12px; background: var(--neon-blue); border-radius: 50%; cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
-<div class="synth-chassis">
-    <!-- GÓRNY RZĄD: Oryginalny układ 3-kolumnowy -->
+<div class="vst-container">
     <div class="top-row">
-        <div class="section-box func-column">
-            <div class="section-label">System</div>
-            <div class="func-btn" onclick="toggle()">Play</div>
-            <div class="func-btn">Menu</div>
-            <div class="func-btn">Multi</div>
-            <div class="func-btn active-led">Solo</div>
+        <div class="module sidebar">
+            <div class="mod-header">CORE</div>
+            <div class="g-btn" onclick="toggle()">PLAY/STOP</div>
+            <div class="g-btn active">HYBRID</div>
+            <div class="g-btn">GLITCH</div>
+            <div class="g-btn">SHIFT</div>
         </div>
 
-        <div class="section-box" style="flex: 2.5;">
-            <div class="section-label">Differential Oscillator / Station Select</div>
-            <div class="patch-grid" id="grid"></div>
+        <div class="module station-grid" id="grid">
+            <!-- Wygenerowane węzły stacji -->
         </div>
 
-        <div class="section-box master-section">
-            <div class="section-label">Master Volume</div>
-            <div class="knob-outer" id="v-knob" onclick="resetVol()">
-                <div class="knob-indicator" id="v-ptr"></div>
+        <div class="module master-ctrl">
+            <div class="mod-header">OUTPUT</div>
+            <div class="ring-container">
+                <div class="outer-ring"></div>
+                <div class="neon-knob" id="v-knob" onclick="resetVol()">
+                    <div class="neon-indicator" id="v-ptr"></div>
+                </div>
             </div>
             <input type="range" id="v-slider" min="0" max="100" value="50" oninput="setV(this.value)">
-            <div style="color: var(--text-gray); font-size: 10px; margin-top: 5px; font-weight: 700;">VALUE: <span id="vol-val" style="color: #fff;">50</span>%</div>
+            <div style="font-size: 9px; margin-top: 10px; color: var(--text-dim);">GAIN // <span id="vol-val" style="color: var(--neon-blue);">50</span></div>
         </div>
     </div>
 
-    <!-- DOLNY RZĄD -->
     <div class="bottom-row">
-        <div class="section-box" style="flex: 0.4; display: flex; align-items: center; justify-content: center;">
-            <div class="section-label">Bank</div>
-            <div style="font-family: 'Orbitron', sans-serif; font-size: 24px; color: var(--dune-accent); text-shadow: 0 0 10px rgba(255,69,58,0.3);" id="bank-num">A</div>
+        <div class="module" style="flex: 0.5; display: flex; align-items: center; justify-content: center;">
+            <div class="mod-header" style="position: absolute; top: 5px;">BANK</div>
+            <div id="bank-id" style="font-size: 32px; font-weight: 300; color: var(--neon-green);">01</div>
         </div>
 
-        <div class="section-box main-status">
-            <div class="status-line">PATCH DESCRIPTION // ACTIVE STREAM</div>
-            <div class="status-big" id="patch-name">001: RMF FM INITIAL</div>
+        <div class="module data-screen">
+            <div class="viz-box" id="viz"></div>
+            <div class="status-sub">SAMPLER SOURCE // STREAM ACTIVE</div>
+            <div class="status-title" id="patch-name">READY_PLAYER_ONE</div>
         </div>
 
-        <div class="brand-area">
-            <h1>SYNAPSE <span>DUNE 3</span></h1>
-            <div style="color: #666; font-size: 9px; font-weight: 700; letter-spacing: 1px;">RADIO STREAMING SYNTHESIZER</div>
+        <div class="logo-box">
+            <h1>POLY<span>GON</span></h1>
+            <div style="font-size: 8px; letter-spacing: 4px; color: var(--text-dim);">HYBRID SAMPLER // RMF FM</div>
         </div>
     </div>
 </div>
@@ -192,23 +202,24 @@
           vSlider = document.getElementById('v-slider'),
           volVal = document.getElementById('vol-val'),
           patchName = document.getElementById('patch-name'),
-          bankNum = document.getElementById('bank-num');
+          bankId = document.getElementById('bank-id'),
+          viz = document.getElementById('viz');
 
     let current = -1;
 
     STATIONS.forEach((s, i) => {
-        const btn = document.createElement('div');
-        btn.className = 'patch-btn';
-        btn.textContent = (i + 1).toString().padStart(3, '0');
-        btn.onclick = () => play(i);
-        grid.appendChild(btn);
+        const node = document.createElement('div');
+        node.className = 'node';
+        node.innerHTML = `<div class="node-id">${(i + 1).toString().padStart(2, '0')}</div>`;
+        node.onclick = () => play(i);
+        grid.appendChild(node);
     });
 
     function play(i) {
         current = i;
-        document.querySelectorAll('.patch-btn').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        patchName.textContent = (i + 1).toString().padStart(3, '0') + ": " + STATIONS[i].n.toUpperCase();
-        bankNum.textContent = String.fromCharCode(65 + Math.floor(i/4)); // Dynamiczne banki A, B, C...
+        document.querySelectorAll('.node').forEach((n, idx) => n.classList.toggle('selected', idx === i));
+        patchName.textContent = STATIONS[i].n.replace(/\s+/g, '_').toUpperCase();
+        bankId.textContent = (i + 1).toString().padStart(2, '0');
         
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
@@ -223,12 +234,24 @@
     function setV(v) {
         player.volume = v / 100;
         volVal.textContent = v;
-        // Obrót od -150 do +150 stopni
         const rot = (v * 3) - 150;
-        vPtr.parentElement.style.transform = `rotate(${rot}deg)`;
+        vPtr.style.transform = `translateX(-50%) rotate(${rot}deg)`;
     }
 
     function resetVol() { vSlider.value = 50; setV(50); }
+
+    // Prosta animacja "glitch" dla wizualizacji
+    setInterval(() => {
+        if(!player.paused) {
+            viz.innerHTML = '';
+            for(let i=0; i<30; i++) {
+                const bar = document.createElement('div');
+                const h = Math.random() * 60;
+                bar.style.cssText = `position:absolute; left:${i*3.4}%; bottom:0; width:2px; height:${h}px; background:var(--neon-purple); opacity:${Math.random()}`;
+                viz.appendChild(bar);
+            }
+        }
+    }, 100);
 
     setV(50);
 </script>
