@@ -8,13 +8,12 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@700&display=swap');
 
         :root {
-            --metal-base: #c0c0c0;
             --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
-            --led-red: #ff3333;
+            --led-red: #ff0000;
             --led-bg: #400000;
             --lcd-green: #a4f000;
-            --acid-bg: #1a1a1c;
-            --btn-metal: linear-gradient(145deg, #d1d1d1, #a1a1a1);
+            --btn-metal: linear-gradient(180deg, #ffffff 0%, #e0e0e0 45%, #999 50%, #ccc 100%);
+            --panel-bg: #8a8a8a;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -29,13 +28,12 @@
             width: 98vw; height: 96vh; background: var(--metal-shine);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
             border: 5px solid #222; border-radius: 8px;
-            box-shadow: 0 40px 100px rgba(0,0,0,1), inset 0 2px 4px rgba(255,255,255,0.7);
+            box-shadow: 0 40px 100px rgba(0,0,0,1);
             padding: 25px; display: flex; flex-direction: column; position: relative;
         }
 
         header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px; }
         .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; margin: 0; }
-        /* Zadanie 4: Poprawiony kolor napisu pod logo */
         .logo span { font-size: 11px; letter-spacing: 4px; color: #1a1a1a; font-weight: bold; }
 
         #clock { font-family: 'Share Tech Mono'; font-size: 32px; color: #ffffff; text-shadow: 0 0 15px var(--lcd-green); }
@@ -44,62 +42,61 @@
 
         .grid-stations { 
             flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; 
-            background: rgba(0,0,0,0.15); padding: 20px; border-radius: 10px;
-            box-shadow: inset 2px 2px 10px rgba(0,0,0,0.4); border: 1px solid rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2);
         }
 
+        /* Styl kafelków ze zdjęcia */
         .bt-303 {
-            background: var(--btn-metal); border: 1px solid #777; border-radius: 4px;
+            background: var(--btn-metal); border: 2px solid #555; border-radius: 2px;
             display: flex; align-items: center; justify-content: center; padding: 10px;
-            position: relative; box-shadow: 0 4px 0 #555, 0 6px 10px rgba(0,0,0,0.4); transition: 0.05s; text-align: center;
+            position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.4); transition: 0.05s;
         }
-        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
-        .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
-        
-        /* Zadanie 3: Aktywna stacja ze świeceniem jak zegar */
+        .bt-303::before { content: ""; position: absolute; top: 4px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
         .bt-303.active .st-label { color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); }
-        .bt-303.active { border-color: var(--lcd-green); }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-
         .bt-303 .st-label { font-weight: 800; font-size: 14px; color: #222; text-transform: uppercase; pointer-events: none; }
 
-        /* Przywrócone oryginalne tło panelu (bez dodatkowych ramek i ciemnych teł) */
-        .pro-panel { flex: 0.6; display: flex; flex-direction: column; gap: 15px; }
+        /* Panel boczny - tło i styl ze zdjęcia */
+        .pro-panel { 
+            flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
+            background: #999; background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            padding: 20px; border: 2px solid #666; border-radius: 10px; box-shadow: inset 0 0 15px rgba(0,0,0,0.3);
+        }
 
-        .lcd-display { background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #333; padding: 10px; font-family: 'Share Tech Mono'; box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; font-weight: bold; }
-        #st-name { font-size: 24px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
-        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; font-weight: bold; }
+        .lcd-display { background: #0a0c0a; height: 110px; border: 4px solid #444; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; }
+        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; }
+        #st-name { font-size: 26px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
+        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        .step-sequencer { background: #111; border-radius: 4px; border: 1px solid #333; padding: 8px; display: flex; flex-direction: column; gap: 4px; }
-        .step-row { display: flex; gap: 2px; height: 18px; }
-        .step { flex: 1; background: #222; border-radius: 1px; }
-        .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.8); }
+        .step-sequencer { background: #1a1a1a; border: 2px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
+        .step-row { display: flex; gap: 2px; height: 20px; }
+        .step { flex: 1; background: #333; }
+        .step.on { background: #ff4400; box-shadow: 0 0 8px #ff4400; }
 
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        
+        /* Sekcja PAN ze zdjęcia */
         .pan-section { text-align: center; }
-        .pan-leds { display: flex; gap: 5px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 8px; height: 8px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
-        .pan-led.active { background: var(--led-red); box-shadow: 0 0 5px var(--led-red); }
+        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 5px; }
+        .pan-led { width: 10px; height: 10px; background: var(--led-bg); border-radius: 50%; border: 1px solid #222; }
+        .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
+        .knob-volume { width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle, #eee 0%, #999 100%); border: 2px solid #555; position: relative; box-shadow: 0 5px 10px rgba(0,0,0,0.5); }
+        .knob-volume::before { content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 20px; background: #111; transform: translateX(-50%); border-radius: 2px; }
 
-        .knob-volume { width: 75px; height: 75px; border-radius: 50%; background: radial-gradient(circle, #eee 0%, #aaa 100%); border: 2px solid #666; position: relative; margin: 0 auto; box-shadow: 0 6px 12px rgba(0,0,0,0.4); transition: transform 0.2s; }
-        .knob-volume::before { content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 18px; background: #222; transform: translateX(-50%); border-radius: 2px; }
+        .volume-row { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
 
-        .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
+        /* Przyciski UP/DOWN ze zdjęcia */
+        .sq-btn { width: 55px; height: 50px; background: var(--btn-metal); border: 2px solid #444; border-radius: 3px; box-shadow: 1px 3px 0 #333; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .sq-btn .dot { width: 5px; height: 5px; background: #400; border-radius: 50%; margin-bottom: 5px; }
+        .sq-btn span { font-size: 9px; font-weight: 900; color: #000; }
 
-        /* Zadanie 2: Przyciski sterujące w kolorze szary metalik (jak kafelki) */
-        .sq-btn { width: 45px; height: 45px; background: var(--btn-metal); border: 1px solid #777; box-shadow: 0 4px 0 #555; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 2px; }
-        .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #555; }
-        .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
-        .sq-btn span { font-size: 8px; font-weight: bold; color: #000; }
-
-        .fader-track { background: #000; height: 40px; flex: 1; border-radius: 2px; border: 1px solid #444; display: flex; align-items: center; padding: 0 5px; }
+        .fader-track { background: #000; height: 45px; flex: 1; border: 2px solid #444; display: flex; align-items: center; padding: 0 5px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 34px; background: #ccc; border: 1px solid #333; border-radius: 2px; box-shadow: inset 0 0 5px #fff; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 38px; background: #eee; border: 1px solid #444; box-shadow: inset 0 0 8px #fff; }
 
-        /* Zadanie 2: RUN/STOP w kolorze szary metalik */
-        .btn-run-stop { width: 110px; height: 55px; background: var(--btn-metal); border: 1px solid #777; border-radius: 4px; box-shadow: 0 5px 0 #555; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 13px; color: #111; text-transform: uppercase; }
-        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
+        /* Przycisk RUN/STOP ze zdjęcia */
+        .btn-run-stop { width: 130px; height: 60px; background: var(--btn-metal); border: 2px solid #444; border-radius: 4px; box-shadow: 0 5px 0 #333; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; color: #000; text-transform: uppercase; }
+        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #333; }
     </style>
 </head>
 <body>
@@ -126,7 +123,7 @@
                 <div class="pan-section">
                     <div class="pan-leds"><div class="pan-led" id="l-led"></div><div class="pan-led active" id="c-led"></div><div class="pan-led" id="r-led"></div></div>
                     <div class="knob-volume" id="pan-knob"></div>
-                    <div style="font-size: 9px; font-weight: bold; margin-top: 5px; color: #222;">PAN L/R</div>
+                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #111;">PAN L/R</div>
                 </div>
                 <div class="volume-row">
                     <div class="sq-btn" id="vol-down-btn"><div class="dot"></div><span>DOWN</span></div>
@@ -156,7 +153,6 @@
     const vRange = document.getElementById('v-range');
     const panKnob = document.getElementById('pan-knob');
 
-    // Zadanie 1: Panorama L/R
     let audioCtx, source, panner;
     function initAudio() {
         if (!audioCtx) {
@@ -203,16 +199,15 @@
     document.getElementById('run-stop-btn').addEventListener('click', stopRadio);
     vRange.addEventListener('input', (e) => setV(e.target.value));
 
-    // Zadanie 1: Obsługa balansu L/R
-    let panVal = 0; 
+    let panPos = 0; 
     panKnob.addEventListener('click', () => {
         initAudio();
-        panVal = panVal === 1 ? -1 : panVal + 1;
-        panner.pan.setValueAtTime(panVal, audioCtx.currentTime);
-        panKnob.style.transform = `rotate(${panVal * 45}deg)`;
-        document.getElementById('l-led').classList.toggle('active', panVal === -1);
-        document.getElementById('c-led').classList.toggle('active', panVal === 0);
-        document.getElementById('r-led').classList.toggle('active', panVal === 1);
+        panPos = panPos === 1 ? -1 : panPos + 1;
+        panner.pan.setValueAtTime(panPos, audioCtx.currentTime);
+        panKnob.style.transform = `rotate(${panPos * 45}deg)`;
+        document.getElementById('l-led').classList.toggle('active', panPos === -1);
+        document.getElementById('c-led').classList.toggle('active', panPos === 0);
+        document.getElementById('r-led').classList.toggle('active', panPos === 1);
     });
 
     setInterval(() => {
