@@ -3,80 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF ICON DRUM EDITION</title>
+    <title>RMF SUBLAB XL EDITION</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;500&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600&family=Lexend:wght@400;700&display=swap');
 
         :root {
-            --icon-bg: #1a1a1a;
-            --icon-panel: #111111;
-            --icon-accent: #ff8400; /* Charakterystyczny pomarańcz IconDrum */
-            --icon-text-gold: #c5a47e; /* Złoty kolor logotypu */
-            --blue-wave: #ff8400; /* Zmiana fal na pomarańczowe dla spójności */
+            --xl-bg: #111216;
+            --xl-panel: #1a1b21;
+            --xl-border: #2a2c35;
+            --xl-accent-yellow: #f5c518;
+            --xl-accent-purple: #8e44ad;
+            --xl-accent-green: #a2ff00;
+            --xl-text: #8a8d9b;
+            --blue-wave: #a2ff00; /* Zielony "Retrig" z SubLab */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
         html, body { 
             height: 100vh; width: 100vw; 
-            background: #000; color: #fff; 
-            font-family: 'Oswald', sans-serif;
+            background: var(--xl-bg); color: #fff; 
+            font-family: 'Outfit', sans-serif;
             overflow: hidden; 
         }
 
         body { 
-            display: flex; flex-direction: column; padding: 1vh;
-            border: 4px solid #222;
+            display: flex; flex-direction: column; padding: 1.2vh;
         }
 
-        /* GÓRNY PASEK - Styl IconDrum Header */
+        /* GÓRNY PASEK - SubLab XL Top Bar */
         header { 
-            height: 45px; display: flex; justify-content: space-between; align-items: center;
-            background: #111; padding: 0 20px; margin-bottom: 1vh; flex-shrink: 0;
-            border-bottom: 1px solid #333;
+            height: 55px; display: flex; justify-content: space-between; align-items: center;
+            background: var(--xl-panel); padding: 0 20px; margin-bottom: 1.5vh; flex-shrink: 0;
+            border-radius: 8px; border: 1px solid var(--xl-border);
         }
-        .header-info { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 2px; }
-        .clock { color: var(--icon-accent); font-size: 16px; font-weight: 500; }
+        .xl-logo { 
+            font-family: 'Lexend', sans-serif; font-weight: 800; color: var(--xl-accent-yellow); 
+            font-size: 24px; font-style: italic;
+        }
+        .header-info { 
+            background: #25262e; border-radius: 4px; padding: 6px 20px;
+            font-size: 13px; color: #fff; letter-spacing: 0.5px;
+        }
+        .clock { color: var(--xl-text); font-weight: 300; }
 
-        .app-content { 
-            display: flex; flex: 1; gap: 10px; min-height: 0; 
-            padding: 10px; background: var(--icon-bg);
-            border: 1px solid #333;
-        }
+        .app-content { display: flex; flex: 1; gap: 15px; min-height: 0; }
 
         /* SIATKA 5x3 - ORYGINALNY SZKIELET */
         .grid { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
-            gap: 8px; 
-            padding: 10px;
-            border: 1px solid var(--icon-accent);
+            gap: 10px; 
         }
 
         .tile {
-            background: #0a0a0a; border: 1px solid #333;
+            background: var(--xl-panel); border: 1px solid var(--xl-border);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; position: relative; overflow: visible;
-            transition: 0.2s;
+            border-radius: 10px; transition: 0.2s ease;
         }
 
-        .tile .t-top { font-size: 9px; color: var(--icon-accent); opacity: 0.7; text-transform: uppercase; z-index: 2; }
-        .tile .t-bottom { font-size: 14px; font-weight: 300; color: #eee; margin-top: 2px; text-align: center; z-index: 2; }
+        .tile .t-top { font-size: 9px; font-weight: 600; color: var(--xl-text); text-transform: uppercase; z-index: 2; margin-bottom: 3px; }
+        .tile .t-bottom { font-size: 14px; font-weight: 600; color: #ececec; text-align: center; z-index: 2; }
 
-        /* AKTYWNA STACJA - Styl IconDrum Pad */
+        /* AKTYWNA STACJA - Styl SubLab "Active Pad" */
         .tile.active { 
-            border: 1px solid var(--icon-accent);
-            background: #1a1a1a;
-            box-shadow: inset 0 0 15px rgba(255, 132, 0, 0.2);
+            border-color: var(--xl-accent-purple);
+            background: #1f1a26;
+            box-shadow: inset 0 0 15px rgba(142, 68, 173, 0.15);
         }
-        .tile.active::after {
-            content: ""; position: absolute; top: 4px; right: 4px;
-            width: 4px; height: 4px; background: var(--icon-accent);
-            box-shadow: 0 0 5px var(--icon-accent);
-        }
+        .tile.active .t-bottom { color: var(--xl-accent-green); }
 
-        /* RIPPLE EFFECT */
+        /* RIPPLE EFFECT - Neonowy Zielony */
         .waves {
             position: absolute; width: 100%; height: 100%;
             display: flex; align-items: center; justify-content: center;
@@ -84,69 +83,68 @@
         }
         .tile.active .waves { opacity: 0.5; }
         .wave {
-            position: absolute; border: 1px solid var(--icon-accent);
+            position: absolute; border: 2px solid var(--xl-accent-green); border-radius: 4px;
             width: 10px; height: 10px; opacity: 0;
-            animation: ripple 3s infinite linear;
+            animation: ripple 3s infinite cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         @keyframes ripple {
             0% { width: 0; height: 0; opacity: 1; }
-            100% { width: 300%; height: 300%; opacity: 0; }
+            100% { width: 250%; height: 250%; opacity: 0; }
         }
 
-        /* SIDEBAR - Panel sterowania */
+        /* SIDEBAR - SubLab Controls Panel */
         .sidebar { 
             flex: 0.6; display: flex; flex-direction: column; 
-            align-items: center; justify-content: space-between; padding: 20px 0;
-            background: var(--icon-panel); border: 1px solid var(--icon-accent);
+            align-items: center; justify-content: space-between; padding: 25px;
+            background: var(--xl-panel); border: 1px solid var(--xl-border);
+            border-radius: 12px;
         }
 
-        .logo-display { text-align: center; width: 100%; }
-        .logo-display h2 { 
-            font-family: 'Playfair Display', serif; font-size: 42px; 
-            color: var(--icon-text-gold); font-style: italic;
-            line-height: 1; margin-bottom: 5px;
+        .logo-display {
+            width: 100%; padding: 20px; border-radius: 8px;
+            background: linear-gradient(180deg, #25262e 0%, #1a1b21 100%);
+            text-align: center; border: 1px solid #333;
         }
-        .logo-display .sub { 
-            font-size: 10px; color: var(--icon-accent); 
-            text-transform: uppercase; letter-spacing: 5px; border-top: 1px solid var(--icon-accent);
-            display: inline-block; padding-top: 5px;
-        }
+        .logo-display h2 { font-family: 'Lexend', sans-serif; font-size: 32px; color: #fff; margin-bottom: 5px; }
+        .logo-display p { font-size: 11px; color: var(--xl-accent-purple); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
 
         .controls { display: flex; align-items: center; gap: 2vw; }
-        .c-svg { width: 30px; height: 30px; fill: #555; cursor: pointer; }
+        .c-svg { width: 32px; height: 32px; fill: var(--xl-text); cursor: pointer; transition: 0.2s; }
+        .c-svg:hover { fill: #fff; }
         .c-play { 
-            width: 70px; height: 70px; fill: var(--icon-accent); 
-            border: 1px solid var(--icon-accent); padding: 15px; 
-            background: #000;
+            width: 65px; height: 65px; fill: #000; background: var(--xl-accent-yellow); 
+            padding: 18px; border-radius: 50%; box-shadow: 0 0 20px rgba(245, 197, 24, 0.3);
         }
 
-        .vol-box { width: 80%; text-align: center; }
-        .vol-label { font-size: 10px; color: #666; text-transform: uppercase; margin-bottom: 10px; }
+        /* VOLUME / MIXER BOX */
+        .vol-box { width: 100%; }
+        .vol-label { font-size: 10px; color: var(--xl-text); text-transform: uppercase; margin-bottom: 12px; display: flex; justify-content: space-between; }
         .vol-bar { 
-            height: 40px; border: 1px solid #333; background: #050505; 
-            display: flex; align-items: center; padding: 0 10px; 
+            height: 45px; background: #25262e; border-radius: 6px; 
+            display: flex; align-items: center; padding: 0 15px; border: 1px solid #333;
         }
         
         input[type="range"] { 
-            flex: 1; appearance: none; background: #222; height: 2px; 
+            flex: 1; appearance: none; background: #3d3f4a; height: 4px; border-radius: 2px;
         }
         input[type="range"]::-webkit-slider-thumb { 
-            appearance: none; width: 12px; height: 20px; 
-            background: var(--icon-accent); border-radius: 0; cursor: pointer;
+            appearance: none; width: 16px; height: 16px; 
+            background: #fff; border: 3px solid var(--xl-accent-purple); border-radius: 50%; cursor: pointer;
         }
 
         @media (max-width: 600px) {
             .app-content { flex-direction: column; }
-            .grid { grid-template-columns: repeat(3, 1fr); height: 50vh; }
-            .sidebar { width: 100%; }
+            .grid { grid-template-columns: repeat(3, 1fr); height: 45vh; }
+            .sidebar { width: 100%; height: auto; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="header-info" id="playing-now">MASTER SELECTION: NONE</div>
+    <div class="xl-logo">XL</div>
+    <div class="header-info" id="playing-now">PRESET: HAUNTED RMF</div>
     <div class="clock" id="timer">00:00</div>
 </header>
 
@@ -155,8 +153,8 @@
 
     <aside class="sidebar">
         <div class="logo-display">
-            <h2>IconDrum</h2>
-            <div class="sub">SOUND SELECTION</div>
+            <h2>SubLab</h2>
+            <p>X-SUB™ ENGINE</p>
         </div>
 
         <div class="controls">
@@ -166,7 +164,7 @@
         </div>
 
         <div class="vol-box">
-            <div class="vol-label">Output Volume</div>
+            <div class="vol-label"><span>Master Out</span><span id="v-val">50%</span></div>
             <div class="vol-bar">
                 <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
             </div>
@@ -195,7 +193,7 @@
         { n: 'RMF SMOOTH JAZZ', s: 'Smooth Jazz', u: 'rmf_smooth_jazz' }
     ];
 
-    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range');
+    const player = document.getElementById('player'), ico = document.getElementById('p-ico'), grid = document.getElementById('station-grid'), vRange = document.getElementById('v-range'), vVal = document.getElementById('v-val');
     let current = -1;
 
     function clock() {
@@ -209,7 +207,7 @@
         t.className = 'tile';
         t.innerHTML = `
             <div class="waves"><div class="wave"></div><div class="wave"></div></div>
-            <div class="t-top">BANK ${(i + 1).toString().padStart(2, '0')}</div>
+            <div class="t-top">SUB OSC ${(i + 1).toString().padStart(2, '0')}</div>
             <div class="t-bottom">${s.s.toUpperCase()}</div>
         `;
         t.onclick = () => play(i);
@@ -219,7 +217,7 @@
     function play(i) {
         current = i;
         document.querySelectorAll('.tile').forEach((t, idx) => t.classList.toggle('active', idx === i));
-        document.getElementById('playing-now').textContent = "MASTER SELECTION: " + STATIONS[i].n;
+        document.getElementById('playing-now').textContent = "PATCH: " + STATIONS[i].n;
         const streamBase = "https://rs201-krk.rmfstream.pl/";
         player.src = (STATIONS[i].n === 'RMF MAXXX') ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : streamBase + STATIONS[i].u;
         player.play();
@@ -232,7 +230,7 @@
     }
 
     function skip(d) { let n = current + d; if(n >= 0 && n < STATIONS.length) play(n); }
-    function setV(v) { player.volume = v / 100; }
+    function setV(v) { player.volume = v / 100; vVal.textContent = v + "%"; }
 </script>
 </body>
 </html>
