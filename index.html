@@ -13,7 +13,8 @@
             --led-red: #ff3333;
             --led-bg: #400000;
             --lcd-green: #a4f000;
-            --btn-metal: linear-gradient(145deg, #d1d1d1, #a1a1a1);
+            /* Styl przycisków ze zdjęcia - szczotkowany metal */
+            --btn-metal: linear-gradient(145deg, #e0e0e0 0%, #a0a0a0 100%);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -38,22 +39,29 @@
             position: relative;
         }
 
-        /* ŚRUBKA TORX */
+        /* ZAGŁĘBIONA ŚRUBKA TORX (GWIAZDKA) */
         .screw {
             position: absolute;
-            width: 16px; height: 16px;
-            background: radial-gradient(circle at 30% 30%, #eee, #666);
+            width: 22px; height: 22px;
+            background: radial-gradient(circle, #444 0%, #222 100%); /* Otwór */
             border-radius: 50%;
-            box-shadow: 1px 2px 3px rgba(0,0,0,0.6), inset -1px -1px 2px rgba(255,255,255,0.5);
+            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.8), 1px 1px 1px rgba(255,255,255,0.3);
             z-index: 20;
             display: flex; align-items: center; justify-content: center;
         }
+        .screw::before {
+            content: "";
+            width: 14px; height: 14px;
+            background: radial-gradient(circle at 30% 30%, #bbb, #777); /* Główka */
+            border-radius: 50%;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
         .screw::after {
             content: "";
+            position: absolute;
             width: 8px; height: 8px;
             background: #222;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            box-shadow: inset 0 0 2px #000;
         }
 
         header { 
@@ -72,7 +80,6 @@
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* PANELE - Krawędzie panelu */
         .grid-stations, .pro-panel {
             background: var(--metal-shine);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
@@ -95,7 +102,38 @@
             padding: 35px 25px; border-radius: 4px; gap: 15px;
         }
 
-        /* RAMKA WYŚWIETLACZA */
+        /* STYL PRZYCISKÓW ZE ZDJĘCIA */
+        .bt-303, .sq-btn, .btn-run-stop {
+            background: var(--btn-metal);
+            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            border: 2px solid #000; /* Czarna gruba ramka */
+            border-radius: 4px;
+            box-shadow: 
+                inset 2px 2px 2px rgba(255,255,255,0.8), 
+                inset -2px -2px 2px rgba(0,0,0,0.4),
+                4px 4px 8px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+            transition: 0.1s;
+            cursor: pointer !important;
+        }
+
+        .bt-303:active, .sq-btn:active, .btn-run-stop:active {
+            transform: scale(0.98);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+        .bt-303::before { 
+            content: ""; position: absolute; top: 8px; width: 6px; height: 6px;
+            background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
+        }
+        .bt-303.active { border: 2px solid #000; background: #f0f0f0; }
+        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
+        
+        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; margin-top: 10px;}
+        .bt-303.active .st-label { color: #000; text-shadow: 0 0 10px var(--lcd-green); }
+
+        /* WYŚWIETLACZ */
         .lcd-bezel {
             background: #1a1a1a;
             padding: 4px;
@@ -112,24 +150,6 @@
         #st-name { font-size: 22px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
         .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        /* PRZYCISKI TB-303 */
-        .bt-303 {
-            background: var(--btn-metal);
-            border: 1px solid #777; border-radius: 3px;
-            display: flex; align-items: center; justify-content: center;
-            position: relative; box-shadow: 0 4px 0 #555, 0 6px 10px rgba(0,0,0,0.4);
-            transition: 0.05s; cursor: pointer !important;
-        }
-        .bt-303::before { 
-            content: ""; position: absolute; top: 6px; width: 6px; height: 6px;
-            background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
-        }
-        .bt-303:active { transform: translateY(2px); box-shadow: 0 2px 0 #333; }
-        .bt-303.active { border-color: var(--lcd-green); box-shadow: 0 2px 0 #333, 0 0 10px rgba(164, 240, 0, 0.3); }
-        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; }
-        .bt-303.active .st-label { color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); }
-
         /* SEQUENCER */
         .step-sequencer { background: #111; border-radius: 3px; padding: 10px; display: flex; flex-direction: column; gap: 5px; box-shadow: inset 0 2px 10px #000; }
         .step-row { display: flex; gap: 3px; height: 15px; }
@@ -140,17 +160,9 @@
         .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
         
-        .sq-btn {
-            width: 45px; height: 45px; 
-            background: var(--btn-metal); 
-            border: 1px solid #777;
-            box-shadow: 0 4px 0 #555; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; border-radius: 2px;
-            cursor: pointer !important;
-        }
-        .sq-btn:active { transform: translateY(2px); box-shadow: 0 2px 0 #555; }
+        .sq-btn { width: 50px; height: 50px; flex-direction: column; }
         .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
-        .sq-btn span { font-size: 8px; font-weight: bold; color: #111; }
+        .sq-btn span { font-size: 9px; font-weight: bold; color: #111; }
 
         .fader-track { background: #000; height: 35px; flex: 1; border-radius: 2px; border: 1px solid #444; display: flex; align-items: center; padding: 0 5px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
@@ -158,20 +170,17 @@
             -webkit-appearance: none; width: 20px; height: 30px; background: #ccc; border: 1px solid #333; border-radius: 2px;
         }
 
-        .btn-run-stop {
-            width: 120px; height: 50px; background: var(--btn-metal);
-            border: 1px solid #777; border-radius: 4px; box-shadow: 0 5px 0 #555;
-            display: flex; align-items: center; justify-content: center; font-weight: 900; color: #111;
-            cursor: pointer !important;
-        }
-        .btn-run-stop:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
+        .btn-run-stop { width: 140px; height: 55px; font-weight: 900; color: #111; font-size: 16px; }
     </style>
 </head>
 <body>
 
 <div class="vst-chassis">
+    <!-- Śrubki obudowy -->
     <div class="screw" style="top: 10px; left: 10px;"></div>
     <div class="screw" style="top: 10px; right: 10px;"></div>
+    <!-- Śrubka na środku panelu -->
+    <div class="screw" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
     <div class="screw" style="bottom: 10px; left: 10px;"></div>
     <div class="screw" style="bottom: 10px; right: 10px;"></div>
 
