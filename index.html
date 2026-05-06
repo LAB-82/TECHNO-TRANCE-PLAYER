@@ -75,7 +75,7 @@
             height: 14px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #666, #222);
-            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 1px rgba(255,255,255,0.1);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 1px rgba(255,255,0.1);
             bottom: 6px;
             color: #111;
             font-size: 9px;
@@ -155,6 +155,11 @@
 
         /* 4. Część panela sterowania z przyciskami */
         .controls-main {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 6px;
             background: #c0c0c0;
             background-image: 
                 repeating-linear-gradient(135deg, 
@@ -168,8 +173,6 @@
                     transparent 4px),
                 linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%);
             border: 2px solid #666;
-            border-radius: 6px;
-            padding: 15px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
             z-index: 10;
             width: fit-content;
@@ -184,7 +187,7 @@
             height: 7px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #888, #333);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+            box-shadow: inset 0 1px 2px rgba(0,0,0.8);
             color: #222;
             font-size: 5px;
             display: flex;
@@ -196,10 +199,15 @@
         .controls-main::before { top: 4px; left: 4px; }
         .controls-main::after { top: 4px; right: 4px; }
 
+        .top-buttons {
+            display: flex;
+            gap: 6px;
+        }
+
         /* 1. Przyciski pwr, play, rec, stop, mute, Up, Down - szare szczotkowane aluminium */
         .btn-rect, .btn-v {
             border: 2px solid #333;
-            background: linear-gradient(135deg, #e8e8e8 0%, #d0d0d0 25%, #e0e0 50%, #c8c8c8 75%, #d8d8d8 100%);
+            background: linear-gradient(135deg, #e8e8e8 0%, #d0d0 25%, #e0e0e0 50%, #c8c8c8 75%, #d8d8d8 100%);
             background-image: 
                 repeating-linear-gradient(135deg,
                     rgba(255,255,255,0.4) 0px,
@@ -245,37 +253,33 @@
             box-shadow: 0 0 12px #e60012 !important, inset 0 2px 2px rgba(255,255,255,0.8); 
         }
 
+        /* 2. Pasek głośności z przyciskami */
         .vol-wrapper { 
             display: flex; 
-            flex-direction: column; 
-            gap: 4px; 
-            width: 100px; 
+            gap: 6px; 
+            width: 100%; 
             height: 38px; 
-            justify-content: flex-start; 
-        }
-        
-        .vol-btns { 
-            display: flex; 
-            gap: 4px; 
-            height: 30px; 
+            align-items: center;
         }
         
         .btn-v { 
-            flex: 1; 
-            height: 100%; 
-            border-radius: 2px; 
+            width: 68px;
+            height: 38px; 
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 1px;
         }
         
-        .vol-label { display: none; }
-        
-        /* 2. Pasek głośności z przyciskami */
         .vol-bar { 
-            width: 100%; 
-            height: 4px; 
+            flex: 1;
+            height: 38px; 
             background: #000; 
-            border-radius: 2px; 
+            border: 2px solid #333;
+            border-radius: 3px; 
             position: relative; 
-            overflow: hidden; 
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
         }
         
         .vol-fill { 
@@ -283,13 +287,11 @@
             width: 50%; 
             background: #e60012; 
             opacity: 0; 
-            transition: width 0.1s; 
+            transition: width 0.1s;
+            box-shadow: 0 0 10px #e60012;
         }
 
-        .frame.powered .vol-fill { 
-            opacity: 1; 
-            box-shadow: 0 0 5px #e60012; 
-        }
+        .frame.powered .vol-fill { opacity: 1; }
 
         .lab-logo { 
             margin-top: 0.5cm; 
@@ -340,18 +342,24 @@
                 grid-template-columns: 1fr 1fr; 
                 width: 100% !important; 
                 gap: 12px; 
-                background: transparent; border: none; box-shadow: none; padding: 0;
                 box-sizing: border-box;
+            }
+            .top-buttons {
+                display: contents;
             }
             .btn-rect { width: 3.5cm; height: 55px; }
             .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
             .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
-            .vol-wrapper { grid-column: span 2; width: 100% !important; height: auto !important; margin-top: 15px; padding: 0 7.5mm; box-sizing: border-box; }
-            .vol-btns { height: 55px; order: 2; display: flex; justify-content: space-between; align-items: center; width: 100%; }
-            .btn-v { width: 2cm; height: 55px; flex: none; }
-            .vol-label { display: block; color: #444; font-family: 'DS-Digital'; font-size: 16px; letter-spacing: 2px; }
-            .frame.powered .vol-label { color: #e60012; text-shadow: 0 0 5px #e60012; }
-            .vol-bar { height: 12px; order: 1; margin-bottom: 10px; width: 100%; }
+            .vol-wrapper { 
+                grid-column: span 2; 
+                width: 100% !important; 
+                height: auto !important; 
+                margin-top: 15px; 
+                padding: 0 7.5mm; 
+                box-sizing: border-box;
+                flex-direction: column;
+            }
+            .btn-v { width: 100%; height: 55px; }
         }
     </style>
 </head>
@@ -368,19 +376,18 @@
         </div>
         <div class="main-content">
             <div class="controls-main" id="controls">
-                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
-                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                <div class="top-buttons">
+                    <button id="pwr" class="btn-rect"><svg viewBox="0 0 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                    <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                    <button id="rec" class="btn-rect"><svg viewBox="0 0 24"><circle cx="12" cy="12" r="8"/></svg></button>
+                    <button id="stop" class="btn-rect"><svg viewBox="0 0 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                    <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                </div>
                 
                 <div class="vol-wrapper" id="vol-container">
-                    <div class="vol-btns">
-                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <div class="vol-label">VOLUME</div>
-                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
-                    </div>
+                    <button id="vDown" class="btn-v">DOWN</button>
                     <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                    <button id="vUp" class="btn-v">UP</button>
                 </div>
             </div>
 
