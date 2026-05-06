@@ -66,16 +66,17 @@
             display: flex; justify-content: space-between; align-items: baseline;
             margin-bottom: 25px; border-bottom: 2px solid rgba(0,0,0,0.2); padding-bottom: 15px;
         }
-        .logo h1 { font-family: 'Orbitron'; font-size: 38px; color: #111; letter-spacing: -1px; margin: 0; text-shadow: 1px 1px 1px rgba(255,255,255,0.5); }
+        .logo h1, #clock { 
+            font-family: 'Orbitron'; 
+            font-size: 38px; 
+            color: #111; 
+            letter-spacing: -1px; 
+            margin: 0; 
+            text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
+        }
         .logo span { font-size: 11px; letter-spacing: 4px; color: #333; font-weight: bold; }
 
-        #clock {
-            font-family: 'Orbitron';
-            font-size: 28px;
-            font-weight: 700;
-            color: #111;
-            text-shadow: 0 0 10px var(--led-red);
-        }
+        #clock { font-size: 34px; }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
@@ -125,10 +126,10 @@
             content: ""; position: absolute; top: 8px; width: 6px; height: 6px;
             background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
         }
-        .bt-303.active { border: 2px solid #000; background: #f0f0f0; }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
         
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; margin-top: 10px;}
+        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; margin-top: 10px; transition: 0.2s;}
+        .bt-303.active .st-label { color: #000; text-shadow: 0 0 10px var(--lcd-green), 0 0 20px var(--lcd-green); }
 
         .lcd-bezel {
             background: #1a1a1a;
@@ -157,11 +158,15 @@
         .sq-btn { width: 50px; height: 50px; flex-direction: column; }
         .sq-btn .dot { 
             width: 6px; height: 6px; 
-            background: var(--led-red); 
+            background: var(--led-bg); 
             border-radius: 50%; 
             margin-bottom: 4px; 
-            box-shadow: 0 0 5px var(--led-red);
             border: 1px solid #000;
+            transition: background 0.1s, box-shadow 0.1s;
+        }
+        .sq-btn.blink .dot {
+            background: var(--led-red);
+            box-shadow: 0 0 8px var(--led-red);
         }
         .sq-btn span { font-size: 9px; font-weight: bold; color: #111; }
 
@@ -179,10 +184,8 @@
 <div class="vst-chassis">
     <div class="screw" style="top: 10px; left: 10px;"></div>
     <div class="screw" style="top: 10px; right: 10px;"></div>
-    <!-- Śruby krawędziowe panelu głównego -->
     <div class="screw" style="top: 10px; left: 50%; transform: translateX(-50%);"></div>
     <div class="screw" style="bottom: 10px; left: 50%; transform: translateX(-50%);"></div>
-    
     <div class="screw" style="bottom: 10px; left: 10px;"></div>
     <div class="screw" style="bottom: 10px; right: 10px;"></div>
 
@@ -289,12 +292,16 @@
         player.play();
     }
 
-    function adj(d) { 
+    function adj(d, btnId) { 
         let newVal = parseInt(vRange.value) + d;
         if(newVal > 100) newVal = 100;
         if(newVal < 0) newVal = 0;
         vRange.value = newVal; 
         setV(newVal); 
+        
+        const btn = document.getElementById(btnId);
+        btn.classList.add('blink');
+        setTimeout(() => btn.classList.remove('blink'), 150);
     }
 
     function setV(v) {
@@ -302,8 +309,8 @@
         document.getElementById('v-val').textContent = `VOL: ${v}%`;
     }
 
-    document.getElementById('vol-down-btn').onclick = () => adj(-5);
-    document.getElementById('vol-up-btn').onclick = () => adj(5);
+    document.getElementById('vol-down-btn').onclick = () => adj(-5, 'vol-down-btn');
+    document.getElementById('vol-up-btn').onclick = () => adj(5, 'vol-up-btn');
     vRange.oninput = (e) => setV(e.target.value);
 
     document.getElementById('run-stop-btn').onclick = () => {
