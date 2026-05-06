@@ -8,18 +8,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@700&display=swap');
 
         :root {
-            --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
-            --led-red: #ff0000;
-            --led-bg: #400000;
+            /* Nowe zmienne kolorów oparte o załączone zdjęcie */
+            --main-chassis-bg: #1c1e1f; /* Ciemnoszary z głównej obudowy */
+            --right-panel-bg: #e0e0e0; /* Jasny szary z prawego panelu kontrolnego */
+            --station-pad-bg: #dcdcdc; /* Kolor padów stacji po lewej */
+            --led-on: #ff4500; /* Neonowy pomarańczowy dla LEDów i wyświetlacza */
             --lcd-green: #a4f000;
-            /* Kolor tła kafelka stacji (pozostaje z Twojego kodu) */
-            --tile-metal: #c2c2c2; 
-            /* Jasny metaliczny kolor tła prawego panelu (z Twojego pierwszego zdjęcia) */
-            --panel-bg-color: #dcdcdc; 
-            /* CIEMNY metaliczny kolor dla pokręteł i przycisków na prawym panelu (z Twojego drugiego zdjęcia) */
-            --knob-metal: #4a4a4a; 
-            /* Tekstura panelu (zostaje z Twojego kodu) */
-            --panel-texture: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            --text-on-white: #0a0a0a;
+            --metal-highlight: #777;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -31,115 +27,117 @@
         }
 
         .vst-chassis {
-            width: 98vw; height: 96vh; background: var(--metal-shine);
-            background-image: var(--panel-texture);
-            border: 5px solid #222; border-radius: 8px;
+            width: 98vw; height: 96vh; background-color: var(--main-chassis-bg);
+            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            border: 5px solid #111; border-radius: 8px;
             box-shadow: 0 40px 100px rgba(0,0,0,1);
             padding: 25px; display: flex; flex-direction: column; position: relative;
         }
 
-        header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px; }
-        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; margin: 0; }
-        .logo span { font-size: 11px; letter-spacing: 4px; color: #1a1a1a; font-weight: bold; }
+        header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #f0f0f0; letter-spacing: -2px; margin: 0; }
+        .logo span { font-size: 11px; letter-spacing: 4px; color: #ccc; font-weight: bold; }
 
-        #clock { font-family: 'Share Tech Mono'; font-size: 32px; color: #ffffff; text-shadow: 0 0 15px var(--lcd-green); }
+        #clock { font-family: 'Share Tech Mono'; font-size: 32px; color: var(--lcd-green); text-shadow: 0 0 15px var(--lcd-green); }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
+        /* GŁÓWNA SIATKA STACJI (po lewej) */
         .grid-stations { 
             flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; 
-            background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2);
-            border-radius: 5px;
+            background: rgba(0,0,0,0.2); padding: 20px; border: 1px solid rgba(255,255,255,0.05); border-radius: 5px;
         }
 
+        /* Pady stacji (jasnoszare z kropką, jak na foto) */
         .bt-303 {
-            background: var(--tile-metal); 
+            background-color: var(--station-pad-bg); 
             border: 1px solid #999;
-            border-bottom: 4px solid #666;
-            border-radius: 3px;
+            border-bottom: 3px solid #666;
+            border-radius: 2px;
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
             position: relative; transition: 0.05s;
         }
-        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        /* Czerwona kropka LED nad stacją */
+        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: #600; border-radius: 50%; border: 1px solid #000; }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #1a3a5a; text-transform: uppercase; pointer-events: none; margin-top: 10px; text-align: center; line-height: 1.1;}
-        .bt-303:active { transform: translateY(2px); border-bottom-width: 2px; }
+        .bt-303 .st-label { font-weight: 800; font-size: 12px; color: #1a1a1a; text-transform: uppercase; pointer-events: none; margin-top: 10px; text-align: center; }
+        .bt-303:active { transform: translateY(1px); border-bottom-width: 1px; }
 
-        /* PRAWY PANEL STEROWANIA - JASNE METALICZNE TŁO */
+        /* PRAWY PANEL KONTROLNY (JASNOSZARY Z FOTO) */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
-            /* Zmiana tła na jasne metaliczne */
-            background-color: var(--panel-bg-color);
-            background-image: var(--panel-texture);
+            background-color: var(--right-panel-bg);
+            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
             padding: 20px; border: 3px solid #666; border-radius: 10px; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 3px 3px 10px rgba(0,0,0,0.2);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 3px 3px 15px rgba(0,0,0,0.3);
         }
 
-        .lcd-display { background: #0a0c0a; height: 110px; border: 4px solid #222; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 15px #000; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; }
-        #st-name { font-size: 26px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
+        /* Wyświetlacz LCD (czarny z zielonym tekstem) */
+        .lcd-display { background: #000; height: 110px; border: 5px solid #333; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; border-radius: 4px; box-shadow: inset 0 0 15px #000; }
+        .lcd-label { color: var(--lcd-green); font-size: 10px; font-weight: bold; opacity: 0.9; }
+        #st-name { font-size: 28px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
         .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        .step-sequencer { background: rgba(0,0,0,0.8); border: 2px solid #222; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
-        .step-row { display: flex; gap: 2px; height: 20px; }
-        .step { flex: 1; background: #333; }
-        .step.on { background: #ff4400; box-shadow: 0 0 8px #ff4400; }
+        /* Sekwencer LED (pomarańczowy neon) */
+        .step-sequencer { background: #111; border: 3px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
+        .step-row { display: flex; gap: 2px; height: 18px; }
+        .step { flex: 1; background: #222; border: 1px solid #000; }
+        .step.on { background-color: var(--led-on); box-shadow: 0 0 10px var(--led-on); }
 
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px;}
         
         .pan-section { text-align: center; }
-        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 10px; height: 10px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
+        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+        .pan-led { width: 8px; height: 8px; background: #555; border-radius: 50%; border: 1px solid #111; }
         .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
         
-        /* POKRĘTŁO PAN L/R - CIEMNE, METALOWE (jak na zdjęciu) */
+        /* POKRĘTŁO PAN L/R (ciemnoszare, metalowe, jak na foto) */
         .knob-volume { 
-            width: 80px; height: 80px; border-radius: 50%; 
-            background: radial-gradient(circle, #888 0%, #222 100%);
-            border: 2px solid #111; position: relative; 
-            box-shadow: 0 5px 10px rgba(0,0,0,0.6); 
+            width: 70px; height: 70px; border-radius: 50%; 
+            background: radial-gradient(circle, #555 0%, #111 100%);
+            border: 3px solid #333; position: relative; 
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.5); 
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             margin: 0 auto;
         }
         /* Kreska pozycjonująca na pokrętle */
-        .knob-volume::before { content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 20px; background: #eee; transform: translateX(-50%); border-radius: 2px; }
+        .knob-volume::before { content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 15px; background: #eee; transform: translateX(-50%); border-radius: 2px; }
 
-        .volume-row { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
+        .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
 
-        /* PRZYCISKI UP/DOWN/EDIT - CIEMNE (jak na zdjęciu) */
+        /* PRZYCISKI EDIT (jasne z czerwoną kropką, jak na foto) */
         .sq-btn { 
-            width: 55px; height: 50px; 
-            /* Ciemny metal z Twojego zdjęcia */
-            background: var(--knob-metal);
-            border: 1px solid #111; 
-            border-bottom: 3px solid #000; 
+            width: 50px; height: 45px; 
+            background-color: var(--station-pad-bg); 
+            border: 1px solid #999; 
+            border-bottom: 3px solid #666; 
             border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 2px 2px 4px rgba(0,0,0,0.4);
+            box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
             position: relative;
         }
-        /* Dioda nad przyciskami EDIT */
-        .sq-btn::after { content: ""; position: absolute; top: -10px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        /* Mała kropka LED nad EDIT */
+        .sq-btn::after { content: ""; position: absolute; top: 6px; width: 4px; height: 4px; background: #600; border-radius: 50%; border: 1px solid #000; }
         .sq-btn.active::after { background: var(--led-red); box-shadow: 0 0 6px var(--led-red); }
 
-        .sq-btn span { font-size: 10px; font-weight: 900; color: #fff; text-transform: uppercase; }
+        .sq-btn span { font-size: 10px; font-weight: 900; color: #1a1a1a; text-transform: uppercase; }
 
-        .fader-track { background: #000; height: 45px; flex: 1; border: 2px solid #222; display: flex; align-items: center; padding: 0 5px; }
+        /* FADER GŁOŚNOŚCI (czarna ścieżka z białą główką, jak na foto) */
+        .fader-track { background: #000; height: 35px; flex: 1; border: 2px solid #333; display: flex; align-items: center; padding: 0 2px; border-radius: 2px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 38px; background: #eee; border: 1px solid #333; box-shadow: inset 0 0 8px #fff; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 30px; background: #fff; border: 2px solid #333; cursor: pointer; border-radius: 2px; box-shadow: 1px 1px 3px rgba(0,0,0,0.4); }
 
-        /* PRZYCISK RUN / STOP - CIEMNY (jak na zdjęciu) */
+        /* PRZYCISK RUN / STOP (jasny, jak na foto) */
         .btn-run-stop { 
-            width: 130px; height: 60px; 
-            /* Ciemny metal z Twojego zdjęcia */
-            background: var(--knob-metal); 
-            border: 1px solid #111; 
-            border-bottom: 4px solid #000; 
+            width: 120px; height: 50px; 
+            background-color: var(--station-pad-bg); 
+            border: 1px solid #999; 
+            border-bottom: 4px solid #666; 
             border-radius: 4px; display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; font-size: 15px; color: #fff; text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 3px 3px 6px rgba(0,0,0,0.5);
-            margin-top: 15px;
+            font-weight: 900; font-size: 14px; color: #1a1a1a; text-transform: uppercase;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            margin-top: 10px;
         }
-        .btn-run-stop:active, .sq-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
+        .btn-run-stop:active, .sq-btn:active { transform: translateY(1px); border-bottom-width: 2px; }
     </style>
 </head>
 <body>
@@ -154,6 +152,7 @@
     </header>
 
     <div class="main-workspace">
+        <!-- LEWY PANEL (SIATKA STACJI) -->
         <div class="grid-stations" id="grid"></div>
         <aside class="pro-panel">
             <div class="lcd-display">
@@ -166,12 +165,12 @@
                 <div class="pan-section">
                     <div class="pan-leds"><div class="pan-led" id="l-led"></div><div class="pan-led active" id="c-led"></div><div class="pan-led" id="r-led"></div></div>
                     <div class="knob-volume" id="pan-knob"></div>
-                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #111;">PAN L/R</div>
+                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: var(--text-on-white);">PAN L/R</div>
                 </div>
                 <div class="volume-row">
-                    <div class="sq-btn" id="vol-down-btn"><span>EDIT</span></div>
+                    <div class="sq-btn active" id="vol-down-btn"><span>EDIT</span></div>
                     <div class="fader-track"><input type="range" id="v-range" min="0" max="100" value="50"></div>
-                    <div class="sq-btn active" id="vol-up-btn"><span>EDIT</span></div>
+                    <div class="sq-btn" id="vol-up-btn"><span>EDIT</span></div>
                 </div>
                 <div class="btn-run-stop" id="run-stop-btn">RUN / STOP</div>
             </div>
@@ -247,7 +246,7 @@
     function stopRadio() { 
         player.pause(); 
         player.src = ""; 
-        stName.textContent = "STATION BEZCZYNNA"; 
+        stName.textContent = "STATION IDLE"; 
         document.querySelectorAll('.bt-303').forEach(b => b.classList.remove('active')); 
         isPlaying = false;
         runStopBtn.classList.remove('running');
