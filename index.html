@@ -4,541 +4,380 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio PRO ULTRA v2 - Roland TB-303 Edition</title>
+    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/micr" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
         body {
             margin: 0;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #2a1f18;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%232a1f18" width="100" height="100"/><path d="M0 0h1v1H0zM20 20h1v1H20zM40 40h1v1H40zM60 60h1v1H60zM80 80h1v1H80z" fill="rgba(0,0,0,0.1)"/></svg>');
-            font-family: 'MICR', Arial, sans-serif;
+            background: #000;
+            font-family: Arial, sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
-            padding: 20px;
         }
 
-        /* Główna obudowa - szczotkowane aluminium */
-       .frame {
+        .frame {
             width: 100%;
-            max-width: 900px;
-            border-radius: 8px;
+            max-width: 700px;
+            border-radius: 4px;
             padding: 20px;
-            background: linear-gradient(180deg, #d4d4d4 0%, #a8a8a8 50%, #8a8a8a 100%);
+            background: #c8c8c8;
             background-image: 
-                repeating-linear-gradient(90deg, 
-                    rgba(255,255,255,0.03) 0px, 
-                    rgba(255,255,255,0.03) 1px, 
+                repeating-linear-gradient(135deg, 
+                    rgba(255,255,255,0.1) 0px, 
+                    rgba(255,255,255,0.1) 1px, 
                     transparent 1px, 
-                    transparent 2px),
-                linear-gradient(180deg, #d4d4d4 0%, #a8a8a8 100%);
-            box-shadow: 
-                0 20px 60px rgba(0, 0, 0, 0.8),
-                inset 0 2px 3px rgba(255,255,255,0.6),
-                inset 0 -2px 3px rgba(0,0,0,0.4);
+                    transparent 3px,
+                    rgba(0,0,0,0.05) 3px,
+                    rgba(0,0,0,0.05) 4px,
+                    transparent 4px,
+                    transparent 6px),
+                linear-gradient(180deg, #d8d8d8 0%, #b0b0b0 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 1), inset 0 1px 2px rgba(255,255,255,0.5);
             position: relative;
-            border: 2px solid #666;
+            border: 2px solid #888;
+            box-sizing: border-box;
         }
 
-        /* Śrubki w rogach */
-       .frame::before,.frame::after {
-            content: '';
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #888, #333);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+        .frame.powered {
+            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9), inset 0 1px 2px rgba(255,255,255,0.5);
         }
-       .frame::before { top: 8px; left: 8px; }
-       .frame::after { top: 8px; right: 8px; }
 
-       .screw-bl,.screw-br {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #888, #333);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
-            bottom: 8px;
-        }
-       .screw-bl { left: 8px; }
-       .screw-br { right: 8px; }
-
-        /* Górna sekcja z logo i wyświetlaczami */
-       .header {
+        .header-logos {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 20px;
-            padding: 0 10px;
+            margin-bottom: 15px;
+            padding: 0 5px;
         }
 
-       .logo-section {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-       .roland-logo {
-            font-size: 32px;
+        .roland-logo {
+            font-size: 28px;
             font-weight: 900;
             color: #1a1a1a;
-            letter-spacing: -1px;
             font-family: Arial, sans-serif;
+            line-height: 1;
         }
 
-       .lab-text {
-            font-size: 10px;
+        .lab-sub {
+            font-size: 9px;
             color: #333;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
-       .tb-logo {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 2px;
+        .tb-logo {
+            text-align: right;
         }
 
-       .tb-text {
-            font-size: 18px;
+        .tb-text {
+            font-size: 16px;
             font-weight: 900;
             color: #1a1a1a;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
+            justify-content: flex-end;
         }
 
-       .tb-badge {
+        .tb-badge {
             background: #1a1a1a;
             color: #d4d4d4;
-            padding: 2px 6px;
-            font-size: 14px;
+            padding: 1px 5px;
+            font-size: 12px;
             border-radius: 2px;
         }
 
-       .terminal-text {
-            font-size: 10px;
+        .pro-terminal {
+            font-size: 9px;
             color: #333;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
-        /* Wyświetlacze LED */
-       .displays-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-       .display-frame {
-            background: #0a0a0a;
-            border: 3px solid #444;
+        .display-frame {
+            background: #000;
+            border: 3px solid #555;
             border-top-color: #222;
-            border-bottom-color: #666;
+            border-bottom-color: #777;
             border-radius: 4px;
+            margin: 0 auto 20px auto;
+            box-sizing: border-box;
+            overflow: hidden;
+            width: 100%;
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Digital Numbers', sans-serif;
+            color: #120000;
+            transition: color 0.3s;
+            padding: 0 20px;
             box-shadow: inset 0 3px 10px rgba(0,0,0,0.9);
-            padding: 15px 20px;
-            font-family: 'DS-Digital', monospace;
-            position: relative;
         }
 
-       .display-frame::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 50%);
-            pointer-events: none;
+        .frame.powered .display-frame {
+            color: #e60012;
+            text-shadow: 0 0 10px #e60012;
         }
 
-       .display-main {
-            flex: 1;
-        }
-
-       .display-small {
-            width: 180px;
-        }
-
-       .display-line {
+        .display-line {
             line-height: 1.2;
             text-align: center;
             white-space: nowrap;
-            color: #0a1a0a;
-            transition: all 0.3s;
         }
 
-       .frame.powered.display-line {
-            color: #00ff41;
-            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+        .station-name { font-size: 16px; margin-bottom: 5px; letter-spacing: 2px; }
+        .time-display { font-size: 42px; font-weight: bold; }
+        .date-display { font-size: 14px; margin-top: 5px; }
+
+        .main-content {
+            position: relative;
+            width: 100%;
         }
 
-       .station-name { 
-            font-size: 14px; 
-            margin-bottom: 8px; 
-            letter-spacing: 2px;
-        }
-       .time-display { 
-            font-size: 42px; 
-            font-weight: bold;
-            letter-spacing: 3px;
-        }
-       .date-display { 
-            font-size: 14px; 
-            margin-top: 5px; 
-            letter-spacing: 1px;
-        }
-
-       .computer-controlled {
-            text-align: center;
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 1px;
-            margin-top: 5px;
-        }
-
-        /* Główna zawartość - 2 panele */
-       .main-panels {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-       .panel {
-            background: linear-gradient(180deg, #b8b8b8 0%, #9a9a9a 100%);
+        .controls-panel {
+            background: #b0b0b0;
             border: 2px solid #666;
-            border-radius: 4px;
+            border-radius: 6px;
             padding: 15px;
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-            position: relative;
         }
 
-       .panel-title {
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        /* Panel przycisków */
-       .controls-grid {
+        .controls-main {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            gap: 12px;
+            width: 100%;
         }
 
-       .btn-rect {
+        .btn-rect {
             aspect-ratio: 1;
-            border: 2px solid #555;
-            background: linear-gradient(180deg, #c8c8c8 0%, #a0a0a0 100%);
-            color: #333;
+            border: 2px solid #1a1a1a;
+            background: linear-gradient(135deg, #e8e8e8 0%, #c0c0c0 25%, #d5d5d5 50%, #b8b8b8 75%, #c8c8c8 100%);
+            background-image: 
+                repeating-linear-gradient(135deg,
+                    rgba(255,255,255,0.2) 0px,
+                    rgba(255,255,255,0.2) 1px,
+                    transparent 1px,
+                    transparent 2px),
+                linear-gradient(135deg, #e8e8e8 0%, #c0c0c0 100%);
+            color: #222;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.15s;
-            border-radius: 3px;
+            transition: 0.1s;
+            border-radius: 4px;
             box-shadow: 
-                inset 0 1px 2px rgba(255,255,255,0.5),
-                0 2px 4px rgba(0,0,0,0.3);
+                inset 0 1px 1px rgba(255,255,255,0.8),
+                inset 0 -1px 1px rgba(0,0,0,0.2),
+                0 2px 4px rgba(0,0,0,0.4);
             position: relative;
-            font-size: 9px;
-            gap: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            gap: 6px;
+            padding: 8px;
         }
 
-       .btn-rect::before {
+        .btn-rect::before {
             content: '';
             position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 6px;
-            height: 6px;
+            top: 6px;
+            left: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             background: #2a0000;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.8);
         }
 
-       .frame.powered.btn-rect::before {
+        .frame.powered .btn-rect::before {
             background: #ff0000;
-            box-shadow: 0 0 8px #ff0000, inset 0 1px 1px rgba(0,0,0,0.5);
+            box-shadow: 0 0 6px #ff0000, inset 0 1px 1px rgba(0,0,0,0.5);
         }
 
-       .btn-rect svg { 
-            width: 20px; 
-            height: 20px; 
+        .btn-rect svg { 
+            width: 24px; 
+            height: 24px; 
             fill: currentColor; 
             pointer-events: none; 
         }
 
-       .btn-rect:active {
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        .btn-rect:active {
+            box-shadow: 
+                inset 0 2px 4px rgba(0,0,0,0.4),
+                0 1px 2px rgba(0,0,0,0.3);
             transform: translateY(1px);
         }
 
-       .btn-rect.active {
-            background: linear-gradient(180deg, #e0e0e0 0%, #b8b8b8 100%);
-            border-color: #00ff41;
+        .frame.powered .btn-rect.active {
+            background: linear-gradient(135deg, #f0f0f0 0%, #d0d0d0 100%);
+            border-color: #e60012;
             box-shadow: 
-                0 0 15px rgba(0,255,65,0.5),
-                inset 0 1px 2px rgba(255,255,255,0.5);
+                0 0 12px rgba(230,0,18,0.6),
+                inset 0 1px 1px rgba(255,255,255,0.8);
         }
 
-       .frame.powered.btn-rect.active::before {
-            background: #00ff41;
-            box-shadow: 0 0 12px #00ff41;
+        .frame.powered .btn-rect.active::before {
+            background: #e60012;
+            box-shadow: 0 0 10px #e60012;
         }
 
-        /* Volume w stylu TB-303 */
-       .vol-section {
+        .vol-wrapper {
             grid-column: span 3;
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            gap: 12px;
+            height: 50px;
             align-items: center;
-            gap: 10px;
-            margin-top: 10px;
         }
 
-       .btn-v {
-            flex: 1;
-            height: 45px;
-            border: 2px solid #555;
-            background: linear-gradient(180deg, #c8c8c8 0%, #a0a0a0 100%);
-            color: #333;
+        .btn-v {
+            height: 100%;
+            border: 2px solid #1a1a1a;
+            background: linear-gradient(135deg, #e8e8e8 0%, #c0c0c0 100%);
+            background-image: 
+                repeating-linear-gradient(135deg,
+                    rgba(255,255,255,0.2) 0px,
+                    rgba(255,255,255,0.2) 1px,
+                    transparent 1px,
+                    transparent 2px),
+                linear-gradient(135deg, #e8e8e8 0%, #c0c0c0 100%);
+            color: #222;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            border-radius: 3px;
+            border-radius: 4px;
             box-shadow: 
-                inset 0 1px 2px rgba(255,255,255,0.5),
-                0 2px 4px rgba(0,0,0.3);
+                inset 0 1px 1px rgba(255,255,255,0.8),
+                0 2px 4px rgba(0,0,0,0.4);
+            font-size: 24px;
+            font-weight: bold;
         }
 
-       .btn-v:active {
+        .btn-v:active {
             box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
             transform: translateY(1px);
         }
 
-       .btn-v svg { width: 18px; height: 18px; fill: currentColor; }
+        .btn-v svg { width: 20px; height: 20px; fill: currentColor; }
 
-       .vol-bar-container {
-            flex: 2;
-            height: 45px;
+        .vol-bar {
+            height: 100%;
             background: #0a0a0a;
             border: 2px solid #444;
-            border-radius: 3px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+            border-radius: 4px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
         }
 
-       .vol-bar { 
-            width: 100%; 
-            height: 8px; 
-            background: #1a1a1a; 
-            border-radius: 4px; 
-            position: relative; 
-            overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
-        }
-        
-       .vol-fill { 
-            height: 100%; 
-            width: 50%; 
+        .vol-fill {
+            height: 100%;
+            width: 50%;
             background: #1a1a1a;
             transition: width 0.1s;
-            border-radius: 4px;
         }
 
-       .frame.powered.vol-fill { 
-            background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
-            box-shadow: 0 0 10px #00ff41;
+        .frame.powered .vol-fill {
+            background: linear-gradient(90deg, #e60012 0%, #ff0033 100%);
+            box-shadow: 0 0 10px #e60012;
         }
 
-        /* Step Sequencer - wizualizacja */
-       .sequencer-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(2, 1fr);
-            gap: 6px;
-            margin-bottom: 15px;
-        }
-
-       .seq-step {
-            aspect-ratio: 1;
-            background: #1a1a1a;
-            border: 1px solid #333;
-            border-radius: 2px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
-            transition: all 0.1s;
-        }
-
-       .frame.powered.seq-step.active {
-            background: #ff4500;
-            box-shadow: 0 0 15px #ff4500, inset 0 1px 2px rgba(255,255,255,0.3);
-        }
-
-       .knob-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-       .knob {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #d0d0d0, #888);
-            border: 3px solid #666;
-            box-shadow: 
-                0 4px 8px rgba(0,0,0,0.4),
-                inset 0 2px 4px rgba(255,255,255,0.5);
-            position: relative;
-        }
-
-       .knob::after {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 3px;
-            height: 15px;
-            background: #333;
-            border-radius: 2px;
-        }
-
-       .knob-label {
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 1px;
-        }
-
-        /* Stopka */
-       .footer {
-            text-align: center;
+        .link-container {
             margin-top: 15px;
             padding-top: 15px;
             border-top: 1px solid #888;
+            text-align: center;
         }
 
-       .footer-text {
-            font-size: 10px;
+        .lab-footer {
+            font-size: 9px;
             color: #444;
             letter-spacing: 1px;
             margin-bottom: 5px;
         }
 
-       .footer-link {
+        .link-container a {
             color: #2a0000;
             text-decoration: none;
-            font-family: 'DS-Digital', monospace;
+            font-family: 'DS-Digital';
             letter-spacing: 2px;
-            font-size: 12px;
-            transition: all 0.3s;
+            font-size: 11px;
         }
 
-       .frame.powered.footer-link {
-            color: #00ff41;
-            text-shadow: 0 0 10px #00ff41;
+        .frame.powered .link-container a {
+            color: #e60012;
+            text-shadow: 0 0 10px #e60012;
         }
 
-        /* Mobile */
         @media(max-width:700px) {
-           .main-panels {
-                grid-template-columns: 1fr;
-            }
-           .displays-row {
-                flex-direction: column;
-            }
-           .display-small {
-                width: 100%;
-            }
-           .header {
-                flex-direction: column;
-                gap: 10px;
-            }
+            .frame { max-width: 95%; padding: 15px; }
+            .controls-main { gap: 10px; }
+            .btn-rect { font-size: 9px; }
+            .btn-rect svg { width: 20px; height: 20px; }
         }
     </style>
 </head>
 
 <body oncontextmenu="return false;">
     <div class="frame">
-        <div class="screw-bl"></div>
-        <div class="screw-br"></div>
-        
-        <div class="header">
-            <div class="logo-section">
+        <div class="header-logos">
+            <div>
                 <div class="roland-logo">Roland</div>
-                <div class="lab-text">L.A.B. AUDIO INTERFACE</div>
+                <div class="lab-sub">L.A.B. AUDIO INTERFACE</div>
             </div>
             <div class="tb-logo">
                 <div class="tb-text"><span class="tb-badge">TB</span> TB-303</div>
-                <div class="terminal-text">PRO TERMINAL</div>
+                <div class="pro-terminal">PRO TERMINAL</div>
             </div>
         </div>
 
-        <div class="displays-row">
-            <div class="display-frame display-main" id="display">
-                <div class="display-line station-name">MUZYCZNE RADIO</div>
-                <div class="display-line time-display" id="clock">00:00:00</div>
-            </div>
-            <div class="display-frame display-small">
-                <div class="display-line date-display" id="date">00:00:0000</div>
-                <div class="computer-controlled">COMPUTER CONTROLLED</div>
-            </div>
+        <div class="display-frame" id="display">
+            <div class="display-line station-name">Muzyczne Radio</div>
+            <div class="display-line time-display" id="clock">00:00:00</div>
+            <div class="display-line date-display" id="date">00:00:0000</div>
         </div>
 
-        <div class="main-panels">
-            <!-- Lewy panel - kontrolki -->
-            <div class="panel">
-                <div class="controls-grid" id="controls">
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="controls-main" id="controls">
                     <button id="pwr" class="btn-rect">
                         <svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg>
-                        <span>POWER</span>
+                        POWER
                     </button>
                     <button id="play" class="btn-rect">
                         <svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-                        <span>PLAY</span>
+                        PLAY
                     </button>
                     <button id="rec" class="btn-rect">
                         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
-                        <span>REC</span>
+                        REC
                     </button>
                     <button id="stop" class="btn-rect">
                         <svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg>
-                        <span>STOP</span>
+                        STOP
                     </button>
                     <button id="mute" class="btn-rect">
                         <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
-                        <span>MUTE</span>
+                        MUTE
                     </button>
-                    <div class="btn-rect" style="opacity:0.3; cursor:default;">
-                        <span>---</span>
-                    </div>
+                    <div class="btn-rect" style="opacity:0; pointer-events:none;"></div>
                     
-                    <div class="vol-section">
+                    <div class="vol-wrapper" id="vol-container">
                         <button id="vDown" class="btn-v">
                             <svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg>
                         </button>
-                        <div class="vol-bar-container">
-                            <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                        </div>
+                        <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
                         <button id="vUp" class="btn-v">
                             <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
                         </button>
@@ -546,22 +385,10 @@
                 </div>
             </div>
 
-            <!-- Prawy panel - step sequencer -->
-            <div class="panel">
-                <div class="panel-title">STEP SEQUENCER VISUALIZER</div>
-                <div class="sequencer-grid" id="sequencer">
-                    <!-- 16 kroków generowanych przez JS -->
-                </div>
-                <div class="knob-section">
-                    <div class="knob"></div>
-                    <div class="knob-label">PAN L/R</div>
-                </div>
+            <div class="link-container">
+                <div class="lab-footer">L.A.B. AUDIO TB-303</div>
+                <a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a>
             </div>
-        </div>
-
-        <div class="footer">
-            <div class="footer-text">L.A.B. AUDIO TB-303</div>
-            <a href="https://www.muzyczneradio.pl" target="_blank" class="footer-link">WWW.MUZYCZNERADIO.PL</a>
         </div>
     </div>
 
@@ -578,22 +405,13 @@
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
-        const sequencerEl = document.getElementById('sequencer');
+        const displayEl = document.getElementById('display');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
         let audioCtx, analyser, source, isPwr = false;
         let mediaRecorder, chunks = [];
-        let animationId;
-
-        // Generuj 16 kroków sequencera
-        for(let i = 0; i < 16; i++) {
-            const step = document.createElement('div');
-            step.className = 'seq-step';
-            sequencerEl.appendChild(step);
-        }
-        const seqSteps = sequencerEl.querySelectorAll('.seq-step');
 
         function updateDateTime() {
             const now = new Date();
@@ -611,37 +429,15 @@
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
+        };
+
         function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
 
-        // Wizualizacja audio na sequencerze
-        function visualize() {
-            if (!analyser) return;
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            analyser.getByteFrequencyData(dataArray);
-            
-            // Podziel pasmo na 16 części i zapal odpowiednie kroki
-            seqSteps.forEach((step, i) => {
-                const start = Math.floor(i * bufferLength / 16);
-                const end = Math.floor((i + 1) * bufferLength / 16);
-                let sum = 0;
-                for(let j = start; j < end; j++) sum += dataArray[j];
-                const avg = sum / (end - start);
-                
-                if(avg > 100) {
-                    step.classList.add('active');
-                } else {
-                    step.classList.remove('active');
-                }
-            });
-            
-            if(isPwr &&!audio.paused) {
-                animationId = requestAnimationFrame(visualize);
-            }
-        }
-
         pwrBtn.onclick = function() {
-            isPwr =!isPwr;
+            isPwr = !isPwr;
             document.querySelector('.frame').classList.toggle('powered');
             this.classList.toggle('active');
             if (!isPwr) {
@@ -652,8 +448,6 @@
                 audio.muted = false;
                 muteBtn.classList.remove('active');
                 mutePath.setAttribute('d', ICON_MUTE_OFF);
-                cancelAnimationFrame(animationId);
-                seqSteps.forEach(s => s.classList.remove('active'));
             }
         };
 
@@ -661,7 +455,6 @@
             if (!audioCtx) {
                 audioCtx = new(window.AudioContext || window.webkitAudioContext)();
                 analyser = audioCtx.createAnalyser();
-                analyser.fftSize = 256;
                 source = audioCtx.createMediaElementSource(audio);
                 source.connect(analyser);
                 source.connect(audioCtx.destination);
@@ -673,7 +466,6 @@
             initAudio();
             audio.play();
             this.classList.add('active');
-            visualize();
         };
 
         recBtn.onclick = function() {
@@ -705,6 +497,7 @@
         function stopRecording() {
             if(mediaRecorder) mediaRecorder.stop();
             recBtn.classList.remove('active');
+            flash(recBtn);
         }
 
         stopBtn.onclick = function() {
@@ -715,30 +508,18 @@
             audio.volume = 0.5;
             updateVol();
             playBtn.classList.remove('active');
-            cancelAnimationFrame(animationId);
-            seqSteps.forEach(s => s.classList.remove('active'));
+            flash(this);
         };
 
         muteBtn.onclick = function() {
             if (!isPwr) return;
-            audio.muted =!audio.muted;
-            mutePath.setAttribute('d', audio.muted? ICON_MUTE_ON : ICON_MUTE_OFF);
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
             this.classList.toggle('active', audio.muted);
         };
 
-        document.getElementById('vUp').onclick = function() { 
-            if(isPwr) { 
-                audio.volume = Math.min(1, audio.volume + 0.1); 
-                updateVol(); 
-            }
-        };
-        
-        document.getElementById('vDown').onclick = function() { 
-            if(isPwr) { 
-                audio.volume = Math.max(0, audio.volume - 0.1); 
-                updateVol(); 
-            }
-        };
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
 
         window.addEventListener('load', () => {
             audio.volume = 0.5;
