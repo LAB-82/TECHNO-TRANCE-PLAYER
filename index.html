@@ -14,10 +14,12 @@
             --lcd-green: #a4f000;
             /* Kolor tła kafelka stacji */
             --tile-metal: #c2c2c2; 
-            /* Ciemniejszy kolor dla pokręteł i przycisków na prawym panelu */
-            --knob-metal: #4a4a4a; 
-            /* Tło prawego panelu sterowania (jak na zdjęciu) */
+            /* Tło prawego panelu sterowania (zgodne ze zdjęciem) */
             --panel-bg-color: #a8a8a8;
+            /* CIEMNY metaliczny kolor dla pokręteł i przycisków (jak na zdjęciu) */
+            --knob-metal: #4a4a4a; 
+            /* Tekstura szczotkowanego aluminium dla tła */
+            --panel-texture: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
@@ -29,8 +31,9 @@
         }
 
         .vst-chassis {
-            width: 98vw; height: 96vh; background: var(--metal-shine);
-            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            width: 98vw; height: 96vh; 
+            background-color: #b0b0b0;
+            background-image: var(--panel-texture);
             border: 5px solid #222; border-radius: 8px;
             box-shadow: 0 40px 100px rgba(0,0,0,1);
             padding: 25px; display: flex; flex-direction: column; position: relative;
@@ -47,8 +50,7 @@
         /* PRZYWRÓCONY LEWY PANEL (SIATKA STACJI) */
         .grid-stations { 
             flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; 
-            background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2);
-            border-radius: 5px;
+            background: rgba(0,0,0,0.1); padding: 20px; border: 1px solid rgba(0,0,0,0.2); border-radius: 10px;
         }
 
         .bt-303 {
@@ -59,80 +61,83 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
             position: relative; transition: 0.05s;
         }
-        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        .bt-303::before { content: ""; position: absolute; top: 8px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #1a3a5a; text-transform: uppercase; pointer-events: none; margin-top: 10px; text-align: center; line-height: 1.1;}
+        .bt-303 .st-label { font-weight: 800; font-size: 12px; color: #1a3a5a; text-transform: uppercase; pointer-events: none; margin-top: 10px; text-align: center; line-height: 1.1;}
         .bt-303:active { transform: translateY(2px); border-bottom-width: 2px; }
 
         /* PRAWY PANEL STEROWANIA - JASNE TŁO */
         .pro-panel { 
             flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
             background-color: var(--panel-bg-color);
-            padding: 20px; border: 3px solid #333; border-radius: 10px; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            background-image: var(--panel-texture);
+            padding: 20px; border: 2px solid #666; border-radius: 10px; 
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
         }
 
-        .lcd-display { background: #0a0c0a; height: 110px; border: 4px solid #222; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; box-shadow: inset 0 0 15px #000; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.8; }
-        #st-name { font-size: 26px; color: #ffffff; text-shadow: 0 0 12px var(--lcd-green); font-weight: bold; }
-        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
+        .lcd-display { background: #000; height: 110px; border: 5px solid #333; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; border-radius: 4px; box-shadow: inset 0 0 10px #000; }
+        .lcd-label { color: var(--lcd-green); font-size: 10px; font-weight: bold; text-shadow: 0 0 5px var(--lcd-green); }
+        #st-name { font-size: 28px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
+        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; text-shadow: 0 0 5px var(--lcd-green); }
 
-        .step-sequencer { background: rgba(0,0,0,0.8); border: 2px solid #222; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
-        .step-row { display: flex; gap: 2px; height: 20px; }
-        .step { flex: 1; background: #333; }
+        .step-sequencer { background: #111; border: 3px solid #222; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
+        .step-row { display: flex; gap: 2px; height: 18px; }
+        .step { flex: 1; background: #222; border: 1px solid #000; }
         .step.on { background: #ff4400; box-shadow: 0 0 8px #ff4400; }
 
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px; }
         
         .pan-section { text-align: center; }
-        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 5px; }
-        .pan-led { width: 10px; height: 10px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
+        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+        .pan-led { width: 8px; height: 8px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
         .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
         
-        /* POKRĘTŁO PAN L/R - CIEMNE, METALOWE */
+        /* POKRĘTŁO PAN L/R - CIEMNE, METALOWE (jak na zdjęciu) */
         .knob-volume { 
-            width: 80px; height: 80px; border-radius: 50%; 
+            width: 70px; height: 70px; border-radius: 50%; 
             background: radial-gradient(circle, #888 0%, #222 100%);
-            border: 2px solid #111; position: relative; 
-            box-shadow: 0 5px 10px rgba(0,0,0,0.6); 
+            border: 3px solid #333; position: relative; 
+            box-shadow: 3px 5px 10px rgba(0,0,0,0.5);
             transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 0 auto;
         }
-        .knob-volume::before { content: ""; position: absolute; top: 5px; left: 50%; width: 5px; height: 20px; background: #eee; transform: translateX(-50%); border-radius: 2px; }
+        /* Kreska pozycjonująca na pokrętle */
+        .knob-volume::before { content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 15px; background: #eee; transform: translateX(-50%); border-radius: 2px; }
 
-        .volume-row { display: flex; align-items: center; gap: 15px; width: 100%; justify-content: center; }
+        .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
 
-        /* PRZYCISKI EDIT - CIEMNE */
+        /* PRZYCISKI EDIT - CIEMNE (jak na zdjęciu) */
         .sq-btn { 
-            width: 55px; height: 50px; 
+            width: 50px; height: 45px; 
             background: var(--knob-metal);
-            border: 1px solid #111; 
-            border-bottom: 3px solid #000; 
-            border-radius: 3px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+            border: 2px solid #333; 
+            border-bottom: 3px solid #111;
+            border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 2px 2px 5px rgba(0,0,0,0.3);
             position: relative;
         }
-        /* Czerwona dioda nad przyciskami EDIT */
-        .sq-btn::after { content: ""; position: absolute; top: -10px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #000; }
+        /* Czerwona dioda LED nad przyciskami EDIT */
+        .sq-btn::after { content: ""; position: absolute; top: -12px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
         .sq-btn.active::after { background: var(--led-red); box-shadow: 0 0 6px var(--led-red); }
 
         .sq-btn span { font-size: 10px; font-weight: 900; color: #fff; text-transform: uppercase; }
 
-        .fader-track { background: #000; height: 45px; flex: 1; border: 2px solid #222; display: flex; align-items: center; padding: 0 5px; }
+        .fader-track { background: #111; height: 35px; flex: 1; border: 2px solid #222; display: flex; align-items: center; padding: 0 2px; border-radius: 2px; }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 25px; height: 38px; background: #eee; border: 1px solid #333; box-shadow: inset 0 0 8px #fff; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 30px; background: #eee; border: 2px solid #333; cursor: pointer; border-radius: 2px; box-shadow: inset 0 0 5px #fff, 2px 2px 5px rgba(0,0,0,0.5); }
 
-        /* PRZYCISK RUN / STOP - CIEMNY */
+        /* PRZYCISK RUN / STOP - CIEMNY (jak na zdjęciu) */
         .btn-run-stop { 
-            width: 130px; height: 60px; 
+            width: 120px; height: 50px; 
             background: var(--knob-metal); 
-            border: 1px solid #111; 
-            border-bottom: 4px solid #000; 
+            border: 2px solid #333; 
+            border-bottom: 4px solid #111;
             border-radius: 4px; display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; font-size: 15px; color: #fff; text-transform: uppercase;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.5);
+            font-weight: 900; font-size: 13px; color: #fff; text-transform: uppercase;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 3px 3px 7px rgba(0,0,0,0.4);
             margin-top: 15px;
         }
-        .btn-run-stop:active, .sq-btn:active { transform: translateY(3px); border-bottom-width: 1px; }
+        .btn-run-stop:active, .sq-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
     </style>
 </head>
 <body>
@@ -147,7 +152,7 @@
     </header>
 
     <div class="main-workspace">
-        <!-- PRZYWRÓCONA SIATKA STACJI -->
+        <!-- PRZYWRÓCONA SIATKA STACJI (LEWY PANEL) -->
         <div class="grid-stations" id="grid"></div>
         <aside class="pro-panel">
             <div class="lcd-display">
@@ -163,9 +168,9 @@
                     <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #111;">PAN L/R</div>
                 </div>
                 <div class="volume-row">
-                    <div class="sq-btn active" id="vol-down-btn"><span>EDIT</span></div>
+                    <div class="sq-btn" id="vol-down-btn"><span>EDIT</span></div>
                     <div class="fader-track"><input type="range" id="v-range" min="0" max="100" value="50"></div>
-                    <div class="sq-btn" id="vol-up-btn"><span>EDIT</span></div>
+                    <div class="sq-btn active" id="vol-up-btn"><span>EDIT</span></div>
                 </div>
                 <div class="btn-run-stop" id="run-stop-btn">RUN / STOP</div>
             </div>
@@ -176,7 +181,7 @@
 <audio id="player" crossorigin="anonymous"></audio>
 
 <script>
-    // Konfiguracja stacji RMF (przywrócone nazwy)
+    // Konfiguracja stacji RMF (przywrócona z Twojego pierwotnego kodu)
     const STATIONS = [
         { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' }, { n: 'RMF 80s', u: 'rmf_80s' },
         { n: 'RMF 90s', u: 'rmf_90s' }, { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILL', u: 'rmf_chillout' },
@@ -206,7 +211,7 @@
         if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // Generowanie kafelków stacji w siatce
+    // Generowanie kafelków stacji w siatce (przywrócone)
     STATIONS.forEach((s, i) => {
         const b = document.createElement('div');
         b.className = 'bt-303';
@@ -252,7 +257,7 @@
 
     document.getElementById('vol-down-btn').addEventListener('click', () => adj(-5));
     document.getElementById('vol-up-btn').addEventListener('click', () => adj(5));
-    runStopBtn.addEventListener('click', () => { if(isPlaying) stopRadio(); else if(STATIONS.length>0) play(0); });
+    runStopBtn.addEventListener('click', stopRadio);
     vRange.addEventListener('input', (e) => setV(e.target.value));
 
     // Kontrola panoramy
