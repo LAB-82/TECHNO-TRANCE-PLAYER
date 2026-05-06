@@ -13,7 +13,6 @@
             --led-red: #ff3333;
             --led-bg: #400000;
             --lcd-green: #a4f000;
-            /* Styl przycisków ze zdjęcia - szczotkowany metal */
             --btn-metal: linear-gradient(145deg, #e0e0e0 0%, #a0a0a0 100%);
         }
 
@@ -39,11 +38,10 @@
             position: relative;
         }
 
-        /* ZAGŁĘBIONA ŚRUBKA TORX (GWIAZDKA) */
         .screw {
             position: absolute;
             width: 22px; height: 22px;
-            background: radial-gradient(circle, #444 0%, #222 100%); /* Otwór */
+            background: radial-gradient(circle, #444 0%, #222 100%);
             border-radius: 50%;
             box-shadow: inset 1px 1px 3px rgba(0,0,0,0.8), 1px 1px 1px rgba(255,255,255,0.3);
             z-index: 20;
@@ -52,7 +50,7 @@
         .screw::before {
             content: "";
             width: 14px; height: 14px;
-            background: radial-gradient(circle at 30% 30%, #bbb, #777); /* Główka */
+            background: radial-gradient(circle at 30% 30%, #bbb, #777);
             border-radius: 50%;
             box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
@@ -72,10 +70,11 @@
         .logo span { font-size: 11px; letter-spacing: 4px; color: #333; font-weight: bold; }
 
         #clock {
-            font-family: 'Share Tech Mono';
-            font-size: 34px;
-            color: #fff;
-            text-shadow: 0 0 15px var(--lcd-green);
+            font-family: 'Orbitron';
+            font-size: 28px;
+            font-weight: 700;
+            color: #111;
+            text-shadow: 0 0 10px var(--led-red);
         }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
@@ -102,11 +101,10 @@
             padding: 35px 25px; border-radius: 4px; gap: 15px;
         }
 
-        /* STYL PRZYCISKÓW ZE ZDJĘCIA */
         .bt-303, .sq-btn, .btn-run-stop {
             background: var(--btn-metal);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            border: 2px solid #000; /* Czarna gruba ramka */
+            border: 2px solid #000;
             border-radius: 4px;
             box-shadow: 
                 inset 2px 2px 2px rgba(255,255,255,0.8), 
@@ -131,9 +129,7 @@
         .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
         
         .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; margin-top: 10px;}
-        .bt-303.active .st-label { color: #000; text-shadow: 0 0 10px var(--lcd-green); }
 
-        /* WYŚWIETLACZ */
         .lcd-bezel {
             background: #1a1a1a;
             padding: 4px;
@@ -150,18 +146,23 @@
         #st-name { font-size: 22px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
         .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
 
-        /* SEQUENCER */
         .step-sequencer { background: #111; border-radius: 3px; padding: 10px; display: flex; flex-direction: column; gap: 5px; box-shadow: inset 0 2px 10px #000; }
         .step-row { display: flex; gap: 3px; height: 15px; }
         .step { flex: 1; background: #222; border-radius: 1px; }
         .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.8); }
 
-        /* CONTROLS */
         .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
         
         .sq-btn { width: 50px; height: 50px; flex-direction: column; }
-        .sq-btn .dot { width: 4px; height: 4px; background: #400; border-radius: 50%; margin-bottom: 4px; }
+        .sq-btn .dot { 
+            width: 6px; height: 6px; 
+            background: var(--led-red); 
+            border-radius: 50%; 
+            margin-bottom: 4px; 
+            box-shadow: 0 0 5px var(--led-red);
+            border: 1px solid #000;
+        }
         .sq-btn span { font-size: 9px; font-weight: bold; color: #111; }
 
         .fader-track { background: #000; height: 35px; flex: 1; border-radius: 2px; border: 1px solid #444; display: flex; align-items: center; padding: 0 5px; }
@@ -170,17 +171,18 @@
             -webkit-appearance: none; width: 20px; height: 30px; background: #ccc; border: 1px solid #333; border-radius: 2px;
         }
 
-        .btn-run-stop { width: 140px; height: 55px; font-weight: 900; color: #111; font-size: 16px; }
+        .btn-run-stop { width: 140px; height: 55px; font-weight: 900; color: #111; font-size: 18px; }
     </style>
 </head>
 <body>
 
 <div class="vst-chassis">
-    <!-- Śrubki obudowy -->
     <div class="screw" style="top: 10px; left: 10px;"></div>
     <div class="screw" style="top: 10px; right: 10px;"></div>
-    <!-- Śrubka na środku panelu -->
-    <div class="screw" style="top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+    <!-- Śruby krawędziowe panelu głównego -->
+    <div class="screw" style="top: 10px; left: 50%; transform: translateX(-50%);"></div>
+    <div class="screw" style="bottom: 10px; left: 50%; transform: translateX(-50%);"></div>
+    
     <div class="screw" style="bottom: 10px; left: 10px;"></div>
     <div class="screw" style="bottom: 10px; right: 10px;"></div>
 
@@ -237,7 +239,7 @@
                         <span>UP</span>
                     </div>
                 </div>
-                <div class="btn-run-stop" id="run-stop-btn">RUN / STOP</div>
+                <div class="btn-run-stop" id="run-stop-btn">STOP</div>
             </div>
         </aside>
     </div>
