@@ -55,14 +55,36 @@
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
+        /* ŚRUBKA */
+        .screw {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle at 30% 30%, #aaa, #444);
+            border-radius: 50%;
+            box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            z-index: 10;
+        }
+        .screw::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 2px;
+            background: rgba(0,0,0,0.4);
+            transform: translate(-50%, -50%) rotate(45deg);
+        }
+
         .grid-stations { 
             flex: 1.4; display: grid; 
             grid-template-columns: repeat(5, 1fr); 
             grid-template-rows: repeat(3, 1fr); 
             gap: 15px; 
-            background: rgba(0,0,0,0.15); padding: 20px; border-radius: 10px;
+            background: rgba(0,0,0,0.15); padding: 25px; border-radius: 10px;
             box-shadow: inset 2px 2px 10px rgba(0,0,0,0.4);
             border: 1px solid rgba(0,0,0,0.2);
+            position: relative;
         }
 
         .bt-303 {
@@ -103,9 +125,10 @@
             flex: 0.6; display: flex; flex-direction: column; 
             background: var(--metal-shine);
             background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            border-radius: 8px; padding: 20px;
+            border-radius: 8px; padding: 25px;
             border: 1px solid #888; box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
             gap: 15px;
+            position: relative;
         }
 
         .lcd-display {
@@ -196,9 +219,19 @@
     </header>
 
     <div class="main-workspace">
-        <div class="grid-stations" id="grid"></div>
+        <div class="grid-stations" id="grid">
+            <div class="screw" style="top: 5px; left: 5px;"></div>
+            <div class="screw" style="top: 5px; right: 5px;"></div>
+            <div class="screw" style="bottom: 5px; left: 5px;"></div>
+            <div class="screw" style="bottom: 5px; right: 5px;"></div>
+        </div>
 
         <aside class="pro-panel">
+            <div class="screw" style="top: 5px; left: 5px;"></div>
+            <div class="screw" style="top: 5px; right: 5px;"></div>
+            <div class="screw" style="bottom: 5px; left: 5px;"></div>
+            <div class="screw" style="bottom: 5px; right: 5px;"></div>
+
             <div class="lcd-display">
                 <div class="lcd-label">BANK: A1 / PATTERN: 08</div>
                 <div id="st-name">STATION IDLE</div>
