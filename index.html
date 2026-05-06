@@ -4,318 +4,564 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>L.A.B. AUDIO TB-303 Edition</title>
+    <title>Muzyczne Radio PRO ULTRA v2 - Roland TB-303 Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/micr" rel="stylesheet">
     <style>
-        :root {
-            /* Nowe barwy dla stylu Pro Terminal i TB-303 */
-            --metal-base: #b4b4b4;
-            /* Poziome szczotkowanie "Pro Terminal" */
-            --brushed-horiz: linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px), #b4b4b4;
-            
-            /* Przyciski w stylu plastikowych klawiszy TB-303 (z 1. zdjęcia) */
-            --btn-plastic-base: #e1e0d3; /* Beżowy plastik */
-            --btn-plastic-shine: linear-gradient(180deg, #f0efe6 0%, #dcdbc9 100%);
-            
-            /* Kolory LED */
-            --led-red: #ff0000;
-            --led-dark: #300000;
-            --accent-red: #e60012;
-            --brushed-src: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+        * {
+            box-sizing: border-box;
         }
 
         body {
             margin: 0;
-            height: 100vh;
+            min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #1a1a1a;
-            font-family: Arial, sans-serif;
+            background: #2a1f18;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect fill="%232a1f18" width="100" height="100"/><path d="M0 0h1v1H0zM20 20h1v1H20zM40 40h1v1H40zM60 60h1v1H60zM80 80h1v1H80z" fill="rgba(0,0,0,0.1)"/></svg>');
+            font-family: 'MICR', Arial, sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
+            padding: 20px;
         }
 
-        /* GŁÓWNA OBUDOWA - STYL PRO TERMINAL Z POZIOMYM SZCZOTKOWANIEM */
-        .frame {
-            width: 95%;
-            max-width: 850px;
-            /* Poziome szczotkowanie */
-            background: var(--brushed-horiz);
-            background-size: 100% 2px;
-            
-            border: 2px solid #555;
+        /* Główna obudowa - szczotkowane aluminium */
+       .frame {
+            width: 100%;
+            max-width: 900px;
             border-radius: 8px;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 2px 2px #fff;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
+            padding: 20px;
+            background: linear-gradient(180deg, #d4d4d4 0%, #a8a8a8 50%, #8a8a8a 100%);
+            background-image: 
+                repeating-linear-gradient(90deg, 
+                    rgba(255,255,255,0.03) 0px, 
+                    rgba(255,255,255,0.03) 1px, 
+                    transparent 1px, 
+                    transparent 2px),
+                linear-gradient(180deg, #d4d4d4 0%, #a8a8a8 100%);
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.8),
+                inset 0 2px 3px rgba(255,255,255,0.6),
+                inset 0 -2px 3px rgba(0,0,0,0.4);
             position: relative;
-            box-sizing: border-box;
+            border: 2px solid #666;
         }
 
-        /* Ozdobne śruby w rogach */
-        .frame::before, .frame::after {
-            content: ""; position: absolute; width: 14px; height: 14px;
-            background: radial-gradient(circle, #888, #444); border-radius: 50%;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        /* Śrubki w rogach */
+       .frame::before,.frame::after {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #888, #333);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
         }
-        .frame::before { top: 12px; left: 12px; }
-        .frame::after { top: 12px; right: 12px; }
+       .frame::before { top: 8px; left: 8px; }
+       .frame::after { top: 8px; right: 8px; }
 
-        /* Sekcja górna - Logo i Parametry */
-        .top-section {
+       .screw-bl,.screw-br {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #888, #333);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
+            bottom: 8px;
+        }
+       .screw-bl { left: 8px; }
+       .screw-br { right: 8px; }
+
+        /* Górna sekcja z logo i wyświetlaczami */
+       .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 2px solid #777;
-            padding-bottom: 15px;
             margin-bottom: 20px;
+            padding: 0 10px;
         }
 
-        .title {
+       .logo-section {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+       .roland-logo {
             font-size: 32px;
             font-weight: 900;
-            color: #111;
+            color: #1a1a1a;
             letter-spacing: -1px;
-            margin: 0;
-            text-transform: uppercase;
+            font-family: Arial, sans-serif;
         }
 
-        .model-name {
-            font-family: 'DS-Digital', sans-serif;
-            font-size: 48px;
-            color: #222;
-            line-height: 0.8;
-            text-align: right;
-        }
-
-        .model-sub {
-            font-size: 11px;
-            font-weight: bold;
+       .lab-text {
+            font-size: 10px;
             color: #333;
-            text-align: right;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-        }
-
-        /* Wyświetlacz LCD w stylu Green Digital */
-        .display-frame {
-            background: #0a0c0a;
-            border: 4px solid #444;
-            border-radius: 4px;
-            padding: 15px;
-            width: 320px;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: inset 0 0 20px #000;
-            font-family: 'DS-Digital', sans-serif;
-            color: #151a15; /* Off state */
-            margin: 0 auto 25px auto;
-            transition: color 0.3s;
-        }
-
-        .frame.powered .display-frame {
-            color: var(--digital-green);
-            text-shadow: 0 0 10px rgba(164, 240, 0, 0.5);
-        }
-
-        .display-line { line-height: 1.1; text-align: center; }
-        .station-name { font-size: 20px; letter-spacing: 2px; text-transform: uppercase; }
-        .time-display { font-size: 34px; font-family: 'Digital Numbers', sans-serif; margin: 4px 0; }
-        .date-display { font-size: 14px; opacity: 0.8; }
-
-        /* Panel Kontrolny - Metal "Pro Terminal" */
-        .main-content {
-            background: var(--brushed-horiz);
-            background-size: 100% 2px;
-            border: 2px solid #111;
-            border-radius: 4px;
-            padding: 25px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .controls-main {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* STYLIZACJA PRZYCISKÓW JAKO PLASTIKOWYCH KLAWISZY Z 1. ZDJĘCIA */
-        .btn-rect, .btn-v {
-            width: 65px;
-            height: 50px;
-            /* Wygląd beżowego plastiku */
-            background: var(--btn-plastic-shine);
-            border: 2px solid #1a1a1a;
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            /* Efekt klawisza 3D */
-            box-shadow: 0 4px 0 #888, 0 6px 12px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.5);
-            transition: all 0.05s;
-        }
-
-        /* Rowek diody LED na klawiszu */
-        .btn-rect::after {
-            content: "";
-            position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 6px;
-            background: var(--led-dark);
-            border-radius: 1px;
-            border: 1px solid #000;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
-        }
-
-        /* Stan aktywny - zapalona dioda i wciśnięty klawisz */
-        .btn-rect.active::after, .btn-v.active::after {
-            background: var(--led-on);
-            box-shadow: 0 0 10px var(--led-on);
-        }
-
-        .btn-rect:active, .btn-v:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 0 #888;
-        }
-
-        .btn-rect svg, .btn-v svg { width: 26px; height: 26px; fill: #111; }
-
-        /* Sekcja głośności */
-        .vol-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            margin-left: 20px;
-        }
-
-        .vol-btns { display: flex; gap: 8px; }
-        .btn-v { width: 45px; height: 40px; box-shadow: 0 3px 0 #888; }
-        .btn-v::after { display: none; } /* Suwaki vol nie mają diod w rzędzie kontrolnym */
-
-        /* STYLIZACJA SUWAKA GŁOŚNOŚCI JAKO METALOWEGO SUWAKA W ROWKU (z 2. zdjęcia) */
-        .vol-bar {
-            width: 130px;
-            height: 20px;
-            /* Ciemny rowek */
-            background: #111;
-            border: 2px solid #333;
-            border-radius: 2px;
-            overflow: visible; /* Aby suwak wystawał */
-            position: relative;
-            box-shadow: inset 0 2px 5px #000;
-        }
-
-        .vol-fill {
-            /* Czerwony pasek wskaźnika */
-            height: 100%;
-            width: 0%;
-            background: var(--led-red);
-            transition: width 0.2s;
-            position: relative;
-            z-index: 1;
-            box-shadow: 0 0 10px var(--led-red);
-        }
-
-        /* Metalowy suwak (uchwyt) umieszczony na krawędzi czerwonego paska */
-        .vol-fill::after {
-            content: "";
-            position: absolute;
-            right: -10px; /* Wyśrodkowanie na krawędzi paska */
-            top: 50%;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 30px; /* Wystaje poza rowek */
-            /* Metalowy suwak z nacięciem i 3D gradientem */
-            background: linear-gradient(90deg, #ccc 0%, #eee 48%, #888 50%, #eee 52%, #ccc 100%);
-            border: 1px solid #2a2a2a;
-            border-radius: 2px;
-            box-shadow: 2px 2px 6px rgba(0,0,0,0.6);
-            z-index: 5;
-        }
-
-        .lab-logo {
-            margin-top: 25px;
-            font-weight: bold;
-            font-size: 11px;
-            letter-spacing: 2px;
-            color: #222;
-            border: 2px solid #555;
-            padding: 3px 12px;
-            text-transform: uppercase;
-        }
-
-        .link-container { margin-top: 15px; }
-        .link-container a {
-            color: #333;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: bold;
             letter-spacing: 1px;
         }
 
+       .tb-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 2px;
+        }
+
+       .tb-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+       .tb-badge {
+            background: #1a1a1a;
+            color: #d4d4d4;
+            padding: 2px 6px;
+            font-size: 14px;
+            border-radius: 2px;
+        }
+
+       .terminal-text {
+            font-size: 10px;
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        /* Wyświetlacze LED */
+       .displays-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+       .display-frame {
+            background: #0a0a0a;
+            border: 3px solid #444;
+            border-top-color: #222;
+            border-bottom-color: #666;
+            border-radius: 4px;
+            box-shadow: inset 0 3px 10px rgba(0,0,0,0.9);
+            padding: 15px 20px;
+            font-family: 'DS-Digital', monospace;
+            position: relative;
+        }
+
+       .display-frame::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+       .display-main {
+            flex: 1;
+        }
+
+       .display-small {
+            width: 180px;
+        }
+
+       .display-line {
+            line-height: 1.2;
+            text-align: center;
+            white-space: nowrap;
+            color: #0a1a0a;
+            transition: all 0.3s;
+        }
+
+       .frame.powered.display-line {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41, 0 0 20px #00ff41;
+        }
+
+       .station-name { 
+            font-size: 14px; 
+            margin-bottom: 8px; 
+            letter-spacing: 2px;
+        }
+       .time-display { 
+            font-size: 42px; 
+            font-weight: bold;
+            letter-spacing: 3px;
+        }
+       .date-display { 
+            font-size: 14px; 
+            margin-top: 5px; 
+            letter-spacing: 1px;
+        }
+
+       .computer-controlled {
+            text-align: center;
+            font-size: 9px;
+            color: #333;
+            letter-spacing: 1px;
+            margin-top: 5px;
+        }
+
+        /* Główna zawartość - 2 panele */
+       .main-panels {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+       .panel {
+            background: linear-gradient(180deg, #b8b8b8 0%, #9a9a9a 100%);
+            border: 2px solid #666;
+            border-radius: 4px;
+            padding: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+       .panel-title {
+            font-size: 9px;
+            color: #333;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        /* Panel przycisków */
+       .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+       .btn-rect {
+            aspect-ratio: 1;
+            border: 2px solid #555;
+            background: linear-gradient(180deg, #c8c8c8 0%, #a0a0a0 100%);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.15s;
+            border-radius: 3px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255,255,255,0.5),
+                0 2px 4px rgba(0,0,0,0.3);
+            position: relative;
+            font-size: 9px;
+            gap: 4px;
+        }
+
+       .btn-rect::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            left: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #2a0000;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.5);
+        }
+
+       .frame.powered.btn-rect::before {
+            background: #ff0000;
+            box-shadow: 0 0 8px #ff0000, inset 0 1px 1px rgba(0,0,0,0.5);
+        }
+
+       .btn-rect svg { 
+            width: 20px; 
+            height: 20px; 
+            fill: currentColor; 
+            pointer-events: none; 
+        }
+
+       .btn-rect:active {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(1px);
+        }
+
+       .btn-rect.active {
+            background: linear-gradient(180deg, #e0e0e0 0%, #b8b8b8 100%);
+            border-color: #00ff41;
+            box-shadow: 
+                0 0 15px rgba(0,255,65,0.5),
+                inset 0 1px 2px rgba(255,255,255,0.5);
+        }
+
+       .frame.powered.btn-rect.active::before {
+            background: #00ff41;
+            box-shadow: 0 0 12px #00ff41;
+        }
+
+        /* Volume w stylu TB-303 */
+       .vol-section {
+            grid-column: span 3;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+       .btn-v {
+            flex: 1;
+            height: 45px;
+            border: 2px solid #555;
+            background: linear-gradient(180deg, #c8c8c8 0%, #a0a0a0 100%);
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 3px;
+            box-shadow: 
+                inset 0 1px 2px rgba(255,255,255,0.5),
+                0 2px 4px rgba(0,0,0.3);
+        }
+
+       .btn-v:active {
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            transform: translateY(1px);
+        }
+
+       .btn-v svg { width: 18px; height: 18px; fill: currentColor; }
+
+       .vol-bar-container {
+            flex: 2;
+            height: 45px;
+            background: #0a0a0a;
+            border: 2px solid #444;
+            border-radius: 3px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+       .vol-bar { 
+            width: 100%; 
+            height: 8px; 
+            background: #1a1a1a; 
+            border-radius: 4px; 
+            position: relative; 
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.8);
+        }
+        
+       .vol-fill { 
+            height: 100%; 
+            width: 50%; 
+            background: #1a1a1a;
+            transition: width 0.1s;
+            border-radius: 4px;
+        }
+
+       .frame.powered.vol-fill { 
+            background: linear-gradient(90deg, #00ff41 0%, #00cc33 100%);
+            box-shadow: 0 0 10px #00ff41;
+        }
+
+        /* Step Sequencer - wizualizacja */
+       .sequencer-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+       .seq-step {
+            aspect-ratio: 1;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 2px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+            transition: all 0.1s;
+        }
+
+       .frame.powered.seq-step.active {
+            background: #ff4500;
+            box-shadow: 0 0 15px #ff4500, inset 0 1px 2px rgba(255,255,255,0.3);
+        }
+
+       .knob-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+       .knob {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #d0d0d0, #888);
+            border: 3px solid #666;
+            box-shadow: 
+                0 4px 8px rgba(0,0,0,0.4),
+                inset 0 2px 4px rgba(255,255,255,0.5);
+            position: relative;
+        }
+
+       .knob::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 3px;
+            height: 15px;
+            background: #333;
+            border-radius: 2px;
+        }
+
+       .knob-label {
+            font-size: 9px;
+            color: #333;
+            letter-spacing: 1px;
+        }
+
+        /* Stopka */
+       .footer {
+            text-align: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #888;
+        }
+
+       .footer-text {
+            font-size: 10px;
+            color: #444;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+       .footer-link {
+            color: #2a0000;
+            text-decoration: none;
+            font-family: 'DS-Digital', monospace;
+            letter-spacing: 2px;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+       .frame.powered.footer-link {
+            color: #00ff41;
+            text-shadow: 0 0 10px #00ff41;
+        }
+
+        /* Mobile */
         @media(max-width:700px) {
-            .frame { padding: 15px; }
-            .controls-main { flex-wrap: wrap; }
-            .vol-wrapper { margin-left: 0; margin-top: 15px; }
+           .main-panels {
+                grid-template-columns: 1fr;
+            }
+           .displays-row {
+                flex-direction: column;
+            }
+           .display-small {
+                width: 100%;
+            }
+           .header {
+                flex-direction: column;
+                gap: 10px;
+            }
         }
     </style>
 </head>
 
 <body oncontextmenu="return false;">
     <div class="frame">
-        <div class="top-section">
-            <div class="brand-area">
-                <h1 class="title"> Roland</h1>
-                <span style="font-size: 9px; font-weight: bold; color: #444;">L.A.B. AUDIO INTERFACE</span>
+        <div class="screw-bl"></div>
+        <div class="screw-br"></div>
+        
+        <div class="header">
+            <div class="logo-section">
+                <div class="roland-logo">Roland</div>
+                <div class="lab-text">L.A.B. AUDIO INTERFACE</div>
             </div>
-            <div class="model-area">
-                <div class="model-name">TB-303</div>
-                <div class="model-sub">Computer Controlled</div>
+            <div class="tb-logo">
+                <div class="tb-text"><span class="tb-badge">TB</span> TB-303</div>
+                <div class="terminal-text">PRO TERMINAL</div>
             </div>
         </div>
 
-        <div class="display-frame" id="display">
-            <div class="display-line station-name">MUZYCZNE RADIO</div>
-            <div class="display-line time-display" id="clock">00:00:00</div>
-            <div class="display-line date-display" id="date">00:00:2026</div>
+        <div class="displays-row">
+            <div class="display-frame display-main" id="display">
+                <div class="display-line station-name">MUZYCZNE RADIO</div>
+                <div class="display-line time-display" id="clock">00:00:00</div>
+            </div>
+            <div class="display-frame display-small">
+                <div class="display-line date-display" id="date">00:00:0000</div>
+                <div class="computer-controlled">COMPUTER CONTROLLED</div>
+            </div>
         </div>
 
-        <div class="main-content">
-            <div class="controls-main" id="controls">
-                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
-                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z"/></svg></button>
-                
-                <div class="vol-wrapper" id="vol-container">
-                    <div class="vol-btns">
-                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
-                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
+        <div class="main-panels">
+            <!-- Lewy panel - kontrolki -->
+            <div class="panel">
+                <div class="controls-grid" id="controls">
+                    <button id="pwr" class="btn-rect">
+                        <svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg>
+                        <span>POWER</span>
+                    </button>
+                    <button id="play" class="btn-rect">
+                        <svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+                        <span>PLAY</span>
+                    </button>
+                    <button id="rec" class="btn-rect">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
+                        <span>REC</span>
+                    </button>
+                    <button id="stop" class="btn-rect">
+                        <svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg>
+                        <span>STOP</span>
+                    </button>
+                    <button id="mute" class="btn-rect">
+                        <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
+                        <span>MUTE</span>
+                    </button>
+                    <div class="btn-rect" style="opacity:0.3; cursor:default;">
+                        <span>---</span>
                     </div>
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                    
+                    <div class="vol-section">
+                        <button id="vDown" class="btn-v">
+                            <svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg>
+                        </button>
+                        <div class="vol-bar-container">
+                            <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                        </div>
+                        <button id="vUp" class="btn-v">
+                            <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
 
-            <div class="lab-logo">L.A.B. AUDIO TB-303</div>
-            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+            <!-- Prawy panel - step sequencer -->
+            <div class="panel">
+                <div class="panel-title">STEP SEQUENCER VISUALIZER</div>
+                <div class="sequencer-grid" id="sequencer">
+                    <!-- 16 kroków generowanych przez JS -->
+                </div>
+                <div class="knob-section">
+                    <div class="knob"></div>
+                    <div class="knob-label">PAN L/R</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">L.A.B. AUDIO TB-303</div>
+            <a href="https://www.muzyczneradio.pl" target="_blank" class="footer-link">WWW.MUZYCZNERADIO.PL</a>
         </div>
     </div>
 
@@ -332,13 +578,22 @@
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
-        const displayEl = document.getElementById('display');
+        const sequencerEl = document.getElementById('sequencer');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
         let audioCtx, analyser, source, isPwr = false;
         let mediaRecorder, chunks = [];
+        let animationId;
+
+        // Generuj 16 kroków sequencera
+        for(let i = 0; i < 16; i++) {
+            const step = document.createElement('div');
+            step.className = 'seq-step';
+            sequencerEl.appendChild(step);
+        }
+        const seqSteps = sequencerEl.querySelectorAll('.seq-step');
 
         function updateDateTime() {
             const now = new Date();
@@ -348,6 +603,7 @@
             const day = String(now.getDate()).padStart(2, '0');
             const mo = String(now.getMonth() + 1).padStart(2, '0');
             const yr = now.getFullYear();
+            
             clockEl.textContent = `${h}:${m}:${s}`;
             dateEl.textContent = `${day}:${mo}:${yr}`;
         }
@@ -355,15 +611,37 @@
         setInterval(updateDateTime, 1000);
         updateDateTime();
 
-        const flash = el => {
-            el.classList.add('active');
-            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
-        };
-
         function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
 
+        // Wizualizacja audio na sequencerze
+        function visualize() {
+            if (!analyser) return;
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            analyser.getByteFrequencyData(dataArray);
+            
+            // Podziel pasmo na 16 części i zapal odpowiednie kroki
+            seqSteps.forEach((step, i) => {
+                const start = Math.floor(i * bufferLength / 16);
+                const end = Math.floor((i + 1) * bufferLength / 16);
+                let sum = 0;
+                for(let j = start; j < end; j++) sum += dataArray[j];
+                const avg = sum / (end - start);
+                
+                if(avg > 100) {
+                    step.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                }
+            });
+            
+            if(isPwr &&!audio.paused) {
+                animationId = requestAnimationFrame(visualize);
+            }
+        }
+
         pwrBtn.onclick = function() {
-            isPwr = !isPwr;
+            isPwr =!isPwr;
             document.querySelector('.frame').classList.toggle('powered');
             this.classList.toggle('active');
             if (!isPwr) {
@@ -374,6 +652,8 @@
                 audio.muted = false;
                 muteBtn.classList.remove('active');
                 mutePath.setAttribute('d', ICON_MUTE_OFF);
+                cancelAnimationFrame(animationId);
+                seqSteps.forEach(s => s.classList.remove('active'));
             }
         };
 
@@ -381,6 +661,7 @@
             if (!audioCtx) {
                 audioCtx = new(window.AudioContext || window.webkitAudioContext)();
                 analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 256;
                 source = audioCtx.createMediaElementSource(audio);
                 source.connect(analyser);
                 source.connect(audioCtx.destination);
@@ -392,6 +673,7 @@
             initAudio();
             audio.play();
             this.classList.add('active');
+            visualize();
         };
 
         recBtn.onclick = function() {
@@ -423,7 +705,6 @@
         function stopRecording() {
             if(mediaRecorder) mediaRecorder.stop();
             recBtn.classList.remove('active');
-            flash(recBtn);
         }
 
         stopBtn.onclick = function() {
@@ -431,19 +712,33 @@
             if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
             audio.pause(); 
             audio.currentTime = 0;
+            audio.volume = 0.5;
+            updateVol();
             playBtn.classList.remove('active');
-            flash(this);
+            cancelAnimationFrame(animationId);
+            seqSteps.forEach(s => s.classList.remove('active'));
         };
 
         muteBtn.onclick = function() {
             if (!isPwr) return;
-            audio.muted = !audio.muted;
-            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            audio.muted =!audio.muted;
+            mutePath.setAttribute('d', audio.muted? ICON_MUTE_ON : ICON_MUTE_OFF);
             this.classList.toggle('active', audio.muted);
         };
 
-        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
-        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+        document.getElementById('vUp').onclick = function() { 
+            if(isPwr) { 
+                audio.volume = Math.min(1, audio.volume + 0.1); 
+                updateVol(); 
+            }
+        };
+        
+        document.getElementById('vDown').onclick = function() { 
+            if(isPwr) { 
+                audio.volume = Math.max(0, audio.volume - 0.1); 
+                updateVol(); 
+            }
+        };
 
         window.addEventListener('load', () => {
             audio.volume = 0.5;
