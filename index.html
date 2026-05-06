@@ -118,7 +118,7 @@
             color: #200000;
             transition: color 0.3s;
             padding: 8px 15px;
-            box-shadow: inset 0 4px 12px rgba(0,0,0.95);
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.95);
             position: relative;
         }
 
@@ -347,9 +347,9 @@
         <div class="display-frame" id="display">
             <div class="display-top">
                 <span class="station-name">MUZYCZNE RADIO</span>
-                <span class="date-display" id="date">06:05:2026</span>
+                <span id="date">06:05:2026</span>
             </div>
-            <div class="display-middle time-display" id="clock">22:39:14</div>
+            <div class="display-middle" id="clock">22:39:14</div>
             <div class="display-bottom">
                 <span>BITRATE: 128KBPS</span>
                 <span id="vol-percent">VOL: 50%</span>
@@ -373,7 +373,7 @@
                             REC
                         </button>
                         <button id="stop" class="btn-rect">
-                            <svg viewBox="0 0 24"><path d="M6,6H18V18H6V6Z"/></svg>
+                            <svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg>
                             STOP
                         </button>
                         <button id="mute" class="btn-rect">
@@ -415,7 +415,129 @@
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
         const volPercent = document.getElementById('vol-percent');
-        const displayEl = document.getElementById('display');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
-        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+
+        let audioCtx, analyser, source, isPwr = false;
+        let mediaRecorder, chunks = [];
+
+        function updateDateTime() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const mo = String(now.getMonth() + 1).padStart(2, '0');
+            const yr = now.getFullYear();
+            
+            clockEl.textContent = `${h}:${m}:${s}`;
+            dateEl.textContent = `${day}:${mo}:${yr}`;
+        }
+
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
+        };
+
+        function updateVol() { 
+            const vol = Math.round(audio.volume * 100);
+            vFill.style.width = vol + '%';
+            volPercent.textContent = `VOL: ${vol}%`;
+        }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+            }
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                source.connect(audioCtx.destination);
+            }
+        }
+
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            initAudio();
+            audio.play();
+            this.classList.add('active');
+        };
+
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start();
+            recBtn.classList.add('active');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder) mediaRecorder.stop();
+            recBtn.classList.remove('active');
+            flash(recBtn);
+        }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            audio.pause(); 
+            audio.currentTime = 0;
+            audio.volume = 0.5;
+            updateVol();
+            playBtn.classList.remove('active');
+            flash(this);
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        window.addEventListener('load', () => {
+            audio.volume = 0.5;
+            updateVol();
+        });
+    </script>
+</body>
+</html>
