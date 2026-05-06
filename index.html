@@ -21,43 +21,43 @@
             user-select: none;
         }
 
-        /* 3. Główna część ramki - ciemne szare szczotkowane aluminium */
+        /* Główna ramka - ciemne szczotkowane aluminium jak na zdjęciu */
         .frame {
             width: 100%;
-            max-width: 600px;
-            border-radius: 6px;
-            padding: 8px;
-            background: #1a1a1a;
+            max-width: 650px;
+            border-radius: 8px;
+            padding: 20px;
+            background: #b8b8b8;
             background-image: 
                 repeating-linear-gradient(135deg, 
-                    rgba(60,60,60,0.5) 0px, 
-                    rgba(60,60,60,0.5) 1px, 
+                    rgba(180,180,0.6) 0px, 
+                    rgba(180,180,180,0.6) 1px, 
                     transparent 1px, 
                     transparent 2px,
-                    rgba(0,0,0,0.4) 2px,
-                    rgba(0,0,0,0.4) 3px,
+                    rgba(100,100,100,0.3) 2px,
+                    rgba(100,100,100,0.3) 3px,
                     transparent 3px,
-                    transparent 6px),
-                linear-gradient(180deg, #2a2a2a 0%, #0f0f0f 100%);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 1);
+                    transparent 5px),
+                linear-gradient(180deg, #c8c8c8 0%, #a8a8a8 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 1), inset 0 2px 3px rgba(255,255,255,0.6);
             position: relative;
-            border: 1px solid #333;
+            border: 2px solid #888;
             box-sizing: border-box;
         }
 
         .frame.powered {
-            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9);
+            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9), inset 0 2px 3px rgba(255,255,255,0.6);
         }
 
-        /* 5. Śrubki torx gwiazdka na głównym panelu sterowania */
+        /* Śrubki torx gwiazdka 14px na głównej ramce */
         .frame::before, .frame::after {
             content: '★';
             position: absolute;
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #666, #222);
-            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 1px rgba(255,255,255,0.1);
+            background: radial-gradient(circle at 30% 30%, #777, #222);
+            box-shadow: inset 0 2px 3px rgba(0,0.9), 0 1px 2px rgba(255,255,0.2);
             color: #111;
             font-size: 9px;
             display: flex;
@@ -66,17 +66,17 @@
             line-height: 1;
             z-index: 100;
         }
-        .frame::before { top: 6px; left: 6px; }
-        .frame::after { top: 6px; right: 6px; }
+        .frame::before { top: 8px; left: 8px; }
+        .frame::after { top: 8px; right: 8px; }
 
         .screw-bl, .screw-br {
             position: absolute;
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #666, #222);
-            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 1px rgba(255,255,0.1);
-            bottom: 6px;
+            background: radial-gradient(circle at 30% 30%, #777, #222);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 2px rgba(255,255,255,0.2);
+            bottom: 8px;
             color: #111;
             font-size: 9px;
             display: flex;
@@ -85,109 +85,150 @@
             line-height: 1;
             z-index: 100;
         }
-        .screw-bl { left: 6px; }
-        .screw-br { right: 6px; }
+        .screw-bl { left: 8px; }
+        .screw-br { right: 8px; }
         .screw-bl::before, .screw-br::before { content: '★'; }
 
-        .title {
-            text-align: center;
-            font-size: clamp(28px, 6vw, 48px);
-            font-weight: bold !important;
-            letter-spacing: 10px;
-            color: #2a0000;
-            font-family: 'DS-Digital', monospace !important;
-            margin: 0 auto 1cm auto;
-            display: block;
-            width: fit-content;
+        .header-logos {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            padding: 0 5px;
         }
 
-        .frame.powered .title {
-            color: #e60012 !important;
-            text-shadow: 0 0 10px #e60012, 0 0 20px #e60012;
+        .roland-logo {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a1a;
+            font-family: Arial, sans-serif;
+            line-height: 1;
+        }
+
+        .lab-sub {
+            font-size: 9px;
+            color: #333;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .tb-logo {
+            text-align: right;
+        }
+
+        .tb-text {
+            font-size: 18px;
+            font-weight: 900;
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .tb-badge {
+            background: #1a1a1a;
+            color: #d4d4d4;
+            padding: 1px 6px;
+            font-size: 14px;
+            border-radius: 2px;
+            border: 2px solid #1a;
+        }
+
+        .pro-terminal {
+            font-size: 9px;
+            color: #333;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        /* Dwa wyświetlacze jak na zdjęciu */
+        .displays-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 12px;
+            margin-bottom: 18px;
         }
 
         .display-frame {
             background: #000;
-            border: 3px solid #333;
-            border-top-color: #000;
-            border-bottom-color: #444;
+            border: 3px solid #555;
+            border-top-color: #222;
+            border-bottom-color: #666;
             border-radius: 4px;
-            margin: 0 auto;
             box-sizing: border-box;
             overflow: hidden;
-            width: fit-content;
-            min-width: 320px;
-            height: 110px;
+            height: 85px;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-            font-family: 'Digital Numbers', sans-serif;
-            color: #120000;
+            font-family: 'DS-Digital', 'Digital Numbers', monospace;
+            color: #1a0000;
             transition: color 0.3s;
-            padding: 0 20px;
+            padding: 8px 12px;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.95);
         }
 
         .frame.powered .display-frame {
-            color: #e60012;
-            text-shadow: 0 0 10px #e60012;
+            color: #00ff41;
+            text-shadow: 0 0 8px #00ff41, 0 0 15px #00ff41;
         }
 
-        .display-line {
-            line-height: 1.2;
+        .display-left {
+            font-size: 38px;
+            font-weight: bold;
+            letter-spacing: 3px;
             text-align: center;
-            white-space: nowrap;
+            line-height: 1;
         }
 
-        .station-name { font-size: 20px; margin-bottom: 5px; }
-        .time-display { font-size: 28px; }
-        .date-display { font-size: 16px; margin-top: 5px; }
+        .display-right-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .display-right-main {
+            font-size: 32px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-align: left;
+            margin: 4px 0;
+        }
+
+        .display-right-bottom {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            letter-spacing: 1px;
+        }
 
         .main-content {
             position: relative;
             width: 100%;
-            min-height: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 1cm;
         }
 
-        /* 4. Część panela sterowania z przyciskami */
-        .controls-main {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 15px;
-            border-radius: 6px;
-            background: #c0c0c0;
-            background-image: 
-                repeating-linear-gradient(135deg, 
-                    rgba(255,255,255,0.3) 0px, 
-                    rgba(255,255,255,0.3) 1px, 
-                    transparent 1px, 
-                    transparent 2px,
-                    rgba(0,0,0,0.1) 2px,
-                    rgba(0,0,0,0.1) 3px,
-                    transparent 3px,
-                    transparent 4px),
-                linear-gradient(180deg, #d0d0d0 0%, #b0b0b0 100%);
+        /* Panel sterowania z przyciskami */
+        .controls-panel {
+            background: #b8b8b8;
             border: 2px solid #666;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
-            z-index: 10;
-            width: fit-content;
+            border-radius: 6px;
+            padding: 15px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
-        /* 6. Śrubki o połowę mniejsze torx na panelu z przyciskami */
-        .controls-main::before, .controls-main::after {
+        /* Śrubki torx 7px na panelu z przyciskami - o połowę mniejsze */
+        .controls-panel::before, .controls-panel::after {
             content: '★';
             position: absolute;
             width: 7px;
             height: 7px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #888, #333);
-            box-shadow: inset 0 1px 2px rgba(0,0,0.8);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
             color: #222;
             font-size: 5px;
             display: flex;
@@ -196,102 +237,141 @@
             line-height: 1;
             z-index: 101;
         }
-        .controls-main::before { top: 4px; left: 4px; }
-        .controls-main::after { top: 4px; right: 4px; }
+        .controls-panel::before { top: 4px; left: 4px; }
+        .controls-panel::after { top: 4px; right: 4px; }
 
-        .top-buttons {
+        .controls-main {
             display: flex;
-            gap: 6px;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* 1. Przyciski pwr, play, rec, stop, mute, Up, Down - szare szczotkowane aluminium */
+        .top-row {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        /* Przyciski - szare szczotkowane aluminium */
         .btn-rect, .btn-v {
-            border: 2px solid #333;
-            background: linear-gradient(135deg, #e8e8e8 0%, #d0d0 25%, #e0e0e0 50%, #c8c8c8 75%, #d8d8d8 100%);
+            border: 2px solid #fff;
+            background: linear-gradient(135deg, #f0f0f0 0%, #d8d8 25%, #e8e8e8 50%, #c8c8c8 75%, #d8d8d8 100%);
             background-image: 
                 repeating-linear-gradient(135deg,
-                    rgba(255,255,255,0.4) 0px,
-                    rgba(255,255,255,0.4) 1px,
+                    rgba(255,255,255,0.5) 0px,
+                    rgba(255,255,255,0.5) 1px,
                     transparent 1px,
                     transparent 2px),
-                linear-gradient(135deg, #e8e8e8 0%, #c8c8c8 100%);
-            color: #222;
+                linear-gradient(135deg, #f0f0f0 0%, #c8c8c8 100%);
+            color: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
-            box-shadow: inset 0 2px 2px rgba(255,255,255,0.8), inset 0 -2px 2px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.4);
+            box-shadow: 
+                inset 0 2px 3px rgba(255,255,1),
+                inset 0 -2px 3px rgba(0,0,0,0.2),
+                0 3px 6px rgba(0,0,0,0.5);
+            position: relative;
         }
 
         .btn-rect { 
-            width: 68px; 
-            height: 38px; 
-            border-radius: 3px; 
+            aspect-ratio: 1;
+            border-radius: 3px;
+            flex-direction: column;
+            gap: 4px;
+            padding: 6px 4px;
         }
-        
-        .btn-rect svg, .btn-v svg { 
+
+        /* Czerwona LED w rogu jak na zdjęciu */
+        .btn-rect::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #400000;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,0.9);
+        }
+
+        .frame.powered .btn-rect::before {
+            background: #ff0000;
+            box-shadow: 0 0 6px #ff0000, inset 0 1px 1px rgba(0,0,0,0.5);
+        }
+
+        .btn-rect svg { 
             width: 20px; 
             height: 20px; 
             fill: currentColor; 
             pointer-events: none; 
         }
 
-        .btn-rect:active, .btn-v:active {
-            box-shadow: inset 0 3px 5px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
-            transform: translateY(1px);
-        }
-
-        .frame.powered .btn-rect, .frame.powered .btn-v { 
-            color: #333; 
-            border-color: #444; 
-        }
-        
-        .frame.powered .btn-rect.active, .frame.powered .btn-v.active { 
-            color: #e60012 !important; 
-            border-color: #e60012 !important; 
-            box-shadow: 0 0 12px #e60012 !important, inset 0 2px 2px rgba(255,255,255,0.8); 
-        }
-
-        /* 2. Pasek głośności z przyciskami */
-        .vol-wrapper { 
-            display: flex; 
-            gap: 6px; 
-            width: 100%; 
-            height: 38px; 
-            align-items: center;
-        }
-        
-        .btn-v { 
-            width: 68px;
-            height: 38px; 
-            border-radius: 3px;
+        .btn-rect span {
+            font-size: 8px;
             font-weight: bold;
-            font-size: 11px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
-        
-        .vol-bar { 
-            flex: 1;
-            height: 38px; 
-            background: #000; 
-            border: 2px solid #333;
-            border-radius: 3px; 
-            position: relative; 
-            overflow: hidden;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.9);
+
+        .btn-rect:active, .btn-v:active {
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
+            transform: translateY(2px);
         }
-        
-        .vol-fill { 
-            height: 100%; 
-            width: 50%; 
-            background: #e60012; 
-            opacity: 0; 
-            transition: width 0.1s;
+
+        .frame.powered .btn-rect.active {
+            border-color: #e60012;
+            box-shadow: 
+                0 0 15px rgba(230,0,18,0.8),
+                inset 0 2px 3px rgba(255,255,255,1);
+        }
+
+        .frame.powered .btn-rect.active::before {
+            background: #e60012;
             box-shadow: 0 0 10px #e60012;
         }
 
-        .frame.powered .vol-fill { opacity: 1; }
+        /* Pasek głośności z przyciskami DOWN/BAR/UP */
+        .vol-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 2.5fr 1fr;
+            gap: 12px;
+            height: 50px;
+            align-items: center;
+        }
+
+        .btn-v {
+            height: 100%;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .btn-v svg { width: 20px; height: 20px; fill: currentColor; }
+
+        .vol-bar {
+            height: 100%;
+            background: #0a0a0a;
+            border: 2px solid #333;
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 3px 8px rgba(0,0,0,0.95);
+        }
+
+        .vol-fill {
+            height: 100%;
+            width: 50%;
+            background: #1a1a;
+            transition: width 0.1s;
+        }
+
+        .frame.powered .vol-fill {
+            background: linear-gradient(90deg, #e60012 0%, #ff0033 100%);
+            box-shadow: 0 0 15px #e60012;
+        }
 
         .lab-logo { 
             margin-top: 0.5cm; 
@@ -336,30 +416,11 @@
 
         @media(max-width:700px) {
             .frame { max-width: 95%; }
-            .display-frame { width: 90% !important; margin-bottom: 20px; }
-            .controls-main { 
-                display: grid !important; 
-                grid-template-columns: 1fr 1fr; 
-                width: 100% !important; 
-                gap: 12px; 
-                box-sizing: border-box;
-            }
-            .top-buttons {
-                display: contents;
-            }
-            .btn-rect { width: 3.5cm; height: 55px; }
-            .btn-rect:nth-child(odd) { margin-left: 2.5mm; justify-self: start; }
-            .btn-rect:nth-child(even) { margin-right: 2.5mm; justify-self: end; }
-            .vol-wrapper { 
-                grid-column: span 2; 
-                width: 100% !important; 
-                height: auto !important; 
-                margin-top: 15px; 
-                padding: 0 7.5mm; 
-                box-sizing: border-box;
-                flex-direction: column;
-            }
-            .btn-v { width: 100%; height: 55px; }
+            .displays-row { grid-template-columns: 1fr; }
+            .controls-panel { padding: 12px; }
+            .top-row { gap: 8px; }
+            .btn-rect span { font-size: 7px; }
+            .btn-rect svg { width: 18px; height: 18px; }
         }
     </style>
 </head>
@@ -369,25 +430,55 @@
         <div class="screw-bl"></div>
         <div class="screw-br"></div>
         <div class="title" id="main-title">L.A.B. AUDIO</div>
-        <div class="display-frame" id="display">
-            <div class="display-line station-name">Muzyczne Radio</div>
-            <div class="display-line time-display" id="clock">00:00:00</div>
-            <div class="display-line date-display" id="date">00:00:0000</div>
-        </div>
-        <div class="main-content">
-            <div class="controls-main" id="controls">
-                <div class="top-buttons">
-                    <button id="pwr" class="btn-rect"><svg viewBox="0 0 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
-                    <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
-                    <button id="rec" class="btn-rect"><svg viewBox="0 0 24"><circle cx="12" cy="12" r="8"/></svg></button>
-                    <button id="stop" class="btn-rect"><svg viewBox="0 0 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
-                    <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+        
+        <!-- Dwa wyświetlacze jak na zdjęciu -->
+        <div class="displays-row">
+            <div class="display-frame">
+                <div class="display-left" id="clock">00:00</div>
+            </div>
+            <div class="display-frame">
+                <div class="display-right-top">
+                    <span>BANK: A1 / PATTERN: 08</span>
                 </div>
-                
-                <div class="vol-wrapper" id="vol-container">
-                    <button id="vDown" class="btn-v">DOWN</button>
-                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                    <button id="vUp" class="btn-v">UP</button>
+                <div class="display-right-main" id="station-name">Muzyczne Radio</div>
+                <div class="display-right-bottom">
+                    <span>BITRATE: 128KBPS</span>
+                    <span id="vol-percent">VOL: 50%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="controls-panel">
+                <div class="controls-main" id="controls">
+                    <div class="top-row">
+                        <button id="pwr" class="btn-rect">
+                            <svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg>
+                            <span>POWER</span>
+                        </button>
+                        <button id="play" class="btn-rect">
+                            <svg viewBox="0 0 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
+                            <span>PLAY</span>
+                        </button>
+                        <button id="rec" class="btn-rect">
+                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
+                            <span>REC</span>
+                        </button>
+                        <button id="stop" class="btn-rect">
+                            <svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg>
+                            <span>STOP</span>
+                        </button>
+                        <button id="mute" class="btn-rect">
+                            <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
+                            <span>MUTE</span>
+                        </button>
+                    </div>
+                    
+                    <div class="vol-wrapper" id="vol-container">
+                        <button id="vDown" class="btn-v">DOWN</button>
+                        <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                        <button id="vUp" class="btn-v">UP</button>
+                    </div>
                 </div>
             </div>
 
@@ -409,22 +500,14 @@
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
         const dateEl = document.getElementById('date');
-        const displayEl = document.getElementById('display');
-        const titleEl = document.getElementById('main-title');
+        const volPercent = document.getElementById('vol-percent');
+        const stationName = document.getElementById('station-name');
 
         const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
         const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
         let audioCtx, analyser, source, isPwr = false;
         let mediaRecorder, chunks = [];
-
-        function syncDisplayWidth() {
-            if (window.innerWidth > 700) {
-                displayEl.style.width = titleEl.offsetWidth + "px";
-            } else {
-                displayEl.style.width = "90%";
-            }
-        }
 
         function updateDateTime() {
             const now = new Date();
@@ -447,7 +530,11 @@
             setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
         };
 
-        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+        function updateVol() { 
+            const vol = Math.round(audio.volume * 100);
+            vFill.style.width = vol + '%';
+            volPercent.textContent = `VOL: ${vol}%`;
+        }
 
         pwrBtn.onclick = function() {
             isPwr = !isPwr;
@@ -534,9 +621,7 @@
         document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
         document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
 
-        window.addEventListener('resize', syncDisplayWidth);
         window.addEventListener('load', () => {
-            syncDisplayWidth();
             audio.volume = 0.5;
             updateVol();
         });
