@@ -1,332 +1,406 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RMF TB-303 PRO TERMINAL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>L.A.B. AUDIO TB-303 Edition</title>
+    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@700&display=swap');
-
         :root {
-            --metal-base: #c0c0c0;
-            --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
-            --led-red: #ff3333;
-            --led-bg: #400000;
-            --lcd-green: #a4f000;
-            --btn-metal: linear-gradient(145deg, #e0e0e0 0%, #a0a0a0 100%);
+            --metal-bg: #dcdcdc;
+            --metal-dark: #b0b0b0;
+            --accent-red: #e60012;
+            --led-off: #4a0000;
+            --led-on: #ff0000;
+            --brushed: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
-        
-        body { 
-            height: 100vh; width: 100vw; 
-            background: #0a0a0a; 
-            display: flex; justify-content: center; align-items: center;
-            font-family: 'Roboto Condensed', sans-serif;
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a1a;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .frame {
+            width: 95%;
+            max-width: 850px;
+            background-color: var(--metal-bg);
+            background-image: var(--brushed);
+            border: 2px solid #888;
+            border-radius: 4px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), inset 0 2px 2px #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Sekcja górna - Logo i Parametry */
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #999;
+            padding-bottom: 15px;
+            margin-bottom: 15px;
+        }
+
+        .brand-area {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .title {
+            font-size: 32px;
+            font-weight: 900;
+            color: #222;
+            letter-spacing: -1px;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .model-name {
+            font-family: 'DS-Digital', sans-serif;
+            font-size: 42px;
+            color: #333;
+            text-align: right;
+            line-height: 0.8;
+        }
+
+        .model-sub {
+            font-size: 14px;
+            font-weight: bold;
+            color: #444;
+            text-align: right;
+        }
+
+        /* Wyświetlacz LCD w stylu TB-303 */
+        .display-frame {
+            background: #111;
+            border: 4px solid #555;
+            border-radius: 3px;
+            padding: 10px;
+            width: 280px;
+            height: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 15px #000;
+            font-family: 'Digital Numbers', sans-serif;
+            color: #300; /* Off state */
+            margin: 0 auto 20px auto;
+        }
+
+        .frame.powered .display-frame {
+            color: var(--accent-red);
+            text-shadow: 0 0 10px var(--accent-red);
+        }
+
+        .display-line { line-height: 1.1; text-align: center; white-space: nowrap; }
+        .station-name { font-size: 14px; font-family: Arial, sans-serif; margin-bottom: 4px; }
+        .time-display { font-size: 24px; }
+        .date-display { font-size: 12px; margin-top: 4px; }
+
+        /* Panel Kontrolny - Sekcja Ciemniejsza */
+        .main-content {
+            background-color: var(--metal-dark);
+            background-image: var(--brushed);
+            border: 2px solid #666;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .controls-main {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* Przyciski jak w 303 */
+        .btn-rect, .btn-v {
+            width: 60px;
+            height: 45px;
+            background: linear-gradient(180deg, #eee 0%, #bbb 100%);
+            border: 2px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 0 #444, 0 6px 10px rgba(0,0,0,0.3);
+            transition: all 0.1s;
+        }
+
+        .btn-rect::before {
+            content: "";
+            position: absolute;
+            top: -12px;
+            width: 8px;
+            height: 8px;
+            background: var(--led-off);
+            border-radius: 50%;
+            border: 1px solid #333;
+        }
+
+        .btn-rect.active::before, .btn-v.active::before {
+            background: var(--led-on);
+            box-shadow: 0 0 8px var(--led-on);
+        }
+
+        .btn-rect:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #444;
+        }
+
+        .btn-rect svg, .btn-v svg { width: 22px; height: 22px; fill: #111; }
+
+        /* Sekcja głośności */
+        .vol-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .vol-btns { display: flex; gap: 8px; }
+        .btn-v { width: 45px; height: 40px; }
+
+        .vol-bar {
+            width: 120px;
+            height: 10px;
+            background: #333;
+            border: 2px solid #000;
+            border-radius: 5px;
             overflow: hidden;
         }
 
-        .vst-chassis {
-            width: 98vw; height: 96vh;
-            background: var(--metal-shine);
-            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            border: 4px solid #1a1a1a;
-            border-radius: 12px;
-            box-shadow: 0 40px 100px rgba(0,0,0,1), inset 0 1px 3px rgba(255,255,255,0.8);
-            padding: 35px;
-            display: flex; flex-direction: column;
-            position: relative;
+        .vol-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--accent-red);
+            transition: width 0.2s;
         }
 
-        .screw {
-            position: absolute;
-            width: 22px; height: 22px;
-            background: radial-gradient(circle, #444 0%, #222 100%);
-            border-radius: 50%;
-            box-shadow: inset 1px 1px 3px rgba(0,0,0,0.8), 1px 1px 1px rgba(255,255,255,0.3);
-            z-index: 20;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .screw::before {
-            content: "";
-            width: 14px; height: 14px;
-            background: radial-gradient(circle at 30% 30%, #bbb, #777);
-            border-radius: 50%;
-            box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-        }
-        .screw::after {
-            content: "";
-            position: absolute;
-            width: 8px; height: 8px;
-            background: #222;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+        .frame.powered .vol-fill { box-shadow: 0 0 10px var(--accent-red); }
+
+        .lab-logo {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 12px;
+            letter-spacing: 2px;
+            color: #444;
+            border: 1px solid #666;
+            padding: 2px 10px;
         }
 
-        header { 
-            display: flex; justify-content: space-between; align-items: baseline;
-            margin-bottom: 25px; border-bottom: 2px solid rgba(0,0,0,0.2); padding-bottom: 15px;
-        }
-        .logo h1 { 
-            font-family: 'Orbitron'; 
-            font-size: 38px; 
-            color: #111; 
-            letter-spacing: -1px; 
-            margin: 0; 
-            text-shadow: 1px 1px 1px rgba(255,255,255,0.5); 
-        }
-        .logo span { font-size: 11px; letter-spacing: 4px; color: #333; font-weight: bold; }
-
-        .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
-
-        .grid-stations, .pro-panel {
-            background: var(--metal-shine);
-            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            border: 1px solid #888;
-            border-right: 2px solid #555;
-            border-bottom: 2px solid #555;
-            box-shadow: inset 1px 1px 1px rgba(255,255,255,0.8), 5px 5px 15px rgba(0,0,0,0.3);
-            position: relative;
+        .link-container { margin-top: 15px; }
+        .link-container a {
+            color: #555;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
 
-        .grid-stations { 
-            flex: 1.4; display: grid; 
-            grid-template-columns: repeat(5, 1fr); 
-            grid-template-rows: repeat(3, 1fr); 
-            gap: 15px; padding: 35px; border-radius: 4px;
+        @media(max-width:700px) {
+            .frame { padding: 10px; height: auto; overflow-y: auto; }
+            .display-frame { width: 240px; }
+            .controls-main { gap: 20px 10px; }
+            .btn-rect { width: 50px; height: 40px; }
         }
-
-        .pro-panel { 
-            flex: 0.6; display: flex; flex-direction: column; 
-            padding: 35px 25px; border-radius: 4px; gap: 15px;
-        }
-
-        .bt-303, .sq-btn, .btn-run-stop {
-            background: var(--btn-metal);
-            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
-            border: 2px solid #000;
-            border-radius: 4px;
-            box-shadow: 
-                inset 2px 2px 2px rgba(255,255,255,0.8), 
-                inset -2px -2px 2px rgba(0,0,0,0.4),
-                4px 4px 8px rgba(0,0,0,0.5);
-            display: flex; align-items: center; justify-content: center;
-            position: relative;
-            transition: 0.1s;
-            cursor: pointer !important;
-        }
-
-        .bt-303:active, .sq-btn:active, .btn-run-stop:active {
-            transform: scale(0.98);
-            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.5);
-        }
-
-        .bt-303::before { 
-            content: ""; position: absolute; top: 8px; width: 6px; height: 6px;
-            background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
-        }
-        .bt-303.active { border: 2px solid var(--lcd-green); }
-        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #222; text-transform: uppercase; margin-top: 10px; transition: 0.2s; }
-        .bt-303.active .st-label { color: var(--lcd-green); text-shadow: 0 0 10px var(--lcd-green); }
-
-        .lcd-bezel {
-            background: #1a1a1a;
-            padding: 4px;
-            border-radius: 4px;
-            box-shadow: inset 0 2px 5px #000, 0 1px 1px rgba(255,255,255,0.4);
-        }
-        .lcd-display {
-            background: #080a08; height: 100px; border-radius: 2px;
-            padding: 12px; font-family: 'Share Tech Mono', monospace;
-            display: flex; flex-direction: column; justify-content: space-between;
-            border: 1px solid #333;
-        }
-        .lcd-top-row { display: flex; justify-content: space-between; align-items: center; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; opacity: 0.7; font-weight: bold; }
-        #clock { font-family: 'Share Tech Mono', monospace; font-size: 18px; color: var(--lcd-green); text-shadow: 0 0 5px var(--lcd-green); font-weight: 400; }
-        
-        #st-name { font-size: 22px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
-        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
-
-        .step-sequencer { background: #111; border-radius: 3px; padding: 10px; display: flex; flex-direction: column; gap: 5px; box-shadow: inset 0 2px 10px #000; }
-        .step-row { display: flex; gap: 3px; height: 15px; }
-        .step { flex: 1; background: #222; border-radius: 1px; }
-        .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.8); }
-
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
-        
-        .sq-btn { width: 50px; height: 50px; flex-direction: column; }
-        .sq-btn .dot { 
-            width: 6px; height: 6px; 
-            background: var(--led-bg); 
-            border-radius: 50%; 
-            margin-bottom: 4px; 
-            border: 1px solid #000;
-            transition: background 0.1s, box-shadow 0.1s;
-        }
-        .sq-btn.blink .dot {
-            background: var(--led-red);
-            box-shadow: 0 0 8px var(--led-red);
-        }
-        .sq-btn span { font-size: 9px; font-weight: bold; color: #111; }
-
-        .fader-track { background: #000; height: 35px; flex: 1; border-radius: 2px; border: 1px solid #444; display: flex; align-items: center; padding: 0 5px; }
-        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none; width: 20px; height: 30px; background: #ccc; border: 1px solid #333; border-radius: 2px;
-        }
-
-        .btn-run-stop { width: 140px; height: 55px; font-weight: 900; color: #111; font-size: 18px; }
     </style>
 </head>
-<body>
 
-<div class="vst-chassis">
-    <div class="screw" style="top: 10px; left: 10px;"></div>
-    <div class="screw" style="top: 10px; right: 10px;"></div>
-    <div class="screw" style="top: 10px; left: 50%; transform: translateX(-50%);"></div>
-    <div class="screw" style="bottom: 10px; left: 50%; transform: translateX(-50%);"></div>
-    <div class="screw" style="bottom: 10px; left: 10px;"></div>
-    <div class="screw" style="bottom: 10px; right: 10px;"></div>
-
-    <header>
-        <div class="logo">
-            <h1>RMF TB-303</h1>
-            <span>COMPUTER CONTROLLED // ACID ENGINE</span>
-        </div>
-    </header>
-
-    <div class="main-workspace">
-        <div class="grid-stations" id="grid">
-            <div class="screw" style="top: 10px; left: 10px;"></div>
-            <div class="screw" style="top: 10px; right: 10px;"></div>
-            <div class="screw" style="bottom: 10px; left: 10px;"></div>
-            <div class="screw" style="bottom: 10px; right: 10px;"></div>
+<body oncontextmenu="return false;">
+    <div class="frame">
+        <div class="top-section">
+            <div class="brand-area">
+                <h1 class="title"> Roland</h1>
+                <span style="font-size: 9px; font-weight: bold;">L.A.B. AUDIO INTERFACE</span>
+            </div>
+            <div class="model-area">
+                <div class="model-name">TB-303</div>
+                <div class="model-sub">Computer Controlled</div>
+            </div>
         </div>
 
-        <aside class="pro-panel">
-            <div class="screw" style="top: 10px; left: 10px;"></div>
-            <div class="screw" style="top: 10px; right: 10px;"></div>
-            <div class="screw" style="bottom: 10px; left: 10px;"></div>
-            <div class="screw" style="bottom: 10px; right: 10px;"></div>
+        <div class="display-frame" id="display">
+            <div class="display-line station-name">MUZYCZNE RADIO</div>
+            <div class="display-line time-display" id="clock">00:00:00</div>
+            <div class="display-line date-display" id="date">00:00:2026</div>
+        </div>
 
-            <div class="lcd-bezel">
-                <div class="lcd-display">
-                    <div class="lcd-top-row">
-                        <div class="lcd-label">BANK: A1 / PATTERN: 08</div>
-                        <div id="clock">00:00:00</div>
+        <div class="main-content">
+            <div class="controls-main" id="controls">
+                <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+                <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+                <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+                <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+                <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
+                
+                <div class="vol-wrapper" id="vol-container">
+                    <div class="vol-btns">
+                        <button id="vDown" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg></button>
+                        <button id="vUp" class="btn-v"><svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg></button>
                     </div>
-                    <div id="st-name">STATION IDLE</div>
-                    <div class="lcd-sub">
-                        <span>BITRATE: 128KBPS</span>
-                        <span id="v-val">VOL: 50%</span>
-                    </div>
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
                 </div>
             </div>
 
-            <div class="step-sequencer">
-                <div class="step-row" id="r1"></div>
-                <div class="step-row" id="r2"></div>
-                <div class="step-row" id="r3"></div>
-            </div>
-
-            <div class="analog-controls">
-                <div class="volume-row">
-                    <div class="sq-btn" id="vol-down-btn">
-                        <div class="dot"></div>
-                        <span>DOWN</span>
-                    </div>
-                    <div class="fader-track">
-                        <input type="range" id="v-range" min="0" max="100" value="50">
-                    </div>
-                    <div class="sq-btn" id="vol-up-btn">
-                        <div class="dot"></div>
-                        <span>UP</span>
-                    </div>
-                </div>
-                <div class="btn-run-stop" id="run-stop-btn">STOP</div>
-            </div>
-        </aside>
+            <div class="lab-logo">L.A.B. AUDIO TB-303</div>
+            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+        </div>
     </div>
-</div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
-<script>
-    const STATIONS = [
-        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' },
-        { n: 'RMF 80s', u: 'rmf_80s' }, { n: 'RMF 90s', u: 'rmf_90s' },
-        { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILL', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' },
-        { n: 'RMF GOLD', u: 'rmf_gold' }, { n: 'RMF LATIN', u: 'rmf_latino' },
-        { n: 'RMF LOVE', u: 'rmf_love' }, { n: 'RMF PARTY', u: 'rmf_party' },
-        { n: 'RMF ROCK', u: 'rmf_polski_rock' }, { n: 'RMF ROCK+', u: 'rmf_rock' },
-        { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' }
-    ];
+    <script>
+        const audio = document.getElementById('stream');
+        const pwrBtn = document.getElementById('pwr');
+        const playBtn = document.getElementById('play');
+        const recBtn = document.getElementById('rec');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        const displayEl = document.getElementById('display');
 
-    const grid = document.getElementById('grid');
-    const player = document.getElementById('player');
-    const stName = document.getElementById('st-name');
-    const vRange = document.getElementById('v-range');
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
-    STATIONS.forEach((s, i) => {
-        const b = document.createElement('div');
-        b.className = 'bt-303';
-        b.innerHTML = `<div class="st-label">${s.n}</div>`;
-        b.onclick = () => play(i);
-        grid.appendChild(b);
-    });
+        let audioCtx, analyser, source, isPwr = false;
+        let mediaRecorder, chunks = [];
 
-    [1, 2, 3].forEach(r => {
-        const row = document.getElementById('r'+r);
-        for(let i=0; i<16; i++) {
-            const s = document.createElement('div');
-            s.className = 'step';
-            if(Math.random() > 0.85) s.classList.add('on');
-            row.appendChild(s);
+        function updateDateTime() {
+            const now = new Date();
+            const h = String(now.getHours()).padStart(2, '0');
+            const m = String(now.getMinutes()).padStart(2, '0');
+            const s = String(now.getSeconds()).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const mo = String(now.getMonth() + 1).padStart(2, '0');
+            const yr = now.getFullYear();
+            clockEl.textContent = `${h}:${m}:${s}`;
+            dateEl.textContent = `${day}:${mo}:${yr}`;
         }
-    });
 
-    function play(i) {
-        document.querySelectorAll('.bt-303').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        stName.textContent = STATIONS[i].n;
-        player.src = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
-        player.play();
-    }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
 
-    function adj(d, btnId) { 
-        let newVal = parseInt(vRange.value) + d;
-        if(newVal > 100) newVal = 100;
-        if(newVal < 0) newVal = 0;
-        vRange.value = newVal; 
-        setV(newVal); 
-        
-        const btn = document.getElementById(btnId);
-        btn.classList.add('blink');
-        setTimeout(() => btn.classList.remove('blink'), 150);
-    }
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder && mediaRecorder.state === 'recording')) el.classList.remove('active'); }, 600);
+        };
 
-    function setV(v) {
-        player.volume = v / 100;
-        document.getElementById('v-val').textContent = `VOL: ${v}%`;
-    }
+        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
 
-    document.getElementById('vol-down-btn').onclick = () => adj(-5, 'vol-down-btn');
-    document.getElementById('vol-up-btn').onclick = () => adj(5, 'vol-up-btn');
-    vRange.oninput = (e) => setV(e.target.value);
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+            }
+        };
 
-    document.getElementById('run-stop-btn').onclick = () => {
-        player.pause();
-        stName.textContent = "STATION STOPPED";
-        document.querySelectorAll('.bt-303').forEach(b => b.classList.remove('active'));
-    };
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                source.connect(audioCtx.destination);
+            }
+        }
 
-    setInterval(() => {
-        document.getElementById('clock').textContent = new Date().toTimeString().split(' ')[0];
-        document.querySelectorAll('.step').forEach(s => { if(Math.random()>0.97) s.classList.toggle('on'); });
-    }, 1000);
-</script>
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            initAudio();
+            audio.play();
+            this.classList.add('active');
+        };
+
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start();
+            recBtn.classList.add('active');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder) mediaRecorder.stop();
+            recBtn.classList.remove('active');
+            flash(recBtn);
+        }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            audio.pause(); 
+            audio.currentTime = 0;
+            playBtn.classList.remove('active');
+            flash(this);
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        window.addEventListener('load', () => {
+            audio.volume = 0.5;
+            updateVol();
+        });
+    </script>
 </body>
 </html>
