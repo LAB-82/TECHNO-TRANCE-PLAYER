@@ -4,382 +4,189 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
+    <title>Muzyczne Radio PRO ULTRA v2 - TB-303 Edition</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
     <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
     <style>
+        :root {
+            --panel-color: #b4b4b4;
+            --btn-color: linear-gradient(180deg, #e1e0d3 0%, #cfcdc0 100%);
+            --led-off: #300000;
+            --led-on: #ff0000;
+        }
+
         body {
             margin: 0;
             height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #0d0d0d;
-            font-family: Arial, sans-serif;
+            background: #0a0a0a;
+            font-family: 'Arial', sans-serif;
             overflow: hidden;
             -webkit-user-select: none;
             user-select: none;
         }
 
-        /* OBUDOWA - SZCZOTKOWANE ALU Z RETRO GRAFIKI */
+        /* GŁÓWNA RAMA - SZCZOTKOWANE ALUMINIUM */
         .frame {
             width: 100%;
-            max-width: 600px;
-            border-radius: 6px;
-            padding: 25px 20px;
-            background: radial-gradient(ellipse at top left, rgba(255,255,255,0.4) 0%, transparent 80%),
-                        linear-gradient(180deg, #d2d2d2 0%, #b2b2b2 100%);
-            background-color: #c4c4c4;
-            box-shadow: 
-                0 30px 70px rgba(0, 0, 0, 0.8), 
-                inset 0 1px 1px rgba(255,255,255,0.9),
-                inset 0 -2px 3px rgba(0,0,0,0.2);
+            max-width: 650px;
+            padding: 30px;
+            background: var(--panel-color);
+            background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px);
+            background-size: 100% 2px;
+            border-radius: 4px;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.8);
+            border: 1px solid #555;
             position: relative;
-            border: 4px solid #8e8e8e;
-            border-top-color: #e2e2e2;
-            border-bottom-color: #555555;
             box-sizing: border-box;
-        }
-
-        .frame::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, rgba(0,0,0,0.03) 1px, transparent 1px, transparent 2px);
-            pointer-events: none;
-            border-radius: 2px;
-        }
-
-        .frame.powered {
-            box-shadow: 
-                0 0 40px rgba(230, 0, 18, 0.25), 
-                0 30px 70px rgba(0, 0, 0, 0.8), 
-                inset 0 1px 1px rgba(255,255,255,0.9);
         }
 
         .header-logos {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 15px;
-            padding: 0 5px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #888;
+            padding-bottom: 10px;
         }
 
-        .roland-logo {
-            font-size: 30px;
-            font-weight: 900;
-            color: #1c1a1b;
-            font-family: Arial, sans-serif;
-            line-height: 1;
-            letter-spacing: -1px;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-        }
+        .roland-logo { font-size: 36px; font-weight: 900; color: #1a1a1a; line-height: 0.8; }
+        .lab-sub { font-size: 10px; color: #333; font-weight: bold; margin-top: 5px; }
 
-        .lab-sub {
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-            font-weight: bold;
-        }
+        .tb-logo { text-align: right; }
+        .tb-text { font-size: 24px; font-weight: 900; color: #1a1a1a; display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
+        .tb-badge { border: 2px solid #1a1a1a; padding: 0 5px; }
+        .pro-terminal { font-size: 10px; color: #333; font-weight: bold; }
 
-        .tb-logo {
-            text-align: right;
-        }
-
-        .tb-text {
-            font-size: 16px;
-            font-weight: 900;
-            color: #1c1a1b;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            justify-content: flex-end;
-            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
-        }
-
-        .tb-badge {
-            border: 2px solid #1c1a1b;
-            background: transparent;
-            color: #1c1a1b;
-            padding: 0px 4px;
-            font-size: 12px;
-            font-weight: 900;
-            border-radius: 3px;
-        }
-
-        .pro-terminal {
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 0.5px;
-            margin-top: 2px;
-            font-weight: bold;
-        }
-
-        /* RETRO ZIELONKAWY LCD Z PODŚWIETLENIEM */
+        /* WYŚWIETLACZ */
         .display-frame {
-            background: #090d08;
-            border: 3px solid #2d2d2d;
-            border-top-color: #1a1a1a;
-            border-bottom-color: #5a5a5a;
+            background: #080a08;
+            border: 4px solid #444;
             border-radius: 4px;
-            margin: 0 auto 20px auto;
-            box-sizing: border-box;
-            overflow: hidden;
-            width: 100%;
-            height: 95px;
+            margin-bottom: 25px;
+            padding: 15px;
+            height: 100px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            font-family: 'DS-Digital', 'Digital Numbers', monospace;
-            color: #1b2417;
-            transition: color 0.3s, text-shadow 0.3s;
-            padding: 8px 15px;
-            box-shadow: inset 0 5px 15px rgba(0,0,0,0.9);
-            position: relative;
+            font-family: 'Digital Numbers', sans-serif;
+            color: #1a201a; /* Wyłączony */
+            box-shadow: inset 0 0 20px #000;
         }
 
         .frame.powered .display-frame {
-            color: #8be41c;
-            text-shadow: 0 0 8px rgba(139,228,28,0.6), 0 0 15px rgba(139,228,28,0.4);
+            color: #99ff00;
+            text-shadow: 0 0 10px rgba(153, 255, 0, 0.6);
         }
 
-        .display-top {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
+        .display-top, .display-bottom { font-size: 12px; letter-spacing: 1px; font-family: Arial; }
+        .display-middle { text-align: center; font-size: 44px; }
 
-        .display-middle {
-            text-align: center;
-            font-size: 44px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            line-height: 1;
-        }
-
-        .display-bottom {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-
-        .main-content {
-            position: relative;
-            width: 100%;
-        }
-
-        /* WGŁĘBIENIE PANELU KONTROLNEGO */
+        /* PRZYCISKI - STYL TB-303 */
         .controls-panel {
-            background: #a2a2a2;
-            border: 2px solid #555;
-            border-top-color: #444;
-            border-bottom-color: #888;
+            background: #a8a8a8;
+            padding: 20px;
             border-radius: 4px;
-            padding: 20px 15px;
-            box-shadow: inset 0 4px 10px rgba(0,0,0,0.4), 0 1px 1px rgba(255,255,255,0.4);
-        }
-
-        .controls-main {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            width: 100%;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid #888;
         }
 
         .top-row {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 12px;
+            gap: 15px;
+            margin-bottom: 25px;
         }
 
-        /* RETRO BEŻOWE PLASTIKOWE PRZYCISKI */
         .btn-rect {
-            aspect-ratio: 1.15;
-            border: 1px solid #4a4a42;
-            background: linear-gradient(180deg, #eae9dd 0%, #dbdacc 40%, #c2c1b2 100%);
-            color: #2a2a25;
+            aspect-ratio: 1.2;
+            background: var(--btn-color);
+            border: 1px solid #444;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 4px 0 #666, 0 6px 10px rgba(0,0,0,0.4);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-end;
-            cursor: pointer;
-            transition: transform 0.05s, box-shadow 0.05s;
-            border-radius: 3px;
-            box-shadow: 
-                inset 0 1px 2px #fff,
-                inset 0 -3px 4px rgba(0,0,0,0.15),
-                0 4px 6px rgba(0,0,0,0.4),
-                0 1px 1px rgba(0,0,0,0.2);
-            position: relative;
+            padding: 8px 2px;
             font-size: 9px;
-            font-weight: 900;
-            gap: 2px;
-            padding: 6px 2px;
+            font-weight: bold;
+            color: #333;
+            transition: transform 0.05s;
         }
 
-        /* FIZYCZNE WGŁĘBIENIE NA LED */
+        /* DIODA LED NA PRZYCISKU */
         .btn-rect::before {
             content: '';
             position: absolute;
-            top: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #1e0505;
-            border: 1px solid #5a5a54;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
-            transition: background 0.2s, box-shadow 0.2s;
+            top: 8px;
+            width: 10px;
+            height: 6px;
+            background: var(--led-off);
+            border: 1px solid #000;
+            border-radius: 1px;
         }
 
-        /* DIODA W TRYBIE GOTOWOŚCI (POWER ON) */
-        .frame.powered .btn-rect::before {
-            background: #500000;
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.9);
-        }
-
-        .btn-rect svg { 
-            width: 22px; 
-            height: 22px; 
-            fill: #3a3a30; 
-            pointer-events: none; 
-            margin-bottom: 2px;
+        .btn-rect.active::before {
+            background: var(--led-on);
+            box-shadow: 0 0 8px var(--led-on);
         }
 
         .btn-rect:active {
-            box-shadow: 
-                inset 0 3px 6px rgba(0,0,0,0.4),
-                inset 0 1px 1px rgba(0,0,0,0.2),
-                0 1px 2px rgba(0,0,0,0.2);
-            transform: translateY(2px);
+            transform: translateY(3px);
+            box-shadow: 0 1px 0 #666;
         }
 
-        /* DIODA W STANIE AKTYWNYM */
-        .frame.powered .btn-rect.active {
-            background: linear-gradient(180deg, #eae9dd 0%, #dbdacc 40%, #c2c1b2 100%);
-            box-shadow: 
-                inset 0 1px 2px #fff,
-                inset 0 -2px 3px rgba(0,0,0,0.15),
-                0 2px 4px rgba(0,0,0,0.3);
-        }
+        .btn-rect svg { width: 18px; height: 18px; margin-bottom: 2px; fill: #333; }
 
-        .frame.powered .btn-rect.active::before {
-            background: #ff0000;
-            box-shadow: 0 0 8px #ff0000, 0 0 15px rgba(255,0,0,0.8), inset 0 1px 1px rgba(255,255,255,0.4);
-            border-color: #ff8888;
-        }
-
-        /* SEKCJA GŁOŚNOŚCI (SUWAK + BEŻOWE PRZYCISKI) */
+        /* SUWAK GŁOŚNOŚCI - STYL TERMINAL */
         .vol-wrapper {
             display: grid;
-            grid-template-columns: 1fr 2.5fr 1fr;
-            gap: 15px;
-            height: 50px;
+            grid-template-columns: 40px 1fr 40px;
             align-items: center;
+            gap: 10px;
+        }
+
+        .vol-bar {
+            height: 22px;
+            background: #050505; /* Czarny rowek */
+            border-radius: 2px;
+            position: relative;
+            border: 1px solid #444;
+            box-shadow: inset 0 2px 5px #000;
+        }
+
+        /* ELEMENT PRZESUWNY (UCHWYT) */
+        .vol-fill {
+            position: absolute;
+            top: -6px;
+            left: 50%; /* Sterowane JS */
+            width: 20px;
+            height: 34px;
+            background: linear-gradient(90deg, #bbb, #eee 45%, #888 50%, #eee 55%, #bbb);
+            border: 1px solid #333;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            box-shadow: 2px 4px 6px rgba(0,0,0,0.5);
         }
 
         .btn-v {
-            height: 100%;
-            border: 1px solid #4a4a42;
-            background: linear-gradient(180deg, #eae9dd 0%, #dbdacc 40%, #c2c1b2 100%);
-            color: #3a3a30;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            height: 30px;
             cursor: pointer;
-            border-radius: 3px;
-            box-shadow: 
-                inset 0 1px 2px #fff,
-                inset 0 -3px 4px rgba(0,0,0,0.15),
-                0 4px 6px rgba(0,0,0,0.4);
-            font-size: 24px;
-            font-weight: 900;
-        }
-
-        .btn-v:active {
-            box-shadow: inset 0 3px 6px rgba(0,0,0,0.4), 0 1px 1px rgba(0,0,0,0.2);
-            transform: translateY(2px);
-        }
-
-        .btn-v svg { width: 22px; height: 22px; fill: #3a3a30; }
-
-        /* FIZYCZNY ROWEK NA SUWAK GŁOŚNOŚCI */
-        .vol-bar {
-            height: 22px;
-            background: #080808;
-            border: 2px solid #555;
-            border-top-color: #333;
-            border-bottom-color: #777;
-            border-radius: 3px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 3px 8px rgba(0,0,0,0.9);
-        }
-
-        .vol-fill {
-            height: 100%;
-            width: 50%;
-            background: #1c1c1c;
-            transition: width 0.1s;
-        }
-
-        /* CZERWONY WSKAŹNIK LED PO WŁĄCZENIU */
-        .frame.powered .vol-fill {
-            background: linear-gradient(90deg, #aa0000 0%, #ff0000 100%);
-            box-shadow: 0 0 10px rgba(255,0,0,0.8);
-        }
-
-        .link-container {
-            margin-top: 25px;
-            padding-top: 15px;
-            border-top: 1px solid #8e8e8e;
-            text-align: center;
-            position: relative;
-        }
-
-        .link-container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 1px;
-            background: #fdfdfd;
-        }
-
-        .lab-footer {
-            font-size: 9px;
-            color: #333;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
             font-weight: bold;
         }
 
-        .link-container a {
-            color: #2a2a20;
-            text-decoration: none;
-            font-family: 'DS-Digital', sans-serif;
-            font-weight: bold;
-            letter-spacing: 2px;
-            font-size: 11px;
-            transition: color 0.3s, text-shadow 0.3s;
-        }
+        .link-container { margin-top: 20px; text-align: center; border-top: 1px solid #888; padding-top: 10px; }
+        .lab-footer { font-size: 10px; color: #444; letter-spacing: 2px; }
+        .link-container a { color: #111; text-decoration: none; font-size: 12px; font-weight: bold; }
 
-        .frame.powered .link-container a {
-            color: #aa1111;
-        }
-
-        @media(max-width:700px) {
-            .frame { max-width: 95%; padding: 15px; }
-            .top-row { gap: 8px; }
-            .btn-rect { font-size: 8px; padding: 5px 2px; }
-            .btn-rect svg { width: 16px; height: 16px; }
-            .btn-rect::before { width: 6px; height: 6px; top: 4px; }
-        }
     </style>
 </head>
 
@@ -388,7 +195,7 @@
         <div class="header-logos">
             <div>
                 <div class="roland-logo">Roland</div>
-                <div class="lab-sub">L.A.B. AUDIO INTERF</div>
+                <div class="lab-sub">L.A.B. AUDIO INTERFACE</div>
             </div>
             <div class="tb-logo">
                 <div class="tb-text"><span class="tb-badge">TB</span> TB-303</div>
@@ -401,7 +208,7 @@
                 <span class="station-name">MUZYCZNE RADIO</span>
                 <span id="date">06:05:2026</span>
             </div>
-            <div class="display-middle" id="clock">22:39:14</div>
+            <div class="display-middle" id="clock">00:00:00</div>
             <div class="display-bottom">
                 <span>BITRATE: 128KBPS</span>
                 <span id="vol-percent">VOL: 50%</span>
@@ -435,13 +242,11 @@
                     </div>
                     
                     <div class="vol-wrapper" id="vol-container">
-                        <button id="vDown" class="btn-v">
-                            <svg viewBox="0 0 24 24"><path d="M19,13H5V11H19V13Z"/></svg>
-                        </button>
-                        <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                        <button id="vUp" class="btn-v">
-                            <svg viewBox="0 0 24 24"><path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/></svg>
-                        </button>
+                        <button id="vDown" class="btn-v">VOL -</button>
+                        <div class="vol-bar">
+                            <div id="vFill" class="vol-fill"></div>
+                        </div>
+                        <button id="vUp" class="btn-v">VOL +</button>
                     </div>
                 </div>
             </div>
@@ -453,4 +258,108 @@
         </div>
     </div>
 
-    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.
+    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+
+    <script>
+        const audio = document.getElementById('stream');
+        const pwrBtn = document.getElementById('pwr');
+        const playBtn = document.getElementById('play');
+        const recBtn = document.getElementById('rec');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
+        const volPercent = document.getElementById('vol-percent');
+
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
+
+        let audioCtx, analyser, source, isPwr = false;
+        let mediaRecorder, chunks = [];
+
+        function updateDateTime() {
+            const now = new Date();
+            clockEl.textContent = now.toTimeString().split(' ')[0];
+            const d = String(now.getDate()).padStart(2,'0');
+            const m = String(now.getMonth()+1).padStart(2,'0');
+            dateEl.textContent = `${d}:${m}:${now.getFullYear()}`;
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
+
+        function updateVol() { 
+            const vol = Math.round(audio.volume * 100);
+            vFill.style.left = vol + '%';
+            volPercent.textContent = `VOL: ${vol}%`;
+        }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+            }
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser);
+                source.connect(audioCtx.destination);
+            }
+        }
+
+        playBtn.onclick = function() {
+            if (!isPwr) return;
+            initAudio();
+            audio.play();
+            this.classList.add('active');
+        };
+
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            if (mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            else startRecording();
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start();
+            recBtn.classList.add('active');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder) mediaRecorder.stop();
+            recBtn.classList.remove('active');
+        }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
+            audio.pause(); audio.currentTime = 0;
+            playBtn.classList.remove('active');
+        };
+
+        muteBtn
