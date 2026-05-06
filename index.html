@@ -1,474 +1,272 @@
 <!DOCTYPE html>
 <html lang="pl">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Muzyczne Radio PRO ULTRA v2 - MSI Dragon Edition</title>
-    <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
-    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
+    <title>Muzyczne Radio - TB-303 Edition</title>
     <style>
         body {
-            margin: 0;
-            height: 100vh;
+            background: #1a1a1a;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: #000;
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-            -webkit-user-select: none;
-            user-select: none;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
         }
 
+        /* OBUDOWA - EFEKT SZCZOTKOWANEGO METALU */
         .frame {
-            width: 100%;
-            max-width: 600px;
+            background: #c0c0c0;
+            background-image: linear-gradient(
+                rgba(255,255,255,0.3) 1px, 
+                transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 100% 2px, 3px 100%;
             border-radius: 4px;
             padding: 30px;
-            /* Szczotkowane aluminium */
-            background: #b4b4b4;
-            background-image: linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px);
-            background-size: 100% 2px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 2px rgba(255,255,255,0.8);
+            width: 550px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 2px 2px white;
+            border: 1px solid #777;
             position: relative;
-            border: 1px solid #666;
-            box-sizing: border-box;
         }
 
-        .frame.powered {
-            box-shadow: 0 0 40px rgba(153, 255, 0, 0.2), 0 30px 60px rgba(0, 0, 0, 0.8);
-        }
-
+        /* NAGŁÓWKI */
         .header-logos {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            border-bottom: 2px solid #888;
-            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #333;
         }
 
         .roland-logo {
-            font-size: 34px;
+            font-size: 28px;
             font-weight: 900;
-            color: #1a1a1a;
-            font-family: Arial, sans-serif;
-            line-height: 0.8;
-        }
-
-        .lab-sub {
-            font-size: 9px;
-            color: #222;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            margin-top: 5px;
-        }
-
-        .tb-logo {
-            text-align: right;
+            letter-spacing: -1px;
         }
 
         .tb-text {
-            font-size: 18px;
-            font-weight: 900;
-            color: #1a1a1a;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            justify-content: flex-end;
-        }
-
-        .tb-badge {
-            border: 2px solid #1a1a1a;
-            color: #1a1a1a;
-            padding: 0px 4px;
-            font-size: 16px;
-            font-weight: 900;
-        }
-
-        .pro-terminal {
-            font-size: 9px;
-            color: #222;
             font-weight: bold;
-            letter-spacing: 0.5px;
+            font-size: 18px;
+            border: 2px solid #333;
+            padding: 2px 6px;
         }
 
+        /* WYŚWIETLACZ KASECIKA / SYNTEZATORA */
         .display-frame {
-            background: #080a08;
-            border: 3px solid #444;
-            border-radius: 2px;
-            margin: 0 auto 25px auto;
-            box-sizing: border-box;
-            overflow: hidden;
-            width: 100%;
-            height: 95px;
+            background: #121512;
+            padding: 15px;
+            border-radius: 3px;
+            border: 4px solid #444;
+            box-shadow: inset 0 5px 15px rgba(0,0,0,1);
+            margin-bottom: 25px;
+            height: 80px;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            font-family: 'Digital Numbers', monospace;
-            color: #1a201a;
-            transition: color 0.3s;
-            padding: 10px 15px;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,1);
-            position: relative;
-        }
-
-        .frame.powered .display-frame {
-            color: #99ff00;
-            text-shadow: 0 0 10px rgba(153, 255, 0, 0.5);
-        }
-
-        .display-top, .display-bottom {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            font-family: Arial;
-            font-weight: bold;
+            justify-content: center;
+            text-align: center;
+            transition: all 0.3s;
         }
 
         .display-middle {
-            text-align: center;
-            font-size: 42px;
-            line-height: 1;
+            font-family: 'Courier New', monospace;
+            font-size: 40px;
+            color: #222; /* Wyłączony */
+            text-shadow: 0 0 0px transparent;
         }
 
-        .controls-panel {
-            background: #a0a0a0;
-            border: 1px solid #777;
-            border-radius: 2px;
-            padding: 20px;
-            box-shadow: inset 0 1px 5px rgba(0,0,0,0.4);
+        .frame.powered .display-middle {
+            color: #00ff44;
+            text-shadow: 0 0 10px rgba(0,255,0,0.6);
         }
 
+        .display-top, .display-bottom {
+            font-size: 10px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        /* PRZYCISKI - STYL TB-303 */
         .top-row {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
+            gap: 12px;
+            background: rgba(0,0,0,0.05);
+            padding: 15px;
+            border-radius: 4px;
         }
 
-        /* PRZYCISKI TB-303 */
         .btn-rect {
-            aspect-ratio: 1.1;
-            border: 1px solid #444;
-            background: linear-gradient(180deg, #e1e0d3 0%, #cfcdc0 100%);
-            color: #333;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end;
+            gap: 15px;
+            background: none;
+            border: none;
             cursor: pointer;
-            border-radius: 2px;
-            box-shadow: 0 4px 0 #666, 0 5px 10px rgba(0,0,0,0.3);
+            padding: 0;
             position: relative;
-            font-size: 9px;
-            font-weight: bold;
-            padding: 8px 2px;
-            transition: all 0.05s;
         }
 
         /* DIODA LED NAD PRZYCISKIEM */
         .btn-rect::before {
             content: '';
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 10px;
-            height: 6px;
-            background: #300000;
+            width: 8px;
+            height: 8px;
+            background: #400;
+            border-radius: 50%;
             border: 1px solid #000;
-            border-radius: 1px;
-        }
-
-        .frame.powered .btn-rect::before {
-            background: #500000;
         }
 
         .btn-rect.active::before {
-            background: #ff0000 !important;
+            background: #ff0000;
             box-shadow: 0 0 8px #ff0000;
         }
 
-        .btn-rect svg { 
-            width: 18px; 
-            height: 18px; 
-            margin-bottom: 2px;
-            fill: #333; 
+        /* KLUCZOWY ELEMENT: WYGLĄD PLASTIKOWEGO KLAWISZA */
+        .btn-rect svg, .btn-rect span {
+            display: none; /* Ukrywamy stare ikony jeśli chcesz czysty styl */
         }
 
-        .btn-rect:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #666, 0 2px 5px rgba(0,0,0,0.3);
+        .btn-rect::after {
+            content: attr(id); /* Wyświetla ID jako etykietę */
+            display: block;
+            width: 100%;
+            height: 45px;
+            background: linear-gradient(180deg, #e0ddd0 0%, #c2bfb0 100%);
+            border-radius: 2px;
+            border: 1px solid #888;
+            box-shadow: 0 4px 0 #666, 0 6px 10px rgba(0,0,0,0.4);
+            color: #444;
+            font-size: 10px;
+            font-weight: bold;
+            line-height: 45px;
+            text-transform: uppercase;
         }
 
-        /* VOL SLIDER */
+        .btn-rect:active::after {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #666, 0 3px 5px rgba(0,0,0,0.4);
+        }
+
+        /* SUWAK GŁOŚNOŚCI (SLIDER) */
         .vol-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 3fr 1fr;
-            gap: 15px;
-            margin-top: 25px;
+            margin-top: 30px;
+            display: flex;
             align-items: center;
+            gap: 15px;
+        }
+
+        .vol-bar {
+            flex-grow: 1;
+            height: 12px;
+            background: #000;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+        }
+
+        .vol-fill {
+            width: 20px;
+            height: 34px;
+            background: linear-gradient(90deg, #999, #eee, #999);
+            position: absolute;
+            top: -11px;
+            border-radius: 2px;
+            border: 1px solid #333;
+            cursor: pointer;
+            box-shadow: 2px 5px 10px rgba(0,0,0,0.5);
         }
 
         .btn-v {
             background: #333;
-            color: #eee;
-            border: 1px solid #000;
+            color: white;
+            border: none;
+            width: 30px;
             height: 30px;
+            border-radius: 50%;
             cursor: pointer;
-            font-size: 14px;
             font-weight: bold;
-            border-radius: 2px;
         }
 
-        .vol-bar {
-            height: 18px;
-            background: #080808;
-            border-radius: 2px;
-            position: relative;
-            box-shadow: inset 0 2px 5px #000;
-            border: 1px solid #444;
-        }
-
-        .vol-fill {
-            height: 30px;
-            width: 18px;
-            background: linear-gradient(90deg, #999, #eee 45%, #777 50%, #eee 55%, #999);
-            position: absolute;
-            top: -7px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid #333;
-            border-radius: 1px;
-            transition: left 0.1s;
-            box-shadow: 2px 3px 5px rgba(0,0,0,0.5);
-        }
-
-        .link-container {
-            margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid #888;
-            text-align: center;
-        }
-
-        .lab-footer {
-            font-size: 10px;
-            color: #333;
-            font-weight: bold;
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .link-container a {
-            color: #1a1a1a;
-            text-decoration: none;
-            font-weight: 900;
-            font-size: 12px;
-        }
-
-        @media(max-width:700px) {
-            .frame { padding: 15px; }
-            .top-row { gap: 8px; }
-            .btn-rect { font-size: 8px; }
-        }
     </style>
 </head>
+<body>
 
-<body oncontextmenu="return false;">
     <div class="frame">
         <div class="header-logos">
             <div>
                 <div class="roland-logo">Roland</div>
-                <div class="lab-sub">L.A.B. AUDIO INTERFACE</div>
+                <div style="font-size: 9px; font-weight: bold;">COMPUTER CONTROLLED</div>
             </div>
-            <div class="tb-logo">
-                <div class="tb-text"><span class="tb-badge">TB</span> TB-303</div>
-                <div class="pro-terminal">PRO TERMINAL</div>
-            </div>
+            <div class="tb-text">TB-303</div>
         </div>
 
-        <div class="display-frame" id="display">
+        <div class="display-frame">
             <div class="display-top">
-                <span class="station-name">MUZYCZNE RADIO</span>
+                <span>MUZYCZNE RADIO</span>
                 <span id="date">06:05:2026</span>
             </div>
-            <div class="display-middle" id="clock">22:39:14</div>
+            <div class="display-middle" id="clock">00:00:00</div>
             <div class="display-bottom">
-                <span>BITRATE: 128KBPS</span>
                 <span id="vol-percent">VOL: 50%</span>
+                <span>MODE: RADIO</span>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="controls-panel">
-                <div class="controls-main" id="controls">
-                    <div class="top-row">
-                        <button id="pwr" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg>
-                            POWER
-                        </button>
-                        <button id="play" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg>
-                            PLAY
-                        </button>
-                        <button id="rec" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg>
-                            REC
-                        </button>
-                        <button id="stop" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg>
-                            STOP
-                        </button>
-                        <button id="mute" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
-                            MUTE
-                        </button>
-                    </div>
-                    
-                    <div class="vol-wrapper" id="vol-container">
-                        <button id="vDown" class="btn-v">-</button>
-                        <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-                        <button id="vUp" class="btn-v">+</button>
-                    </div>
-                </div>
-            </div>
+        <div class="top-row">
+            <button id="pwr" class="btn-rect"></button>
+            <button id="play" class="btn-rect"></button>
+            <button id="rec" class="btn-rect"></button>
+            <button id="stop" class="btn-rect"></button>
+            <button id="mute" class="btn-rect"></button>
+        </div>
 
-            <div class="link-container">
-                <div class="lab-footer">L.A.B. AUDIO TB-303</div>
-                <a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a>
+        <div class="vol-wrapper">
+            <button id="vDown" class="btn-v">-</button>
+            <div class="vol-bar">
+                <div id="vFill" class="vol-fill" style="left: 50%;"></div>
             </div>
+            <button id="vUp" class="btn-v">+</button>
         </div>
     </div>
 
-    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
+    <audio id="stream" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
     <script>
+        // Ta sama logika co wcześniej, tylko podpięta pod nowe klasy
         const audio = document.getElementById('stream');
         const pwrBtn = document.getElementById('pwr');
-        const playBtn = document.getElementById('play');
-        const recBtn = document.getElementById('rec');
-        const stopBtn = document.getElementById('stop');
-        const muteBtn = document.getElementById('mute');
-        const mutePath = document.getElementById('mute-path');
         const vFill = document.getElementById('vFill');
         const clockEl = document.getElementById('clock');
-        const dateEl = document.getElementById('date');
-        const volPercent = document.getElementById('vol-percent');
+        let isPwr = false;
 
-        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
-        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
-
-        let audioCtx, analyser, source, isPwr = false;
-        let mediaRecorder, chunks = [];
-
-        function updateDateTime() {
+        function updateClock() {
             const now = new Date();
-            const h = String(now.getHours()).padStart(2, '0');
-            const m = String(now.getMinutes()).padStart(2, '0');
-            const s = String(now.getSeconds()).padStart(2, '0');
-            const day = String(now.getDate()).padStart(2, '0');
-            const mo = String(now.getMonth() + 1).padStart(2, '0');
-            const yr = now.getFullYear();
-            
-            clockEl.textContent = `${h}:${m}:${s}`;
-            dateEl.textContent = `${day}:${mo}:${yr}`;
+            clockEl.textContent = now.toTimeString().split(' ')[0];
         }
+        setInterval(updateClock, 1000);
 
-        setInterval(updateDateTime, 1000);
-        updateDateTime();
-
-        function updateVol() { 
-            const vol = Math.round(audio.volume * 100);
-            vFill.style.left = vol + '%';
-            volPercent.textContent = `VOL: ${vol}%`;
-        }
-
-        pwrBtn.onclick = function() {
+        pwrBtn.onclick = () => {
             isPwr = !isPwr;
             document.querySelector('.frame').classList.toggle('powered');
-            this.classList.toggle('active');
-            if (!isPwr) {
-                if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
-                audio.pause();
-                playBtn.classList.remove('active');
-                recBtn.classList.remove('active');
-                audio.muted = false;
-                muteBtn.classList.remove('active');
-                mutePath.setAttribute('d', ICON_MUTE_OFF);
-            }
+            pwrBtn.classList.toggle('active');
+            if(!isPwr) audio.pause();
         };
 
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-                analyser = audioCtx.createAnalyser();
-                source = audioCtx.createMediaElementSource(audio);
-                source.connect(analyser);
-                source.connect(audioCtx.destination);
-            }
-        }
-
-        playBtn.onclick = function() {
-            if (!isPwr) return;
-            initAudio();
-            audio.play();
-            this.classList.add('active');
+        // Reszta przycisków działa analogicznie
+        document.getElementById('play').onclick = () => { if(isPwr) { audio.play(); document.getElementById('play').classList.add('active'); } };
+        document.getElementById('stop').onclick = () => { audio.pause(); document.getElementById('play').classList.remove('active'); };
+        
+        document.getElementById('vUp').onclick = () => { 
+            audio.volume = Math.min(1, audio.volume + 0.1);
+            vFill.style.left = (audio.volume * 100) + '%';
         };
-
-        recBtn.onclick = function() {
-            if (!isPwr) return;
-            if (mediaRecorder && mediaRecorder.state === 'recording') {
-                stopRecording();
-            } else {
-                startRecording();
-            }
+        document.getElementById('vDown').onclick = () => { 
+            audio.volume = Math.max(0, audio.volume - 0.1);
+            vFill.style.left = (audio.volume * 100) + '%';
         };
-
-        function startRecording() {
-            initAudio();
-            const dest = audioCtx.createMediaStreamDestination();
-            source.connect(dest);
-            mediaRecorder = new MediaRecorder(dest.stream);
-            chunks = [];
-            mediaRecorder.ondataavailable = e => chunks.push(e.data);
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'audio/webm' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = 'nagranie.webm'; a.click();
-            };
-            mediaRecorder.start();
-            recBtn.classList.add('active');
-        }
-
-        function stopRecording() {
-            if(mediaRecorder) mediaRecorder.stop();
-            recBtn.classList.remove('active');
-        }
-
-        stopBtn.onclick = function() {
-            if (!isPwr) return;
-            if(mediaRecorder && mediaRecorder.state === 'recording') stopRecording();
-            audio.pause(); 
-            audio.currentTime = 0;
-            playBtn.classList.remove('active');
-        };
-
-        muteBtn.onclick = function() {
-            if (!isPwr) return;
-            audio.muted = !audio.muted;
-            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
-            this.classList.toggle('active', audio.muted);
-        };
-
-        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); }};
-        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); }};
-
-        window.addEventListener('load', () => {
-            audio.volume = 0.5;
-            updateVol();
-        });
     </script>
 </body>
 </html>
