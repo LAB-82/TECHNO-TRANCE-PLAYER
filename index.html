@@ -1,214 +1,288 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>L.A.B. AUDIO - TB-303 PRO TERMINAL</title>
+    <title>L.A.B. AUDIO TB-303 Pro Terminal</title>
     <link href="https://fonts.cdnfonts.com/css/ds-digital" rel="stylesheet">
+    <link href="https://fonts.cdnfonts.com/css/digital-numbers" rel="stylesheet">
     <style>
         :root {
-            --metal: #b4b4b4;
+            --metal-bg: #c0c0c0;
             --metal-shine: linear-gradient(135deg, #e0e0e0 0%, #999 50%, #888 51%, #bbb 100%);
             --lcd-bg: #0a0c0a;
-            --led-red: #ff0000;
             --led-green: #a4f000;
+            --led-red: #ff0000;
             --brushed: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
         }
 
         body {
             margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
             background: #121212; font-family: Arial, sans-serif; overflow: hidden;
+            -webkit-user-select: none; user-select: none;
         }
 
         /* OBUDOWA TERMINALA */
-        .terminal-chassis {
-            width: 800px; height: 900px;
+        .frame {
+            width: 800px; height: 850px;
             background: var(--metal-shine); background-image: var(--brushed);
             border: 2px solid #555; border-radius: 10px;
-            padding: 30px; box-shadow: 0 50px 100px rgba(0,0,0,0.7), inset 0 2px 2px white;
-            display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px;
-            position: relative; border-bottom: 5px solid #333;
+            padding: 30px; box-shadow: 0 40px 80px rgba(0,0,0,0.8), inset 0 2px 2px white;
+            display: grid; grid-template-columns: 280px 1fr; gap: 25px;
+            position: relative; box-sizing: border-box;
         }
 
         /* ŚRUBY */
         .screw {
-            position: absolute; width: 16px; height: 16px;
+            position: absolute; width: 14px; height: 14px;
             background: radial-gradient(circle, #888, #444); border-radius: 50%;
             box-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
 
-        /* LEWA STRONA - PRZYCISKI STACJI */
-        .side-panel { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(8, 1fr); gap: 12px; }
-
-        .btn-station {
-            background: linear-gradient(180deg, #eee 0%, #bbb 100%);
-            border: 2px solid #333; border-radius: 4px; height: 80px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 14px; color: #222; cursor: pointer;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.3); position: relative;
+        /* LEWA STRONA - PRZYCISKI GŁÓWNE */
+        .side-panel { 
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-content: start;
         }
 
-        .btn-station::before {
+        .btn-rect {
+            background: linear-gradient(180deg, #eee 0%, #bbb 100%);
+            border: 2px solid #333; border-radius: 4px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; position: relative; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            transition: transform 0.05s;
+        }
+
+        .btn-rect:active { transform: scale(0.95); }
+
+        .btn-rect::before {
             content: ""; position: absolute; top: 6px; left: 6px;
             width: 6px; height: 6px; background: #300; border-radius: 50%;
         }
 
-        .btn-station.active { background: #f0f0f0; border-color: #000; color: var(--led-green); text-shadow: 0 0 5px var(--led-green); }
-        .btn-station.active::before { background: var(--led-red); box-shadow: 0 0 5px var(--led-red); }
+        /* Stan aktywny (LED) */
+        .btn-rect.active::before { 
+            background: var(--led-red); box-shadow: 0 0 6px var(--led-red); 
+        }
 
-        /* PRAWA STRONA - LCD I VISUALIZER */
+        .btn-rect svg { width: 24px; height: 24px; fill: #222; }
+
+        /* PRAWA STRONA - LCD I WIZUALIZATOR */
         .main-panel { display: flex; flex-direction: column; gap: 20px; }
 
-        .header-info { padding-left: 10px; border-bottom: 2px solid #666; padding-bottom: 10px; }
-        .header-info h1 { margin: 0; font-size: 28px; letter-spacing: -1px; }
-        .header-info span { font-size: 10px; font-weight: bold; letter-spacing: 2px; color: #444; }
+        .brand-header { padding-bottom: 10px; border-bottom: 2px solid #777; }
+        .brand-header h1 { margin: 0; font-size: 26px; color: #111; letter-spacing: -1px; }
+        .brand-header span { font-size: 10px; font-weight: bold; color: #444; letter-spacing: 1px; }
 
         /* LCD DISPLAY */
-        .lcd-area {
+        .display-frame {
             background: var(--lcd-bg); border: 4px solid #444; border-radius: 4px;
-            padding: 15px; color: var(--led-green); font-family: 'DS-Digital', sans-serif;
+            padding: 15px; color: #1a201a; font-family: 'DS-Digital', sans-serif;
+            height: 120px; box-shadow: inset 0 0 20px #000;
             display: flex; flex-direction: column; justify-content: space-between;
-            height: 140px; box-shadow: inset 0 0 20px #000;
         }
 
-        .lcd-top { display: flex; justify-content: space-between; font-size: 14px; opacity: 0.8; }
-        #st-name { font-size: 38px; letter-spacing: 2px; }
-        .lcd-bottom { display: flex; justify-content: space-between; font-size: 16px; }
+        .frame.powered .display-frame { color: var(--led-green); }
 
-        /* ZEGAR */
-        .clock-display {
-            background: #1a1a1a; border: 2px solid #444; color: var(--led-green);
-            font-family: 'DS-Digital'; font-size: 40px; padding: 5px 15px;
-            width: fit-content; border-radius: 4px; box-shadow: inset 0 0 10px #000;
-            margin-bottom: 10px;
-        }
+        .lcd-top { display: flex; justify-content: space-between; font-size: 14px; }
+        .station-name { font-size: 32px; letter-spacing: 2px; text-transform: uppercase; }
+        .lcd-bottom { display: flex; justify-content: space-between; font-size: 14px; }
 
-        /* WIZUALIZATOR (SEQUENCER STYLE) */
-        .visualizer-box {
+        /* VISUALIZER BOX */
+        .vis-container {
             background: #111; border: 2px solid #000; border-radius: 4px;
-            height: 250px; padding: 10px; display: grid;
-            grid-template-columns: repeat(16, 1fr); grid-template-rows: repeat(4, 1fr); gap: 4px;
+            padding: 10px; display: grid; grid-template-columns: repeat(16, 1fr);
+            grid-template-rows: repeat(4, 1fr); gap: 4px; height: 200px;
         }
 
-        .vis-cell { background: #222; border-radius: 2px; transition: 0.1s; }
+        .vis-cell { background: #222; border-radius: 2px; }
         .vis-cell.on { background: #ff4400; box-shadow: 0 0 10px #ff4400; }
 
-        /* DOLNE KONTROLKI */
-        .bottom-controls {
-            display: flex; flex-direction: column; align-items: center; gap: 30px;
-            margin-top: 20px;
+        /* VOL I RUN */
+        .bottom-section {
+            display: flex; justify-content: space-between; align-items: center; margin-top: 10px;
         }
 
-        .run-stop-area { text-align: center; }
-        .btn-run {
-            width: 120px; height: 100px; background: linear-gradient(180deg, #eee, #bbb);
-            border: 3px solid #000; border-radius: 6px; cursor: pointer;
-            font-weight: bold; font-size: 16px; box-shadow: 0 5px 0 #444;
-        }
+        .vol-wrapper { display: flex; flex-direction: column; gap: 8px; width: 150px; }
+        .vol-bar { height: 10px; background: #000; border-radius: 5px; overflow: hidden; }
+        .vol-fill { height: 100%; width: 0%; background: var(--led-red); }
+        .vol-btns { display: flex; gap: 5px; }
+        .btn-v { flex: 1; height: 30px; background: #ddd; border: 1px solid #444; cursor: pointer; }
 
-        .vol-bar {
-            width: 200px; height: 12px; background: #000; border: 2px solid #555;
-            border-radius: 6px; overflow: hidden;
-        }
-        .vol-fill { height: 100%; width: 50%; background: var(--led-red); box-shadow: 0 0 10px var(--led-red); }
-
+        .run-stop-area { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .run-led { width: 10px; height: 10px; background: #300; border-radius: 50%; }
+        .frame.powered .run-led { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
     </style>
 </head>
-<body>
 
-<div class="terminal-chassis">
-    <div class="screw" style="top:10px; left:10px;"></div>
-    <div class="screw" style="top:10px; right:10px;"></div>
-    <div class="screw" style="bottom:10px; left:10px;"></div>
-    <div class="screw" style="bottom:10px; right:10px;"></div>
+<body oncontextmenu="return false;">
+    <div class="frame">
+        <div class="screw" style="top:10px; left:10px;"></div>
+        <div class="screw" style="top:10px; right:10px;"></div>
+        <div class="screw" style="bottom:10px; left:10px;"></div>
+        <div class="screw" style="bottom:10px; right:10px;"></div>
 
-    <div class="side-panel" id="station-grid">
+        <div class="side-panel" id="controls">
+            <button id="pwr" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M13,3h-2v10h2V3z M17.8,4.5l-1.4,1.4C18.3,7.4,19,9.6,19,12c0,3.9-3.1,7-7,7s-7-3.1-7-7c0-2.4,0.7-4.6,2.6-6.1L6.2,4.5 C3.6,6.4,2,9.5,2,13c0,5.5,4.5,10,10,10s10-4.5,10-10C22,9.5,20.4,6.4,17.8,4.5z"/></svg></button>
+            <button id="play" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M8,5.14V19.14L19,12.14L8,5.14Z"/></svg></button>
+            <button id="rec" class="btn-rect"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/></svg></button>
+            <button id="stop" class="btn-rect"><svg viewBox="0 0 24 24"><path d="M6,6H18V18H6V6Z"/></svg></button>
+            <button id="mute" class="btn-rect"><svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg></button>
         </div>
 
-    <div class="main-panel">
-        <div class="header-info">
-            <h1>L.A.B. AUDIO</h1>
-            <span>TB-303 PRO TERMINAL // ACID ENGINE</span>
-        </div>
-
-        <div class="clock-display" id="clock">00:00:00</div>
-
-        <div class="lcd-area" id="display">
-            <div class="lcd-top">
-                <span>BANK: A1 / PATTERN: 08</span>
-                <span id="v-val">VOL: 50%</span>
-            </div>
-            <div id="st-name">OFFLINE</div>
-            <div class="lcd-bottom">
-                <span>BITRATE: 128KBPS</span>
-                <span>PRO MODE</span>
-            </div>
-        </div>
-
-        <div class="visualizer-box" id="visualizer">
+        <div class="main-panel">
+            <div class="brand-header">
+                <h1>L.A.B. AUDIO TB-303</h1>
+                <span>COMPUTER CONTROLLED // ACID ENGINE</span>
             </div>
 
-        <div class="bottom-controls">
-            <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
-            <div class="run-stop-area">
-                <div style="background:var(--led-red); width:8px; height:8px; border-radius:50%; margin:0 auto 10px; opacity:0.3;" id="run-led"></div>
-                <button class="btn-run" id="run-btn">RUN / STOP</button>
+            <div class="display-frame" id="display">
+                <div class="lcd-top">
+                    <span>BANK: A1 / PATTERN: 08</span>
+                    <span id="clock">00:00:00</span>
+                </div>
+                <div class="station-name">MUZYCZNE RADIO</div>
+                <div class="lcd-bottom">
+                    <span id="date">06:05:2026</span>
+                    <span>BITRATE: 128KBPS</span>
+                </div>
+            </div>
+
+            <div class="vis-container" id="visualizer"></div>
+
+            <div class="bottom-section">
+                <div class="vol-wrapper">
+                    <div class="vol-bar"><div id="vFill" class="vol-fill"></div></div>
+                    <div class="vol-btns">
+                        <button id="vDown" class="btn-v">-</button>
+                        <button id="vUp" class="btn-v">+</button>
+                    </div>
+                </div>
+
+                <div class="run-stop-area">
+                    <div class="run-led"></div>
+                    <span style="font-size: 10px; font-weight: bold;">RUN / STOP</span>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<audio id="stream" crossorigin="anonymous"></audio>
+    <audio id="stream" crossorigin="anonymous" src="https://stream.rcs.revma.com/gzwc1xcq042vv"></audio>
 
-<script>
-    const audio = document.getElementById('stream');
-    const stations = [
-        {n:'RMF FM', u:'rmf_fm'}, {n:'RMF MAXXX', u:'RMFMAXXX48'},
-        {n:'RMF 80s', u:'rmf_80s'}, {n:'RMF 90s', u:'rmf_90s'},
-        {n:'RMF 2000', u:'rmf_2000'}, {n:'RMF CHILL', u:'rmf_chillout'},
-        {n:'RMF LOVE', u:'rmf_love'}, {n:'RMF ROCK', u:'rmf_polski_rock'}
-    ];
+    <script>
+        // Logika wizualizatora (dodatek estetyczny)
+        const vis = document.getElementById('visualizer');
+        for(let i=0; i<64; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'vis-cell';
+            vis.appendChild(cell);
+        }
+        setInterval(() => {
+            if(isPwr && !audio.paused) {
+                document.querySelectorAll('.vis-cell').forEach(c => c.classList.toggle('on', Math.random() > 0.88));
+            } else {
+                document.querySelectorAll('.vis-cell').forEach(c => c.classList.remove('on'));
+            }
+        }, 120);
 
-    const grid = document.getElementById('station-grid');
-    stations.forEach((s, i) => {
-        const b = document.createElement('div');
-        b.className = 'btn-station';
-        b.innerHTML = `<span>${s.n}</span>`;
-        b.onclick = () => play(i);
-        grid.appendChild(b);
-    });
+        // TWOJA ORYGINALNA LOGIKA (NIEZMIENIONA)
+        const audio = document.getElementById('stream');
+        const pwrBtn = document.getElementById('pwr');
+        const playBtn = document.getElementById('play');
+        const recBtn = document.getElementById('rec');
+        const stopBtn = document.getElementById('stop');
+        const muteBtn = document.getElementById('mute');
+        const mutePath = document.getElementById('mute-path');
+        const vFill = document.getElementById('vFill');
+        const clockEl = document.getElementById('clock');
+        const dateEl = document.getElementById('date');
 
-    const vis = document.getElementById('visualizer');
-    for(let i=0; i<64; i++) {
-        const c = document.createElement('div');
-        c.className = 'vis-cell';
-        vis.appendChild(c);
-    }
+        const ICON_MUTE_ON = "M4.33,3L3.05,4.27L7.78,9H3V15H7L12,20V13.22L16.25,17.47C15.58,17.98 14.83,18.4 14,18.64V21.07C15.5,20.78 16.89,20.09 18.05,19.15L20.72,21.82L22,20.55L4.33,3M16.5,12C16.5,10.23 15.5,8.71 14,8V10.18L16.45,12.63C16.5,12.43 16.5,12.22 16.5,12M19,12C19,12.94 18.8,13.82 18.46,14.64L20.28,16.46C20.74,15.11 21,13.6 21,12C21,7.72 18,4.14 14,3.23V5.7C16.89,6.56 19,9.11 19,12Z";
+        const ICON_MUTE_OFF = "M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z";
 
-    function play(i) {
-        document.querySelectorAll('.btn-station').forEach((b, idx) => b.classList.toggle('active', idx === i));
-        document.getElementById('st-name').textContent = stations[i].n;
-        document.getElementById('run-led').style.opacity = "1";
-        audio.src = "https://rs201-krk.rmfstream.pl/" + stations[i].u;
-        audio.play();
-    }
+        let audioCtx, analyser, source, isPwr = false;
+        let mediaRecorder, chunks = [];
 
-    document.getElementById('run-btn').onclick = () => {
-        audio.pause();
-        document.getElementById('st-name').textContent = "STOPPED";
-        document.getElementById('run-led').style.opacity = "0.3";
-        document.querySelectorAll('.btn-station').forEach(b => b.classList.remove('active'));
-    };
+        function updateDateTime() {
+            const now = new Date();
+            clockEl.textContent = now.toTimeString().split(' ')[0];
+            dateEl.textContent = now.toLocaleDateString('pl-PL').replace(/\./g, ':');
+        }
+        setInterval(updateDateTime, 1000);
+        updateDateTime();
 
-    setInterval(() => {
-        document.getElementById('clock').textContent = new Date().toTimeString().split(' ')[0];
-        // Prosta animacja wizualizatora
-        document.querySelectorAll('.vis-cell').forEach(c => {
-            c.classList.toggle('on', Math.random() > 0.85);
-        });
-    }, 150);
+        const flash = el => {
+            el.classList.add('active');
+            setTimeout(() => { if(!(el === playBtn && !audio.paused) && !(el === muteBtn && audio.muted) && !(el === recBtn && mediaRecorder?.state === 'recording')) el.classList.remove('active'); }, 600);
+        };
 
-    audio.volume = 0.5;
-</script>
+        function updateVol() { vFill.style.width = (audio.volume * 100) + '%'; }
+
+        pwrBtn.onclick = function() {
+            isPwr = !isPwr;
+            document.querySelector('.frame').classList.toggle('powered');
+            this.classList.toggle('active');
+            if (!isPwr) {
+                if(mediaRecorder?.state === 'recording') stopRecording();
+                audio.pause();
+                playBtn.classList.remove('active');
+                recBtn.classList.remove('active');
+                audio.muted = false;
+                muteBtn.classList.remove('active');
+                mutePath.setAttribute('d', ICON_MUTE_OFF);
+            }
+        };
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                source = audioCtx.createMediaElementSource(audio);
+                source.connect(analyser); source.connect(audioCtx.destination);
+            }
+        }
+
+        playBtn.onclick = function() { if (!isPwr) return; initAudio(); audio.play(); this.classList.add('active'); };
+
+        recBtn.onclick = function() {
+            if (!isPwr) return;
+            mediaRecorder?.state === 'recording' ? stopRecording() : startRecording();
+        };
+
+        function startRecording() {
+            initAudio();
+            const dest = audioCtx.createMediaStreamDestination();
+            source.connect(dest);
+            mediaRecorder = new MediaRecorder(dest.stream);
+            chunks = [];
+            mediaRecorder.ondataavailable = e => chunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'audio/webm' });
+                const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'nagranie.webm'; a.click();
+            };
+            mediaRecorder.start(); recBtn.classList.add('active');
+        }
+
+        function stopRecording() { mediaRecorder?.stop(); recBtn.classList.remove('active'); flash(recBtn); }
+
+        stopBtn.onclick = function() {
+            if (!isPwr) return;
+            if(mediaRecorder?.state === 'recording') stopRecording();
+            audio.pause(); audio.currentTime = 0;
+            playBtn.classList.remove('active'); flash(this);
+        };
+
+        muteBtn.onclick = function() {
+            if (!isPwr) return;
+            audio.muted = !audio.muted;
+            mutePath.setAttribute('d', audio.muted ? ICON_MUTE_ON : ICON_MUTE_OFF);
+            this.classList.toggle('active', audio.muted);
+        };
+
+        document.getElementById('vUp').onclick = function() { if(isPwr) { audio.volume = Math.min(1, audio.volume + 0.1); updateVol(); flash(this); }};
+        document.getElementById('vDown').onclick = function() { if(isPwr) { audio.volume = Math.max(0, audio.volume - 0.1); updateVol(); flash(this); }};
+
+        window.addEventListener('load', () => { audio.volume = 0.5; updateVol(); });
+    </script>
 </body>
 </html>
