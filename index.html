@@ -21,49 +21,44 @@
             user-select: none;
         }
 
-        /* Główna ramka - ciemne szczotkowane aluminium jak na zdjęciu */
+        /* Główna ramka - szczotkowane aluminium jak na zdjęciu */
         .frame {
             width: 100%;
             max-width: 650px;
-            border-radius: 8px;
-            padding: 20px;
-            background: #b8b8b8;
+            border-radius: 6px;
+            padding: 12px;
+            background: #b8b8;
             background-image: 
                 repeating-linear-gradient(135deg, 
-                    rgba(180,180,0.6) 0px, 
-                    rgba(180,180,180,0.6) 1px, 
+                    rgba(200,200,0.6) 0px, 
+                    rgba(200,200,200,0.6) 1px, 
                     transparent 1px, 
                     transparent 2px,
-                    rgba(100,100,100,0.3) 2px,
-                    rgba(100,100,100,0.3) 3px,
+                    rgba(120,120,120,0.3) 2px,
+                    rgba(120,120,120,0.3) 3px,
                     transparent 3px,
                     transparent 5px),
-                linear-gradient(180deg, #c8c8c8 0%, #a8a8a8 100%);
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 1), inset 0 2px 3px rgba(255,255,255,0.6);
+                linear-gradient(180deg, #c5c5c5 0%, #a8a8a8 100%);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 1), inset 0 2px 3px rgba(255,255,255,0.7);
             position: relative;
             border: 2px solid #888;
             box-sizing: border-box;
         }
 
         .frame.powered {
-            box-shadow: 0 0 60px rgba(230, 0, 18, 0.4), 0 8px 30px rgba(0, 0, 0, 0.9), inset 0 2px 3px rgba(255,255,255,0.6);
+            box-shadow: 0 0 60px rgba(0, 255, 65, 0.3), 0 8px 30px rgba(0, 0, 0, 0.9), inset 0 2px 3px rgba(255,255,255,0.7);
         }
 
-        /* Śrubki torx gwiazdka 14px na głównej ramce */
+        /* Śrubki torx 14px na rogach ramki */
         .frame::before, .frame::after {
-            content: '★';
+            content: '';
             position: absolute;
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #777, #222);
-            box-shadow: inset 0 2px 3px rgba(0,0.9), 0 1px 2px rgba(255,255,0.2);
-            color: #111;
-            font-size: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
+            background: radial-gradient(circle at 30% 30%, #d0d0d0, #666);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+            border: 1px solid #555;
             z-index: 100;
         }
         .frame::before { top: 8px; left: 8px; }
@@ -74,42 +69,52 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #777, #222);
-            box-shadow: inset 0 2px 3px rgba(0,0,0,0.9), 0 1px 2px rgba(255,255,255,0.2);
+            background: radial-gradient(circle at 30% 30%, #d0d0d0, #666);
+            box-shadow: inset 0 2px 3px rgba(0,0,0,0.6), 0 1px 2px rgba(0,0,0,0.4);
+            border: 1px solid #555;
             bottom: 8px;
-            color: #111;
-            font-size: 9px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
             z-index: 100;
         }
         .screw-bl { left: 8px; }
         .screw-br { right: 8px; }
-        .screw-bl::before, .screw-br::before { content: '★'; }
+
+        .screw-bl::before, .screw-br::before, .frame::before::after, .frame::after::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, #333 0%, #333 30%, transparent 30%, transparent 100%),
+                        linear-gradient(0deg, transparent 40%, #333 40%, #333 60%, transparent 60%),
+                        linear-gradient(60deg, transparent 40%, #333 40%, #333 60%, transparent 60%),
+                        linear-gradient(120deg, transparent 40%, #333 40%, #333 60%, transparent 60%);
+        }
 
         .header-logos {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             padding: 0 5px;
         }
 
         .roland-logo {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 900;
             color: #1a1a;
             font-family: Arial, sans-serif;
             line-height: 1;
+            letter-spacing: -1px;
         }
 
         .lab-sub {
-            font-size: 9px;
+            font-size: 8px;
             color: #333;
             letter-spacing: 0.5px;
-            margin-top: 2px;
+            margin-top: 1px;
+            font-weight: 600;
         }
 
         .tb-logo {
@@ -117,7 +122,7 @@
         }
 
         .tb-text {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 900;
             color: #1a1a1a;
             display: flex;
@@ -132,41 +137,39 @@
             padding: 1px 6px;
             font-size: 14px;
             border-radius: 2px;
-            border: 2px solid #1a;
+            border: 2px solid #1a1a1a;
+            font-weight: 900;
         }
 
         .pro-terminal {
-            font-size: 9px;
+            font-size: 8px;
             color: #333;
             letter-spacing: 0.5px;
-            margin-top: 2px;
+            margin-top: 1px;
+            font-weight: 600;
         }
 
-        /* Dwa wyświetlacze jak na zdjęciu */
-        .displays-row {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 12px;
-            margin-bottom: 18px;
-        }
-
+        /* Wyświetlacz jak na zdjęciu - czarne tło, zielony tekst */
         .display-frame {
             background: #000;
-            border: 3px solid #555;
+            border: 4px solid #444;
             border-top-color: #222;
             border-bottom-color: #666;
-            border-radius: 4px;
+            border-radius: 3px;
+            margin: 0 auto 15px auto;
             box-sizing: border-box;
             overflow: hidden;
-            height: 85px;
+            width: 100%;
+            height: 75px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             font-family: 'DS-Digital', 'Digital Numbers', monospace;
-            color: #1a0000;
+            color: #1a3000;
             transition: color 0.3s;
-            padding: 8px 12px;
-            box-shadow: inset 0 4px 12px rgba(0,0,0,0.95);
+            padding: 6px 12px;
+            box-shadow: inset 0 4px 12px rgba(0,0,0,0.95), 0 2px 4px rgba(0,0,0,0.5);
+            position: relative;
         }
 
         .frame.powered .display-frame {
@@ -174,35 +177,28 @@
             text-shadow: 0 0 8px #00ff41, 0 0 15px #00ff41;
         }
 
-        .display-left {
-            font-size: 38px;
-            font-weight: bold;
-            letter-spacing: 3px;
-            text-align: center;
-            line-height: 1;
-        }
-
-        .display-right-top {
+        .display-top {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 1px;
-            margin-bottom: 4px;
+            opacity: 0.7;
         }
 
-        .display-right-main {
-            font-size: 32px;
+        .display-middle {
+            font-size: 28px;
             font-weight: bold;
             letter-spacing: 2px;
-            text-align: left;
+            line-height: 1;
             margin: 4px 0;
         }
 
-        .display-right-bottom {
+        .display-bottom {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 10px;
             letter-spacing: 1px;
+            opacity: 0.7;
         }
 
         .main-content {
@@ -210,31 +206,25 @@
             width: 100%;
         }
 
-        /* Panel sterowania z przyciskami */
+        /* Panel z przyciskami - śrubki 7px */
         .controls-panel {
             background: #b8b8b8;
             border: 2px solid #666;
             border-radius: 6px;
             padding: 15px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 10px 20px rgba(0, 0, 0, 0.5);
             position: relative;
         }
 
-        /* Śrubki torx 7px na panelu z przyciskami - o połowę mniejsze */
         .controls-panel::before, .controls-panel::after {
-            content: '★';
+            content: '';
             position: absolute;
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #888, #333);
-            box-shadow: inset 0 1px 2px rgba(0,0,0,0.8);
-            color: #222;
-            font-size: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
+            background: radial-gradient(circle at 30% 30%, #c0c0c0, #666);
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.6);
+            border: 1px solid #555;
             z-index: 101;
         }
         .controls-panel::before { top: 4px; left: 4px; }
@@ -244,6 +234,7 @@
             display: flex;
             flex-direction: column;
             gap: 15px;
+            width: 100%;
         }
 
         .top-row {
@@ -252,49 +243,48 @@
             gap: 10px;
         }
 
-        /* Przyciski - szare szczotkowane aluminium */
-        .btn-rect, .btn-v {
-            border: 2px solid #fff;
-            background: linear-gradient(135deg, #f0f0f0 0%, #d8d8 25%, #e8e8e8 50%, #c8c8c8 75%, #d8d8d8 100%);
+        /* Przyciski - szczotkowane aluminium jak na zdjęciu */
+        .btn-rect {
+            aspect-ratio: 1.4;
+            border: 2px solid #333;
+            background: linear-gradient(180deg, #f0f0f0 0%, #d0d0d0 50%, #e0e0e0 100%);
             background-image: 
-                repeating-linear-gradient(135deg,
+                repeating-linear-gradient(90deg,
                     rgba(255,255,255,0.5) 0px,
                     rgba(255,255,255,0.5) 1px,
                     transparent 1px,
                     transparent 2px),
-                linear-gradient(135deg, #f0f0f0 0%, #c8c8c8 100%);
+                linear-gradient(180deg, #f0f0f0 0%, #c8c8 100%);
             color: #1a1a1a;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 
-                inset 0 2px 3px rgba(255,255,1),
-                inset 0 -2px 3px rgba(0,0,0,0.2),
-                0 3px 6px rgba(0,0,0,0.5);
-            position: relative;
-        }
-
-        .btn-rect { 
-            aspect-ratio: 1;
+            transition: 0.1s;
             border-radius: 3px;
-            flex-direction: column;
-            gap: 4px;
+            box-shadow: 
+                inset 0 2px 3px rgba(255,255,255,0.9),
+                inset 0 -2px 3px rgba(0,0,0,0.25),
+                0 2px 4px rgba(0,0,0,0.5);
+            position: relative;
+            font-size: 9px;
+            font-weight: bold;
+            gap: 3px;
             padding: 6px 4px;
         }
 
-        /* Czerwona LED w rogu jak na zdjęciu */
+        /* Czerwona LED w rogu przycisku */
         .btn-rect::before {
             content: '';
             position: absolute;
-            top: 5px;
-            left: 5px;
-            width: 4px;
-            height: 4px;
+            top: 4px;
+            left: 4px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: #400000;
-            box-shadow: inset 0 1px 1px rgba(0,0,0,0.9);
+            background: #300000;
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.9);
         }
 
         .frame.powered .btn-rect::before {
@@ -309,14 +299,8 @@
             pointer-events: none; 
         }
 
-        .btn-rect span {
-            font-size: 8px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-rect:active, .btn-v:active {
-            box-shadow: inset 0 3px 5px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
+        .btn-rect:active {
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.5), 0 1px 2px rgba(0,0,0,0.3);
             transform: translateY(2px);
         }
 
@@ -324,12 +308,12 @@
             border-color: #e60012;
             box-shadow: 
                 0 0 15px rgba(230,0,18,0.8),
-                inset 0 2px 3px rgba(255,255,255,1);
+                inset 0 2px 3px rgba(255,255,255,0.9);
         }
 
         .frame.powered .btn-rect.active::before {
             background: #e60012;
-            box-shadow: 0 0 10px #e60012;
+            box-shadow: 0 0 12px #e60012;
         }
 
         /* Pasek głośności z przyciskami DOWN/BAR/UP */
@@ -343,17 +327,39 @@
 
         .btn-v {
             height: 100%;
+            border: 2px solid #333;
+            background: linear-gradient(180deg, #f0f0f0 0%, #d0d0d0 50%, #e0e0e0 100%);
+            background-image: 
+                repeating-linear-gradient(90deg,
+                    rgba(255,255,255,0.5) 0px,
+                    rgba(255,255,255,0.5) 1px,
+                    transparent 1px,
+                    transparent 2px),
+                linear-gradient(180deg, #f0f0f0 0%, #c8c8c8 100%);
+            color: #1a1a1a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
             border-radius: 3px;
-            font-weight: bold;
+            box-shadow: 
+                inset 0 2px 3px rgba(255,255,255,0.9),
+                0 3px 6px rgba(0,0,0,0.5);
             font-size: 10px;
+            font-weight: bold;
             letter-spacing: 1px;
+        }
+
+        .btn-v:active {
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.5);
+            transform: translateY(2px);
         }
 
         .btn-v svg { width: 20px; height: 20px; fill: currentColor; }
 
         .vol-bar {
             height: 100%;
-            background: #0a0a0a;
+            background: #0a0a;
             border: 2px solid #333;
             border-radius: 3px;
             position: relative;
@@ -364,7 +370,7 @@
         .vol-fill {
             height: 100%;
             width: 50%;
-            background: #1a1a;
+            background: #1a1a1a;
             transition: width 0.1s;
         }
 
@@ -373,53 +379,37 @@
             box-shadow: 0 0 15px #e60012;
         }
 
-        .lab-logo { 
-            margin-top: 0.5cm; 
-            width: 52px; 
-            height: 52px; 
-            border-radius: 50%; 
-            border: 1px solid #222; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            color: #222; 
-            font-size: 11px; 
-            font-weight: bold; 
-            background: linear-gradient(180deg, #151515 0%, #050505 100%); 
+        .link-container {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #888;
+            text-align: center;
         }
-        
-        .frame.powered .lab-logo { 
-            color: #e60012; 
-            border-color: #e60012; 
-            text-shadow: 0 0 5px #e60012; 
+
+        .lab-footer {
+            font-size: 9px;
+            color: #444;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
         }
-        
-        .link-container { 
-            margin-top: auto; 
-            padding-bottom: 0.5cm; 
-            text-align: center; 
-            z-index: 10; 
+
+        .link-container a {
+            color: #400000;
+            text-decoration: none;
+            font-family: 'DS-Digital';
+            letter-spacing: 2px;
+            font-size: 11px;
         }
-        
-        .link-container a { 
-            color: #2a0000; 
-            text-decoration: none; 
-            font-family: 'DS-Digital'; 
-            letter-spacing: 2px; 
-            font-size: 14px; 
-        }
-        
-        .frame.powered .link-container a { 
-            color: #e60012; 
-            text-shadow: 0 0 10px #e60012; 
+
+        .frame.powered .link-container a {
+            color: #e60012;
+            text-shadow: 0 0 10px #e60012;
         }
 
         @media(max-width:700px) {
-            .frame { max-width: 95%; }
-            .displays-row { grid-template-columns: 1fr; }
-            .controls-panel { padding: 12px; }
+            .frame { max-width: 95%; padding: 15px; }
             .top-row { gap: 8px; }
-            .btn-rect span { font-size: 7px; }
+            .btn-rect { font-size: 8px; padding: 6px 2px; }
             .btn-rect svg { width: 18px; height: 18px; }
         }
     </style>
@@ -429,22 +419,26 @@
     <div class="frame">
         <div class="screw-bl"></div>
         <div class="screw-br"></div>
-        <div class="title" id="main-title">L.A.B. AUDIO</div>
-        
-        <!-- Dwa wyświetlacze jak na zdjęciu -->
-        <div class="displays-row">
-            <div class="display-frame">
-                <div class="display-left" id="clock">00:00</div>
+        <div class="header-logos">
+            <div>
+                <div class="roland-logo">L.A.B. AUDIO</div>
+                <div class="lab-sub">TB-303 Edition</div>
             </div>
-            <div class="display-frame">
-                <div class="display-right-top">
-                    <span>BANK: A1 / PATTERN: 08</span>
-                </div>
-                <div class="display-right-main" id="station-name">Muzyczne Radio</div>
-                <div class="display-right-bottom">
-                    <span>BITRATE: 128KBPS</span>
-                    <span id="vol-percent">VOL: 50%</span>
-                </div>
+            <div class="tb-logo">
+                <div class="tb-text"><span class="tb-badge">TB</span> TB-303</div>
+                <div class="pro-terminal">PRO TERMINAL</div>
+            </div>
+        </div>
+
+        <div class="display-frame" id="display">
+            <div class="display-top">
+                <span>BANK: A1 / PATTERN: 08</span>
+                <span id="clock">21:35:48</span>
+            </div>
+            <div class="display-middle" id="station-name">MUZYCZNE RADIO</div>
+            <div class="display-bottom">
+                <span>BITRATE: 128KBPS</span>
+                <span id="vol-percent">VOL: 50%</span>
             </div>
         </div>
 
@@ -469,7 +463,7 @@
                             <span>STOP</span>
                         </button>
                         <button id="mute" class="btn-rect">
-                            <svg viewBox="0 0 24 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
+                            <svg viewBox="0 0 24"><path id="mute-path" d="M3,9V15H7L12,20V4L7,9H3M16.5,12C16.5,10.23 15.48,8.71 14,8V16C15.48,15.29 16.5,13.77 16.5,12M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18.01,19.86 21,16.28 21,12C21,7.72 18.01,4.14 14,3.23Z"/></svg>
                             <span>MUTE</span>
                         </button>
                     </div>
@@ -482,8 +476,10 @@
                 </div>
             </div>
 
-            <div class="lab-logo">L.A.B.</div>
-            <div class="link-container"><a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a></div>
+            <div class="link-container">
+                <div class="lab-footer">L.A.B. AUDIO TB-303</div>
+                <a href="https://www.muzyczneradio.pl" target="_blank">WWW.MUZYCZNERADIO.PL</a>
+            </div>
         </div>
     </div>
 
