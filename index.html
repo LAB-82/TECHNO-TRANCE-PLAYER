@@ -8,143 +8,124 @@
         @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Share+Tech+Mono&family=Roboto+Condensed:wght@700&display=swap');
 
         :root {
-            /* Nowe zmienne kolorów oparte o załączone zdjęcie bce6f4.jpg */
-            --main-chassis-bg: #1c1e1f; /* Ciemnoszary z głównej obudowy */
-            --right-panel-bg: #b8bcbe; /* Jasny szary z prawego panelu kontrolnego */
-            --station-pad-bg: #b8bcbe; /* Kolor padów stacji po lewej (identyczny z panelem) */
-            --tile-shadow: rgba(0,0,0,0.5);
-            --led-on: #ff4500; /* Neonowy pomarańczowy dla LEDów i wyświetlacza */
+            --metal-base: #c0c0c0;
+            --metal-shine: linear-gradient(180deg, #e8e8e8 0%, #b0b0b0 45%, #7a7a7a 50%, #a0a0a0 55%, #dcdcdc 100%);
+            --led-red: #ff3333;
+            --led-bg: #400000;
             --lcd-green: #a4f000;
-            --metal-highlight: #777;
-            /* Ciemniejszy metaliczny kolor dla pokręteł i przycisków na prawym panelu */
-            --knob-metal: #4a4a4a; 
-            /* Tekstura panelu */
-            --panel-texture: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            --acid-bg: #1a1a1c;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; cursor: default !important; }
+        * { margin: 0; padding: 0; box-sizing: border-box; outline: none; }
         
         body { 
-            height: 100vh; width: 100vw; background: #0a0a0a; 
+            height: 100vh; width: 100vw; 
+            background: #0a0a0a; 
             display: flex; justify-content: center; align-items: center;
-            font-family: 'Roboto Condensed', sans-serif; overflow: hidden;
+            font-family: 'Roboto Condensed', sans-serif;
+            overflow: hidden;
         }
 
+        /* OBUDOWA ANALOGOWA */
         .vst-chassis {
-            width: 98vw; height: 96vh; background-color: var(--main-chassis-bg);
-            background-image: var(--panel-texture);
-            border: 5px solid #111; border-radius: 8px;
-            box-shadow: 0 40px 100px rgba(0,0,0,1);
-            padding: 25px; display: flex; flex-direction: column; position: relative;
+            width: 98vw; height: 96vh;
+            background: var(--metal-shine);
+            background-image: url('https://www.transparenttextures.com/patterns/brushed-alum.png');
+            border: 5px solid #222;
+            border-radius: 8px;
+            box-shadow: 0 40px 100px rgba(0,0,0,1), inset 0 2px 4px rgba(255,255,255,0.7);
+            padding: 25px;
+            display: flex; flex-direction: column;
+            position: relative;
         }
 
-        header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #f0f0f0; letter-spacing: -2px; margin: 0; }
-        .logo span { font-size: 11px; letter-spacing: 4px; color: #ccc; font-weight: bold; }
-
-        #clock { font-family: 'Share Tech Mono'; font-size: 32px; color: var(--lcd-green); text-shadow: 0 0 15px var(--lcd-green); }
+        header { 
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 20px; border-bottom: 2px solid rgba(0,0,0,0.3); padding-bottom: 15px;
+        }
+        .logo h1 { font-family: 'Orbitron'; font-size: 36px; color: #1a1a1a; letter-spacing: -2px; }
+        .logo span { font-size: 11px; letter-spacing: 4px; color: #444; font-weight: bold; }
 
         .main-workspace { display: flex; flex: 1; gap: 20px; min-height: 0; }
 
-        /* GŁÓWNA SIATKA STACJI (po lewej) */
+        /* LEWA STRONA - GRID STACJI (UKŁAD ZACHOWANY) */
         .grid-stations { 
-            flex: 1.4; display: grid; grid-template-columns: repeat(5, 1fr); grid-template-rows: repeat(3, 1fr); gap: 15px; 
-            background: rgba(0,0,0,0.2); padding: 20px; border: 1px solid rgba(255,255,255,0.05); border-radius: 5px;
+            flex: 1.4; display: grid; 
+            grid-template-columns: repeat(5, 1fr); 
+            grid-template-rows: repeat(3, 1fr); 
+            gap: 15px; 
+            background: rgba(0,0,0,0.1); padding: 20px; border-radius: 10px;
+            box-shadow: inset 2px 2px 10px rgba(0,0,0,0.3);
+            border: 1px solid rgba(0,0,0,0.15);
         }
 
-        /* NOWE KAFELKI STACJI W STYLU RB-300 - IDENTYCZNE KSZTAŁTY */
         .bt-303 {
-            background-color: var(--station-pad-bg);
-            background-image: var(--panel-texture);
-            border: 1px solid #111; 
-            border-bottom: 5px solid #000;
-            border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px;
-            position: relative; transition: 0.05s;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            background: linear-gradient(145deg, #eeeeee, #bcbcbc);
+            border: 1px solid #888;
+            border-radius: 4px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; position: relative;
+            box-shadow: 0 5px 0 #777, 0 8px 15px rgba(0,0,0,0.3);
+            transition: 0.05s;
         }
-        /* Czerwona kropka LED nad stacją */
-        .bt-303::before { content: ""; position: absolute; top: 6px; width: 6px; height: 6px; background: #600; border-radius: 50%; border: 1px solid #000; }
-        .bt-303.active .st-label { color: var(--led-red); text-shadow: 0 0 12px var(--led-red); }
-        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        .bt-303 .st-label { font-weight: 800; font-size: 13px; color: #aaa; text-transform: uppercase; pointer-events: none; margin-top: 10px; text-align: center; line-height: 1.1; }
-        .bt-303:active { transform: translateY(2px); border-bottom-width: 2px; }
 
-        /* PRAWY PANEL KONTROLNY (JASNOSZARY, KOLOR JAK NA ZDJĘCIU) */
+        .bt-303::before { /* LED */
+            content: ""; position: absolute; top: 8px; width: 7px; height: 7px;
+            background: var(--led-bg); border-radius: 50%; border: 1px solid #000;
+        }
+
+        .bt-303:active { transform: translateY(3px); box-shadow: 0 2px 0 #555; }
+        .bt-303.active { background: #fff; }
+        .bt-303.active::before { background: var(--led-red); box-shadow: 0 0 10px var(--led-red); }
+
+        .bt-303 .n-top { font-weight: 800; font-size: 20px; margin-top: 10px; color: #111; }
+        .bt-303 .n-bot { font-size: 10px; color: #555; text-transform: uppercase; }
+
+        /* PRAWY PANEL - BOGATE DETALE (INSPIROWANE IMAGE_CC663B.JPG) */
         .pro-panel { 
-            flex: 0.6; display: flex; flex-direction: column; gap: 15px; 
-            background-color: var(--right-panel-bg);
-            background-image: var(--panel-texture);
-            padding: 20px; border: 3px solid #666; border-radius: 10px; 
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.1), 3px 3px 15px rgba(0,0,0,0.3);
+            flex: 0.6; display: flex; flex-direction: column; 
+            background: #2a2a2e; border-radius: 8px; padding: 20px;
+            border: 3px solid #1a1a1a; box-shadow: 10px 10px 30px rgba(0,0,0,0.5);
+            gap: 15px;
         }
 
-        /* Wyświetlacz LCD (czarny z zielonym tekstem) */
-        .lcd-display { background: #000; height: 110px; border: 5px solid #333; padding: 10px; font-family: 'Share Tech Mono'; display: flex; flex-direction: column; justify-content: space-between; border-radius: 4px; box-shadow: inset 0 0 15px #000; }
-        .lcd-label { color: var(--lcd-green); font-size: 10px; font-weight: bold; opacity: 0.9; }
-        #st-name { font-size: 28px; color: #ffffff; text-shadow: 0 0 10px var(--lcd-green); font-weight: bold; }
-        .lcd-sub { color: var(--lcd-green); display: flex; justify-content: space-between; font-size: 11px; }
-
-        /* Sekwencer LED (pomarańczowy neon, jak na foto) */
-        .step-sequencer { background: #111; border: 3px solid #333; padding: 10px; display: flex; flex-direction: column; gap: 4px; border-radius: 4px; }
-        .step-row { display: flex; gap: 2px; height: 18px; }
-        .step { flex: 1; background: #222; border: 1px solid #000; }
-        .step.on { background-color: var(--led-on); box-shadow: 0 0 10px var(--led-on); }
-
-        .analog-controls { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-top: 10px; }
-        
-        .pan-section { text-align: center; }
-        .pan-leds { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
-        .pan-led { width: 8px; height: 8px; background: #555; border-radius: 50%; border: 1px solid #111; }
-        .pan-led.active { background: var(--led-red); box-shadow: 0 0 8px var(--led-red); }
-        
-        /* POKRĘTŁO PAN L/R - PRZYWRÓCONE CIEMNE, METALOWE */
-        .knob-volume { 
-            width: 70px; height: 70px; border-radius: 50%; 
-            background: radial-gradient(circle, #888 0%, #222 100%);
-            border: 2px solid #333; position: relative; 
-            box-shadow: 0 5px 10px rgba(0,0,0,0.6); 
-            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            margin: 0 auto;
+        .lcd-display {
+            background: #0a0c0a; height: 100px; border-radius: 4px; border: 3px solid #444;
+            padding: 10px; font-family: 'Share Tech Mono', monospace; color: var(--lcd-green);
+            box-shadow: inset 0 0 15px #000; display: flex; flex-direction: column; justify-content: space-between;
         }
-        /* Kreska pozycjonująca na pokrętle */
-        .knob-volume::before { content: ""; position: absolute; top: 4px; left: 50%; width: 4px; height: 15px; background: #eee; transform: translateX(-50%); border-radius: 2px; }
 
-        .volume-row { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
-
-        /* PRZYCISKI EDIT - PRZYWRÓCONE CIEMNE, METALOWE */
-        .sq-btn { 
-            width: 50px; height: 45px; 
-            /* Ciemny metal z Twojego zdjęcia */
-            background: var(--knob-metal);
-            border: 1px solid #333; 
-            border-bottom: 3px solid #111;
-            border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 2px 2px 4px rgba(0,0,0,0.4);
-            position: relative;
+        /* SEKWENCER KROKOWY */
+        .step-sequencer {
+            flex: 1; background: #111; border-radius: 4px; border: 1px solid #444;
+            padding: 10px; display: flex; flex-direction: column; gap: 5px;
         }
-        /* Dioda nad przyciskami EDIT */
-        .sq-btn::after { content: ""; position: absolute; top: -12px; width: 6px; height: 6px; background: var(--led-bg); border-radius: 50%; border: 1px solid #111; }
-        .sq-btn.active::after { background: var(--led-red); box-shadow: 0 0 6px var(--led-red); }
+        .step-row { display: flex; gap: 2px; height: 25px; }
+        .step { flex: 1; background: #222; border-radius: 2px; border-bottom: 2px solid #000; }
+        .step.on { background: #ff4400; box-shadow: 0 0 8px rgba(255,68,0,0.5); }
 
-        .sq-btn span { font-size: 10px; font-weight: 900; color: #fff; text-transform: uppercase; }
+        .knob-bank { display: flex; justify-content: space-around; padding: 10px 0; }
+        .knob-pro {
+            width: 45px; height: 45px; border-radius: 50%;
+            background: radial-gradient(circle, #888 0%, #333 100%);
+            border: 2px solid #000; position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+        }
+        .knob-pro::after {
+            content: ""; position: absolute; top: 4px; left: 50%; width: 3px; height: 12px;
+            background: #fff; transform: translateX(-50%); border-radius: 2px;
+        }
 
-        .fader-track { background: #000; height: 35px; flex: 1; border: 2px solid #333; display: flex; align-items: center; padding: 0 2px; border-radius: 2px; }
+        .master-fader { 
+            background: #000; height: 40px; border-radius: 4px; border: 1px solid #333; 
+            display: flex; align-items: center; padding: 0 10px;
+        }
         input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; }
-        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 30px; background: #eee; border: 2px solid #333; cursor: pointer; border-radius: 2px; box-shadow: inset 0 0 5px #fff, 2px 2px 5px rgba(0,0,0,0.5); }
-
-        /* PRZYCISK RUN / STOP - PRZYWRÓCONY CIEMNY, METALOWY */
-        .btn-run-stop { 
-            width: 120px; height: 50px; 
-            /* Ciemny metal z Twojego zdjęcia */
-            background: var(--knob-metal); 
-            border: 2px solid #333; 
-            border-bottom: 4px solid #111; 
-            border-radius: 4px; display: flex; align-items: center; justify-content: center; 
-            font-weight: 900; font-size: 13px; color: #fff; text-transform: uppercase;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.1), 3px 3px 7px rgba(0,0,0,0.4);
-            margin-top: 15px;
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; width: 25px; height: 34px; background: #ccc;
+            border: 1px solid #111; border-radius: 2px; box-shadow: inset 0 0 8px #fff;
         }
-        .btn-run-stop:active, .sq-btn:active { transform: translateY(2px); border-bottom-width: 2px; }
+
     </style>
 </head>
 <body>
@@ -155,79 +136,81 @@
             <h1>RMF TB-303</h1>
             <span>COMPUTER CONTROLLED // ACID ENGINE</span>
         </div>
-        <div id="clock">00:00:00</div>
+        <div id="clock" style="font-family: 'Share Tech Mono'; font-size: 32px; color: #1a1a1a; text-shadow: 1px 1px 0 #fff;">00:00:00</div>
     </header>
 
     <div class="main-workspace">
-        <!-- PRZYWRÓCONA SIATKA STACJI (LEWY PANEL) -->
+        <!-- GRID STACJI -->
         <div class="grid-stations" id="grid"></div>
+
+        <!-- PRAWY PANEL - DOPRACOWANY -->
         <aside class="pro-panel">
             <div class="lcd-display">
-                <div class="lcd-label">BANK: A1 / PATTERN: 08</div>
-                <div id="st-name">STATION IDLE</div>
-                <div class="lcd-sub"><span>BITRATE: 128KBPS</span><span id="v-val">VOL: 50%</span></div>
-            </div>
-            <div class="step-sequencer"><div class="step-row" id="r1"></div><div class="step-row" id="r2"></div><div class="step-row" id="r3"></div></div>
-            <div class="analog-controls">
-                <div class="pan-section">
-                    <div class="pan-leds"><div class="pan-led" id="l-led"></div><div class="pan-led active" id="c-led"></div><div class="pan-led" id="r-led"></div></div>
-                    <div class="knob-volume" id="pan-knob"></div>
-                    <div style="font-size: 10px; font-weight: bold; margin-top: 8px; color: #111;">PAN L/R</div>
+                <div style="font-size: 10px; opacity: 0.5;">BANK: A1 / PATTERN: 08</div>
+                <div id="st-name" style="font-size: 20px; letter-spacing: 1px; color: #fff; text-shadow: 0 0 10px var(--lcd-green);">STATION IDLE</div>
+                <div style="display: flex; justify-content: space-between; font-size: 12px;">
+                    <span>BITRATE: 128KBPS</span>
+                    <span id="v-val">VOL: 50%</span>
                 </div>
-                <div class="volume-row">
-                    <div class="sq-btn active" id="vol-down-btn"><span>EDIT</span></div>
-                    <div class="fader-track"><input type="range" id="v-range" min="0" max="100" value="50"></div>
-                    <div class="sq-btn" id="vol-up-btn"><span>EDIT</span></div>
-                </div>
-                <div class="btn-run-stop" id="run-stop-btn">RUN / STOP</div>
             </div>
+
+            <div class="step-sequencer">
+                <div style="font-size: 8px; color: #444; margin-bottom: 2px;">STEP SEQUENCER VISUALIZER</div>
+                <div class="step-row" id="r1"></div>
+                <div class="step-row" id="r2"></div>
+                <div class="step-row" id="r3"></div>
+            </div>
+
+            <div class="knob-bank">
+                <div class="knob-pro" onclick="adj(-5)" style="transform: rotate(-30deg);"></div>
+                <div class="knob-pro" onclick="adj(5)" style="transform: rotate(30deg);"></div>
+                <div class="knob-pro" style="transform: rotate(110deg); filter: hue-rotate(90deg);"></div>
+            </div>
+
+            <div class="master-fader">
+                <input type="range" id="v-range" min="0" max="100" value="50" oninput="setV(this.value)">
+            </div>
+
+            <button onclick="toggle()" style="height: 50px; background: #444; color: #fff; border: 1px solid #000; border-radius: 4px; font-weight: bold; font-family: 'Orbitron'; cursor: pointer; box-shadow: 0 4px 0 #222; active: transform: translateY(2px);">RUN / STOP</button>
         </aside>
     </div>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player"></audio>
 
 <script>
-    // Konfiguracja stacji RMF (przywrócona z Twojego pierwotnego kodu)
     const STATIONS = [
-        { n: 'RMF FM', u: 'rmf_fm' }, { n: 'RMF MAXXX', u: 'RMFMAXXX48' }, { n: 'RMF 80s', u: 'rmf_80s' },
-        { n: 'RMF 90s', u: 'rmf_90s' }, { n: 'RMF 2000', u: 'rmf_2000' }, { n: 'RMF CHILL', u: 'rmf_chillout' },
-        { n: 'RMF CLASSIC', u: 'rmf_classic' }, { n: 'RMF DANCE', u: 'rmf_dance' }, { n: 'RMF GOLD', u: 'rmf_gold' },
-        { n: 'RMF LATIN', u: 'rmf_latino' }, { n: 'RMF LOVE', u: 'rmf_love' }, { n: 'RMF PARTY', u: 'rmf_party' },
-        { n: 'RMF ROCK', u: 'rmf_polski_rock' }, { n: 'RMF ROCK+', u: 'rmf_rock' }, { n: 'RMF JAZZ', u: 'rmf_smooth_jazz' }
+        { n: 'RMF FM', s: '01', u: 'rmf_fm' },
+        { n: 'RMF MAXXX', s: '02', u: 'RMFMAXXX48' },
+        { n: 'RMF 80s', s: '03', u: 'rmf_80s' },
+        { n: 'RMF 90s', s: '04', u: 'rmf_90s' },
+        { n: 'RMF 2000', s: '05', u: 'rmf_2000' },
+        { n: 'RMF CHILL', s: '06', u: 'rmf_chillout' },
+        { n: 'RMF CLASS', s: '07', u: 'rmf_classic' },
+        { n: 'RMF DANCE', s: '08', u: 'rmf_dance' },
+        { n: 'RMF GOLD', s: '09', u: 'rmf_gold' },
+        { n: 'RMF LATIN', s: '10', u: 'rmf_latino' },
+        { n: 'RMF LOVE', s: '11', u: 'rmf_love' },
+        { n: 'RMF PARTY', s: '12', u: 'rmf_party' },
+        { n: 'RMF ROCK', s: '13', u: 'rmf_polski_rock' },
+        { n: 'RMF ROCK+', s: '14', u: 'rmf_rock' },
+        { n: 'RMF JAZZ', s: '15', u: 'rmf_smooth_jazz' }
     ];
 
     const grid = document.getElementById('grid');
     const player = document.getElementById('player');
     const stName = document.getElementById('st-name');
-    const vRange = document.getElementById('v-range');
-    const panKnob = document.getElementById('pan-knob');
-    const runStopBtn = document.getElementById('run-stop-btn');
 
-    let audioCtx, source, panner;
-    let isPlaying = false;
-
-    // Inicjalizacja Audio API
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            source = audioCtx.createMediaElementSource(player);
-            panner = audioCtx.createStereoPanner();
-            source.connect(panner).connect(audioCtx.destination);
-        }
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-    }
-
-    // Generowanie kafelków stacji w siatce (przywrócone)
+    // Generowanie przycisków
     STATIONS.forEach((s, i) => {
         const b = document.createElement('div');
         b.className = 'bt-303';
-        b.innerHTML = `<div class="st-label">${s.n}</div>`;
-        b.addEventListener('click', () => play(i));
+        b.innerHTML = `<div class="n-top">${s.s}</div><div class="n-bot">${s.n.split(' ')[1] || 'FM'}</div>`;
+        b.onclick = () => play(i);
         grid.appendChild(b);
     });
 
-    // Sekwencer
+    // Sekwencer Visualizer
     [1, 2, 3].forEach(r => {
         const row = document.getElementById('r'+r);
         for(let i=0; i<16; i++) {
@@ -238,51 +221,21 @@
         }
     });
 
-    // Funkcja odtwarzania
     function play(i) {
-        initAudio();
         document.querySelectorAll('.bt-303').forEach((b, idx) => b.classList.toggle('active', idx === i));
         stName.textContent = STATIONS[i].n;
         player.src = STATIONS[i].n === 'RMF MAXXX' ? 'https://rs7-krk2-cyfronet.rmfstream.pl/RMFMAXXX48' : "https://rs201-krk.rmfstream.pl/" + STATIONS[i].u;
         player.play();
-        isPlaying = true;
-        runStopBtn.classList.add('running');
     }
 
-    // Funkcje kontrolne
-    function stopRadio() { 
-        player.pause(); 
-        player.src = ""; 
-        stName.textContent = "STATION BEZCZYNNA"; 
-        document.querySelectorAll('.bt-303').forEach(b => b.classList.remove('active')); 
-        isPlaying = false;
-        runStopBtn.classList.remove('running');
-    }
-    
+    function toggle() { player.paused ? player.play() : player.pause(); }
     function setV(v) { player.volume = v/100; document.getElementById('v-val').textContent = `VOL: ${v}%`; }
-    function adj(d) { let newVal = Math.min(100, Math.max(0, parseInt(vRange.value) + d)); vRange.value = newVal; setV(newVal); }
+    function adj(d) { const r = document.getElementById('v-range'); r.value = parseInt(r.value)+d; setV(r.value); }
 
-    document.getElementById('vol-down-btn').addEventListener('click', () => adj(-5));
-    document.getElementById('vol-up-btn').addEventListener('click', () => adj(5));
-    runStopBtn.addEventListener('click', () => { if(isPlaying) stopRadio(); else if(STATIONS.length>0) play(0); });
-    vRange.addEventListener('input', (e) => setV(e.target.value));
-
-    // Kontrola panoramy
-    let panPos = 0; 
-    panKnob.addEventListener('click', () => {
-        initAudio();
-        panPos = panPos === 1 ? -1 : panPos + 1;
-        panner.pan.setValueAtTime(panPos, audioCtx.currentTime);
-        panKnob.style.transform = `rotate(${panPos * 45}deg)`;
-        document.getElementById('l-led').classList.toggle('active', panPos === -1);
-        document.getElementById('c-led').classList.toggle('active', panPos === 0);
-        document.getElementById('r-led').classList.toggle('active', panPos === 1);
-    });
-
-    // Zegar i sekwencer
     setInterval(() => {
         const d = new Date();
         document.getElementById('clock').textContent = d.toTimeString().split(' ')[0];
+        // Losowe miganie sekwencera dla efektu "życia" urządzenia
         document.querySelectorAll('.step').forEach(s => { if(Math.random()>0.95) s.classList.toggle('on'); });
     }, 1000);
 </script>
